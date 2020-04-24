@@ -16,16 +16,6 @@ namespace Discord_Bot.Commands
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
         }
 
-        [Command("suma")]
-        [Description("Hace la suma entre 2 numeros")]
-        public async Task Add(CommandContext ctx,
-            [Description("Primer numero")]int numberOne,
-            [Description("Segundo numero")]int numberTwo)
-        {
-            await ctx.Channel
-                .SendMessageAsync((numberOne + numberTwo).ToString()).ConfigureAwait(false);
-        }
-
         [Command("eli")]
         [Description("Legendary meme")]
         public async Task Eli(CommandContext ctx)
@@ -52,6 +42,55 @@ namespace Discord_Bot.Commands
             await ctx.Channel.SendMessageAsync(chosenOne).ConfigureAwait(false);
         }
 
-        
+        [Command("math")]
+        [Description("Hace la suma, resta, multiplicacion o division entre 2 numeros")]
+        public async Task Add(CommandContext ctx,
+            [Description("Primer numero")]float numberOne,
+            [Description("Elegido utilizando + - * /")]string elegido,
+            [Description("Segundo numero")]float numberTwo)
+        {
+            float res;
+            switch (elegido) {
+                case "+":
+                    res = numberOne + numberTwo;
+                    await ctx.Channel.SendMessageAsync(res.ToString()).ConfigureAwait(false);
+                    break;
+                case "-":
+                    res = numberOne - numberTwo;
+                    await ctx.Channel.SendMessageAsync(res.ToString()).ConfigureAwait(false);
+                    break;
+                case "*":
+                    res = numberOne * numberTwo;
+                    await ctx.Channel.SendMessageAsync(res.ToString()).ConfigureAwait(false);
+                    break;
+                case "/":
+                    res = numberOne / numberTwo;
+                    await ctx.Channel.SendMessageAsync(res.ToString()).ConfigureAwait(false);
+                    break;
+                default:
+                    await ctx.Channel.SendMessageAsync("Escribi el operador bien hijo de la grandisima puta").ConfigureAwait(false);
+                    break;
+            }
+        }
+
+        [Command("pregunta")]
+        [Description("SIS O NON")]
+        public async Task Sisonon(CommandContext ctx, string mensaje)
+        {
+            Random rnd = new Random();
+            int random = rnd.Next(2);
+            switch (random)
+            {
+                case 0:
+                    await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje +" | Respuesta: NON" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
+                    break;
+                case 1:
+                    await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje + " | Respuesta: SIS" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
+                    break;
+                default:
+                    await ctx.Channel.SendMessageAsync("Algo salió mal").ConfigureAwait(false);
+                    break;
+            }
+        }
     }
 }
