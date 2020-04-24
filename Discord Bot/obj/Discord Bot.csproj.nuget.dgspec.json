@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Mariano\\source\\repos\\Discord Bot\\Discord Bot\\Discord Bot.csproj": {}
+    "C:\\Users\\Mariano\\source\\repos\\yumiko\\Discord Bot\\Discord Bot.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Mariano\\source\\repos\\Discord Bot\\Discord Bot\\Discord Bot.csproj": {
+    "C:\\Users\\Mariano\\source\\repos\\yumiko\\Discord Bot\\Discord Bot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Mariano\\source\\repos\\Discord Bot\\Discord Bot\\Discord Bot.csproj",
+        "projectUniqueName": "C:\\Users\\Mariano\\source\\repos\\yumiko\\Discord Bot\\Discord Bot.csproj",
         "projectName": "Discord Bot",
-        "projectPath": "C:\\Users\\Mariano\\source\\repos\\Discord Bot\\Discord Bot\\Discord Bot.csproj",
+        "projectPath": "C:\\Users\\Mariano\\source\\repos\\yumiko\\Discord Bot\\Discord Bot.csproj",
         "packagesPath": "C:\\Users\\Mariano\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Mariano\\source\\repos\\Discord Bot\\Discord Bot\\obj\\",
+        "outputPath": "C:\\Users\\Mariano\\source\\repos\\yumiko\\Discord Bot\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\"

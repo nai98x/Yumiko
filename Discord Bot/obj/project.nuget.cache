@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "S7ZvVjfCJwFgOf/b3obGDAuBxs6fd4U7ACXHvoV+9Z9/eERElOB2905udC8iKVvGtfaeMxztpaHaCn7cksqweQ==",
+  "dgSpecHash": "rJ4lmceYYNI/wA7eBppqCEzgWvUvC/6ghF6ghxDPGWiAmcttWn4u8BNLDB2auuFUxeNpIYLtiuJWy7qs1g94vw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Mariano\\source\\repos\\Discord Bot\\Discord Bot\\Discord Bot.csproj",
+  "projectFilePath": "C:\\Users\\Mariano\\source\\repos\\yumiko\\Discord Bot\\Discord Bot.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Mariano\\.nuget\\packages\\dsharpplus\\4.0.0-nightly-00686\\dsharpplus.4.0.0-nightly-00686.nupkg.sha512",
     "C:\\Users\\Mariano\\.nuget\\packages\\dsharpplus.commandsnext\\4.0.0-nightly-00686\\dsharpplus.commandsnext.4.0.0-nightly-00686.nupkg.sha512",
