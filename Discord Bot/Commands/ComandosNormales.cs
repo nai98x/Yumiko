@@ -124,7 +124,7 @@ namespace Discord_Bot.Commands
         }
 
         [Command("response")]
-        [Description("Responde una reaccion con un emoji")]
+        [Description("Responde una reacción con un emoji")]
         public async Task Response(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();

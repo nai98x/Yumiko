@@ -340,4 +340,4 @@ ASALocalRun/
 healthchecksdb
 
 # Visual studio temp folder
-.vs/
+/.vs
