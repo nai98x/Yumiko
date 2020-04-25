@@ -2,6 +2,7 @@
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Interactivity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace Discord_Bot
     public class Bot
     {
         public DiscordClient Client { get; private set; }
+        public InteractivityExtension Interactivity { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
-
         public async Task RunAsync()
         {
             var json = string.Empty;
@@ -38,6 +39,8 @@ namespace Discord_Bot
 
             Client.Ready += OnClientReady;
 
+            Client.UseInteractivity(new InteractivityConfiguration());
+
             var commandsConfig = new CommandsNextConfiguration
             {
                 StringPrefixes = new string[] {configJson.Prefix},
@@ -53,6 +56,8 @@ namespace Discord_Bot
             await Client.ConnectAsync();
 
             await Task.Delay(-1);
+
+            
         }
 
         private Task OnClientReady(ReadyEventArgs e)
