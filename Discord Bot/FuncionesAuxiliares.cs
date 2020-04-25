@@ -26,12 +26,19 @@ namespace Discord_Bot
                 "https://static.wixstatic.com/media/1e9fdf_64ce1af185ac4556b37b80d0b1908d75~mv2.png/v1/fill/w_480,h_720,al_c,q_85/1e9fdf_64ce1af185ac4556b37b80d0b1908d75~mv2.webp",
                 "https://static.wixstatic.com/media/1e9fdf_99f7e06baa8a403e83b9ceece77734e2~mv2.jpg/v1/fill/w_600,h_681,al_c,q_85,usm_0.66_1.00_0.01/1e9fdf_99f7e06baa8a403e83b9ceece77734e2~mv2.webp",
                 "https://static.wixstatic.com/media/1e9fdf_8ded154c00554dd4991c96904d8dfe35~mv2.png/v1/fill/w_600,h_600,al_c,q_85,usm_0.66_1.00_0.01/1e9fdf_8ded154c00554dd4991c96904d8dfe35~mv2.webp",
-            //    "",
+                "https://i.imgur.com/8UWJDBL.png",
+                "https://i.imgur.com/7C69lyR.png",
+                "https://i.imgur.com/sw0vgRb.png", // Eli suicidio dario atras
+                "https://i.imgur.com/MM1m1eQ.png", // Dario fortnite
+                "https://i.imgur.com/Gk7tzv7.png", // Eli auto con suho
+                "https://i.imgur.com/V9YSISj.png", // Hairo sutien waifu
+                "https://i.imgur.com/FNUkQ6M.png", // Eli dakimakura 2b
+                "https://i.imgur.com/ypuwqV8.jpg", // Eli holocausto
+                "https://i.imgur.com/UUVMxJE.jpg", // Eli sakura fanservice
             };
 
             Random rnd = new Random();
-            int random = rnd.Next(options.Length);
-            return options[random];
+            return options[rnd.Next(options.Length)];
         }
 
         public string GetEliRandom()
@@ -39,7 +46,7 @@ namespace Discord_Bot
             string[] options = new[] {"DORADO", "geniero", "dividuo", "dignado", "deciso", "fradotado", "coherente", "penetrable", "cestuoso", "accesible", "cognito",
             "adaptado", "centivado", "nombrable", "sensato", "moral", "falible", "enarrable", "putado", "tratable", "deseado", "contagiable", "clusivo", "fumable",
             "postor", "estable", "teligente", "festado", "parable", "oportuno", "cauto", "comodo", "cendios", "conforme", "advertido", "conveniente", "incivilizado",
-            "capacitado", "centivado", "comodo"};
+            "capacitado", "centivado", "comodo", "cagable", "sufrible", "comparable", "quisitor", "cogible"};
 
             Random rnd = new Random();
             return options[rnd.Next(options.Length)];
