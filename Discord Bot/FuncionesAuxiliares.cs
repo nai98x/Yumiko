@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -41,6 +43,18 @@ namespace Discord_Bot
 
             Random rnd = new Random();
             return options[rnd.Next(options.Length)];
+        }
+
+        public Boolean TienePermisos(Permissions permiso, IEnumerable<DiscordRole> roles)
+        {
+            foreach (DiscordRole role in roles)
+            {
+                if (role.CheckPermission(Permissions.ManageMessages) == PermissionLevel.Allowed)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

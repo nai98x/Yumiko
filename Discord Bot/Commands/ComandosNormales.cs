@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
@@ -25,6 +26,20 @@ namespace Discord_Bot.Commands
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
         }
 
+        [Command("say")]
+        [Description("El bot reenvia tu mensaje eliminandolo despues")]
+        public async Task Say(CommandContext ctx, [Description("Tu mensaje")]params string[] mensajes)
+        {
+            string mensaje="";
+            for(int i=0;i<mensajes.Length; i++)
+            {
+                mensaje += mensajes[i] + " ";
+            }
+
+            await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
+            await ctx.Message.DeleteAsync().ConfigureAwait(false);
+        }
+
         [Command("eli")]
         [Description("Legendary meme")]
         public async Task Eli(CommandContext ctx)
@@ -48,6 +63,7 @@ namespace Discord_Bot.Commands
                 await ctx.Member.SetMuteAsync(false, "Le toco el eli dorado (UNMUTE)");
                 await ctx.Channel.SendMessageAsync(ctx.Member.Mention + " ha sido DESMUTEADISIMO").ConfigureAwait(false);
             }
+            await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
 
         [Command("math")]
@@ -82,18 +98,24 @@ namespace Discord_Bot.Commands
         }
 
         [Command("pregunta")]
-        [Description("SIS O NON")]
-        public async Task Sisonon(CommandContext ctx, string mensaje)
+        [Description("Responde con SIS O NON")]
+        public async Task Sisonon(CommandContext ctx, [Description("La pregunta en cuestion")]params string[] mensajes)
         {
+            string mensaje = "";
+            for (int i = 0; i < mensajes.Length; i++)
+            {
+                mensaje += mensajes[i] + " ";
+            }
+
             Random rnd = new Random();
             int random = rnd.Next(2);
             switch (random)
             {
                 case 0:
-                    await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje +" | Respuesta: NON" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje +"| Respuesta: NON" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
                     break;
                 case 1:
-                    await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje + " | Respuesta: SIS" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje + "| Respuesta: SIS" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
                     break;
                 default:
                     await ctx.Channel.SendMessageAsync("Algo salió mal").ConfigureAwait(false);
@@ -102,6 +124,7 @@ namespace Discord_Bot.Commands
         }
 
         [Command("response")]
+        [Description("Responde una reaccion con un emoji")]
         public async Task Response(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
@@ -112,10 +135,11 @@ namespace Discord_Bot.Commands
         }
 
         [Command("encuesta")]
-        public async Task Poll(CommandContext ctx, TimeSpan duration, params DiscordEmoji[] emojiOptions)
+        [Description("Le mandas la duracion y unos cuantos emojis y con eso te hace una encuesta")]
+        public async Task Poll(CommandContext ctx, [Description("Tiempo limite de la encuesta")]TimeSpan duracion, [Description("Emojis para encuesta")]params DiscordEmoji[] emojis)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            var options = emojiOptions.Select(x => x.ToString());
+            var options = emojis.Select(x => x.ToString());
 
             var pollEmbed = new DiscordEmbedBuilder
             {
@@ -125,12 +149,12 @@ namespace Discord_Bot.Commands
 
             var pollMessage = await ctx.Channel.SendMessageAsync(embed: pollEmbed).ConfigureAwait(false);
 
-            foreach(var option in emojiOptions)
+            foreach(var option in emojis)
             {
                 await pollMessage.CreateReactionAsync(option).ConfigureAwait(false);
             }
 
-            var result = await interactivity.CollectReactionsAsync(pollMessage, duration).ConfigureAwait(false);
+            var result = await interactivity.CollectReactionsAsync(pollMessage, duracion).ConfigureAwait(false);
             var distinctResult = result.Distinct();
 
 
@@ -140,6 +164,7 @@ namespace Discord_Bot.Commands
         }
 
         [Command("meme")]
+        [Description("It's a fucking meme")]
         public async Task ImagenRandom(CommandContext ctx)
         {
             string url = funciones.GetImagenRandomMeme();
@@ -148,6 +173,24 @@ namespace Discord_Bot.Commands
                 Title = "Imagen posteada por: " + ctx.Member.DisplayName,
                 ImageUrl = url
             }).ConfigureAwait(false);
+        }
+
+        [Command("clear")]
+        [Description("Borra cierta cantidad de mensajes, requiere permisos")]
+        public async Task Clear(CommandContext ctx, [Description("Cantidad de mensajes a borrar")]int cantidad)
+        {
+            if (funciones.TienePermisos(Permissions.ManageMessages, ctx.Member.Roles))
+            {
+                if (cantidad > 99)
+                {
+                    cantidad = 99;
+                }
+                await ctx.Channel.DeleteMessagesAsync(await ctx.Channel.GetMessagesAsync(cantidad+1));
+            }
+            else
+            {
+                await ctx.Channel.SendMessageAsync("No tienes los permisos suficientes para realizar esta acción").ConfigureAwait(false);
+            }
         }
 
     }
