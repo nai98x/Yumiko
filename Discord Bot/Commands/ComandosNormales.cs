@@ -9,9 +9,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot.Commands
 {
@@ -23,28 +25,30 @@ namespace Discord_Bot.Commands
         [Description("Retorna Pong")]
         public async Task Ping(CommandContext ctx)
         {
-            await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
+            TimeSpan offset = ctx.Message.CreationTimestamp - DateTime.Now;
+            double ms = offset.TotalSeconds;
+            await ctx.Channel.SendMessageAsync("Pong! (" + ms.ToString() + " seg)").ConfigureAwait(false);
         }
 
         [Command("say")]
         [Description("El bot reenvia tu mensaje eliminandolo despues")]
         public async Task Say(CommandContext ctx, [Description("Tu mensaje")]params string[] mensajes)
         {
-            string mensaje="";
-            for(int i=0;i<mensajes.Length; i++)
+            string mensaje = "";
+            for (int i = 0; i < mensajes.Length; i++)
             {
                 mensaje += mensajes[i] + " ";
             }
 
-            await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
         }
 
         [Command("eli")]
         [Description("Legendary meme")]
         public async Task Eli(CommandContext ctx)
         {
-            
+
             string opcionRandom = funciones.GetEliRandom();
             string chosenOne;
 
@@ -65,7 +69,7 @@ namespace Discord_Bot.Commands
             }
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
-
+        /*
         [Command("math")]
         [Description("Hace la suma, resta, multiplicacion o division entre 2 numeros")]
         public async Task Add(CommandContext ctx,
@@ -95,7 +99,7 @@ namespace Discord_Bot.Commands
                     await ctx.Channel.SendMessageAsync("Escribi el operador bien hijo de la grandisima puta").ConfigureAwait(false);
                     break;
             }
-        }
+        }*/
 
         [Command("pregunta")]
         [Description("Responde con SIS O NON")]
@@ -112,7 +116,7 @@ namespace Discord_Bot.Commands
             switch (random)
             {
                 case 0:
-                    await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje +"| Respuesta: NON" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje + "| Respuesta: NON" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
                     break;
                 case 1:
                     await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje + "| Respuesta: SIS" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
@@ -122,7 +126,7 @@ namespace Discord_Bot.Commands
                     break;
             }
         }
-
+        /*
         [Command("response")]
         [Description("Responde una reacción con un emoji")]
         public async Task Response(CommandContext ctx)
@@ -132,8 +136,8 @@ namespace Discord_Bot.Commands
             var message = await interactivity.WaitForReactionAsync(x => x.Channel == ctx.Channel).ConfigureAwait(false);
 
             await ctx.Channel.SendMessageAsync(message.Result.Emoji).ConfigureAwait(false);
-        }
-
+        }*/
+        /*
         [Command("encuesta")]
         [Description("Le mandas la duracion y unos cuantos emojis y con eso te hace una encuesta")]
         public async Task Poll(CommandContext ctx, [Description("Tiempo limite de la encuesta")]TimeSpan duracion, [Description("Emojis para encuesta")]params DiscordEmoji[] emojis)
@@ -149,7 +153,7 @@ namespace Discord_Bot.Commands
 
             var pollMessage = await ctx.Channel.SendMessageAsync(embed: pollEmbed).ConfigureAwait(false);
 
-            foreach(var option in emojis)
+            foreach (var option in emojis)
             {
                 await pollMessage.CreateReactionAsync(option).ConfigureAwait(false);
             }
@@ -161,16 +165,20 @@ namespace Discord_Bot.Commands
             var results = distinctResult.Select(x => $"{x.Emoji}: {x.Total}");
 
             await ctx.Channel.SendMessageAsync(string.Join("\n", results)).ConfigureAwait(false);
-        }
+        }*/
 
         [Command("meme")]
         [Description("It's a fucking meme")]
         public async Task ImagenRandom(CommandContext ctx)
         {
             string url = funciones.GetImagenRandomMeme();
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Imagen posteada por " + ctx.Member.DisplayName
+            };
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Title = "Imagen posteada por: " + ctx.Member.DisplayName,
+                Footer = footer,
                 ImageUrl = url
             }).ConfigureAwait(false);
         }
@@ -185,7 +193,7 @@ namespace Discord_Bot.Commands
                 {
                     cantidad = 99;
                 }
-                await ctx.Channel.DeleteMessagesAsync(await ctx.Channel.GetMessagesAsync(cantidad+1));
+                await ctx.Channel.DeleteMessagesAsync(await ctx.Channel.GetMessagesAsync(cantidad + 1));
             }
             else
             {
@@ -193,5 +201,30 @@ namespace Discord_Bot.Commands
             }
         }
 
+        /*
+        [Command("tipeo")]
+        public async Task WaitForCode(CommandContext ctx)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+
+            var codebytes = new byte[8];
+            using (var rng = RandomNumberGenerator.Create())
+                rng.GetBytes(codebytes);
+
+            var code = BitConverter.ToString(codebytes).ToLower().Replace("-", "");
+
+            await ctx.RespondAsync($"El primer que escriba el codigo ganará: `{code}`");
+
+            var msg = await interactivity.WaitForMessageAsync(xm => xm.Content.Contains(code), TimeSpan.FromSeconds(60));
+            if (!msg.TimedOut)
+            {
+                await ctx.RespondAsync($"El ganador es: {msg.Result.Author.Mention}");
+            }
+            else
+            {
+                await ctx.RespondAsync("Nadie escribió el codigo, son una pija");
+            }
+        }
+        */
     }
 }

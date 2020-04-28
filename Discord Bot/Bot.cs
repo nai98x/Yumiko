@@ -47,6 +47,7 @@ namespace Discord_Bot
                 EnableMentionPrefix = true,
                 EnableDms = false,
                 DmHelp = false,
+                //EnableDefaultHelp = false cuando esten todos los comandos descomentar
             };
 
             Commands = Client.UseCommandsNext(commandsConfig);
