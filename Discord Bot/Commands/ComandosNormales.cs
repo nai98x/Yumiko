@@ -126,6 +126,24 @@ namespace Discord_Bot.Commands
                     break;
             }
         }
+
+        [Command("elegir")]
+        [Description("Elige entre varias opciones")]
+        public async Task Elegir(CommandContext ctx, [Description("Las opciones en cuestion")]params string[] opciones)
+        {
+            Random rnd = new Random();
+            int random = rnd.Next(opciones.Length);
+
+            string options= "Opciones:";
+            foreach (string msj in opciones)
+            {
+                options += "\n   - " + msj;
+            }
+            await ctx.Channel.SendMessageAsync(options).ConfigureAwait(false);
+
+            await ctx.Channel.SendMessageAsync("Respuesta: " + opciones[random]).ConfigureAwait(false);
+        }
+
         /*
         [Command("response")]
         [Description("Responde una reacción con un emoji")]
