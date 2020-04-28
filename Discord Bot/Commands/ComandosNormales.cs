@@ -31,7 +31,7 @@ namespace Discord_Bot.Commands
         }
 
         [Command("say")]
-        [Description("El bot reenvia tu mensaje eliminandolo despues")]
+        [Description("El bot reenvia tu mensaje eliminandolo después")]
         public async Task Say(CommandContext ctx, [Description("Tu mensaje")]params string[] mensajes)
         {
             string mensaje = "";
