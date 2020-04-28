@@ -129,61 +129,38 @@ namespace Discord_Bot.Commands
 
         [Command("elegir")]
         [Description("Elige entre varias opciones")]
-        public async Task Elegir(CommandContext ctx, [Description("Las opciones en cuestion")]params string[] opciones)
+        public async Task Elegir(CommandContext ctx, [Description("La pregunta en cuestion")]params string[] pregunta)
         {
-            Random rnd = new Random();
-            int random = rnd.Next(opciones.Length);
-
-            string options= "Opciones:";
-            foreach (string msj in opciones)
+            var interactivity = ctx.Client.GetInteractivity();
+            string question = "";
+            for (int i = 0; i < pregunta.Length; i++)
             {
-                options += "\n   - " + msj;
+                question += pregunta[i] + " ";
             }
-            await ctx.Channel.SendMessageAsync(options).ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync("Ingrese las opciones separadas por un espacio").ConfigureAwait(false);
 
-            await ctx.Channel.SendMessageAsync("Respuesta: " + opciones[random]).ConfigureAwait(false);
+            //var msg = await interactivity.WaitForMessageAsync(null, TimeSpan.FromSeconds(60));
+            var msg = await interactivity.WaitForMessageAsync(xm => xm.Author == ctx.User, TimeSpan.FromSeconds(60));
+            string msgResponse = msg.Result.Content;
+            List<string> opciones = new List<string>();
+            if (!msg.TimedOut)
+            {
+                opciones = msgResponse.Split(" ").ToList();
+                Random rnd = new Random();
+                int random = rnd.Next(opciones.Count);
+                string options = "Opciones:";
+                foreach (string msj in opciones)
+                {
+                    options += "\n   - " + msj;
+                }
+                await ctx.Channel.SendMessageAsync(options).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync("Respuesta: " + opciones[random]).ConfigureAwait(false);
+            }
+            else
+            {
+                await ctx.RespondAsync("Nadie escribió las opciones, son una pija, en especial " + ctx.User.Mention);
+            }
         }
-
-        /*
-        [Command("response")]
-        [Description("Responde una reacción con un emoji")]
-        public async Task Response(CommandContext ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-
-            var message = await interactivity.WaitForReactionAsync(x => x.Channel == ctx.Channel).ConfigureAwait(false);
-
-            await ctx.Channel.SendMessageAsync(message.Result.Emoji).ConfigureAwait(false);
-        }*/
-        /*
-        [Command("encuesta")]
-        [Description("Le mandas la duracion y unos cuantos emojis y con eso te hace una encuesta")]
-        public async Task Poll(CommandContext ctx, [Description("Tiempo limite de la encuesta")]TimeSpan duracion, [Description("Emojis para encuesta")]params DiscordEmoji[] emojis)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            var options = emojis.Select(x => x.ToString());
-
-            var pollEmbed = new DiscordEmbedBuilder
-            {
-                Title = "Encuesta",
-                Description = string.Join(" ", options)
-            };
-
-            var pollMessage = await ctx.Channel.SendMessageAsync(embed: pollEmbed).ConfigureAwait(false);
-
-            foreach (var option in emojis)
-            {
-                await pollMessage.CreateReactionAsync(option).ConfigureAwait(false);
-            }
-
-            var result = await interactivity.CollectReactionsAsync(pollMessage, duracion).ConfigureAwait(false);
-            var distinctResult = result.Distinct();
-
-
-            var results = distinctResult.Select(x => $"{x.Emoji}: {x.Total}");
-
-            await ctx.Channel.SendMessageAsync(string.Join("\n", results)).ConfigureAwait(false);
-        }*/
 
         [Command("meme")]
         [Description("It's a fucking meme")]
@@ -244,5 +221,46 @@ namespace Discord_Bot.Commands
             }
         }
         */
+        /*
+        [Command("response")]
+        [Description("Responde una reacción con un emoji")]
+        public async Task Response(CommandContext ctx)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+
+            var message = await interactivity.WaitForReactionAsync(x => x.Channel == ctx.Channel).ConfigureAwait(false);
+
+            await ctx.Channel.SendMessageAsync(message.Result.Emoji).ConfigureAwait(false);
+        }*/
+        /*
+        [Command("encuesta")]
+        [Description("Le mandas la duracion y unos cuantos emojis y con eso te hace una encuesta")]
+        public async Task Poll(CommandContext ctx, [Description("Tiempo limite de la encuesta")]TimeSpan duracion, [Description("Emojis para encuesta")]params DiscordEmoji[] emojis)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            var options = emojis.Select(x => x.ToString());
+
+            var pollEmbed = new DiscordEmbedBuilder
+            {
+                Title = "Encuesta",
+                Description = string.Join(" ", options)
+            };
+
+            var pollMessage = await ctx.Channel.SendMessageAsync(embed: pollEmbed).ConfigureAwait(false);
+
+            foreach (var option in emojis)
+            {
+                await pollMessage.CreateReactionAsync(option).ConfigureAwait(false);
+            }
+
+            var result = await interactivity.CollectReactionsAsync(pollMessage, duracion).ConfigureAwait(false);
+            var distinctResult = result.Distinct();
+
+
+            var results = distinctResult.Select(x => $"{x.Emoji}: {x.Total}");
+
+            await ctx.Channel.SendMessageAsync(string.Join("\n", results)).ConfigureAwait(false);
+        }*/
+
     }
 }
