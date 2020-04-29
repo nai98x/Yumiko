@@ -1,6 +1,7 @@
-﻿using Discord_Bot.Commands;
+﻿using Discord_Bot.Modulos;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using Newtonsoft.Json;
@@ -17,6 +18,8 @@ namespace Discord_Bot
         public DiscordClient Client { get; private set; }
         public InteractivityExtension Interactivity { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
+        public DiscordActivity Activity { get; private set; }
+
         public async Task RunAsync()
         {
             var json = string.Empty;
@@ -52,9 +55,13 @@ namespace Discord_Bot
 
             Commands = Client.UseCommandsNext(commandsConfig);
 
-            Commands.RegisterCommands<ComandosNormales>();
+            Commands.RegisterCommands<Administracion>();
+            Commands.RegisterCommands<Memes>();
+            Commands.RegisterCommands<Misc>();
 
             await Client.ConnectAsync();
+
+            //await Client.UpdateStatusAsync(new DiscordActivity("*help", new ActivityType()));
 
             await Task.Delay(-1);
 

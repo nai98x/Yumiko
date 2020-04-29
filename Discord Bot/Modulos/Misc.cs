@@ -15,11 +15,18 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
-namespace Discord_Bot.Commands
+namespace Discord_Bot.Modulos
 {
-    public class ComandosNormales : BaseCommandModule
+    public class Misc : BaseCommandModule
     {
-        private FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+
+        [Command("test")]
+        [Description("Para testear weas")]
+        public async Task Test(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync("Test").ConfigureAwait(false);
+        }
 
         [Command("ping")]
         [Description("Retorna Pong")]
@@ -31,6 +38,7 @@ namespace Discord_Bot.Commands
         }
 
         [Command("say")]
+        [Aliases("s")]
         [Description("El bot reenvia tu mensaje eliminandolo después")]
         public async Task Say(CommandContext ctx, [Description("Tu mensaje")]params string[] mensajes)
         {
@@ -44,71 +52,15 @@ namespace Discord_Bot.Commands
             await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
         }
 
-        [Command("eli")]
-        [Description("Legendary meme")]
-        public async Task Eli(CommandContext ctx)
-        {
-
-            string opcionRandom = funciones.GetEliRandom();
-            string chosenOne;
-
-            if (opcionRandom != "DORADO")
-            {
-                chosenOne = "Eli'n " + opcionRandom + " | Invocado por: " + ctx.Member.Mention;
-                await ctx.Channel.SendMessageAsync(chosenOne).ConfigureAwait(false);
-            }
-            else
-            {
-                chosenOne = "Te ha salido un Eli DORADOU!! " + ctx.Member.Mention + " se fue MUTEADISIMO por 1 minuto";
-                // poner en bold eli te ha elegido
-                await ctx.Member.SetMuteAsync(true, "Le toco el eli dorado (MUTE)");
-                await ctx.Channel.SendMessageAsync(chosenOne).ConfigureAwait(false);
-                await Task.Delay(1000 * 60);
-                await ctx.Member.SetMuteAsync(false, "Le toco el eli dorado (UNMUTE)");
-                await ctx.Channel.SendMessageAsync(ctx.Member.Mention + " ha sido DESMUTEADISIMO").ConfigureAwait(false);
-            }
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
-        }
-        /*
-        [Command("math")]
-        [Description("Hace la suma, resta, multiplicacion o division entre 2 numeros")]
-        public async Task Add(CommandContext ctx,
-            [Description("Primer numero")]float numberOne,
-            [Description("Elegido utilizando + - * /")]string elegido,
-            [Description("Segundo numero")]float numberTwo)
-        {
-            float res;
-            switch (elegido) {
-                case "+":
-                    res = numberOne + numberTwo;
-                    await ctx.Channel.SendMessageAsync(res.ToString()).ConfigureAwait(false);
-                    break;
-                case "-":
-                    res = numberOne - numberTwo;
-                    await ctx.Channel.SendMessageAsync(res.ToString()).ConfigureAwait(false);
-                    break;
-                case "*":
-                    res = numberOne * numberTwo;
-                    await ctx.Channel.SendMessageAsync(res.ToString()).ConfigureAwait(false);
-                    break;
-                case "/":
-                    res = numberOne / numberTwo;
-                    await ctx.Channel.SendMessageAsync(res.ToString()).ConfigureAwait(false);
-                    break;
-                default:
-                    await ctx.Channel.SendMessageAsync("Escribi el operador bien hijo de la grandisima puta").ConfigureAwait(false);
-                    break;
-            }
-        }*/
-
         [Command("pregunta")]
+        [Aliases("p", "question", "sisonon")]
         [Description("Responde con SIS O NON")]
-        public async Task Sisonon(CommandContext ctx, [Description("La pregunta en cuestion")]params string[] mensajes)
+        public async Task Sisonon(CommandContext ctx, [Description("La pregunta en cuestion")]params string[] pregunta)
         {
             string mensaje = "";
-            for (int i = 0; i < mensajes.Length; i++)
+            for (int i = 0; i < pregunta.Length; i++)
             {
-                mensaje += mensajes[i] + " ";
+                mensaje += pregunta[i] + " ";
             }
 
             Random rnd = new Random();
@@ -128,6 +80,7 @@ namespace Discord_Bot.Commands
         }
 
         [Command("elegir")]
+        [Aliases("e")]
         [Description("Elige entre varias opciones")]
         public async Task Elegir(CommandContext ctx, [Description("La pregunta en cuestion")]params string[] pregunta)
         {
@@ -162,39 +115,7 @@ namespace Discord_Bot.Commands
             }
         }
 
-        [Command("meme")]
-        [Description("It's a fucking meme")]
-        public async Task ImagenRandom(CommandContext ctx)
-        {
-            string url = funciones.GetImagenRandomMeme();
-            EmbedFooter footer = new EmbedFooter()
-            {
-                Text = "Imagen posteada por " + ctx.Member.DisplayName
-            };
-            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-            {
-                Footer = footer,
-                ImageUrl = url
-            }).ConfigureAwait(false);
-        }
 
-        [Command("clear")]
-        [Description("Borra cierta cantidad de mensajes, requiere permisos")]
-        public async Task Clear(CommandContext ctx, [Description("Cantidad de mensajes a borrar")]int cantidad)
-        {
-            if (funciones.TienePermisos(Permissions.ManageMessages, ctx.Member.Roles))
-            {
-                if (cantidad > 99)
-                {
-                    cantidad = 99;
-                }
-                await ctx.Channel.DeleteMessagesAsync(await ctx.Channel.GetMessagesAsync(cantidad + 1));
-            }
-            else
-            {
-                await ctx.Channel.SendMessageAsync("No tienes los permisos suficientes para realizar esta acción").ConfigureAwait(false);
-            }
-        }
 
         /*
         [Command("tipeo")]
@@ -261,6 +182,5 @@ namespace Discord_Bot.Commands
 
             await ctx.Channel.SendMessageAsync(string.Join("\n", results)).ConfigureAwait(false);
         }*/
-
     }
 }
