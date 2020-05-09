@@ -4,6 +4,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
+using DSharpPlus.VoiceNext;
 using Newtonsoft.Json;
 using System.IO;
 using System.Text;
@@ -17,21 +18,12 @@ namespace Discord_Bot
         public InteractivityExtension Interactivity { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
         public DiscordActivity Activity { get; private set; }
-        //public VoiceNext voice { get; private set; }
 
         public async Task RunAsync()
         {
-            var json = string.Empty;
-
-            using (var fs = File.OpenRead("config.json"))
-            using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
-                json = await sr.ReadToEndAsync().ConfigureAwait(false);
-
-            var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
-
             var Config = new DiscordConfiguration
             {
-                Token = configJson.Token,
+                Token = "Mjk1MTgyODI1NTIxNTQ1MjE4.XqNETg.R04GlssFnqFwkLxaZYZVj-GNnJs",
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
                 LogLevel = LogLevel.Debug,
@@ -42,10 +34,11 @@ namespace Discord_Bot
             Client.Ready += OnClientReady;
 
             Client.UseInteractivity(new InteractivityConfiguration());
+            Client.UseVoiceNext();
 
             var commandsConfig = new CommandsNextConfiguration
             {
-                StringPrefixes = new string[] {configJson.Prefix},
+                StringPrefixes = new string[] { "*" },
                 EnableMentionPrefix = true,
                 EnableDms = false,
                 DmHelp = false,
@@ -57,6 +50,7 @@ namespace Discord_Bot
             Commands.RegisterCommands<Administracion>();
             Commands.RegisterCommands<Memes>();
             Commands.RegisterCommands<Misc>();
+            Commands.RegisterCommands<Musica>();
 
             await Client.ConnectAsync();
 

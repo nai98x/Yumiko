@@ -14,53 +14,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
+using DSharpPlus.VoiceNext;
 
 namespace Discord_Bot.Modulos
 {
     public class Misc : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-
-        [Command("join")]
-        [Aliases("entrar")]
-        [Description("Entra al canal")]
-        public async Task Join(CommandContext ctx, DiscordChannel chn = null)
-        {
-            // check whether VNext is enabled
-            var vnext = ctx.Client.GetVoiceNextClient();
-            if (vnext == null)
-            {
-                // not enabled
-                await ctx.RespondAsync("VNext is not enabled or configured.");
-                return;
-            }
-
-            // check whether we aren't already connected
-            var vnc = vnext.GetConnection(ctx.Guild);
-            if (vnc != null)
-            {
-                // already connected
-                await ctx.RespondAsync("Already connected in this guild.");
-                return;
-            }
-
-            // get member's voice state
-            var vstat = ctx.Member?.VoiceState;
-            if (vstat?.Channel == null && chn == null)
-            {
-                // they did not specify a channel and are not in one
-                await ctx.RespondAsync("You are not in a voice channel.");
-                return;
-            }
-
-            // channel not specified, use user's
-            if (chn == null)
-                chn = vstat.Channel;
-
-            // connect
-            vnc = await vnext.ConnectAsync(chn);
-            await ctx.RespondAsync($"Connected to `{chn.Name}`");
-        }
 
         [Command("say")]
         [Aliases("s")]

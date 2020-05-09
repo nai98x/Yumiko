@@ -4,6 +4,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.EventHandling;
+using DSharpPlus.VoiceNext;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,29 +42,48 @@ namespace Discord_Bot.Modulos
         [Command("mutear")]
         [Aliases("f")]
         [Description("Mutea a un miembro aleatorio del canal")]
-        [RequirePermissions(Permissions.Administrator)]
         public async Task MutearAleatorio(CommandContext ctx)
         {
-            //var user = ctx.Member;
-            //var canal = user.
-
-            var lista = ctx.Channel.Users;
-            Random rnd = new Random();
-            var user = lista.ElementAt(rnd.Next(lista.Count()));
-
-            string s= "";
-            foreach(var usr in lista)
+            var vnext = ctx.Client.GetVoiceNext();
+            if (vnext == null)
             {
-                s += "  -" + usr.DisplayName + "\n";
+                await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
+                return;
             }
-            await ctx.Channel.SendMessageAsync(s).ConfigureAwait(false);
-            /*
+
+            var vnc = vnext.GetConnection(ctx.Guild);
+            if (vnc == null)
+            {
+                await ctx.RespondAsync("No estoy conectada, baka");
+                return;
+            }
+
+            if (vnc.Channel.Users.Count() == 1)
+            {
+                await ctx.RespondAsync("Estoy solo yo conectada, baka");
+            }
+
+            var lista = vnc.Channel.Users;
+            Random rnd;
+
+            DiscordMember user;
+            while (true)
+            {
+                rnd = new Random();
+                user = lista.ElementAt(rnd.Next(lista.Count()));
+                if (user.Id != ctx.Client.CurrentUser.Id)
+                {
+                    break;
+                }
+            }
+
             await ctx.Channel.SendMessageAsync(user.Mention + " se fue MUTEADISIMO").ConfigureAwait(false);
             await user.SetMuteAsync(true, "Muteadisimo man");
             await Task.Delay(1000 * 60);
             await ctx.Channel.SendMessageAsync(user.Mention + " ha sido DESMUTEADISIMO").ConfigureAwait(false);
-            await user.SetMuteAsync(true, "Desmutea3");
-            */
+            await user.SetMuteAsync(false, "Desmutea3");
         }
+
+
     }
 }
