@@ -21,20 +21,45 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        [Command("test")]
-        [Description("Para testear weas")]
-        public async Task Test(CommandContext ctx)
+        [Command("join")]
+        [Aliases("entrar")]
+        [Description("Entra al canal")]
+        public async Task Join(CommandContext ctx, DiscordChannel chn = null)
         {
-            await ctx.Channel.SendMessageAsync("Test").ConfigureAwait(false);
-        }
+            // check whether VNext is enabled
+            var vnext = ctx.Client.GetVoiceNextClient();
+            if (vnext == null)
+            {
+                // not enabled
+                await ctx.RespondAsync("VNext is not enabled or configured.");
+                return;
+            }
 
-        [Command("ping")]
-        [Description("Retorna Pong")]
-        public async Task Ping(CommandContext ctx)
-        {
-            TimeSpan offset = ctx.Message.CreationTimestamp - DateTime.Now;
-            double ms = offset.TotalSeconds;
-            await ctx.Channel.SendMessageAsync("Pong! (" + ms.ToString() + " seg)").ConfigureAwait(false);
+            // check whether we aren't already connected
+            var vnc = vnext.GetConnection(ctx.Guild);
+            if (vnc != null)
+            {
+                // already connected
+                await ctx.RespondAsync("Already connected in this guild.");
+                return;
+            }
+
+            // get member's voice state
+            var vstat = ctx.Member?.VoiceState;
+            if (vstat?.Channel == null && chn == null)
+            {
+                // they did not specify a channel and are not in one
+                await ctx.RespondAsync("You are not in a voice channel.");
+                return;
+            }
+
+            // channel not specified, use user's
+            if (chn == null)
+                chn = vstat.Channel;
+
+            // connect
+            vnc = await vnext.ConnectAsync(chn);
+            await ctx.RespondAsync($"Connected to `{chn.Name}`");
         }
 
         [Command("say")]
@@ -90,14 +115,12 @@ namespace Discord_Bot.Modulos
             {
                 question += pregunta[i] + " ";
             }
-            await ctx.Channel.SendMessageAsync("Ingrese las opciones separadas por un espacio").ConfigureAwait(false);
-
-            //var msg = await interactivity.WaitForMessageAsync(null, TimeSpan.FromSeconds(60));
+            DiscordMessage mensajeBot = await ctx.Channel.SendMessageAsync("Ingrese las opciones separadas por un espacio").ConfigureAwait(false);
             var msg = await interactivity.WaitForMessageAsync(xm => xm.Author == ctx.User, TimeSpan.FromSeconds(60));
-            string msgResponse = msg.Result.Content;
-            List<string> opciones = new List<string>();
             if (!msg.TimedOut)
             {
+                List<string> opciones = new List<string>();
+                string msgResponse = msg.Result.Content;
                 opciones = msgResponse.Split(" ").ToList();
                 Random rnd = new Random();
                 int random = rnd.Next(opciones.Count);
@@ -106,16 +129,16 @@ namespace Discord_Bot.Modulos
                 {
                     options += "\n   - " + msj;
                 }
-                await ctx.Channel.SendMessageAsync(options).ConfigureAwait(false);
-                await ctx.Channel.SendMessageAsync("Respuesta: " + opciones[random]).ConfigureAwait(false);
+                await ctx.Message.DeleteAsync().ConfigureAwait(false);
+                await mensajeBot.DeleteAsync().ConfigureAwait(false);
+                await msg.Result.DeleteAsync().ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync("Pregunta: " + question + "\n\n" + options + "\n\nRespuesta: " + opciones[random] + "\n\nPreguntado por: " + ctx.User.Mention).ConfigureAwait(false);
             }
             else
             {
-                await ctx.RespondAsync("Nadie escribió las opciones, son una pija, en especial " + ctx.User.Mention);
+                await ctx.RespondAsync("No escribiste las opciones, sos una pija " + ctx.User.Mention);
             }
         }
-
-
 
         /*
         [Command("tipeo")]

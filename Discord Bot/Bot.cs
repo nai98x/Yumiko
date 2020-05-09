@@ -5,8 +5,6 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +17,7 @@ namespace Discord_Bot
         public InteractivityExtension Interactivity { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
         public DiscordActivity Activity { get; private set; }
+        //public VoiceNext voice { get; private set; }
 
         public async Task RunAsync()
         {
@@ -36,7 +35,7 @@ namespace Discord_Bot
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
                 LogLevel = LogLevel.Debug,
-                UseInternalLogHandler = true
+                UseInternalLogHandler = true,
             };
             Client = new DiscordClient(Config);
 
@@ -61,7 +60,8 @@ namespace Discord_Bot
 
             await Client.ConnectAsync();
 
-            //await Client.UpdateStatusAsync(new DiscordActivity("*help", new ActivityType()));
+            //DiscordActivity act = new DiscordActivity("type *help");
+            //await Client.UpdateStatusAsync(act,UserStatus.Online);
 
             await Task.Delay(-1);
 

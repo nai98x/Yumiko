@@ -35,6 +35,7 @@ namespace Discord_Bot
                 "https://i.imgur.com/FNUkQ6M.png", // Eli dakimakura 2b
                 "https://i.imgur.com/ypuwqV8.jpg", // Eli holocausto
                 "https://i.imgur.com/UUVMxJE.jpg", // Eli sakura fanservice
+                "https://i.imgur.com/RFHhH4h.png", // Eli como te ve ella
             };
 
             Random rnd = new Random();

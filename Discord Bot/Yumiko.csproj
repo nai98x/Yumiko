@@ -6,6 +6,8 @@
     <RootNamespace>Discord_Bot</RootNamespace>
     <AssemblyName>Yumiko</AssemblyName>
     <Authors>Mariano Burguete</Authors>
+    <StartupObject>Discord_Bot.Program</StartupObject>
+    <ApplicationIcon>yumiko.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,9 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00686" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00686" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00686" />
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00692" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00692" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00692" />
+    <PackageReference Include="DSharpPlus.Lavalink" Version="4.0.0-nightly-00692" />
+    <PackageReference Include="DSharpPlus.Rest" Version="4.0.0-nightly-00692" />
+    <PackageReference Include="DSharpPlus.VoiceNext" Version="4.0.0-nightly-00692" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties config_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
