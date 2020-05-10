@@ -37,6 +37,20 @@ namespace Discord_Bot.Modulos
             await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
         }
 
+        [Command("tts")]
+        [Description("Te habla la waifu")]
+        public async Task TTS(CommandContext ctx, [Description("Tu mensaje")]params string[] mensajes)
+        {
+            string mensaje = "";
+            for (int i = 0; i < mensajes.Length; i++)
+            {
+                mensaje += mensajes[i] + " ";
+            }
+
+            await ctx.Message.DeleteAsync().ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(mensaje, true).ConfigureAwait(false);
+        }
+
         [Command("pregunta")]
         [Aliases("p", "question", "sisonon")]
         [Description("Responde con SIS O NON")]

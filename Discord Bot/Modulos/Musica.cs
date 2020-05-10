@@ -15,6 +15,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using DSharpPlus.VoiceNext;
+using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace Discord_Bot.Modulos
 {
@@ -66,17 +68,65 @@ namespace Discord_Bot.Modulos
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
                 return;
             }
-
             var vnc = vnext.GetConnection(ctx.Guild);
             if (vnc == null)
             {
                 await ctx.RespondAsync("No estaba conectada, baka");
                 return;
             }
-
-            // disconnect
             vnc.Disconnect();
             await ctx.RespondAsync("Me he desconectado, no me extrañes " + ctx.Member.Mention + " onii-chan");
         }
+
+        /* Clausurado porque no anda xd
+        [Command("play")]
+        public async Task Play(CommandContext ctx, [RemainingText] string file)
+        {
+            var vnext = ctx.Client.GetVoiceNext();
+
+            var vnc = vnext.GetConnection(ctx.Guild);
+            if (vnc == null)
+            {
+                await ctx.RespondAsync("No estoy conectada al canal, baka");
+                return;
+            }
+
+            char c = (char)92;
+            string archivo = "C:" + c + "Users" + c + "Mariano" + c + "Music" + c + "Openings" + c + file + ".mp3";
+
+            if (!File.Exists(archivo))
+            {
+                await ctx.RespondAsync("No se ha encontrado el archivo");
+                return;
+            }
+                
+            await ctx.RespondAsync("👌");
+            await vnc.SendSpeakingAsync(true); 
+
+            var psi = new ProcessStartInfo
+            {
+                FileName = "ffmpeg",
+                Arguments = $@"-i ""{archivo}"" -ac 2 -f s16le -ar 48000 pipe:1",
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            };
+            
+            try
+            {
+                var ffmpeg = Process.Start(psi); // kaboom
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            var ffout = ffmpeg.StandardOutput.BaseStream;
+
+            var txStream = vnc.GetTransmitStream();
+            await ffout.CopyToAsync(txStream);
+            await txStream.FlushAsync();
+
+            await vnc.WaitForPlaybackFinishAsync(); 
+        }*/
+
     }
 }

@@ -42,6 +42,7 @@ namespace Discord_Bot.Modulos
         [Command("mutear")]
         [Aliases("f")]
         [Description("Mutea a un miembro aleatorio del canal")]
+        [RequirePermissions(Permissions.Administrator)]
         public async Task MutearAleatorio(CommandContext ctx)
         {
             var vnext = ctx.Client.GetVoiceNext();
