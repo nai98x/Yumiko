@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.EventHandling;
 using DSharpPlus.VoiceNext;
 using System;
 using System.Collections.Generic;
@@ -17,17 +18,12 @@ using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot.Modulos
 {
-    [Group("administracion", CanInvokeWithoutSubcommand = true)]
-    [Aliases("adm", "admin")]
-    [Description("Comandos administrativos")]
-    public class Administracion
+    //[Group("mememan", CanInvokeWithoutSubcommand = true), Hidden)]
+    //[Aliases("adm", "admin")]
+    //[Description("Comandos administrativos")]
+    public class Administracion : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-
-        public async Task ExecuteGroupAsync(CommandContext ctx)
-        {
-            await Task.Delay(1);
-        }
 
         [Command("clear")]
         [Aliases("c", "borrar")]
@@ -42,15 +38,14 @@ namespace Discord_Bot.Modulos
             }
             await ctx.Channel.DeleteMessagesAsync(await ctx.Channel.GetMessagesAsync(cantidad + 1));
         }
-/*
-      // Agregarle un cooldown y listo man
-        [Command​("mutear")]
+
+        [Command("mutear")]
         [Aliases("f")]
         [Description("Mutea a un miembro aleatorio del canal")]
-        //[Cooldown()]
+        [RequirePermissions(Permissions.Administrator)]
         public async Task MutearAleatorio(CommandContext ctx)
         {
-            var vnext = ctx.Client.GetVoiceNextClient();
+            var vnext = ctx.Client.GetVoiceNext();
             if (vnext == null)
             {
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
@@ -68,7 +63,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync("Estoy solo yo conectada, baka");
             }
-            
+
             var lista = vnc.Channel.Users;
             Random rnd;
 
@@ -89,8 +84,7 @@ namespace Discord_Bot.Modulos
             await ctx.Channel.SendMessageAsync(user.Mention + " ha sido DESMUTEADISIMO").ConfigureAwait(false);
             await user.SetMuteAsync(false, "Desmutea3");
         }
-        */
-        
-    }
 
+
+    }
 }

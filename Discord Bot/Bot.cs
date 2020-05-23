@@ -15,8 +15,9 @@ namespace Discord_Bot
     public class Bot
     {
         public DiscordClient Client { get; private set; }
-        //public InteractivityExtension Interactivity { get; private set; }
-        public CommandsNextModule Commands { get; private set; }
+        public InteractivityExtension Interactivity { get; private set; }
+        public CommandsNextExtension Commands { get; private set; }
+        public DiscordActivity Activity { get; private set; }
 
         public async Task RunAsync()
         {
@@ -37,11 +38,10 @@ namespace Discord_Bot
 
             var commandsConfig = new CommandsNextConfiguration
             {
-                StringPrefix = "*",
+                StringPrefixes = new string[] { "*" },
                 EnableMentionPrefix = true,
                 EnableDms = false,
-                CaseSensitive = false,
-                
+                DmHelp = false,
                 //EnableDefaultHelp = false cuando esten todos los comandos descomentar
             };
 
@@ -57,8 +57,7 @@ namespace Discord_Bot
             //await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Watching, Name = "Por ayuda: *help" }, UserStatus.Online);
 
             await Task.Delay(1000); // esperar a que autentifique xd
-            //await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "*help" }, UserStatus.Online);
-            await Client.UpdateStatusAsync(new DiscordGame {Name = "*help" }, UserStatus.Online);
+            await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "*help" }, UserStatus.Online);
             await Task.Delay(-1);
         }
 

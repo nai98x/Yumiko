@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.EventHandling;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,10 +17,12 @@ using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using DSharpPlus.VoiceNext;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using NAudio.Wave;
+using NAudio.CoreAudioApi;
 
 namespace Discord_Bot.Modulos
 {
-    public class Musica// : BaseCommandModule
+    public class Musica : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
@@ -28,7 +31,7 @@ namespace Discord_Bot.Modulos
         [Description("Entra al canal")]
         public async Task Join(CommandContext ctx, DiscordChannel chn = null)
         {
-            var vnext = ctx.Client.GetVoiceNextClient();
+            var vnext = ctx.Client.GetVoiceNext();
             if (vnext == null)
             {
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
@@ -52,14 +55,7 @@ namespace Discord_Bot.Modulos
             if (chn == null)
                 chn = vstat.Channel;
 
-            try{
-                await vnext.ConnectAsync(chn);
-            }
-            catch (Exception e)
-            {
-                await ctx.RespondAsync(e.ToString());
-            }
-            
+            await vnext.ConnectAsync(chn);
             await ctx.RespondAsync($"Me he conectado a `{chn.Name}`");
         }
 
@@ -68,7 +64,7 @@ namespace Discord_Bot.Modulos
         [Description("Sale del canal")]
         public async Task Leave(CommandContext ctx)
         {
-            var vnext = ctx.Client.GetVoiceNextClient();
+            var vnext = ctx.Client.GetVoiceNext();
             if (vnext == null)
             {
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
@@ -84,92 +80,49 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync("Me he desconectado, no me extrañes " + ctx.Member.Mention + " onii-chan");
         }
 
-        [Command("play")]
-        public async Task Play(CommandContext ctx)
+
+       /* public async Task SendAudioAsync(CommandContext ctx, string path)
         {
-            var vnext = ctx.Client.GetVoiceNextClient();
-
-            var vnc = vnext.GetConnection(ctx.Guild);
-            if (vnc == null)
+            try
             {
-                await Join(ctx, null);
-                vnc = vnext.GetConnection(ctx.Guild);
+                if (!File.Exists(path))
+                {
+                    await ctx.Channel.SendMessageAsync("File does not exist.");
+                    return;
+                }
+                AudioClient client;
+                if (ConnectedChannels.TryGetValue(ctx.Guild.Id, out client))
+                {
+                    //await Log.d($"Starting playback of \"{path}\" in \"{guild.Name}\"", src);
+                    var OutFormat = new WaveFormat(48000, 16, 2);
+
+                    using (var MP3Reader = new Mp3FileReader(path)) // Create a new Disposable MP3FileReader, to read audio from the filePath parameter
+                    using (var resampler = new MediaFoundationResampler(MP3Reader, OutFormat)) // Create a Disposable Resampler, which will convert the read MP3 data to PCM, using our Output Format
+                    {
+                        resampler.ResamplerQuality = 60; // Set the quality of the resampler to 60, the highest quality
+                        int blockSize = OutFormat.AverageBytesPerSecond / 50; // Establish the size of our AudioBuffer
+                        byte[] buffer = new byte[blockSize];
+                        int byteCount;
+                        while ((byteCount = resampler.Read(buffer, 0, blockSize)) > 0) // Read audio into our buffer, and keep a loop open while data is present
+                        {
+                            if (byteCount < blockSize)
+                            {
+                                // Incomplete Frame
+                                for (int i = byteCount; i < blockSize; i++)
+                                    buffer[i] = 0;
+                            }
+                            using (var output = client.CreatePCMStream(AudioApplication.Mixed))
+                                await output.WriteAsync(buffer, 0, blockSize); // Send the buffer to Discord
+                        }
+                    }
+                }
             }
-
-            string file = @"C:\Users\Mariano\Music\Openings\Evangelion.mp3";
-
-            if (!File.Exists(file))
-                throw new FileNotFoundException("File was not found.");
-
-            await ctx.RespondAsync("👌");
-            await vnc.SendSpeakingAsync(true); // send a speaking indicator
-
-            var psi = new ProcessStartInfo
+            catch (Exception e)
             {
-                FileName = "ffmpeg",
-                Arguments = $@"-i ""{file}"" -ac 2 -f s16le -ar 48000 pipe:1",
-                RedirectStandardOutput = true,
-                UseShellExecute = false
-            };
-            var ffmpeg = Process.Start(psi);
-            var ffout = ffmpeg.StandardOutput.BaseStream;
-
-            var buff = new byte[3840];
-            var br = 0;
-            while ((br = ffout.Read(buff, 0, buff.Length)) > 0)
-            {
-                if (br < buff.Length) // not a full sample, mute the rest
-                    for (var i = br; i < buff.Length; i++)
-                        buff[i] = 0;
-
-                await vnc.SendAsync(buff, 20);
+                await ctx.RespondAsync(e.Message);
             }
-
-            await vnc.SendSpeakingAsync(false); // we're not speaking anymore
-        }
-
-        /* public async Task SendAudioAsync(CommandContext ctx, string path)
-         {
-             try
-             {
-                 if (!File.Exists(path))
-                 {
-                     await ctx.Channel.SendMessageAsync("File does not exist.");
-                     return;
-                 }
-                 AudioClient client;
-                 if (ConnectedChannels.TryGetValue(ctx.Guild.Id, out client))
-                 {
-                     //await Log.d($"Starting playback of \"{path}\" in \"{guild.Name}\"", src);
-                     var OutFormat = new WaveFormat(48000, 16, 2);
-
-                     using (var MP3Reader = new Mp3FileReader(path)) // Create a new Disposable MP3FileReader, to read audio from the filePath parameter
-                     using (var resampler = new MediaFoundationResampler(MP3Reader, OutFormat)) // Create a Disposable Resampler, which will convert the read MP3 data to PCM, using our Output Format
-                     {
-                         resampler.ResamplerQuality = 60; // Set the quality of the resampler to 60, the highest quality
-                         int blockSize = OutFormat.AverageBytesPerSecond / 50; // Establish the size of our AudioBuffer
-                         byte[] buffer = new byte[blockSize];
-                         int byteCount;
-                         while ((byteCount = resampler.Read(buffer, 0, blockSize)) > 0) // Read audio into our buffer, and keep a loop open while data is present
-                         {
-                             if (byteCount < blockSize)
-                             {
-                                 // Incomplete Frame
-                                 for (int i = byteCount; i < blockSize; i++)
-                                     buffer[i] = 0;
-                             }
-                             using (var output = client.CreatePCMStream(AudioApplication.Mixed))
-                                 await output.WriteAsync(buffer, 0, blockSize); // Send the buffer to Discord
-                         }
-                     }
-                 }
-             }
-             catch (Exception e)
-             {
-                 await ctx.RespondAsync(e.Message);
-             }
-         }*/
-        /*
+        }*/
+        
         [Command("play")]
         public async Task Play(CommandContext ctx)
         {
@@ -201,14 +154,7 @@ namespace Discord_Bot.Modulos
                 UseShellExecute = false
             };
             
-            try
-            {
-                var ffmpeg = Process.Start(psi);
-            }
-            catch(Exception e)
-            {
-                await ctx.RespondAsync(e.Message);
-            }
+            var ffmpeg = Process.Start(psi);
 
             var ffout = ffmpeg.StandardOutput.BaseStream;
 
@@ -222,6 +168,6 @@ namespace Discord_Bot.Modulos
 
 
         }
-        */
+        
     }
 }
