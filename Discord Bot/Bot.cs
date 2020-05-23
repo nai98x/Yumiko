@@ -51,7 +51,6 @@ namespace Discord_Bot
             Commands.RegisterCommands<Memes>();
             Commands.RegisterCommands<Misc>();
             Commands.RegisterCommands<Musica>();
-            Commands.RegisterCommands<ExampleExecutableGroup>();
 
             await Client.ConnectAsync();
 

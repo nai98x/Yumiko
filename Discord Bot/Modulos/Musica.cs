@@ -16,8 +16,6 @@ using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using DSharpPlus.VoiceNext;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using NAudio.Wave;
-using NAudio.CoreAudioApi;
 
 namespace Discord_Bot.Modulos
 {
@@ -54,7 +52,14 @@ namespace Discord_Bot.Modulos
             if (chn == null)
                 chn = vstat.Channel;
 
-            await vnext.ConnectAsync(chn);
+            try{
+                await vnext.ConnectAsync(chn);
+            }
+            catch (Exception e)
+            {
+                await ctx.RespondAsync(e.ToString());
+            }
+            
             await ctx.RespondAsync($"Me he conectado a `{chn.Name}`");
         }
 
@@ -79,48 +84,91 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync("Me he desconectado, no me extrañes " + ctx.Member.Mention + " onii-chan");
         }
 
-
-       /* public async Task SendAudioAsync(CommandContext ctx, string path)
+        [Command("play")]
+        public async Task Play(CommandContext ctx)
         {
-            try
-            {
-                if (!File.Exists(path))
-                {
-                    await ctx.Channel.SendMessageAsync("File does not exist.");
-                    return;
-                }
-                AudioClient client;
-                if (ConnectedChannels.TryGetValue(ctx.Guild.Id, out client))
-                {
-                    //await Log.d($"Starting playback of \"{path}\" in \"{guild.Name}\"", src);
-                    var OutFormat = new WaveFormat(48000, 16, 2);
+            var vnext = ctx.Client.GetVoiceNextClient();
 
-                    using (var MP3Reader = new Mp3FileReader(path)) // Create a new Disposable MP3FileReader, to read audio from the filePath parameter
-                    using (var resampler = new MediaFoundationResampler(MP3Reader, OutFormat)) // Create a Disposable Resampler, which will convert the read MP3 data to PCM, using our Output Format
-                    {
-                        resampler.ResamplerQuality = 60; // Set the quality of the resampler to 60, the highest quality
-                        int blockSize = OutFormat.AverageBytesPerSecond / 50; // Establish the size of our AudioBuffer
-                        byte[] buffer = new byte[blockSize];
-                        int byteCount;
-                        while ((byteCount = resampler.Read(buffer, 0, blockSize)) > 0) // Read audio into our buffer, and keep a loop open while data is present
-                        {
-                            if (byteCount < blockSize)
-                            {
-                                // Incomplete Frame
-                                for (int i = byteCount; i < blockSize; i++)
-                                    buffer[i] = 0;
-                            }
-                            using (var output = client.CreatePCMStream(AudioApplication.Mixed))
-                                await output.WriteAsync(buffer, 0, blockSize); // Send the buffer to Discord
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
+            var vnc = vnext.GetConnection(ctx.Guild);
+            if (vnc == null)
             {
-                await ctx.RespondAsync(e.Message);
+                await Join(ctx, null);
+                vnc = vnext.GetConnection(ctx.Guild);
             }
-        }*/
+
+            string file = @"C:\Users\Mariano\Music\Openings\Evangelion.mp3";
+
+            if (!File.Exists(file))
+                throw new FileNotFoundException("File was not found.");
+
+            await ctx.RespondAsync("👌");
+            await vnc.SendSpeakingAsync(true); // send a speaking indicator
+
+            var psi = new ProcessStartInfo
+            {
+                FileName = "ffmpeg",
+                Arguments = $@"-i ""{file}"" -ac 2 -f s16le -ar 48000 pipe:1",
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            };
+            var ffmpeg = Process.Start(psi);
+            var ffout = ffmpeg.StandardOutput.BaseStream;
+
+            var buff = new byte[3840];
+            var br = 0;
+            while ((br = ffout.Read(buff, 0, buff.Length)) > 0)
+            {
+                if (br < buff.Length) // not a full sample, mute the rest
+                    for (var i = br; i < buff.Length; i++)
+                        buff[i] = 0;
+
+                await vnc.SendAsync(buff, 20);
+            }
+
+            await vnc.SendSpeakingAsync(false); // we're not speaking anymore
+        }
+
+        /* public async Task SendAudioAsync(CommandContext ctx, string path)
+         {
+             try
+             {
+                 if (!File.Exists(path))
+                 {
+                     await ctx.Channel.SendMessageAsync("File does not exist.");
+                     return;
+                 }
+                 AudioClient client;
+                 if (ConnectedChannels.TryGetValue(ctx.Guild.Id, out client))
+                 {
+                     //await Log.d($"Starting playback of \"{path}\" in \"{guild.Name}\"", src);
+                     var OutFormat = new WaveFormat(48000, 16, 2);
+
+                     using (var MP3Reader = new Mp3FileReader(path)) // Create a new Disposable MP3FileReader, to read audio from the filePath parameter
+                     using (var resampler = new MediaFoundationResampler(MP3Reader, OutFormat)) // Create a Disposable Resampler, which will convert the read MP3 data to PCM, using our Output Format
+                     {
+                         resampler.ResamplerQuality = 60; // Set the quality of the resampler to 60, the highest quality
+                         int blockSize = OutFormat.AverageBytesPerSecond / 50; // Establish the size of our AudioBuffer
+                         byte[] buffer = new byte[blockSize];
+                         int byteCount;
+                         while ((byteCount = resampler.Read(buffer, 0, blockSize)) > 0) // Read audio into our buffer, and keep a loop open while data is present
+                         {
+                             if (byteCount < blockSize)
+                             {
+                                 // Incomplete Frame
+                                 for (int i = byteCount; i < blockSize; i++)
+                                     buffer[i] = 0;
+                             }
+                             using (var output = client.CreatePCMStream(AudioApplication.Mixed))
+                                 await output.WriteAsync(buffer, 0, blockSize); // Send the buffer to Discord
+                         }
+                     }
+                 }
+             }
+             catch (Exception e)
+             {
+                 await ctx.RespondAsync(e.Message);
+             }
+         }*/
         /*
         [Command("play")]
         public async Task Play(CommandContext ctx)

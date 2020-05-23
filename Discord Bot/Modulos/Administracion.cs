@@ -42,11 +42,12 @@ namespace Discord_Bot.Modulos
             }
             await ctx.Channel.DeleteMessagesAsync(await ctx.Channel.GetMessagesAsync(cantidad + 1));
         }
-
-/*      // Agregarle un cooldown y listo man
+/*
+      // Agregarle un cooldown y listo man
         [Command​("mutear")]
         [Aliases("f")]
         [Description("Mutea a un miembro aleatorio del canal")]
+        //[Cooldown()]
         public async Task MutearAleatorio(CommandContext ctx)
         {
             var vnext = ctx.Client.GetVoiceNextClient();
@@ -67,7 +68,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync("Estoy solo yo conectada, baka");
             }
-
+            
             var lista = vnc.Channel.Users;
             Random rnd;
 
@@ -88,8 +89,8 @@ namespace Discord_Bot.Modulos
             await ctx.Channel.SendMessageAsync(user.Mention + " ha sido DESMUTEADISIMO").ConfigureAwait(false);
             await user.SetMuteAsync(false, "Desmutea3");
         }
-
         */
+        
     }
 
 }

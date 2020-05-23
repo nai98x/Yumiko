@@ -10,6 +10,10 @@
     <ApplicationIcon>yumiko.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="bin\**" />
     <Compile Remove="obj\**" />
@@ -25,7 +29,6 @@
     <PackageReference Include="DSharpPlus.Interactivity" Version="3.2.3" />
     <PackageReference Include="DSharpPlus.Rest" Version="3.2.3" />
     <PackageReference Include="DSharpPlus.VoiceNext" Version="3.2.3" />
-    <PackageReference Include="NAudio" Version="1.10.0" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties config_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
