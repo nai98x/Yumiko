@@ -3,7 +3,6 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.EventHandling;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +21,7 @@ using NAudio.CoreAudioApi;
 
 namespace Discord_Bot.Modulos
 {
-    public class Musica : BaseCommandModule
+    public class Musica// : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
@@ -31,7 +30,7 @@ namespace Discord_Bot.Modulos
         [Description("Entra al canal")]
         public async Task Join(CommandContext ctx, DiscordChannel chn = null)
         {
-            var vnext = ctx.Client.GetVoiceNext();
+            var vnext = ctx.Client.GetVoiceNextClient();
             if (vnext == null)
             {
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
@@ -64,7 +63,7 @@ namespace Discord_Bot.Modulos
         [Description("Sale del canal")]
         public async Task Leave(CommandContext ctx)
         {
-            var vnext = ctx.Client.GetVoiceNext();
+            var vnext = ctx.Client.GetVoiceNextClient();
             if (vnext == null)
             {
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");

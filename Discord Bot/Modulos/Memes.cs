@@ -3,7 +3,6 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.EventHandling;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +16,7 @@ using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot.Modulos
 {
-    public class Memes : BaseCommandModule
+    public class Memes// : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 

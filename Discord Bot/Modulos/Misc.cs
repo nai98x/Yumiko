@@ -3,7 +3,6 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.EventHandling;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,19 +17,9 @@ using DSharpPlus.VoiceNext;
 
 namespace Discord_Bot.Modulos
 {
-    public class Misc : BaseCommandModule
+    public class Misc// : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-
-        [Command("test")]
-        [Description("test")]
-        public async Task Test(CommandContext ctx)
-        {
-            DiscordClient Client = ctx.Client;
-
-            DiscordActivity activity = new DiscordActivity { ActivityType = ActivityType.Watching, Name = "Pruebita" };
-            await Client.UpdateStatusAsync(activity, UserStatus.Online);
-        }
 
         [Command("ping")]
         [Description("Pong")]
@@ -83,13 +72,13 @@ namespace Discord_Bot.Modulos
         [Description("Elige entre varias opciones")]
         public async Task Elegir(CommandContext ctx, [RemainingText][Description("La pregunta en cuestion")]string pregunta)
         {
-            var interactivity = ctx.Client.GetInteractivity();
+            var interactivity = ctx.Client.GetInteractivityModule();
             DiscordMessage mensajeBot = await ctx.Channel.SendMessageAsync("Ingrese las opciones separadas por un espacio").ConfigureAwait(false);
             var msg = await interactivity.WaitForMessageAsync(xm => xm.Author == ctx.User, TimeSpan.FromSeconds(60));
-            if (!msg.TimedOut)
-            {
+            //if (!msg.TimedOut)
+            //{
                 List<string> opciones = new List<string>();
-                string msgResponse = msg.Result.Content;
+                string msgResponse = msg.Message.Content;
                 opciones = msgResponse.Split(" ").ToList();
                 Random rnd = new Random();
                 int random = rnd.Next(opciones.Count);
@@ -100,15 +89,15 @@ namespace Discord_Bot.Modulos
                 }
                 await ctx.Message.DeleteAsync().ConfigureAwait(false);
                 await mensajeBot.DeleteAsync().ConfigureAwait(false);
-                await msg.Result.DeleteAsync().ConfigureAwait(false);
+                await msg.Message.DeleteAsync().ConfigureAwait(false);
                 await ctx.TriggerTypingAsync();
                 await ctx.Channel.SendMessageAsync("Pregunta: " + pregunta + "\n\n" + options + "\n\nRespuesta: " + opciones[random] + "\n\nPreguntado por: " + ctx.User.Mention).ConfigureAwait(false);
-            }
-            else
-            {
-                await ctx.TriggerTypingAsync();
-                await ctx.RespondAsync("No escribiste las opciones, sos una pija " + ctx.User.Mention);
-            }
+            //}
+            //else
+            //{
+            //    await ctx.TriggerTypingAsync();
+           //     await ctx.RespondAsync("No escribiste las opciones, sos una pija " + ctx.User.Mention);
+            //}
         }
 
         [Command("donar")]

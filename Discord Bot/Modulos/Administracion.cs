@@ -3,7 +3,6 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.EventHandling;
 using DSharpPlus.VoiceNext;
 using System;
 using System.Collections.Generic;
@@ -18,12 +17,17 @@ using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot.Modulos
 {
-    //[Group("mememan", CanInvokeWithoutSubcommand = true), Hidden)]
-    //[Aliases("adm", "admin")]
-    //[Description("Comandos administrativos")]
-    public class Administracion : BaseCommandModule
+    [Group("administracion", CanInvokeWithoutSubcommand = true)]
+    [Aliases("adm", "admin")]
+    [Description("Comandos administrativos")]
+    public class Administracion
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+
+        public async Task ExecuteGroupAsync(CommandContext ctx)
+        {
+            await Task.Delay(1);
+        }
 
         [Command("clear")]
         [Aliases("c", "borrar")]
@@ -39,13 +43,13 @@ namespace Discord_Bot.Modulos
             await ctx.Channel.DeleteMessagesAsync(await ctx.Channel.GetMessagesAsync(cantidad + 1));
         }
 
-        [Command("mutear")]
+/*      // Agregarle un cooldown y listo man
+        [Command​("mutear")]
         [Aliases("f")]
         [Description("Mutea a un miembro aleatorio del canal")]
-        [RequirePermissions(Permissions.Administrator)]
         public async Task MutearAleatorio(CommandContext ctx)
         {
-            var vnext = ctx.Client.GetVoiceNext();
+            var vnext = ctx.Client.GetVoiceNextClient();
             if (vnext == null)
             {
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
@@ -85,6 +89,7 @@ namespace Discord_Bot.Modulos
             await user.SetMuteAsync(false, "Desmutea3");
         }
 
-
+        */
     }
+
 }
