@@ -77,54 +77,11 @@ namespace Discord_Bot.Modulos
                 return;
             }
             vnc.Disconnect();
-            await ctx.RespondAsync("Me he desconectado, no me extrañes " + ctx.Member.Mention + " onii-chan");
+            await ctx.RespondAsync("Me he desconectado, no me extrañes " + ctx.Member.DisplayName + " onii-chan");
         }
-
-
-       /* public async Task SendAudioAsync(CommandContext ctx, string path)
-        {
-            try
-            {
-                if (!File.Exists(path))
-                {
-                    await ctx.Channel.SendMessageAsync("File does not exist.");
-                    return;
-                }
-                AudioClient client;
-                if (ConnectedChannels.TryGetValue(ctx.Guild.Id, out client))
-                {
-                    //await Log.d($"Starting playback of \"{path}\" in \"{guild.Name}\"", src);
-                    var OutFormat = new WaveFormat(48000, 16, 2);
-
-                    using (var MP3Reader = new Mp3FileReader(path)) // Create a new Disposable MP3FileReader, to read audio from the filePath parameter
-                    using (var resampler = new MediaFoundationResampler(MP3Reader, OutFormat)) // Create a Disposable Resampler, which will convert the read MP3 data to PCM, using our Output Format
-                    {
-                        resampler.ResamplerQuality = 60; // Set the quality of the resampler to 60, the highest quality
-                        int blockSize = OutFormat.AverageBytesPerSecond / 50; // Establish the size of our AudioBuffer
-                        byte[] buffer = new byte[blockSize];
-                        int byteCount;
-                        while ((byteCount = resampler.Read(buffer, 0, blockSize)) > 0) // Read audio into our buffer, and keep a loop open while data is present
-                        {
-                            if (byteCount < blockSize)
-                            {
-                                // Incomplete Frame
-                                for (int i = byteCount; i < blockSize; i++)
-                                    buffer[i] = 0;
-                            }
-                            using (var output = client.CreatePCMStream(AudioApplication.Mixed))
-                                await output.WriteAsync(buffer, 0, blockSize); // Send the buffer to Discord
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                await ctx.RespondAsync(e.Message);
-            }
-        }*/
         
         [Command("play")]
-        public async Task Play(CommandContext ctx)
+        public async Task Play(CommandContext ctx, [RemainingText][Description("Archivo")]string archivo)
         {
             var vnext = ctx.Client.GetVoiceNext();
 
@@ -135,7 +92,7 @@ namespace Discord_Bot.Modulos
                 vnc = vnext.GetConnection(ctx.Guild);
             }
 
-            string filePath = @"C:\Users\Mariano\Music\Openings\Evangelion.mp3";
+            string filePath = @"C:\Users\Mariano\Music\Yumiko\" + archivo + ".mp3";
 
             if (!File.Exists(filePath))
             {
@@ -143,7 +100,7 @@ namespace Discord_Bot.Modulos
                 return;
             }
                 
-            await ctx.RespondAsync("👌");
+            await ctx.RespondAsync("Reproduciendo " + archivo + " 👌");
             await vnc.SendSpeakingAsync(true); 
 
             var psi = new ProcessStartInfo
@@ -164,10 +121,25 @@ namespace Discord_Bot.Modulos
             
             await vnc.WaitForPlaybackFinishAsync(); 
             await vnc.SendSpeakingAsync(false);
-            
-
-
         }
-        
+
+        [Command("listado")]
+        [Description("Da un listado de los temasos disponibles")]
+        public async Task ListadoMusica(CommandContext ctx)
+        {
+            string[] filePaths = Directory.GetFiles(@"C:\Users\Mariano\Music\Yumiko\");
+
+            string path = "";
+            foreach (string file in filePaths)
+            {
+                string preString = file.Remove(0, 30); // Cantidad de caracteres del path original
+                path += preString.Remove(preString.Length-4) + "\n"; // Ultimos 4 caracteres (.mp3)
+                //path += Regex.Replace(file, @"C:\Users\Mariano\Music\Yumiko\") + "\n";
+            }
+
+            await ctx.RespondAsync(path);
+        }
+
+
     }
 }
