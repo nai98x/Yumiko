@@ -22,6 +22,16 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
+        [Command("test")]
+        [Description("test")]
+        public async Task Test(CommandContext ctx)
+        {
+            DiscordClient Client = ctx.Client;
+
+            DiscordActivity activity = new DiscordActivity { ActivityType = ActivityType.Watching, Name = "Pruebita" };
+            await Client.UpdateStatusAsync(activity, UserStatus.Online);
+        }
+
         [Command("ping")]
         [Description("Pong")]
         public async Task Ping(CommandContext ctx)
@@ -57,10 +67,10 @@ namespace Discord_Bot.Modulos
             switch (random)
             {
                 case 0:
-                    await ctx.Channel.SendMessageAsync("Pregunta: " + pregunta + "\nRespuesta: NON" + "\nPreguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync("**Pregunta:** " + pregunta + "\n**Respuesta:** NON"/* + "\n**Preguntado por:** " + ctx.Member.Mention*/).ConfigureAwait(false);
                     break;
                 case 1:
-                    await ctx.Channel.SendMessageAsync("Pregunta: " + pregunta + "\nRespuesta: SIS" + "\nPreguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync("**Pregunta:** " + pregunta + "\n**Respuesta:** SIS"/* + "\n**Preguntado por:** " + ctx.Member.Mention*/).ConfigureAwait(false);
                     break;
                 default:
                     await ctx.Channel.SendMessageAsync("Algo salió mal").ConfigureAwait(false);

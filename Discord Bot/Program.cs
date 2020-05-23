@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
+using System;
 
 namespace Discord_Bot
 {
@@ -8,7 +10,6 @@ namespace Discord_Bot
         {
             var bot = new Bot();
             bot.RunAsync().GetAwaiter().GetResult();
-
         }
     }
 }

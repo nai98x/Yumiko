@@ -122,11 +122,11 @@ namespace Discord_Bot.Modulos
                 await ctx.RespondAsync(e.Message);
             }
         }*/
-
+        /*
         [Command("play")]
-        public async Task Play(CommandContext ctx/*, [RemainingText] string file*/)
+        public async Task Play(CommandContext ctx)
         {
-            /*var vnext = ctx.Client.GetVoiceNext();
+            var vnext = ctx.Client.GetVoiceNext();
 
             var vnc = vnext.GetConnection(ctx.Guild);
             if (vnc == null)
@@ -170,11 +170,11 @@ namespace Discord_Bot.Modulos
             await txStream.FlushAsync();
             
             await vnc.WaitForPlaybackFinishAsync(); 
-            await vnc.SendSpeakingAsync(false);*/
+            await vnc.SendSpeakingAsync(false);
             
 
 
         }
-
+        */
     }
 }

@@ -54,12 +54,11 @@ namespace Discord_Bot
 
             await Client.ConnectAsync();
 
-            //DiscordActivity act = new DiscordActivity("type *help");
-            //await Client.UpdateStatusAsync(act,UserStatus.Online);
+            //await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Watching, Name = "Por ayuda: *help" }, UserStatus.Online);
 
+            await Task.Delay(1000); // esperar a que autentifique xd
+            await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "*help" }, UserStatus.Online);
             await Task.Delay(-1);
-
-            
         }
 
         private Task OnClientReady(ReadyEventArgs e)
