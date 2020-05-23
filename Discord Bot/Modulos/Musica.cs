@@ -28,6 +28,8 @@ namespace Discord_Bot.Modulos
         private int Id { get; set; }
         private VoiceNextConnection vnc { get; set; }
 
+        private List<ColaReproduccion> colaReproduccion = new List<ColaReproduccion>();
+
         [Command("join")]
         [Aliases("entrar")]
         [Description("Entra al canal")]
@@ -59,6 +61,8 @@ namespace Discord_Bot.Modulos
 
             await vnext.ConnectAsync(chn);
             await ctx.RespondAsync($"Me he conectado a `{chn.Name}`");
+            vnc = vnext.GetConnection(ctx.Guild);
+            await vnc.SendSpeakingAsync(false);
         }
 
         [Command("leave")]
@@ -127,7 +131,7 @@ namespace Discord_Bot.Modulos
             await vnc.SendSpeakingAsync(false);
         }
 
-        [Command("listado")]
+        [Command("archivos")]
         [Description("Da un listado de los temasos disponibles")]
         public async Task ListadoMusica(CommandContext ctx)
         {
@@ -178,6 +182,15 @@ namespace Discord_Bot.Modulos
             }
             vnc.Disconnect();
             await ctx.RespondAsync("Dejo de hablar si quieres b-baka");
+        }
+
+        private bool AgregarTrackAListaDeReproduccion(string track)
+        {
+            if (vnc.IsPlaying)
+            {
+
+            }
+            return true;
         }
 
     }

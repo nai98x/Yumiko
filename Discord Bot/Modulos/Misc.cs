@@ -22,14 +22,13 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        [Command("test")]
-        [Description("test")]
-        public async Task Test(CommandContext ctx)
+        [Command("invite")]
+        [Aliases("invitar")]
+        [Description("Invitacón del bot para que se una a un server")]
+        public async Task Invite(CommandContext ctx)
         {
-            DiscordClient Client = ctx.Client;
-
-            DiscordActivity activity = new DiscordActivity { ActivityType = ActivityType.Watching, Name = "Pruebita" };
-            await Client.UpdateStatusAsync(activity, UserStatus.Online);
+            await ctx.TriggerTypingAsync();
+            await ctx.RespondAsync("Puedes invitarme a un servidor con este link: " + "https://discordapp.com/api/oauth2/authorize?client_id=295182825521545218&scope=bot&permissions=1");
         }
 
         [Command("ping")]

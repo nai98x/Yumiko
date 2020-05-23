@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Discord_Bot
 {
-    class FuncionesAuxiliares
+    public class FuncionesAuxiliares
     {
         public string GetImagenRandomMeme()
         {
@@ -64,5 +64,11 @@ namespace Discord_Bot
             }
             return false;
         }
+    }
+
+    public class ColaReproduccion
+    {
+        public int posicion { get; set; }
+        public string archivo { get; set; }
     }
 }
