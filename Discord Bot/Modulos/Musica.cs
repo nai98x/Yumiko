@@ -25,6 +25,8 @@ namespace Discord_Bot.Modulos
     public class Musica : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private int Id { get; set; }
+        private VoiceNextConnection vnc { get; set; }
 
         [Command("join")]
         [Aliases("entrar")]
@@ -85,7 +87,7 @@ namespace Discord_Bot.Modulos
         {
             var vnext = ctx.Client.GetVoiceNext();
 
-            var vnc = vnext.GetConnection(ctx.Guild);
+            vnc = vnext.GetConnection(ctx.Guild);
             if (vnc == null)
             {
                 await Join(ctx, null);
@@ -100,7 +102,7 @@ namespace Discord_Bot.Modulos
                 return;
             }
                 
-            await ctx.RespondAsync("Reproduciendo " + archivo + " 👌");
+            await ctx.RespondAsync("Reproduciendo " + archivo + " 🎵");
             await vnc.SendSpeakingAsync(true); 
 
             var psi = new ProcessStartInfo
@@ -113,12 +115,14 @@ namespace Discord_Bot.Modulos
             
             var ffmpeg = Process.Start(psi);
 
+            Id = ffmpeg.Id;
+
             var ffout = ffmpeg.StandardOutput.BaseStream;
 
             var txStream = vnc.GetTransmitStream();
             await ffout.CopyToAsync(txStream);
             await txStream.FlushAsync();
-            
+
             await vnc.WaitForPlaybackFinishAsync(); 
             await vnc.SendSpeakingAsync(false);
         }
@@ -140,6 +144,42 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync(path);
         }
 
+        [Command("pause")]
+        [Description("Pausa la reproduccion")]
+        public async Task Pause(CommandContext ctx)
+        {
+            vnc.Pause();
+            await ctx.RespondAsync("Se pauso la wea");
+        }
+
+        [Command("resume")]
+        [Description("Reanuda la reproduccion")]
+        public async Task Resume(CommandContext ctx)
+        {
+            await vnc.ResumeAsync();
+            await ctx.RespondAsync("Se reanudo la wea");
+        }
+
+        [Command("stop")]
+        [Description("Detiene la reproduccion")]
+        public async Task Stop(CommandContext ctx)
+        {
+            var vnext = ctx.Client.GetVoiceNext();
+            if (vnext == null)
+            {
+                await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
+                return;
+            }
+            var vnc = vnext.GetConnection(ctx.Guild);
+            if (vnc == null)
+            {
+                await ctx.RespondAsync("No estaba conectada, baka");
+                return;
+            }
+            vnc.Disconnect();
+            await ctx.RespondAsync("Dejo de hablar si quieres b-baka");
+        }
 
     }
 }
+

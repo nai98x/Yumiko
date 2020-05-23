@@ -4,6 +4,8 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
+using DSharpPlus.Lavalink;
+using DSharpPlus.Net;
 using DSharpPlus.VoiceNext;
 using Newtonsoft.Json;
 using System.IO;
@@ -18,6 +20,7 @@ namespace Discord_Bot
         public InteractivityExtension Interactivity { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
         public DiscordActivity Activity { get; private set; }
+        public LavalinkExtension Lavalink { get; private set; }
 
         public async Task RunAsync()
         {
@@ -47,10 +50,22 @@ namespace Discord_Bot
 
             Commands = Client.UseCommandsNext(commandsConfig);
 
+            var lavaconfig = new LavalinkConfiguration
+            {
+                RestEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
+                SocketEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 80 },
+                Password = "youshallnotpass"
+            };
+
+            Lavalink = Client.UseLavalink();
+            //await Lavalink.ConnectAsync(lavaconfig);
+
             Commands.RegisterCommands<Administracion>();
             Commands.RegisterCommands<Memes>();
             Commands.RegisterCommands<Misc>();
             Commands.RegisterCommands<Musica>();
+            //Commands.RegisterCommands<TestBotVoiceCommands>();
+            //Commands.RegisterCommands<TestBotLavaCommands>();
 
             await Client.ConnectAsync();
 
