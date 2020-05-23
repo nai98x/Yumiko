@@ -22,31 +22,27 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
+        [Command("ping")]
+        [Description("Pong")]
+        public async Task Ping(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await ctx.Channel.SendMessageAsync(ctx.Client.Ping.ToString() + " ms").ConfigureAwait(false);
+        }
+
         [Command("say")]
         [Aliases("s")]
-        [Description("El bot reenvia tu mensaje eliminandolo después")]
-        public async Task Say(CommandContext ctx, [Description("Tu mensaje")]params string[] mensajes)
+        [Description("El bot reenvia tu mensaje eliminándolo después")]
+        public async Task Say(CommandContext ctx, [RemainingText][Description("Tu mensaje")]string mensaje)
         {
-            string mensaje = "";
-            for (int i = 0; i < mensajes.Length; i++)
-            {
-                mensaje += mensajes[i] + " ";
-            }
-
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
             await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
         }
 
         [Command("tts")]
         [Description("Te habla la waifu")]
-        public async Task TTS(CommandContext ctx, [Description("Tu mensaje")]params string[] mensajes)
+        public async Task TTS(CommandContext ctx, [RemainingText][Description("Tu mensaje")]string mensaje)
         {
-            string mensaje = "";
-            for (int i = 0; i < mensajes.Length; i++)
-            {
-                mensaje += mensajes[i] + " ";
-            }
-
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
             await ctx.Channel.SendMessageAsync(mensaje, true).ConfigureAwait(false);
         }
@@ -54,23 +50,17 @@ namespace Discord_Bot.Modulos
         [Command("pregunta")]
         [Aliases("p", "question", "sisonon")]
         [Description("Responde con SIS O NON")]
-        public async Task Sisonon(CommandContext ctx, [Description("La pregunta en cuestion")]params string[] pregunta)
+        public async Task Sisonon(CommandContext ctx, [RemainingText][Description("La pregunta en cuestion")]string pregunta)
         {
-            string mensaje = "";
-            for (int i = 0; i < pregunta.Length; i++)
-            {
-                mensaje += pregunta[i] + " ";
-            }
-
             Random rnd = new Random();
             int random = rnd.Next(2);
             switch (random)
             {
                 case 0:
-                    await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje + "| Respuesta: NON" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync("Pregunta: " + pregunta + "\nRespuesta: NON" + "\nPreguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
                     break;
                 case 1:
-                    await ctx.Channel.SendMessageAsync("Pregunta: " + mensaje + "| Respuesta: SIS" + " | Preguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync("Pregunta: " + pregunta + "\nRespuesta: SIS" + "\nPreguntado por: " + ctx.Member.Mention).ConfigureAwait(false);
                     break;
                 default:
                     await ctx.Channel.SendMessageAsync("Algo salió mal").ConfigureAwait(false);
@@ -81,14 +71,9 @@ namespace Discord_Bot.Modulos
         [Command("elegir")]
         [Aliases("e")]
         [Description("Elige entre varias opciones")]
-        public async Task Elegir(CommandContext ctx, [Description("La pregunta en cuestion")]params string[] pregunta)
+        public async Task Elegir(CommandContext ctx, [RemainingText][Description("La pregunta en cuestion")]string pregunta)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            string question = "";
-            for (int i = 0; i < pregunta.Length; i++)
-            {
-                question += pregunta[i] + " ";
-            }
             DiscordMessage mensajeBot = await ctx.Channel.SendMessageAsync("Ingrese las opciones separadas por un espacio").ConfigureAwait(false);
             var msg = await interactivity.WaitForMessageAsync(xm => xm.Author == ctx.User, TimeSpan.FromSeconds(60));
             if (!msg.TimedOut)
@@ -106,12 +91,23 @@ namespace Discord_Bot.Modulos
                 await ctx.Message.DeleteAsync().ConfigureAwait(false);
                 await mensajeBot.DeleteAsync().ConfigureAwait(false);
                 await msg.Result.DeleteAsync().ConfigureAwait(false);
-                await ctx.Channel.SendMessageAsync("Pregunta: " + question + "\n\n" + options + "\n\nRespuesta: " + opciones[random] + "\n\nPreguntado por: " + ctx.User.Mention).ConfigureAwait(false);
+                await ctx.TriggerTypingAsync();
+                await ctx.Channel.SendMessageAsync("Pregunta: " + pregunta + "\n\n" + options + "\n\nRespuesta: " + opciones[random] + "\n\nPreguntado por: " + ctx.User.Mention).ConfigureAwait(false);
             }
             else
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("No escribiste las opciones, sos una pija " + ctx.User.Mention);
             }
+        }
+
+        [Command("donar")]
+        [Aliases("support", "donate")]
+        [Description("Enlace de donación uwu")]
+        public async Task Donate(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await ctx.RespondAsync("Puedes apoyarme a comprarme una dakimakura en: " + "https://www.paypal.me/marianoburguete");
         }
 
         /*
