@@ -133,6 +133,7 @@ namespace Discord_Bot.Modulos
                     //ImageUrl = url
                 }).ConfigureAwait(false);
             }
+            await ctx.Message.DeleteAsync();
         }
 
 
