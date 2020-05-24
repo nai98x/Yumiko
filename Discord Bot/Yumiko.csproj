@@ -28,6 +28,7 @@
     <PackageReference Include="DSharpPlus.VoiceNext" Version="4.0.0-nightly-00697" />
     <PackageReference Include="GoogleApi" Version="3.9.10" />
     <PackageReference Include="NAudio" Version="1.10.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties config_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

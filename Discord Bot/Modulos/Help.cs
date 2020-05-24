@@ -6,6 +6,7 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.EventHandling;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -30,7 +31,7 @@ namespace Discord_Bot.Modulos
             if (comando == null)
             {
                 ayuda =
-                "El prefix del server es `*`\n" +
+                "El prefix del server es `"+ ConfigurationManager.AppSettings["Prefix"] + "`\n" +
                 "\n" +
                 "Interactuar\n" +
                 "`say`, `tts`, `pregunta`, `elegir`\n" +
@@ -165,13 +166,13 @@ namespace Discord_Bot.Modulos
                         "\n" +
                         "**Prefixes alternativos:** " + aliases + "\n" +
                         "\n" +
-                        "**Uso:** `*" + uso + "`";
+                        "**Uso:** `" + ConfigurationManager.AppSettings["Prefix"] + uso + "`";
                     }
                     else
                     {
                         ayuda = descripcion + "\n" +
                         "\n" +
-                        "**Uso:** `*" + uso + "`";
+                        "**Uso:** `" + ConfigurationManager.AppSettings["Prefix"] + uso + "`";
                     }
                     
                     await ctx.TriggerTypingAsync();

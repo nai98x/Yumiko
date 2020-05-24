@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using NAudio.Wave;
 using NAudio.CoreAudioApi;
+using System.Configuration;
 
 namespace Discord_Bot.Modulos
 {
@@ -98,7 +99,7 @@ namespace Discord_Bot.Modulos
 
             string archivo = funciones.GetCancionByPosicion(posicion);
 
-            string filePath = @"C:\Users\Mariano\Music\Yumiko\" + archivo + ".mp3";
+            string filePath = ConfigurationManager.AppSettings["PathMusica"] + archivo + ".mp3";
 
             if (!File.Exists(filePath))
             {

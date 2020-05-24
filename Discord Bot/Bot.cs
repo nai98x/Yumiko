@@ -8,6 +8,7 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Lavalink;
 using DSharpPlus.VoiceNext;
 using System;
+using System.Configuration;
 using System.Threading.Tasks;
 
 namespace Discord_Bot
@@ -24,7 +25,7 @@ namespace Discord_Bot
         {
             var Config = new DiscordConfiguration
             {
-                Token = "Mjk1MTgyODI1NTIxNTQ1MjE4.XqNETg.R04GlssFnqFwkLxaZYZVj-GNnJs",
+                Token = ConfigurationManager.AppSettings["DiscordAPIKey"],
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
                 LogLevel = LogLevel.Info,
@@ -33,7 +34,7 @@ namespace Discord_Bot
             Client = new DiscordClient(Config);
 
             Client.Ready += OnClientReady;
-            this.Client.GuildAvailable += this.Client_GuildAvailable;
+            Client.GuildAvailable += this.Client_GuildAvailable;
             Client.ClientErrored += this.Client_ClientError;
 
             Client.UseInteractivity(new InteractivityConfiguration());
@@ -41,12 +42,11 @@ namespace Discord_Bot
 
             var commandsConfig = new CommandsNextConfiguration
             {
-                StringPrefixes = new string[] { "*" },
+                StringPrefixes = new string[] { ConfigurationManager.AppSettings["Prefix"] },
                 EnableMentionPrefix = true,
                 EnableDms = false,
                 DmHelp = false,
                 EnableDefaultHelp = false
-                //EnableDefaultHelp = false cuando esten todos los comandos descomentar
             };
 
             Commands = Client.UseCommandsNext(commandsConfig);

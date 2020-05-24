@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -70,7 +71,7 @@ namespace Discord_Bot
 
         public string GetCancionByPosicion(int posicion)
         {
-            string[] filePaths = Directory.GetFiles(@"C:\Users\Mariano\Music\Yumiko\");
+            string[] filePaths = Directory.GetFiles(ConfigurationManager.AppSettings["PathMusica"]);
             string elegido = filePaths.ElementAt(posicion - 1);
             string preString = elegido.Remove(0, 30); // Cantidad de caracteres del path original
             return preString.Remove(preString.Length - 4);
