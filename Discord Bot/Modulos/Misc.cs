@@ -22,15 +22,6 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        [Command("invite")]
-        [Aliases("invitar")]
-        [Description("Invitacón del bot para que se una a un server")]
-        public async Task Invite(CommandContext ctx)
-        {
-            await ctx.TriggerTypingAsync();
-            await ctx.RespondAsync("Puedes invitarme a un servidor con este link: " + "https://discordapp.com/api/oauth2/authorize?client_id=295182825521545218&scope=bot&permissions=1");
-        }
-
         [Command("ping")]
         [Description("Pong")]
         public async Task Ping(CommandContext ctx)
@@ -63,18 +54,32 @@ namespace Discord_Bot.Modulos
         {
             Random rnd = new Random();
             int random = rnd.Next(2);
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Preguntado por " + ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" +ctx.Member.Discriminator + ")"
+            };
             switch (random)
             {
                 case 0:
-                    await ctx.Channel.SendMessageAsync("**Pregunta:** " + pregunta + "\n**Respuesta:** NON"/* + "\n**Preguntado por:** " + ctx.Member.Mention*/).ConfigureAwait(false);
+                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Footer = footer,
+                        Color = DiscordColor.Red,
+                        Title = "¿SIS O NON?",
+                        Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** NON"
+                    }).ConfigureAwait(false);
                     break;
                 case 1:
-                    await ctx.Channel.SendMessageAsync("**Pregunta:** " + pregunta + "\n**Respuesta:** SIS"/* + "\n**Preguntado por:** " + ctx.Member.Mention*/).ConfigureAwait(false);
-                    break;
-                default:
-                    await ctx.Channel.SendMessageAsync("Algo salió mal").ConfigureAwait(false);
+                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Footer = footer,
+                        Color = DiscordColor.Green,
+                        Title = "¿SIS O NON?",
+                        Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** SIS"
+                    }).ConfigureAwait(false);
                     break;
             }
+            await ctx.Message.DeleteAsync();
         }
 
         [Command("elegir")]
@@ -116,73 +121,17 @@ namespace Discord_Bot.Modulos
         public async Task Donate(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ctx.RespondAsync("Puedes apoyarme a comprarme una dakimakura en: " + "https://www.paypal.me/marianoburguete");
+            await ctx.RespondAsync("Puedes apoyarme a comprarme una dakimakura en:\n" + "https://www.paypal.me/marianoburguete");
         }
 
-        /*
-        [Command("tipeo")]
-        public async Task WaitForCode(CommandContext ctx)
+        [Command("invite")]
+        [Aliases("invitar")]
+        [Description("Invitacón del bot para que se una a un server")]
+        public async Task Invite(CommandContext ctx)
         {
-            var interactivity = ctx.Client.GetInteractivity();
-
-            var codebytes = new byte[8];
-            using (var rng = RandomNumberGenerator.Create())
-                rng.GetBytes(codebytes);
-
-            var code = BitConverter.ToString(codebytes).ToLower().Replace("-", "");
-
-            await ctx.RespondAsync($"El primer que escriba el codigo ganará: `{code}`");
-
-            var msg = await interactivity.WaitForMessageAsync(xm => xm.Content.Contains(code), TimeSpan.FromSeconds(60));
-            if (!msg.TimedOut)
-            {
-                await ctx.RespondAsync($"El ganador es: {msg.Result.Author.Mention}");
-            }
-            else
-            {
-                await ctx.RespondAsync("Nadie escribió el codigo, son una pija");
-            }
+            await ctx.TriggerTypingAsync();
+            await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + "https://discordapp.com/api/oauth2/authorize?client_id=295182825521545218&scope=bot&permissions=1");
         }
-        */
-        /*
-        [Command("response")]
-        [Description("Responde una reacción con un emoji")]
-        public async Task Response(CommandContext ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-
-            var message = await interactivity.WaitForReactionAsync(x => x.Channel == ctx.Channel).ConfigureAwait(false);
-
-            await ctx.Channel.SendMessageAsync(message.Result.Emoji).ConfigureAwait(false);
-        }*/
-        /*
-        [Command("encuesta")]
-        [Description("Le mandas la duracion y unos cuantos emojis y con eso te hace una encuesta")]
-        public async Task Poll(CommandContext ctx, [Description("Tiempo limite de la encuesta")]TimeSpan duracion, [Description("Emojis para encuesta")]params DiscordEmoji[] emojis)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            var options = emojis.Select(x => x.ToString());
-
-            var pollEmbed = new DiscordEmbedBuilder
-            {
-                Title = "Encuesta",
-                Description = string.Join(" ", options)
-            };
-
-            var pollMessage = await ctx.Channel.SendMessageAsync(embed: pollEmbed).ConfigureAwait(false);
-
-            foreach (var option in emojis)
-            {
-                await pollMessage.CreateReactionAsync(option).ConfigureAwait(false);
-            }
-
-            var result = await interactivity.CollectReactionsAsync(pollMessage, duracion).ConfigureAwait(false);
-            var distinctResult = result.Distinct();
-
-
-            var results = distinctResult.Select(x => $"{x.Emoji}: {x.Total}");
-
-            await ctx.Channel.SendMessageAsync(string.Join("\n", results)).ConfigureAwait(false);
-        }*/
+        
     }
 }

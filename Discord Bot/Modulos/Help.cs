@@ -36,13 +36,13 @@ namespace Discord_Bot.Modulos
                 "`say`, `tts`, `pregunta`, `elegir`\n" +
                 "\n" +
                 "Memes:\n" +
-                "`eli`, `meme`, `mutear`\n" +
+                "`eli`, `meme`, `mutear`, `waifu`\n" +
                 "\n" +
                 "Musica:\n" +
                 "`join`, `leave`, `play`, `pause`, `resume`, `stop`, `archivos`\n" +
                 "\n" +
                 "Otros:\n" +
-                "`invite`, `donar`, `ping`, `clear`";
+                "`invite`, `donar`, `ping`, `clear`, `expulsar`";
 
                 await ctx.TriggerTypingAsync();
 
@@ -92,7 +92,7 @@ namespace Discord_Bot.Modulos
                         uso = "meme";
                         break;
                     case "mutear":
-                        descripcion = "Mutea a un miembro aleatorio del canal";
+                        descripcion = "Mutea a un miembro aleatorio del canal (5 minutos de cooldown)";
                         aliases = "`f`";
                         uso = "mutear";
                         break;
@@ -142,6 +142,16 @@ namespace Discord_Bot.Modulos
                         descripcion = "Elimina una cantidad de mensajes";
                         aliases = "`c`, `borrar`";
                         uso = "clear 3";
+                        break;
+                    case "expulsar":
+                        DiscordMember eli = await ctx.Guild.GetMemberAsync(487779690468212746);
+                        descripcion = "Expulsa a un miembro del servidor";
+                        aliases = "`kick`";
+                        uso = "expulsar " + eli.Nickname;
+                        break;
+                    case "waifu":
+                        descripcion = "Te dice mi nivel de waifu";
+                        uso = "waifu";
                         break;
                     default:
                         ok = false;

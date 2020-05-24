@@ -26,6 +26,7 @@
     <PackageReference Include="DSharpPlus.Lavalink" Version="4.0.0-nightly-00697" />
     <PackageReference Include="DSharpPlus.Rest" Version="4.0.0-nightly-00697" />
     <PackageReference Include="DSharpPlus.VoiceNext" Version="4.0.0-nightly-00697" />
+    <PackageReference Include="GoogleApi" Version="3.9.10" />
     <PackageReference Include="NAudio" Version="1.10.0" />
   </ItemGroup>
 

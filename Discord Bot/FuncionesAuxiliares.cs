@@ -2,6 +2,9 @@
 using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 
 namespace Discord_Bot
@@ -63,6 +66,14 @@ namespace Discord_Bot
                 }
             }
             return false;
+        }
+
+        public string GetCancionByPosicion(int posicion)
+        {
+            string[] filePaths = Directory.GetFiles(@"C:\Users\Mariano\Music\Yumiko\");
+            string elegido = filePaths.ElementAt(posicion - 1);
+            string preString = elegido.Remove(0, 30); // Cantidad de caracteres del path original
+            return preString.Remove(preString.Length - 4);
         }
     }
 

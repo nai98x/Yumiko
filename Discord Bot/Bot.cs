@@ -69,6 +69,7 @@ namespace Discord_Bot
             Commands.RegisterCommands<Misc>();
             Commands.RegisterCommands<Musica>();
             Commands.RegisterCommands<Help>();
+            //Commands.RegisterCommands<Test>();
             //Commands.RegisterCommands<TestBotVoiceCommands>();
             //Commands.RegisterCommands<TestBotLavaCommands>();
 
@@ -99,13 +100,13 @@ namespace Discord_Bot
 
         private Task Commands_CommandExecuted(CommandExecutionEventArgs e)
         {
-            e.Context.Client.DebugLogger.LogMessage(LogLevel.Info, "Yumiko", $"{e.Context.User.Username} ejecutó el comando '{e.Command.QualifiedName}'", DateTime.Now);
+            e.Context.Client.DebugLogger.LogMessage(LogLevel.Info, e.Context.Guild.Name, $"{e.Context.User.Username} ejecutó el comando '{e.Command.QualifiedName}'", DateTime.Now);
             return Task.CompletedTask;
         }
 
         private async Task Commands_CommandErrored(CommandErrorEventArgs e)
         {
-            e.Context.Client.DebugLogger.LogMessage(LogLevel.Error, "Yumiko", $"{e.Context.User.Username} trató de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}", DateTime.Now);
+            e.Context.Client.DebugLogger.LogMessage(LogLevel.Error, e.Context.Guild.Name, $"{e.Context.User.Username} trató de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}", DateTime.Now);
             if (e.Exception is ChecksFailedException ex)
             {
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");

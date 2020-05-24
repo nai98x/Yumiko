@@ -61,8 +61,6 @@ namespace Discord_Bot.Modulos
 
             await vnext.ConnectAsync(chn);
             await ctx.RespondAsync($"Me he conectado a `{chn.Name}`");
-            vnc = vnext.GetConnection(ctx.Guild);
-            await vnc.SendSpeakingAsync(false);
         }
 
         [Command("leave")]
@@ -87,7 +85,7 @@ namespace Discord_Bot.Modulos
         }
         
         [Command("play")]
-        public async Task Play(CommandContext ctx, [RemainingText][Description("Archivo")]string archivo)
+        public async Task Play(CommandContext ctx, [Description("Archivo")]int posicion)
         {
             var vnext = ctx.Client.GetVoiceNext();
 
@@ -97,6 +95,8 @@ namespace Discord_Bot.Modulos
                 await Join(ctx, null);
                 vnc = vnext.GetConnection(ctx.Guild);
             }
+
+            string archivo = funciones.GetCancionByPosicion(posicion);
 
             string filePath = @"C:\Users\Mariano\Music\Yumiko\" + archivo + ".mp3";
 
@@ -138,11 +138,12 @@ namespace Discord_Bot.Modulos
             string[] filePaths = Directory.GetFiles(@"C:\Users\Mariano\Music\Yumiko\");
 
             string path = "";
+            int n = 1;
             foreach (string file in filePaths)
             {
                 string preString = file.Remove(0, 30); // Cantidad de caracteres del path original
-                path += preString.Remove(preString.Length-4) + "\n"; // Ultimos 4 caracteres (.mp3)
-                //path += Regex.Replace(file, @"C:\Users\Mariano\Music\Yumiko\") + "\n";
+                path += n.ToString() + "- " + preString.Remove(preString.Length-4) + "\n";
+                n++;
             }
 
             await ctx.RespondAsync(path);

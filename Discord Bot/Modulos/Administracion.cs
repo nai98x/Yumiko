@@ -33,7 +33,6 @@ namespace Discord_Bot.Modulos
         {
             if (cantidad > 99)
             {
-                //await ctx.Channel.SendMessageAsync("Advertencia: Se eliminaran unicamente 100 mensajes").ConfigureAwait(false);
                 cantidad = 99;
             }
             await ctx.Channel.DeleteMessagesAsync(await ctx.Channel.GetMessagesAsync(cantidad + 1));
@@ -42,7 +41,7 @@ namespace Discord_Bot.Modulos
         [Command("mutear")]
         [Aliases("f")]
         [Description("Mutea a un miembro aleatorio del canal")]
-        [RequirePermissions(Permissions.Administrator)]
+        [Cooldown(1,300,CooldownBucketType.Guild)]
         public async Task MutearAleatorio(CommandContext ctx)
         {
             var vnext = ctx.Client.GetVoiceNext();
@@ -55,13 +54,25 @@ namespace Discord_Bot.Modulos
             var vnc = vnext.GetConnection(ctx.Guild);
             if (vnc == null)
             {
-                await ctx.RespondAsync("No estoy conectada, baka");
-                return;
+                DiscordChannel chn = null;
+                var vstat = ctx.Member?.VoiceState;
+                if (vstat?.Channel == null && chn == null)
+                {
+                    await ctx.RespondAsync("No estas en ningun canal, baka");
+                    return;
+                }
+                if (chn == null)
+                    chn = vstat.Channel;
+
+                await vnext.ConnectAsync(chn);
+                await ctx.RespondAsync($"Me he conectado a `{chn.Name}`");
+                vnc = vnext.GetConnection(ctx.Guild);
             }
 
             if (vnc.Channel.Users.Count() == 1)
             {
                 await ctx.RespondAsync("Estoy solo yo conectada, baka");
+                return;
             }
 
             var lista = vnc.Channel.Users;
@@ -85,6 +96,22 @@ namespace Discord_Bot.Modulos
             await user.SetMuteAsync(false, "Desmutea3");
         }
 
+        [Command("expulsar")]
+        [Aliases("kick")]
+        [Description("Expulsa a un miembro del servidor")]
+        [RequirePermissions(Permissions.ManageMessages)]
+        public async Task Expulsar(CommandContext ctx, DiscordMember user)
+        {
+            if(user != null)
+            {
+                await user.RemoveAsync("Removido por la diosa Yumiko");
+                await ctx.RespondAsync(user.Nickname + " se fue BANEADISIMO");
+            }
+            else
+            {
+                await ctx.RespondAsync(ctx.Member.Mention + " menciona bien al que queres banear, pelotudo");
+            }
+        }
 
     }
 }
