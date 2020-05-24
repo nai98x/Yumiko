@@ -22,6 +22,13 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
+        [Command("test")]
+        [Description("Legendary meme")]
+        public async Task Test(CommandContext ctx, DiscordEmoji emoji)
+        {
+            await ctx.RespondAsync(emoji.Id.ToString()); // 424965118900830238
+        }
+
         [Command("eli")]
         [Description("Legendary meme")]
         public async Task Eli(CommandContext ctx)
@@ -32,17 +39,40 @@ namespace Discord_Bot.Modulos
 
             if (opcionRandom != "DORADO")
             {
-                chosenOne = "Eli'n " + opcionRandom + " | Invocado por: " + ctx.Member.Mention;
-                await ctx.Channel.SendMessageAsync(chosenOne).ConfigureAwait(false);
+                DiscordGuildEmoji emoji = await ctx.Guild.GetEmojiAsync(424965118900830238);
+                //string url = funciones.GetImagenRandomMeme();
+                EmbedFooter footer = new EmbedFooter()
+                {
+                    Text = "Invocado por " + ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")"
+                };
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Eli Acher Weitz",
+                    Color = DiscordColor.Cyan,
+                    Footer = footer,
+                    //ImageUrl = url,
+                    Description = emoji + " Eli'n " + opcionRandom + " " + emoji,
+                }).ConfigureAwait(false);
             }
             else
             {
-                chosenOne = "Te ha salido un Eli DORADOU!! " + ctx.Member.Mention + " se fue MUTEADISIMO por 1 minuto";
+                EmbedFooter footer = new EmbedFooter()
+                {
+                    Text = "Invocado por " + ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")"
+                };
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Eli Acher Weitz",
+                    Color = DiscordColor.Gold,
+                    Footer = footer,
+                    ImageUrl = "https://i.imgur.com/Y84LdKx.png",
+                    Description = "TE HA SALIDO UN ELI DORADO",
+                }).ConfigureAwait(false);
+                await ctx.RespondAsync(ctx.Member.Mention + " se fue MUTEADISIMO por 1 minuto").ConfigureAwait(false);
                 await ctx.Member.SetMuteAsync(true, "Le toco el eli dorado (MUTE)");
-                await ctx.Channel.SendMessageAsync(chosenOne).ConfigureAwait(false);
                 await Task.Delay(1000 * 60);
                 await ctx.Member.SetMuteAsync(false, "Le toco el eli dorado (UNMUTE)");
-                await ctx.Channel.SendMessageAsync(ctx.Member.Mention + " ha sido DESMUTEADISIMO").ConfigureAwait(false);
+                await ctx.RespondAsync(ctx.Member.Mention + " ha sido DESMUTEADISIMO").ConfigureAwait(false);
             }
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
