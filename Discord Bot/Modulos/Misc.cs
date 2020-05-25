@@ -97,7 +97,7 @@ namespace Discord_Bot.Modulos
                 opciones = msgResponse.Split(" ").ToList();
                 Random rnd = new Random();
                 int random = rnd.Next(opciones.Count);
-                string options = "Opciones:";
+                string options = "**Opciones:**";
                 foreach (string msj in opciones)
                 {
                     options += "\n   - " + msj;
@@ -105,8 +105,19 @@ namespace Discord_Bot.Modulos
                 await ctx.Message.DeleteAsync().ConfigureAwait(false);
                 await mensajeBot.DeleteAsync().ConfigureAwait(false);
                 await msg.Result.DeleteAsync().ConfigureAwait(false);
+
+                EmbedFooter footer = new EmbedFooter()
+                {
+                    Text = "Preguntado por " + ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")"
+                };
                 await ctx.TriggerTypingAsync();
-                await ctx.Channel.SendMessageAsync("Pregunta: " + pregunta + "\n\n" + options + "\n\nRespuesta: " + opciones[random] + "\n\nPreguntado por: " + ctx.User.Mention).ConfigureAwait(false);
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Footer = footer,
+                    Color = DiscordColor.Red,
+                    Title = "Pregunta",
+                    Description = "**Pregunta:** " + pregunta + "\n\n" + options + "\n\n**Respuesta:** " + opciones[random]
+                }).ConfigureAwait(false);
             }
             else
             {

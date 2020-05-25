@@ -136,13 +136,14 @@ namespace Discord_Bot.Modulos
         [Description("Da un listado de los temasos disponibles")]
         public async Task ListadoMusica(CommandContext ctx)
         {
-            string[] filePaths = Directory.GetFiles(@"C:\Users\Mariano\Music\Yumiko\");
+            string[] filePaths = Directory.GetFiles(ConfigurationManager.AppSettings["PathMusica"]);
+            int lenghtPath = ConfigurationManager.AppSettings["PathMusica"].Length;
 
             string path = "";
             int n = 1;
             foreach (string file in filePaths)
             {
-                string preString = file.Remove(0, 30); // Cantidad de caracteres del path original
+                string preString = file.Remove(0, lenghtPath); // Cantidad de caracteres del path original
                 path += n.ToString() + "- " + preString.Remove(preString.Length-4) + "\n";
                 n++;
             }
