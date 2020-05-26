@@ -27,7 +27,11 @@ namespace Discord_Bot.Modulos
         public async Task Ping(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ctx.Channel.SendMessageAsync(ctx.Client.Ping.ToString() + " ms").ConfigureAwait(false);
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Color = DiscordColor.Purple,
+                Description = "🏓 Pong! `" + ctx.Client.Ping.ToString() + " ms" + "`"
+            }).ConfigureAwait(false);
         }
 
         [Command("say")]
@@ -141,7 +145,7 @@ namespace Discord_Bot.Modulos
         public async Task Invite(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + "https://discordapp.com/api/oauth2/authorize?client_id=295182825521545218&scope=bot&permissions=1");
+            await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + "https://discordapp.com/api/oauth2/authorize?client_id=295182825521545218&scope=bot&permissions=200801351");
         }
         
     }

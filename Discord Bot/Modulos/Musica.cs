@@ -30,6 +30,7 @@ namespace Discord_Bot.Modulos
         private VoiceNextConnection vnc { get; set; }
 
         private List<ColaReproduccion> colaReproduccion = new List<ColaReproduccion>();
+        private bool reproduciendo { get; set; } = false;
 
         [Command("join")]
         [Aliases("entrar")]
@@ -39,6 +40,7 @@ namespace Discord_Bot.Modulos
             var vnext = ctx.Client.GetVoiceNext();
             if (vnext == null)
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
                 return;
             }
@@ -46,6 +48,7 @@ namespace Discord_Bot.Modulos
             var vnc = vnext.GetConnection(ctx.Guild);
             if (vnc != null)
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("Ya estoy conectada, baka");
                 return;
             }
@@ -53,6 +56,7 @@ namespace Discord_Bot.Modulos
             var vstat = ctx.Member?.VoiceState;
             if (vstat?.Channel == null && chn == null)
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("No estas en ningun canal, baka");
                 return;
             }
@@ -61,6 +65,7 @@ namespace Discord_Bot.Modulos
                 chn = vstat.Channel;
 
             await vnext.ConnectAsync(chn);
+            await ctx.TriggerTypingAsync();
             await ctx.RespondAsync($"Me he conectado a `{chn.Name}`");
         }
 
@@ -72,64 +77,86 @@ namespace Discord_Bot.Modulos
             var vnext = ctx.Client.GetVoiceNext();
             if (vnext == null)
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
                 return;
             }
             var vnc = vnext.GetConnection(ctx.Guild);
             if (vnc == null)
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("No estaba conectada, baka");
                 return;
             }
             vnc.Disconnect();
+            await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("Me he desconectado, no me extrañes " + ctx.Member.DisplayName + " onii-chan");
         }
         
         [Command("play")]
         public async Task Play(CommandContext ctx, [Description("Archivo")]int posicion)
         {
-            var vnext = ctx.Client.GetVoiceNext();
-
-            vnc = vnext.GetConnection(ctx.Guild);
-            if (vnc == null)
+            if (!reproduciendo)
             {
-                await Join(ctx, null);
+                var vnext = ctx.Client.GetVoiceNext();
+
                 vnc = vnext.GetConnection(ctx.Guild);
-            }
+                if (vnc == null)
+                {
+                    await Join(ctx, null);
+                    vnc = vnext.GetConnection(ctx.Guild);
+                }
 
-            string archivo = funciones.GetCancionByPosicion(posicion);
+                string archivo = funciones.GetCancionByPosicion(posicion);
 
-            string filePath = ConfigurationManager.AppSettings["PathMusica"] + archivo + ".mp3";
+                string filePath = ConfigurationManager.AppSettings["PathMusica"] + archivo + ".mp3";
 
-            if (!File.Exists(filePath))
-            {
-                await ctx.RespondAsync("No se ha encontrado el archivo");
-                return;
-            }
+                if (!File.Exists(filePath))
+                {
+                    await ctx.TriggerTypingAsync();
+                    await ctx.RespondAsync("No se ha encontrado el archivo");
+                    return;
+                }
+
+                reproduciendo = true;
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Reproduciendo " + archivo + " 🎵");
+                await vnc.SendSpeakingAsync(true);
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "ffmpeg",
+                    Arguments = $@"-i ""{filePath}"" -ac 2 -f s16le -ar 48000 pipe:1",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                };
+
+                try{
+                    var ffmpeg = Process.Start(psi);
+
+                    Id = ffmpeg.Id;
+
+                    var ffout = ffmpeg.StandardOutput.BaseStream;
+
+                    var txStream = vnc.GetTransmitStream();
+                    await ffout.CopyToAsync(txStream);
+                    await txStream.FlushAsync();
+
+                    await vnc.WaitForPlaybackFinishAsync();
+                    await vnc.SendSpeakingAsync(false);
+                    reproduciendo = false;
+                }
+                catch(Exception e){
+                    reproduciendo = false;
+                    Console.WriteLine("Excepcion: " + e.Message);
+                }
                 
-            await ctx.RespondAsync("Reproduciendo " + archivo + " 🎵");
-            await vnc.SendSpeakingAsync(true); 
-
-            var psi = new ProcessStartInfo
+            }
+            else
             {
-                FileName = "ffmpeg",
-                Arguments = $@"-i ""{filePath}"" -ac 2 -f s16le -ar 48000 pipe:1",
-                RedirectStandardOutput = true,
-                UseShellExecute = false
-            };
-            
-            var ffmpeg = Process.Start(psi);
-
-            Id = ffmpeg.Id;
-
-            var ffout = ffmpeg.StandardOutput.BaseStream;
-
-            var txStream = vnc.GetTransmitStream();
-            await ffout.CopyToAsync(txStream);
-            await txStream.FlushAsync();
-
-            await vnc.WaitForPlaybackFinishAsync(); 
-            await vnc.SendSpeakingAsync(false);
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Ya estoy reproduciendo una canción, espera un poco " + ctx.Member.DisplayName + " onii-chan");
+            }
         }
 
         [Command("archivos")]
@@ -147,7 +174,7 @@ namespace Discord_Bot.Modulos
                 path += n.ToString() + "- " + preString.Remove(preString.Length-4) + "\n";
                 n++;
             }
-
+            await ctx.TriggerTypingAsync();
             await ctx.RespondAsync(path);
         }
 
@@ -156,6 +183,7 @@ namespace Discord_Bot.Modulos
         public async Task Pause(CommandContext ctx)
         {
             vnc.Pause();
+            await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("Se pauso la wea");
         }
 
@@ -164,6 +192,7 @@ namespace Discord_Bot.Modulos
         public async Task Resume(CommandContext ctx)
         {
             await vnc.ResumeAsync();
+            await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("Se reanudo la wea");
         }
 
@@ -174,16 +203,19 @@ namespace Discord_Bot.Modulos
             var vnext = ctx.Client.GetVoiceNext();
             if (vnext == null)
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
                 return;
             }
             var vnc = vnext.GetConnection(ctx.Guild);
             if (vnc == null)
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("No estaba conectada, baka");
                 return;
             }
             vnc.Disconnect();
+            await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("Dejo de hablar si quieres b-baka");
         }
 

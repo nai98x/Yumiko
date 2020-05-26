@@ -33,14 +33,10 @@ namespace Discord_Bot.Modulos
         [Description("Legendary meme")]
         public async Task Eli(CommandContext ctx)
         {
-
             string opcionRandom = funciones.GetEliRandom();
-            string chosenOne;
-
             if (opcionRandom != "DORADO")
             {
                 DiscordGuildEmoji emoji = await ctx.Guild.GetEmojiAsync(424965118900830238);
-                //string url = funciones.GetImagenRandomMeme();
                 EmbedFooter footer = new EmbedFooter()
                 {
                     Text = "Invocado por " + ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")"
@@ -50,7 +46,6 @@ namespace Discord_Bot.Modulos
                     Title = "Eli Acher Weitz",
                     Color = DiscordColor.Cyan,
                     Footer = footer,
-                    //ImageUrl = url,
                     Description = emoji + " Eli'n " + opcionRandom + " " + emoji,
                 }).ConfigureAwait(false);
             }
@@ -110,7 +105,7 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Red,
                     Title = "Nivel de waifu",
-                    Description = "Tu nivel de husbando conmigo es de **" + waifuLevel + "%**"
+                    Description = "El nivel de husbando de **" + ctx.Member.DisplayName + "** conmigo es de **" + waifuLevel + "%**"
                     //ImageUrl = url
                 }).ConfigureAwait(false);
             }
@@ -121,7 +116,7 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Orange,
                     Title = "Nivel de waifu",
-                    Description = "Tu nivel de husbando conmigo es de **" + waifuLevel + "%**"
+                    Description = "El nivel de husbando de **" + ctx.Member.DisplayName + "** conmigo es de **" + waifuLevel + "%**"
                     //ImageUrl = url
                 }).ConfigureAwait(false);
             }
@@ -132,7 +127,7 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Yellow,
                     Title = "Nivel de waifu",
-                    Description = "Tu nivel de husbando conmigo es de **" + waifuLevel + "%**"
+                    Description = "El nivel de husbando de **" + ctx.Member.DisplayName + "** conmigo es de **" + waifuLevel + "%**"
                     //ImageUrl = url
                 }).ConfigureAwait(false);
             }
@@ -143,13 +138,12 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Green,
                     Title = "Nivel de waifu",
-                    Description = "Tu nivel de husbando conmigo es de **" + waifuLevel + "%**"
+                    Description = "El nivel de husbando de **" + ctx.Member.DisplayName + "** conmigo es de **" + waifuLevel + "%**"
                     //ImageUrl = url
                 }).ConfigureAwait(false);
             }
             await ctx.Message.DeleteAsync();
         }
-
 
     }
 }

@@ -148,7 +148,7 @@ namespace Discord_Bot.Modulos
                         DiscordMember eli = await ctx.Guild.GetMemberAsync(487779690468212746);
                         descripcion = "Expulsa a un miembro del servidor";
                         aliases = "`kick`";
-                        uso = "expulsar " + eli.Nickname;
+                        uso = "expulsar " + eli.DisplayName;
                         break;
                     case "waifu":
                         descripcion = "Te dice mi nivel de waifu";

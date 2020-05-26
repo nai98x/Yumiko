@@ -105,7 +105,7 @@ namespace Discord_Bot.Modulos
             if(user != null)
             {
                 await user.RemoveAsync("Removido por la diosa Yumiko");
-                await ctx.RespondAsync(user.Nickname + " se fue BANEADISIMO");
+                await ctx.RespondAsync(user.DisplayName + " se fue BANEADISIMO");
             }
             else
             {
