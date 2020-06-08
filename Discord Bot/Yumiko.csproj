@@ -29,9 +29,6 @@
     <None Update="application.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ffmpeg.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Lavalink.jar">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
