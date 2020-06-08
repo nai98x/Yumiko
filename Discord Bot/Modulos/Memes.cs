@@ -28,7 +28,8 @@ namespace Discord_Bot.Modulos
             string opcionRandom = funciones.GetEliRandom();
             EmbedFooter footer = new EmbedFooter()
             {
-                Text = "Invocado por " + funciones.GetFooter(ctx)
+                Text = "Invocado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
             };
             if (opcionRandom != "DORADO")
             {
@@ -37,7 +38,7 @@ namespace Discord_Bot.Modulos
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Eli Acher Weitz",
-                    Color = DiscordColor.Cyan,
+                    Color = new DiscordColor(78, 63, 96),
                     Footer = footer,
                     Description = emoji + " Eli'n " + opcionRandom + " " + emoji,
                 }).ConfigureAwait(false);
@@ -68,12 +69,14 @@ namespace Discord_Bot.Modulos
             string url = funciones.GetImagenRandomMeme();
             EmbedFooter footer = new EmbedFooter()
             {
-                Text = "Imagen posteada por " + funciones.GetFooter(ctx)
+                Text = "Imagen posteada por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
             };
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = footer,
-                ImageUrl = url
+                ImageUrl = url,
+                Color = new DiscordColor(78, 63, 96)
             }).ConfigureAwait(false);
         }
 
@@ -91,7 +94,8 @@ namespace Discord_Bot.Modulos
             int waifuLevel = rnd.Next(101);
             EmbedFooter footer = new EmbedFooter()
             {
-                Text = "Preguntado por " + funciones.GetFooter(ctx)
+                Text = "Preguntado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
             };
             if(waifuLevel < 25)
             {

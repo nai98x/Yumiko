@@ -114,28 +114,44 @@ namespace Discord_Bot.Modulos
         }
 
         [Command, Description("Reproduce una canción.")]
-        public async Task PlayAsync(CommandContext ctx, [RemainingText] Uri uri)
+        public async Task PlayAsync(CommandContext ctx, [RemainingText] String query)
         {
             if (this.LavalinkVoice == null)
                 return;
 
             this.ContextChannel = ctx.Channel;
 
-            var trackLoad = await this.Lavalink.Rest.GetTracksAsync(uri);
-            var track = trackLoad.Tracks.First();
-            await this.LavalinkVoice.PlayAsync(track);
+            Uri uri;
+            string titulo;
+            if (Uri.IsWellFormedUriString(query, UriKind.Absolute))
+            {
+                uri = new Uri(query);
+                var trackLoad = await this.Lavalink.Rest.GetTracksAsync(uri);
+                var track = trackLoad.Tracks.First();
+                titulo = track.Title;
+                await this.LavalinkVoice.PlayAsync(track);
+            }
+            else
+            {
+                var trackLoad = await this.Lavalink.Rest.GetTracksAsync(query);
+                var track = trackLoad.Tracks.First();
+                uri = track.Uri;
+                titulo = track.Title;
+                await this.LavalinkVoice.PlayAsync(track);
+            }
 
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
             EmbedFooter footer = new EmbedFooter()
             {
-                Text = "Invocado por " + funciones.GetFooter(ctx)
+                Text = "Invocado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
             };
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = footer,
-                Color = DiscordColor.Purple,
+                Color = new DiscordColor(78, 63, 96),
                 Title = "Play",
-                Description = "Se está reproduciendo [" + track.Title + "](" + uri + ")",
+                Description = "Se está reproduciendo [" + titulo + "](" + uri + ")",
                 Timestamp = DateTime.Now
             }).ConfigureAwait(false);
         }
@@ -273,13 +289,15 @@ namespace Discord_Bot.Modulos
         {
             EmbedFooter footer = new EmbedFooter()
             {
-                Text = "Invocado por " + funciones.GetFooter(ctx)
+                Text = "Invocado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
             };
+            await ctx.Message.DeleteAsync().ConfigureAwait(false);
             await ctx.TriggerTypingAsync();
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = footer,
-                Color = DiscordColor.Red,
+                Color = new DiscordColor(78, 63, 96),
                 Title = "EARRAPE",
                 ImageUrl = "https://sound.peal.io/ps/covers/000/007/954/large/BF37E882-92E5-4E45-9DBE-A46E195D1601.gif",
                 Timestamp = DateTime.Now

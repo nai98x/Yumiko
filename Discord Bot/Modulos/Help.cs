@@ -51,7 +51,7 @@ namespace Discord_Bot.Modulos
                 {
                     Title = "Guia de comandos",
                     Description = ayuda,
-                    Color = DiscordColor.Purple
+                    Color = new DiscordColor(78, 63, 96)
                 };
                 await ctx.RespondAsync(null, false, embed);
             }

@@ -29,7 +29,7 @@ namespace Discord_Bot.Modulos
             await ctx.TriggerTypingAsync();
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
-                Color = DiscordColor.Purple,
+                Color = new DiscordColor(78, 63, 96),
                 Description = "🏓 Pong! `" + ctx.Client.Ping.ToString() + " ms" + "`"
             }).ConfigureAwait(false);
         }
@@ -60,7 +60,8 @@ namespace Discord_Bot.Modulos
             int random = rnd.Next(2);
             EmbedFooter footer = new EmbedFooter()
             {
-                Text = "Preguntado por " + funciones.GetFooter(ctx)
+                Text = "Preguntado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
             };
             switch (random)
             {
@@ -112,13 +113,14 @@ namespace Discord_Bot.Modulos
 
                 EmbedFooter footer = new EmbedFooter()
                 {
-                    Text = "Preguntado por " + funciones.GetFooter(ctx)
+                    Text = "Preguntado por " + funciones.GetFooter(ctx),
+                    IconUrl = ctx.Member.AvatarUrl
                 };
                 await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = footer,
-                    Color = DiscordColor.Red,
+                    Color = new DiscordColor(78, 63, 96),
                     Title = "Pregunta",
                     Description = "**Pregunta:** " + pregunta + "\n\n" + options + "\n\n**Respuesta:** " + opciones[random]
                 }).ConfigureAwait(false);
