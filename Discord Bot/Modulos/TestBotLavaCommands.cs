@@ -21,7 +21,7 @@ namespace Discord_Bot.Modulos
         private DiscordChannel ContextChannel { get; set; }
 
         [Command, Description("Connects to Lavalink")]
-        public async Task ConnectAsync(CommandContext ctx, string hostname, int port, string password)
+        public async Task ConnectAsync(CommandContext ctx)
         {
             if (this.Lavalink != null)
                 return;
@@ -33,12 +33,19 @@ namespace Discord_Bot.Modulos
                 return;
             }
 
-            this.Lavalink = await lava.ConnectAsync(new LavalinkConfiguration
+            try {
+                this.Lavalink = await lava.ConnectAsync(new LavalinkConfiguration
+                {
+                    RestEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
+                    SocketEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
+                    Password = "biguwu"
+                }).ConfigureAwait(false);
+            }
+            catch(Exception e)
             {
-                RestEndpoint = new ConnectionEndpoint(hostname, port),
-                SocketEndpoint = new ConnectionEndpoint(hostname, port),
-                Password = password
-            }).ConfigureAwait(false);
+                await ctx.RespondAsync(e.Message).ConfigureAwait(false);
+            }
+            
             this.Lavalink.Disconnected += this.Lavalink_Disconnected;
             await ctx.RespondAsync("Connected to lavalink node.").ConfigureAwait(false);
         }

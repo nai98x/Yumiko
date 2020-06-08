@@ -22,8 +22,8 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        [Command("help")]
-        [Aliases("ayuda")]
+        [Command("ayuda")]
+        //Aliases("ayuda")]
         [Description("Ayuda wey")]
         public async Task Ayuda(CommandContext ctx, [RemainingText]string comando)
         {

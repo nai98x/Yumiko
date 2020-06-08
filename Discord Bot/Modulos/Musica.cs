@@ -17,8 +17,6 @@ using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using DSharpPlus.VoiceNext;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using NAudio.Wave;
-using NAudio.CoreAudioApi;
 using System.Configuration;
 
 namespace Discord_Bot.Modulos

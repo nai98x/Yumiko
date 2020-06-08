@@ -6,6 +6,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Lavalink;
+using DSharpPlus.Net;
 using DSharpPlus.VoiceNext;
 using System;
 using System.Configuration;
@@ -46,7 +47,7 @@ namespace Discord_Bot
                 EnableMentionPrefix = true,
                 EnableDms = false,
                 DmHelp = false,
-                EnableDefaultHelp = false
+                EnableDefaultHelp = true
             };
 
             Commands = Client.UseCommandsNext(commandsConfig);
@@ -54,15 +55,14 @@ namespace Discord_Bot
             this.Commands.CommandExecuted += this.Commands_CommandExecuted;
             this.Commands.CommandErrored += this.Commands_CommandErrored;
 
-            /*var lavaconfig = new LavalinkConfiguration
+            var lavaconfig = new LavalinkConfiguration
             {
                 RestEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
-                SocketEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 80 },
-                Password = "youshallnotpass"
+                SocketEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
+                Password = "biguwu"
             };
 
             Lavalink = Client.UseLavalink();
-            await Lavalink.ConnectAsync(lavaconfig);*/
 
             Commands.RegisterCommands<Administracion>();
             Commands.RegisterCommands<Memes>();
@@ -71,12 +71,13 @@ namespace Discord_Bot
             Commands.RegisterCommands<Help>();
             //Commands.RegisterCommands<Test>();
             //Commands.RegisterCommands<TestBotVoiceCommands>();
-            //Commands.RegisterCommands<TestBotLavaCommands>();
+            Commands.RegisterCommands<TestBotLavaCommands>();
 
             await Client.ConnectAsync();
 
             await Task.Delay(1000); // esperar a que autentifique xd
             await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = ConfigurationManager.AppSettings["Prefix"]  + "help"}, UserStatus.Online);
+            //await Lavalink.ConnectAsync(lavaconfig);
             await Task.Delay(-1);
         }
 

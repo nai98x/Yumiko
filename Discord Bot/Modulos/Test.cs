@@ -17,7 +17,6 @@ using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using DSharpPlus.VoiceNext;
 using Newtonsoft.Json;
 using System.Web;
-using GoogleApi;
 
 namespace Discord_Bot.Modulos
 {
