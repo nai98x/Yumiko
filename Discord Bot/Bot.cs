@@ -22,6 +22,8 @@ namespace Discord_Bot
         public DiscordActivity Activity { get; private set; }
         public LavalinkExtension Lavalink { get; private set; }
 
+        private FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+
         public async Task RunAsync()
         {
             var Config = new DiscordConfiguration

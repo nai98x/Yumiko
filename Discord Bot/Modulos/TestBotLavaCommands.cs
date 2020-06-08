@@ -23,15 +23,6 @@ namespace Discord_Bot.Modulos
 
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        [Command ("SConnect")]
-        public async Task SuperConnect(CommandContext ctx)
-        {
-            await ConnectAsync(ctx);
-            await JoinAsync(ctx);
-            await LeaveAsync(ctx);
-            await JoinAsync(ctx);
-        }
-
         [Command, Description("Connects to Lavalink")]
         public async Task ConnectAsync(CommandContext ctx)
         {
