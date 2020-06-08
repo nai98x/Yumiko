@@ -10,15 +10,27 @@ using DSharpPlus.Entities;
 using DSharpPlus.Lavalink;
 using DSharpPlus.Lavalink.EventArgs;
 using DSharpPlus.Net;
+using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot.Modulos
 {
-    [Group("lavalink"), Description("Provides audio playback via lavalink."), Aliases("lava")]
+    [Group("lavalink"), Description("Provides audio playback via lavalink."), Aliases("lava", "l")]
     public class TestBotLavaCommands : BaseCommandModule
     {
         private LavalinkNodeConnection Lavalink { get; set; }
         private LavalinkGuildConnection LavalinkVoice { get; set; }
         private DiscordChannel ContextChannel { get; set; }
+
+        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+
+        [Command ("SConnect")]
+        public async Task SuperConnect(CommandContext ctx)
+        {
+            await ConnectAsync(ctx);
+            await JoinAsync(ctx);
+            await LeaveAsync(ctx);
+            await JoinAsync(ctx);
+        }
 
         [Command, Description("Connects to Lavalink")]
         public async Task ConnectAsync(CommandContext ctx)
@@ -29,25 +41,20 @@ namespace Discord_Bot.Modulos
             var lava = ctx.Client.GetLavalink();
             if (lava == null)
             {
-                await ctx.RespondAsync("Lavalink is not enabled.").ConfigureAwait(false);
+                await ctx.RespondAsync("Lavalink no está configurado correctamente.").ConfigureAwait(false);
                 return;
             }
 
-            try {
-                this.Lavalink = await lava.ConnectAsync(new LavalinkConfiguration
-                {
-                    RestEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
-                    SocketEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
-                    Password = "biguwu"
-                }).ConfigureAwait(false);
-            }
-            catch(Exception e)
+            this.Lavalink = await lava.ConnectAsync(new LavalinkConfiguration
             {
-                await ctx.RespondAsync(e.Message).ConfigureAwait(false);
-            }
+                RestEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
+                SocketEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
+                Password = "shallnotpass"
+            }).ConfigureAwait(false);
+
             
             this.Lavalink.Disconnected += this.Lavalink_Disconnected;
-            await ctx.RespondAsync("Connected to lavalink node.").ConfigureAwait(false);
+            await ctx.RespondAsync("Conectada a lavalink.").ConfigureAwait(false);
         }
 
         private Task Lavalink_Disconnected(NodeDisconnectedEventArgs e)
@@ -66,13 +73,13 @@ namespace Discord_Bot.Modulos
             var lava = ctx.Client.GetLavalink();
             if (lava == null)
             {
-                await ctx.RespondAsync("Lavalink is not enabled.").ConfigureAwait(false);
+                await ctx.RespondAsync("Lavalink no está configurado correctamente.").ConfigureAwait(false);
                 return;
             }
 
             await this.Lavalink.StopAsync().ConfigureAwait(false);
             this.Lavalink = null;
-            await ctx.RespondAsync("Disconnected from Lavalink node.").ConfigureAwait(false);
+            await ctx.RespondAsync("Desconectada de Lavalink.").ConfigureAwait(false);
         }
 
         [Command, Description("Joins a voice channel.")]
@@ -80,20 +87,20 @@ namespace Discord_Bot.Modulos
         {
             if (this.Lavalink == null)
             {
-                await ctx.RespondAsync("Lavalink is not connected.").ConfigureAwait(false);
+                await ctx.RespondAsync("Falta conectar a Lavalink.").ConfigureAwait(false);
                 return;
             }
 
             var vc = chn ?? ctx.Member.VoiceState.Channel;
             if (vc == null)
             {
-                await ctx.RespondAsync("You are not in a voice channel or you did not specify a voice channel.").ConfigureAwait(false);
+                await ctx.RespondAsync("No estas en un canal de voz.").ConfigureAwait(false);
                 return;
             }
 
             this.LavalinkVoice = await this.Lavalink.ConnectAsync(vc);
             this.LavalinkVoice.PlaybackFinished += this.LavalinkVoice_PlaybackFinished;
-            await ctx.RespondAsync("Connected.").ConfigureAwait(false);
+            await ctx.RespondAsync("Me he conectado.").ConfigureAwait(false);
         }
 
         private async Task LavalinkVoice_PlaybackFinished(TrackFinishEventArgs e)
@@ -101,7 +108,7 @@ namespace Discord_Bot.Modulos
             if (this.ContextChannel == null)
                 return;
 
-            await this.ContextChannel.SendMessageAsync($"Playback of {Formatter.Bold(Formatter.Sanitize(e.Track.Title))} by {Formatter.Bold(Formatter.Sanitize(e.Track.Author))} finished.").ConfigureAwait(false);
+            await this.ContextChannel.SendMessageAsync($"La reproducción de {Formatter.Bold(Formatter.Sanitize(e.Track.Title))} ha terminado.").ConfigureAwait(false);
             this.ContextChannel = null;
         }
 
@@ -113,7 +120,7 @@ namespace Discord_Bot.Modulos
 
             await this.LavalinkVoice.DisconnectAsync().ConfigureAwait(false);
             this.LavalinkVoice = null;
-            await ctx.RespondAsync("Disconnected.").ConfigureAwait(false);
+            await ctx.RespondAsync("No me extrañes " + ctx.Member.DisplayName + " onii-chan.").ConfigureAwait(false);
         }
 
         [Command, Description("Queues tracks for playback.")]
@@ -128,7 +135,20 @@ namespace Discord_Bot.Modulos
             var track = trackLoad.Tracks.First();
             await this.LavalinkVoice.PlayAsync(track);
 
-            await ctx.RespondAsync($"Now playing: {Formatter.Bold(Formatter.Sanitize(track.Title))} by {Formatter.Bold(Formatter.Sanitize(track.Author))}.").ConfigureAwait(false);
+            //await ctx.RespondAsync($"Reproduciendo: {Formatter.Bold(Formatter.Sanitize(track.Title))}.").ConfigureAwait(false);
+            await ctx.Message.DeleteAsync().ConfigureAwait(false);
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Preguntado por " + funciones.GetFooter(ctx)
+            };
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Footer = footer,
+                Color = DiscordColor.Green,
+                Title = track.Title,
+                Url = uri.ToString(),
+                Timestamp = DateTime.Now
+            }).ConfigureAwait(false);
         }
 
         [Command, Description("Queues tracks for playback.")]
@@ -141,7 +161,7 @@ namespace Discord_Bot.Modulos
             var track = trackLoad.Tracks.First();
             await this.LavalinkVoice.PlayAsync(track);
 
-            await ctx.RespondAsync($"Now playing: {Formatter.Bold(Formatter.Sanitize(track.Title))} by {Formatter.Bold(Formatter.Sanitize(track.Author))}.").ConfigureAwait(false);
+            await ctx.RespondAsync($"Reproduciendo: {Formatter.Bold(Formatter.Sanitize(track.Title))}.").ConfigureAwait(false);
         }
 
         [Command, Description("Queues track for playback.")]
@@ -154,7 +174,7 @@ namespace Discord_Bot.Modulos
             var track = result.Tracks.First();
             await this.LavalinkVoice.PlayAsync(track);
 
-            await ctx.RespondAsync($"Now playing: {Formatter.Bold(Formatter.Sanitize(track.Title))} by {Formatter.Bold(Formatter.Sanitize(track.Author))}.");
+            await ctx.RespondAsync($"Reproduciendo: {Formatter.Bold(Formatter.Sanitize(track.Title))}.");
         }
 
         [Command, Description("Queues tracks for playback.")]
@@ -167,7 +187,7 @@ namespace Discord_Bot.Modulos
             var track = trackLoad.Tracks.First();
             await this.LavalinkVoice.PlayPartialAsync(track, start, stop);
 
-            await ctx.RespondAsync($"Now playing: {Formatter.Bold(Formatter.Sanitize(track.Title))} by {Formatter.Bold(Formatter.Sanitize(track.Author))}.").ConfigureAwait(false);
+            await ctx.RespondAsync($"Reproduciendo: {Formatter.Bold(Formatter.Sanitize(track.Title))}.").ConfigureAwait(false);
         }
 
         [Command, Description("Pauses playback.")]
@@ -177,7 +197,7 @@ namespace Discord_Bot.Modulos
                 return;
 
             await this.LavalinkVoice.PauseAsync();
-            await ctx.RespondAsync("Paused.").ConfigureAwait(false);
+            await ctx.RespondAsync("Se ha pausado la reproducción.").ConfigureAwait(false);
         }
 
         [Command, Description("Resumes playback.")]
@@ -187,7 +207,7 @@ namespace Discord_Bot.Modulos
                 return;
 
             await this.LavalinkVoice.ResumeAsync();
-            await ctx.RespondAsync("Resumed.").ConfigureAwait(false);
+            await ctx.RespondAsync("Se ha reanudado la reproducción.").ConfigureAwait(false);
         }
 
         [Command, Description("Stops playback.")]
@@ -197,7 +217,7 @@ namespace Discord_Bot.Modulos
                 return;
 
             await this.LavalinkVoice.StopAsync();
-            await ctx.RespondAsync("Stopped.").ConfigureAwait(false);
+            await ctx.RespondAsync("Se ha parado la reproducción.").ConfigureAwait(false);
         }
 
         [Command, Description("Seeks in the current track.")]
@@ -207,7 +227,7 @@ namespace Discord_Bot.Modulos
                 return;
 
             await this.LavalinkVoice.SeekAsync(position);
-            await ctx.RespondAsync($"Seeking to {position}.").ConfigureAwait(false);
+            await ctx.RespondAsync($"Moviendo al minuto {position}.").ConfigureAwait(false);
         }
 
         [Command, Description("Changes playback volume.")]
@@ -217,7 +237,7 @@ namespace Discord_Bot.Modulos
                 return;
 
             await this.LavalinkVoice.SetVolumeAsync(volume);
-            await ctx.RespondAsync($"Volume set to {volume}%.").ConfigureAwait(false);
+            await ctx.RespondAsync($"El volumen se ha cambiado a {volume}%.").ConfigureAwait(false);
         }
 
         [Command, Description("Shows what's being currently played."), Aliases("np")]
@@ -228,7 +248,7 @@ namespace Discord_Bot.Modulos
 
             var state = this.LavalinkVoice.CurrentState;
             var track = state.CurrentTrack;
-            await ctx.RespondAsync($"Now playing: {Formatter.Bold(Formatter.Sanitize(track.Title))} by {Formatter.Bold(Formatter.Sanitize(track.Author))} [{state.PlaybackPosition}/{track.Length}].").ConfigureAwait(false);
+            await ctx.RespondAsync($"Reproduciendo: {Formatter.Bold(Formatter.Sanitize(track.Title))} by {Formatter.Bold(Formatter.Sanitize(track.Author))} [{state.PlaybackPosition}/{track.Length}].").ConfigureAwait(false);
         }
 
         [Command, Description("Sets or resets equalizer settings."), Aliases("eq")]
@@ -238,7 +258,7 @@ namespace Discord_Bot.Modulos
                 return;
 
             await this.LavalinkVoice.ResetEqualizerAsync();
-            await ctx.RespondAsync("All equalizer bands were reset.").ConfigureAwait(false);
+            await ctx.RespondAsync("Equalizador reseteado.").ConfigureAwait(false);
         }
 
         [Command]
