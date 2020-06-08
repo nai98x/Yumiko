@@ -1,4 +1,5 @@
 ﻿using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
@@ -76,6 +77,11 @@ namespace Discord_Bot
             string elegido = filePaths.ElementAt(posicion - 1);
             string preString = elegido.Remove(0, lenghtPath); // Cantidad de caracteres del path original
             return preString.Remove(preString.Length - 4);
+        }
+
+        public string GetFooter(CommandContext ctx)
+        {
+            return ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")";
         }
     }
 

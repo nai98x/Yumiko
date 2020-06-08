@@ -166,16 +166,20 @@ namespace Discord_Bot.Modulos
             string[] filePaths = Directory.GetFiles(ConfigurationManager.AppSettings["PathMusica"]);
             int lenghtPath = ConfigurationManager.AppSettings["PathMusica"].Length;
 
-            string path = "";
+            string listado = "";
             int n = 1;
             foreach (string file in filePaths)
             {
-                string preString = file.Remove(0, lenghtPath); // Cantidad de caracteres del path original
-                path += n.ToString() + "- " + preString.Remove(preString.Length-4) + "\n";
+                string preString = file.Remove(0, lenghtPath);
+                listado += n.ToString() + "- " + preString.Remove(preString.Length-4) + "\n";
                 n++;
             }
             await ctx.TriggerTypingAsync();
-            await ctx.RespondAsync(path);
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Color = DiscordColor.Purple,
+                Description = listado
+            }).ConfigureAwait(false);
         }
 
         [Command("pause")]

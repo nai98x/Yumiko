@@ -47,6 +47,7 @@ namespace Discord_Bot.Modulos
             var vnext = ctx.Client.GetVoiceNext();
             if (vnext == null)
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("Error en la configuración del bot (VoiceNext)");
                 return;
             }
@@ -58,6 +59,7 @@ namespace Discord_Bot.Modulos
                 var vstat = ctx.Member?.VoiceState;
                 if (vstat?.Channel == null && chn == null)
                 {
+                    await ctx.TriggerTypingAsync();
                     await ctx.RespondAsync("No estas en ningun canal, baka");
                     return;
                 }
@@ -65,12 +67,14 @@ namespace Discord_Bot.Modulos
                     chn = vstat.Channel;
 
                 await vnext.ConnectAsync(chn);
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync($"Me he conectado a `{chn.Name}`");
                 vnc = vnext.GetConnection(ctx.Guild);
             }
 
             if (vnc.Channel.Users.Count() == 1)
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("Estoy solo yo conectada, baka");
                 return;
             }
@@ -89,9 +93,11 @@ namespace Discord_Bot.Modulos
                 }
             }
 
+            await ctx.TriggerTypingAsync();
             await ctx.Channel.SendMessageAsync(user.Mention + " se fue MUTEADISIMO").ConfigureAwait(false);
             await user.SetMuteAsync(true, "Muteadisimo man");
             await Task.Delay(1000 * 60);
+            await ctx.TriggerTypingAsync();
             await ctx.Channel.SendMessageAsync(user.Mention + " ha sido DESMUTEADISIMO").ConfigureAwait(false);
             await user.SetMuteAsync(false, "Desmutea3");
         }
@@ -105,12 +111,36 @@ namespace Discord_Bot.Modulos
             if(user != null)
             {
                 await user.RemoveAsync("Removido por la diosa Yumiko");
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync(user.DisplayName + " se fue BANEADISIMO");
             }
             else
             {
+                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync(ctx.Member.Mention + " menciona bien al que queres banear, pelotudo");
             }
+        }
+
+        [Command("reiniciar")]
+        [Aliases("restart")]
+        [Description("Reinicia a Yumiko")]
+        [RequireOwner]
+        public async Task Reiniciar(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await ctx.RespondAsync("Reiniciando..");
+            System.Diagnostics.Process.Start(System.AppDomain.CurrentDomain.FriendlyName);
+            Environment.Exit(0);
+        }
+
+        [Command("cerrar")]
+        [Description("Apaga a Yumiko")]
+        [RequireOwner]
+        public async Task Stop(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await ctx.RespondAsync("Me voy onii-chan..");
+            Environment.Exit(0);
         }
 
     }

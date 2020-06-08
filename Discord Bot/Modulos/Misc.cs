@@ -60,7 +60,7 @@ namespace Discord_Bot.Modulos
             int random = rnd.Next(2);
             EmbedFooter footer = new EmbedFooter()
             {
-                Text = "Preguntado por " + ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" +ctx.Member.Discriminator + ")"
+                Text = "Preguntado por " + funciones.GetFooter(ctx)
             };
             switch (random)
             {
@@ -112,7 +112,7 @@ namespace Discord_Bot.Modulos
 
                 EmbedFooter footer = new EmbedFooter()
                 {
-                    Text = "Preguntado por " + ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")"
+                    Text = "Preguntado por " + funciones.GetFooter(ctx)
                 };
                 await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder

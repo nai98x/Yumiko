@@ -22,25 +22,19 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        [Command("test")]
-        [Description("Legendary meme")]
-        public async Task Test(CommandContext ctx, DiscordEmoji emoji)
-        {
-            await ctx.RespondAsync(emoji.Id.ToString()); // 424965118900830238
-        }
-
         [Command("eli")]
         [Description("Legendary meme")]
         public async Task Eli(CommandContext ctx)
         {
             string opcionRandom = funciones.GetEliRandom();
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Invocado por " + funciones.GetFooter(ctx)
+            };
             if (opcionRandom != "DORADO")
             {
                 DiscordGuildEmoji emoji = await ctx.Guild.GetEmojiAsync(424965118900830238);
-                EmbedFooter footer = new EmbedFooter()
-                {
-                    Text = "Invocado por " + ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")"
-                };
+                
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Eli Acher Weitz",
@@ -51,10 +45,6 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                EmbedFooter footer = new EmbedFooter()
-                {
-                    Text = "Invocado por " + ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")"
-                };
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Eli Acher Weitz",
@@ -79,7 +69,7 @@ namespace Discord_Bot.Modulos
             string url = funciones.GetImagenRandomMeme();
             EmbedFooter footer = new EmbedFooter()
             {
-                Text = "Imagen posteada por " + ctx.Member.DisplayName
+                Text = "Imagen posteada por " + funciones.GetFooter(ctx)
             };
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
@@ -90,13 +80,19 @@ namespace Discord_Bot.Modulos
 
         [Command("waifu")]
         [Description("Te digo si soy tu waifu")]
-        public async Task Waifu(CommandContext ctx)
+        public async Task Waifu(CommandContext ctx, DiscordMember miembro = null)
         {
+            string nombre = "";
+            if (miembro == null)
+                nombre = ctx.Member.DisplayName;
+            else
+                nombre = miembro.DisplayName;
+
             Random rnd = new Random();
             int waifuLevel = rnd.Next(101);
             EmbedFooter footer = new EmbedFooter()
             {
-                Text = "Preguntado por " + ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")"
+                Text = "Preguntado por " + funciones.GetFooter(ctx)
             };
             if(waifuLevel < 25)
             {
@@ -105,7 +101,7 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Red,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + ctx.Member.DisplayName + "** conmigo es de **" + waifuLevel + "%**"
+                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**"
                     //ImageUrl = url
                 }).ConfigureAwait(false);
             }
@@ -116,7 +112,7 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Orange,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + ctx.Member.DisplayName + "** conmigo es de **" + waifuLevel + "%**"
+                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**"
                     //ImageUrl = url
                 }).ConfigureAwait(false);
             }
@@ -127,7 +123,7 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Yellow,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + ctx.Member.DisplayName + "** conmigo es de **" + waifuLevel + "%**"
+                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**"
                     //ImageUrl = url
                 }).ConfigureAwait(false);
             }
@@ -138,7 +134,7 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Green,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + ctx.Member.DisplayName + "** conmigo es de **" + waifuLevel + "%**"
+                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**"
                     //ImageUrl = url
                 }).ConfigureAwait(false);
             }

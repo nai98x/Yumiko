@@ -43,7 +43,7 @@ namespace Discord_Bot.Modulos
                 "`join`, `leave`, `play`, `pause`, `resume`, `stop`, `archivos`\n" +
                 "\n" +
                 "Otros:\n" +
-                "`invite`, `donar`, `ping`, `clear`, `expulsar`";
+                "`invite`, `donar`, `ping`, `clear`, `expulsar`, `reiniciar`";
 
                 await ctx.TriggerTypingAsync();
 
@@ -153,6 +153,15 @@ namespace Discord_Bot.Modulos
                     case "waifu":
                         descripcion = "Te dice mi nivel de waifu";
                         uso = "waifu";
+                        break;
+                    case "reiniciar":
+                        descripcion = "Reinicia a Yumiko";
+                        aliases = "`restart`";
+                        uso = "reiniciar";
+                        break;
+                    case "cerrar":
+                        descripcion = "Apaga a Yumiko";
+                        uso = "cerrar";
                         break;
                     default:
                         ok = false;
