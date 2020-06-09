@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using DSharpPlus.VoiceNext;
+using System.Configuration;
 
 namespace Discord_Bot.Modulos
 {
@@ -138,7 +139,7 @@ namespace Discord_Bot.Modulos
         public async Task Donate(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ctx.RespondAsync("Puedes apoyarme a comprarme una dakimakura en:\n" + "https://www.paypal.me/marianoburguete");
+            await ctx.RespondAsync("Puedes apoyarme a comprarme una dakimakura en:\n" + ConfigurationManager.AppSettings["Donar"]);
         }
 
         [Command("invite")]
@@ -147,7 +148,7 @@ namespace Discord_Bot.Modulos
         public async Task Invite(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + "https://discordapp.com/api/oauth2/authorize?client_id=295182825521545218&scope=bot&permissions=200801351");
+            await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
         }
         
     }

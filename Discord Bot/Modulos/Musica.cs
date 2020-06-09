@@ -312,7 +312,7 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync($"Band {band} adjusted by {gain}").ConfigureAwait(false);
         }
 
-        [Command("archivos")]
+        [Command("archivos"), Aliases("listado")]
         [Description("Da un listado de los temasos disponibles")]
         public async Task ListadoMusica(CommandContext ctx)
         {

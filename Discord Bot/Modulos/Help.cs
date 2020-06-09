@@ -31,28 +31,21 @@ namespace Discord_Bot.Modulos
             if (comando == null)
             {
                 ayuda =
-                "El prefix del server es `"+ ConfigurationManager.AppSettings["Prefix"] + "`\n" +
-                "\n" +
-                "Interactuar\n" +
-                "`say`, `tts`, `pregunta`, `elegir`\n" +
-                "\n" +
-                "Memes:\n" +
-                "`eli`, `meme`, `mutear`, `waifu`\n" +
-                "\n" +
-                "Musica:\n" +
-                "`join`, `leave`, `play`, `pause`, `resume`, `stop`, `archivos`\n" +
-                "\n" +
-                "Otros:\n" +
-                "`invite`, `donar`, `ping`, `clear`, `expulsar`, `reiniciar`";
+                "El prefix del servidor es `"+ ConfigurationManager.AppSettings["Prefix"] + "`\n" +
+                "Links de utilidad: [Invitación](" + ConfigurationManager.AppSettings["Invite"] + "), [Donar](" + ConfigurationManager.AppSettings["Donar"] + ")";
 
                 await ctx.TriggerTypingAsync();
 
-                DiscordEmbed embed = new DiscordEmbedBuilder
+                var embed = new DiscordEmbedBuilder
                 {
                     Title = "Guia de comandos",
                     Description = ayuda,
                     Color = new DiscordColor(78, 63, 96)
                 };
+                embed.AddField("✍️ Interactuar", "`say`, `tts`, `pregunta`, `elegir`");
+                embed.AddField("😂 Memes", "`eli`, `meme`, `mutear`, `waifu`");
+                embed.AddField("🎵 Musica", "`join`, `leave`, `play`, `pause`, `resume`, `stop`, `archivos`");
+                embed.AddField("☕️ Otros", "`invite`, `donar`, `ping`, `clear`, `expulsar`, `reiniciar`");
                 await ctx.RespondAsync(null, false, embed);
             }
             else
