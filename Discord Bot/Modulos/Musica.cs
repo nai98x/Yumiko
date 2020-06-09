@@ -54,7 +54,7 @@ namespace Discord_Bot.Modulos
             return Task.CompletedTask;
         }
 
-        [Command, Description("Se desconecta de Lavalink")]
+        [Command, Description("Se desconecta de Lavalink"), Hidden]
         public async Task DisconnectAsync(CommandContext ctx)
         {
             if (this.Lavalink == null)

@@ -58,18 +58,6 @@ namespace Discord_Bot
             return options[rnd.Next(options.Length)];
         }
 
-        public Boolean TienePermisos(Permissions permiso, IEnumerable<DiscordRole> roles)
-        {
-            foreach (DiscordRole role in roles)
-            {
-                if (role.CheckPermission(Permissions.ManageMessages) == PermissionLevel.Allowed)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public string GetCancionByPosicion(int posicion)
         {
             int lenghtPath = ConfigurationManager.AppSettings["PathMusica"].Length;
@@ -87,7 +75,7 @@ namespace Discord_Bot
 
     public class ColaReproduccion
     {
-        public int posicion { get; set; }
-        public string archivo { get; set; }
+        public int Posicion { get; set; }
+        public string Archivo { get; set; }
     }
 }

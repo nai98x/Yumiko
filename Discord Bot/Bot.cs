@@ -22,7 +22,7 @@ namespace Discord_Bot
         public DiscordActivity Activity { get; private set; }
         public LavalinkExtension Lavalink { get; private set; }
 
-        private FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         public async Task RunAsync()
         {
@@ -37,8 +37,8 @@ namespace Discord_Bot
             Client = new DiscordClient(Config);
 
             Client.Ready += OnClientReady;
-            Client.GuildAvailable += this.Client_GuildAvailable;
-            Client.ClientErrored += this.Client_ClientError;
+            Client.GuildAvailable += Client_GuildAvailable;
+            Client.ClientErrored += Client_ClientError;
 
             Client.UseInteractivity(new InteractivityConfiguration());
             Client.UseVoiceNext();
@@ -49,7 +49,7 @@ namespace Discord_Bot
                 EnableMentionPrefix = true,
                 EnableDms = false,
                 DmHelp = false,
-                EnableDefaultHelp = true
+                EnableDefaultHelp = false
             };
 
             Commands = Client.UseCommandsNext(commandsConfig);
@@ -121,6 +121,7 @@ namespace Discord_Bot
             }
             if (e.Exception is ChecksFailedException ex)
             {
+                //ex.
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
                 var embed = new DiscordEmbedBuilder
                 {

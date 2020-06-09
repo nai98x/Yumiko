@@ -22,8 +22,8 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        [Command("ayuda")]
-        //Aliases("ayuda")]
+        [Command("help")]
+        [Aliases("ayuda")]
         [Description("Ayuda wey")]
         public async Task Ayuda(CommandContext ctx, [RemainingText]string comando)
         {
@@ -43,9 +43,9 @@ namespace Discord_Bot.Modulos
                     Color = new DiscordColor(78, 63, 96)
                 };
                 embed.AddField("✍️ Interactuar", "`say`, `tts`, `pregunta`, `elegir`");
-                embed.AddField("😂 Memes", "`eli`, `meme`, `mutear`, `waifu`");
-                embed.AddField("🎵 Musica", "`join`, `leave`, `play`, `pause`, `resume`, `stop`, `archivos`");
-                embed.AddField("☕️ Otros", "`invite`, `donar`, `ping`, `clear`, `expulsar`, `reiniciar`");
+                embed.AddField("😂 Memes", "`eli`, `meme`, `mutear`, `waifu`, `earrape`");
+                embed.AddField("🎵 Musica", "`join`, `leave`, `play`, `playfile`, `pause`, `resume`, `stop`, `nowplaying`, `volume`, `seek`, `equializer`, `archivos`");
+                embed.AddField("☕️ Otros", "`invite`, `donar`, `ping`, `clear`, `expulsar`, `reiniciar`, `apagar`");
                 await ctx.RespondAsync(null, false, embed);
             }
             else
@@ -101,8 +101,8 @@ namespace Discord_Bot.Modulos
                         uso = "leave";
                         break;
                     case "play":
-                        descripcion = "Yumiko reproduce un archivo de audio";
-                        uso = "play nombre del archivo";
+                        descripcion = "Yumiko reproduce un video";
+                        uso = "play link o busqueda";
                         break;
                     case "pause":
                         descripcion = "Yumiko pausa la reproducción de audio";
@@ -141,7 +141,10 @@ namespace Discord_Bot.Modulos
                         DiscordMember eli = await ctx.Guild.GetMemberAsync(487779690468212746);
                         descripcion = "Expulsa a un miembro del servidor";
                         aliases = "`kick`";
-                        uso = "expulsar " + eli.DisplayName;
+                        if(eli != null)
+                            uso = "expulsar @" + eli.DisplayName;
+                        else
+                            uso = "expulsar @mencion";
                         break;
                     case "waifu":
                         descripcion = "Te dice mi nivel de waifu";
@@ -152,9 +155,35 @@ namespace Discord_Bot.Modulos
                         aliases = "`restart`";
                         uso = "reiniciar";
                         break;
-                    case "cerrar":
+                    case "apagar":
                         descripcion = "Apaga a Yumiko";
-                        uso = "cerrar";
+                        uso = "apagar";
+                        break;
+                    case "playfile":
+                        descripcion = "Yumiko reproduce un archivo de audio";
+                        uso = "playfile nombre del archivo";
+                        break;
+                    case "nowplaying":
+                        descripcion = "Yumiko te dice que se está reproduciendo";
+                        aliases = "`np`";
+                        uso = "nowplaying";
+                        break;
+                    case "equializer":
+                        descripcion = "Se cambia el ecualizador del audio";
+                        aliases = "`eq`";
+                        uso = "equializer band gain ó equializer (para resetear)";
+                        break;
+                    case "volume":
+                        descripcion = "Cambia el volumen de la reproducción de audio";
+                        uso = "volume 50";
+                        break;
+                    case "seek":
+                        descripcion = "Posiciona el reproductor en un tiempo dado";
+                        uso = "seek hh:mm:ss";
+                        break;
+                    case "earrape":
+                        descripcion = "EARRAPE por 5 segundos en el reproductor";
+                        uso = "earrape";
                         break;
                     default:
                         ok = false;
@@ -182,7 +211,7 @@ namespace Discord_Bot.Modulos
                     {
                         Title = "Guia de comandos | " + comando,
                         Description = ayuda,
-                        Color = DiscordColor.Purple
+                        Color = new DiscordColor(78, 63, 96)
                     };
                     await ctx.RespondAsync(null, false, embed);
                 }
@@ -194,7 +223,7 @@ namespace Discord_Bot.Modulos
                     {
                         Title = "Guia de comandos",
                         Description = ayuda,
-                        Color = DiscordColor.Purple
+                        Color = new DiscordColor(78, 63, 96)
                     };
                     await ctx.RespondAsync(null, false, embed);
                 }

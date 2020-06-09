@@ -133,7 +133,7 @@ namespace Discord_Bot.Modulos
             Environment.Exit(0);
         }
 
-        [Command("cerrar")]
+        [Command("apagar")]
         [Description("Apaga a Yumiko")]
         [RequireOwner]
         public async Task Stop(CommandContext ctx)

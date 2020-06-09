@@ -84,7 +84,7 @@ namespace Discord_Bot.Modulos
         [Description("Te digo si soy tu waifu")]
         public async Task Waifu(CommandContext ctx, DiscordMember miembro = null)
         {
-            string nombre = "";
+            string nombre;
             if (miembro == null)
                 nombre = ctx.Member.DisplayName;
             else
