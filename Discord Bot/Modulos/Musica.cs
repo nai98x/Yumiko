@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,8 +23,8 @@ namespace Discord_Bot.Modulos
         private DiscordChannel ContextChannel { get; set; }
 
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private int Volumen { get; set; } = 100;
 
-        [Command, Description("Conecta con Lavalink")]
         public async Task ConnectAsync(CommandContext ctx)
         {
             if (this.Lavalink != null)
@@ -42,9 +44,7 @@ namespace Discord_Bot.Modulos
                 Password = "shallnotpass"
             }).ConfigureAwait(false);
 
-
             this.Lavalink.Disconnected += this.Lavalink_Disconnected;
-            await ctx.RespondAsync("Conectada a lavalink.").ConfigureAwait(false);
         }
 
         private Task Lavalink_Disconnected(NodeDisconnectedEventArgs e)
@@ -77,20 +77,24 @@ namespace Discord_Bot.Modulos
         {
             if (this.Lavalink == null)
             {
-                await ctx.RespondAsync("Falta conectar a Lavalink.").ConfigureAwait(false);
+                await ConnectAsync(ctx);
+            }
+
+            var vc = chn ?? ctx.Member?.VoiceState?.Channel;
+            if (vc == null)
+            {
+                await ctx.RespondAsync("No estas en ningun canal, baka").ConfigureAwait(false);
                 return;
             }
 
-            var vc = chn ?? ctx.Member.VoiceState.Channel;
-            if (vc == null)
+            if (chn == null)
             {
-                await ctx.RespondAsync("No estas en un canal de voz.").ConfigureAwait(false);
-                return;
+                chn = ctx.Channel;
             }
 
             this.LavalinkVoice = await this.Lavalink.ConnectAsync(vc);
             this.LavalinkVoice.PlaybackFinished += this.LavalinkVoice_PlaybackFinished;
-            await ctx.RespondAsync("Me he conectado.").ConfigureAwait(false);
+            await ctx.RespondAsync($"Me he conectado a `{chn.Name}`").ConfigureAwait(false);
         }
 
         private async Task LavalinkVoice_PlaybackFinished(TrackFinishEventArgs e)
@@ -110,14 +114,14 @@ namespace Discord_Bot.Modulos
 
             await this.LavalinkVoice.DisconnectAsync().ConfigureAwait(false);
             this.LavalinkVoice = null;
-            await ctx.RespondAsync("No me extrañes " + ctx.Member.DisplayName + " onii-chan.").ConfigureAwait(false);
+            await ctx.RespondAsync("Me he desconectado, no me extrañes " + ctx.Member.DisplayName + " onii-chan.").ConfigureAwait(false);
         }
 
         [Command, Description("Reproduce una canción.")]
         public async Task PlayAsync(CommandContext ctx, [RemainingText] String query)
         {
             if (this.LavalinkVoice == null)
-                return;
+                await JoinAsync(ctx);
 
             this.ContextChannel = ctx.Channel;
 
@@ -157,16 +161,40 @@ namespace Discord_Bot.Modulos
         }
 
         [Command, Description("Reproduce una canción desde archivos locales.")]
-        public async Task PlayFileAsync(CommandContext ctx, [RemainingText] string path)
+        public async Task PlayFileAsync(CommandContext ctx, [RemainingText] int posicion)
         {
             if (this.LavalinkVoice == null)
-                return;
+                await JoinAsync(ctx);
 
-            var trackLoad = await this.Lavalink.Rest.GetTracksAsync(new FileInfo(path));
+            string archivo = funciones.GetCancionByPosicion(posicion);
+
+            string filePath = ConfigurationManager.AppSettings["PathMusica"] + archivo + ".mp3";
+
+            if (!File.Exists(filePath))
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("No se ha encontrado el archivo");
+                return;
+            }
+
+            var trackLoad = await this.Lavalink.Rest.GetTracksAsync(new FileInfo(filePath));
             var track = trackLoad.Tracks.First();
             await this.LavalinkVoice.PlayAsync(track);
 
-            await ctx.RespondAsync($"Reproduciendo: {Formatter.Bold(Formatter.Sanitize(track.Title))}.").ConfigureAwait(false);
+            await ctx.Message.DeleteAsync().ConfigureAwait(false);
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Invocado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
+            };
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Footer = footer,
+                Color = new DiscordColor(78, 63, 96),
+                Title = "Play",
+                Description = "Se está reproduciendo ```" + archivo + "```",
+                Timestamp = DateTime.Now
+            }).ConfigureAwait(false);
         }
 
         [Command, Description("Reproduce una canción desde soundcloud.")]
@@ -215,7 +243,7 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync("Se ha reanudado la reproducción.").ConfigureAwait(false);
         }
 
-        [Command, Description("Para la musica.")]
+        [Command, Description("Para la musica."), Aliases("Skip")]
         public async Task StopAsync(CommandContext ctx)
         {
             if (this.LavalinkVoice == null)
@@ -245,6 +273,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync("El volumen debe estar entre los valores 0-100").ConfigureAwait(false);
+                Volumen = volume;
                 return;
             }
 
@@ -283,6 +312,29 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync($"Band {band} adjusted by {gain}").ConfigureAwait(false);
         }
 
+        [Command("archivos")]
+        [Description("Da un listado de los temasos disponibles")]
+        public async Task ListadoMusica(CommandContext ctx)
+        {
+            string[] filePaths = Directory.GetFiles(ConfigurationManager.AppSettings["PathMusica"]);
+            int lenghtPath = ConfigurationManager.AppSettings["PathMusica"].Length;
+
+            string listado = "";
+            int n = 1;
+            foreach (string file in filePaths)
+            {
+                string preString = file.Remove(0, lenghtPath);
+                listado += n.ToString() + "- " + preString.Remove(preString.Length - 4) + "\n";
+                n++;
+            }
+            await ctx.TriggerTypingAsync();
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Color = new DiscordColor(78, 63, 96),
+                Description = listado
+            }).ConfigureAwait(false);
+        }
+
         [Command("earrape"), Description("Eleva el volumen para hacer tremendisimo earrape")]
         [Cooldown(1, 300, CooldownBucketType.Guild)]
         public async Task Earrape(CommandContext ctx)
@@ -303,8 +355,8 @@ namespace Discord_Bot.Modulos
                 Timestamp = DateTime.Now
             }).ConfigureAwait(false);
             await this.LavalinkVoice.SetVolumeAsync(1000);
-            await Task.Delay(10000); // 10 segundos
-            await this.LavalinkVoice.SetVolumeAsync(100);
+            await Task.Delay(5000); // 5 segundos
+            await this.LavalinkVoice.SetVolumeAsync(Volumen);
             await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("El EARRAPE ha terminado!").ConfigureAwait(false);
         }

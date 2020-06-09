@@ -106,8 +106,19 @@ namespace Discord_Bot
         }
 
         private async Task Commands_CommandErrored(CommandErrorEventArgs e)
-        {
+        {// e.Exception.Message Specified command was not found.
             e.Context.Client.DebugLogger.LogMessage(LogLevel.Error, e.Context.Guild.Name, $"{e.Context.User.Username} trato de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}", DateTime.Now);
+            if(e.Exception.Message == "Specified command was not found.")
+            {
+                var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = "Comando mal escrito",
+                    Description = $"{emoji} Pone el comando bien, " + e.Context.User.Username + " baka.",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await e.Context.RespondAsync("", embed: embed);
+            }
             if (e.Exception is ChecksFailedException ex)
             {
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
