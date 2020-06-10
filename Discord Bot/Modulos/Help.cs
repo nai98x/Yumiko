@@ -2,204 +2,48 @@
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using System.Configuration;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Modulos
 {
     public class Help : BaseCommandModule
     {
-        //private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private string Descripcion { get; set; }
+        private string Aliases { get; set; }
+        private string Uso { get; set; }
+        private bool Ok { get; set; }
 
         [Command("help")]
         [Aliases("ayuda")]
         [Description("Ayuda wey")]
         public async Task Ayuda(CommandContext ctx, [RemainingText]string comando)
         {
-            string ayuda;
             if (comando == null)
             {
-                ayuda =
-                "El prefix del servidor es `"+ ConfigurationManager.AppSettings["Prefix"] + "`\n" +
-                "Links de utilidad: [Invitación](" + ConfigurationManager.AppSettings["Invite"] + "), [Donar](" + ConfigurationManager.AppSettings["Donar"] + ")";
-
-                await ctx.TriggerTypingAsync();
-
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = "Guia de comandos",
-                    Description = ayuda,
-                    Color = new DiscordColor(78, 63, 96)
-                };
-                embed.AddField("✍️ Interactuar", "`say`, `tts`, `pregunta`, `elegir`");
-                embed.AddField("😂 Memes", "`eli`, `meme`, `mutear`, `waifu`, `earrape`");
-                embed.AddField("🎵 Musica", "`join`, `leave`, `play`, `playfile`, `pause`, `resume`, `skip`, `stop`, `nowplaying`, `queue`, `volume`, `seek`, `equializer`, `archivos`");
-                embed.AddField("☕️ Otros", "`invite`, `donar`, `ping`, `clear`, `expulsar`, `reiniciar`, `apagar`");
-                await ctx.RespondAsync(null, false, embed);
+                await ImprimirNormal(ctx);
             }
             else
             {
-                bool ok = true;
-                string descripcion="";
-                string aliases="";
-                string uso = "";
-                switch (comando)
+                string ayuda;
+                SetCampos(comando);
+                if (Ok)
                 {
-                    case "say":
-                        descripcion = "El bot reenvia tu mensaje eliminándolo después";
-                        aliases = "`s`";
-                        uso = "say Hola onii-chan";
-                        break;
-                    case "tts":
-                        descripcion = "Te habla la waifu";
-                        uso = "tts Hola onee-chan";
-                        break;
-                    case "pregunta":
-                        descripcion = "Responde con SIS O NON";
-                        aliases = "`p`, `question`, `sisonon`";
-                        uso = "pregunta ¿Sos mi waifu?";
-                        break;
-                    case "elegir":
-                        descripcion = "Elige entre varias opciones";
-                        aliases = "`e`";
-                        uso = "elegir ¿Quién es mas puto?\n" +
-                              "(respuesta de Yumiko)\n" +
-                              "Eli Sadi Nai";
-                        break;
-                    case "eli":
-                        descripcion = "Legendary meme";
-                        uso = "eli";
-                        break;
-                    case "meme":
-                        descripcion = "It's a fucking meme";
-                        uso = "meme";
-                        break;
-                    case "mutear":
-                        descripcion = "Mutea a un miembro aleatorio del canal (5 minutos de cooldown)";
-                        aliases = "`f`";
-                        uso = "mutear";
-                        break;
-                    case "join":
-                        descripcion = "Entra Yumiko al canal en el que estés";
-                        aliases = "`entrar`";
-                        uso = "join";
-                        break;
-                    case "leave":
-                        descripcion = "Sale Yumiko del canal";
-                        aliases = "`salir`";
-                        uso = "leave";
-                        break;
-                    case "play":
-                        descripcion = "Yumiko reproduce un video";
-                        uso = "play link o busqueda";
-                        break;
-                    case "pause":
-                        descripcion = "Yumiko pausa la reproducción de audio";
-                        uso = "pause";
-                        break;
-                    case "resume":
-                        descripcion = "Yumiko resume la reproducción de audio";
-                        uso = "resume";
-                        break;
-                    case "stop":
-                        descripcion = "Yumiko deja de reproducir audio";
-                        uso = "stop";
-                        break;
-                    case "archivos":
-                        descripcion = "Se obtiene una lista de archivos disponibles para reproducir audio";
-                        uso = "archivos";
-                        break;
-                    case "invite":
-                        descripcion = "Obtiene enlace para invitar a Yumiko a otros servidores";
-                        uso = "invite";
-                        break;
-                    case "donar":
-                        descripcion = "Obtiene enlace para donar al creador de Yumiko";
-                        uso = "donar";
-                        break;
-                    case "ping":
-                        descripcion = "Obtiene el ping de Yumiko";
-                        uso = "ping";
-                        break;
-                    case "clear":
-                        descripcion = "Elimina una cantidad de mensajes";
-                        aliases = "`c`, `borrar`";
-                        uso = "clear 3";
-                        break;
-                    case "expulsar":
-                        DiscordMember eli = await ctx.Guild.GetMemberAsync(487779690468212746);
-                        descripcion = "Expulsa a un miembro del servidor";
-                        aliases = "`kick`";
-                        if(eli != null)
-                            uso = "expulsar @" + eli.DisplayName;
-                        else
-                            uso = "expulsar @mencion";
-                        break;
-                    case "waifu":
-                        descripcion = "Te dice mi nivel de waifu";
-                        uso = "waifu";
-                        break;
-                    case "reiniciar":
-                        descripcion = "Reinicia a Yumiko";
-                        aliases = "`restart`";
-                        uso = "reiniciar";
-                        break;
-                    case "apagar":
-                        descripcion = "Apaga a Yumiko";
-                        uso = "apagar";
-                        break;
-                    case "playfile":
-                        descripcion = "Yumiko reproduce un archivo de audio";
-                        uso = "playfile nombre del archivo";
-                        break;
-                    case "nowplaying":
-                        descripcion = "Yumiko te dice que se está reproduciendo";
-                        aliases = "`np`";
-                        uso = "nowplaying";
-                        break;
-                    case "equializer":
-                        descripcion = "Se cambia el ecualizador del audio";
-                        aliases = "`eq`";
-                        uso = "equializer band gain ó equializer (para resetear)";
-                        break;
-                    case "volume":
-                        descripcion = "Cambia el volumen de la reproducción de audio";
-                        uso = "volume 50";
-                        break;
-                    case "seek":
-                        descripcion = "Posiciona el reproductor en un tiempo dado";
-                        uso = "seek hh:mm:ss";
-                        break;
-                    case "earrape":
-                        descripcion = "EARRAPE por 5 segundos en el reproductor";
-                        uso = "earrape";
-                        break;
-                    case "skip":
-                        descripcion = "Yumiko salta esta musicota";
-                        uso = "skip";
-                        break;
-                    case "queue":
-                        descripcion = "Se muestra la cola de reproduccion";
-                        uso = "queue";
-                        break;
-                    default:
-                        ok = false;
-                        break;
-                }
-                if (ok)
-                {
-                    if(aliases.Length > 0)
+                    if(Aliases.Length > 0)
                     {
-                        ayuda = descripcion + "\n" +
+                        ayuda = Descripcion + "\n" +
                         "\n" +
-                        "**Prefixes alternativos:** " + aliases + "\n" +
+                        "**Prefixes alternativos:** " + Aliases + "\n" +
                         "\n" +
-                        "**Uso:** `" + ConfigurationManager.AppSettings["Prefix"] + uso + "`";
+                        "**Uso:** `" + ConfigurationManager.AppSettings["Prefix"] + Uso + "`";
                     }
                     else
                     {
-                        ayuda = descripcion + "\n" +
+                        ayuda = Descripcion + "\n" +
                         "\n" +
-                        "**Uso:** `" + ConfigurationManager.AppSettings["Prefix"] + uso + "`";
+                        "**Uso:** `" + ConfigurationManager.AppSettings["Prefix"] + Uso + "`";
                     }
                     
                     await ctx.TriggerTypingAsync();
@@ -223,6 +67,171 @@ namespace Discord_Bot.Modulos
                     };
                     await ctx.RespondAsync(null, false, embed);
                 }
+            }
+        }
+
+        private async Task ImprimirNormal(CommandContext ctx)
+        {
+            string ayuda =
+                "El prefix del servidor es `" + ConfigurationManager.AppSettings["Prefix"] + "`\n" +
+                "Links de utilidad: [Invitación](" + ConfigurationManager.AppSettings["Invite"] + "), [Donar](" + ConfigurationManager.AppSettings["Donar"] + ")";
+
+            await ctx.TriggerTypingAsync();
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = "Guia de comandos",
+                Description = ayuda,
+                Color = new DiscordColor(78, 63, 96)
+            };
+            embed.AddField("✍️ Interactuar", "`say`, `tts`, `pregunta`, `elegir`");
+            embed.AddField("😂 Memes", "`eli`, `meme`, `mutear`, `waifu`, `earrape`");
+            embed.AddField("🎵 Musica", "`join`, `leave`, `play`, `playfile`, `pause`, `resume`, `skip`, `stop`, `nowplaying`, `queue`, `volume`, `seek`, `equializer`, `archivos`");
+            embed.AddField("☕️ Otros", "`invite`, `donar`, `ping`, `clear`, `expulsar`, `reiniciar`, `apagar`");
+            await ctx.RespondAsync(null, false, embed);
+        }
+
+        private void SetCampos(string comando)
+        {
+            Ok = true;
+            switch (comando)
+            {
+                case "say":
+                    Descripcion = "El bot reenvia tu mensaje eliminándolo después";
+                    Aliases = "`s`";
+                    Uso = "say Hola onii-chan";
+                    break;
+                case "tts":
+                    Descripcion = "Te habla la waifu";
+                    Uso = "tts Hola onee-chan";
+                    break;
+                case "pregunta":
+                    Descripcion = "Responde con SIS O NON";
+                    Aliases = "`p`, `question`, `sisonon`";
+                    Uso = "pregunta ¿Sos mi waifu?";
+                    break;
+                case "elegir":
+                    Descripcion = "Elige entre varias opciones";
+                    Aliases = "`e`";
+                    Uso = "elegir ¿Quién es mas puto?\n" +
+                          "(respuesta de Yumiko)\n" +
+                          "Eli Sadi Nai";
+                    break;
+                case "eli":
+                    Descripcion = "Legendary meme";
+                    Uso = "eli";
+                    break;
+                case "meme":
+                    Descripcion = "It's a fucking meme";
+                    Uso = "meme";
+                    break;
+                case "mutear":
+                    Descripcion = "Mutea a un miembro aleatorio del canal (5 minutos de cooldown)";
+                    Aliases = "`f`";
+                    Uso = "mutear";
+                    break;
+                case "join":
+                    Descripcion = "Entra Yumiko al canal en el que estés";
+                    Aliases = "`entrar`";
+                    Uso = "join";
+                    break;
+                case "leave":
+                    Descripcion = "Sale Yumiko del canal";
+                    Aliases = "`salir`";
+                    Uso = "leave";
+                    break;
+                case "play":
+                    Descripcion = "Yumiko reproduce un video";
+                    Uso = "play link o busqueda";
+                    break;
+                case "pause":
+                    Descripcion = "Yumiko pausa la reproducción de audio";
+                    Uso = "pause";
+                    break;
+                case "resume":
+                    Descripcion = "Yumiko resume la reproducción de audio";
+                    Uso = "resume";
+                    break;
+                case "stop":
+                    Descripcion = "Yumiko deja de reproducir audio";
+                    Uso = "stop";
+                    break;
+                case "archivos":
+                    Descripcion = "Se obtiene una lista de archivos disponibles para reproducir audio";
+                    Uso = "archivos";
+                    break;
+                case "invite":
+                    Descripcion = "Obtiene enlace para invitar a Yumiko a otros servidores";
+                    Uso = "invite";
+                    break;
+                case "donar":
+                    Descripcion = "Obtiene enlace para donar al creador de Yumiko";
+                    Uso = "donar";
+                    break;
+                case "ping":
+                    Descripcion = "Obtiene el ping de Yumiko";
+                    Uso = "ping";
+                    break;
+                case "clear":
+                    Descripcion = "Elimina una cantidad de mensajes";
+                    Aliases = "`c`, `borrar`";
+                    Uso = "clear 3";
+                    break;
+                case "expulsar":
+                    Descripcion = "Expulsa a un miembro del servidor";
+                    Aliases = "`kick`";
+                    Uso = "expulsar @mencion";
+                    break;
+                case "waifu":
+                    Descripcion = "Te dice mi nivel de waifu";
+                    Uso = "waifu";
+                    break;
+                case "reiniciar":
+                    Descripcion = "Reinicia a Yumiko";
+                    Aliases = "`restart`";
+                    Uso = "reiniciar";
+                    break;
+                case "apagar":
+                    Descripcion = "Apaga a Yumiko";
+                    Uso = "apagar";
+                    break;
+                case "playfile":
+                    Descripcion = "Yumiko reproduce un archivo de audio";
+                    Uso = "playfile nombre del archivo";
+                    break;
+                case "nowplaying":
+                    Descripcion = "Yumiko te dice que se está reproduciendo";
+                    Aliases = "`np`";
+                    Uso = "nowplaying";
+                    break;
+                case "equializer":
+                    Descripcion = "Se cambia el ecualizador del audio";
+                    Aliases = "`eq`";
+                    Uso = "equializer band gain ó equializer (para resetear)";
+                    break;
+                case "volume":
+                    Descripcion = "Cambia el volumen de la reproducción de audio";
+                    Uso = "volume 50";
+                    break;
+                case "seek":
+                    Descripcion = "Posiciona el reproductor en un tiempo dado";
+                    Uso = "seek hh:mm:ss";
+                    break;
+                case "earrape":
+                    Descripcion = "EARRAPE por 5 segundos en el reproductor";
+                    Uso = "earrape";
+                    break;
+                case "skip":
+                    Descripcion = "Yumiko salta esta musicota";
+                    Uso = "skip";
+                    break;
+                case "queue":
+                    Descripcion = "Se muestra la cola de reproduccion";
+                    Uso = "queue";
+                    break;
+                default:
+                    Ok = false;
+                    break;
             }
         }
     }
