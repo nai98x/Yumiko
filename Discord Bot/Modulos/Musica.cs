@@ -25,6 +25,17 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
         private int Volumen { get; set; } = 100;
 
+        private List<Track> Queue = new List<Track>();
+
+        [Command]
+        public async Task Test(CommandContext ctx)
+        {
+            foreach(Track t in Queue)
+            {
+                await ctx.RespondAsync(t.Id + " " + t.Link);
+            }
+        }
+
         public async Task ConnectAsync(CommandContext ctx)
         {
             if (this.Lavalink != null)
@@ -47,13 +58,38 @@ namespace Discord_Bot.Modulos
                 Password = "shallnotpass"
             }).ConfigureAwait(false);
 
-            this.Lavalink.Disconnected += this.Lavalink_Disconnected;
+            Lavalink.Disconnected += Lavalink_Disconnected;
+            Lavalink.PlaybackStarted += Lavalink_PlaybackStarted;
+            Lavalink.PlaybackFinished += Lavalink_PlaybackFinished;
+            Lavalink.TrackException += Lavalink_TrackException;
         }
 
         private Task Lavalink_Disconnected(NodeDisconnectedEventArgs e)
         {
             this.Lavalink = null;
             this.LavalinkVoice = null;
+            return Task.CompletedTask;
+        }
+
+        private Task Lavalink_PlaybackFinished(TrackFinishEventArgs e)
+        {
+            Track findQueue = Queue.Find(r => r.Id == e.Track.Identifier);
+            if(findQueue != null)
+            {
+                Queue.Remove(findQueue);
+            }
+            return Task.CompletedTask;
+        }
+
+        private Task Lavalink_PlaybackStarted(TrackStartEventArgs e)
+        {
+
+            return Task.CompletedTask;
+        }
+
+        private Task Lavalink_TrackException(TrackExceptionEventArgs e)
+        {
+            
             return Task.CompletedTask;
         }
 
@@ -130,18 +166,19 @@ namespace Discord_Bot.Modulos
 
             Uri uri;
             string titulo;
+            LavalinkTrack track;
             if (Uri.IsWellFormedUriString(query, UriKind.Absolute))
             {
                 uri = new Uri(query);
                 var trackLoad = await this.Lavalink.Rest.GetTracksAsync(uri);
-                var track = trackLoad.Tracks.First();
+                track = trackLoad.Tracks.First();
                 titulo = track.Title;
                 await this.LavalinkVoice.PlayAsync(track);
             }
             else
             {
                 var trackLoad = await this.Lavalink.Rest.GetTracksAsync(query);
-                var track = trackLoad.Tracks.First();
+                track = trackLoad.Tracks.First();
                 uri = track.Uri;
                 titulo = track.Title;
                 await this.LavalinkVoice.PlayAsync(track);

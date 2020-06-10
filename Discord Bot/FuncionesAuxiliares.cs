@@ -73,9 +73,11 @@ namespace Discord_Bot
         }
     }
 
-    public class ColaReproduccion
+    public class Track
     {
-        public int Posicion { get; set; }
-        public string Archivo { get; set; }
+        public string Id { get; set; }
+        public string Source { get; set; }
+        public Uri Link { get; set; }
+        public string RutaLocal { get; set; }
     }
 }
