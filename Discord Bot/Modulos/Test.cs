@@ -22,7 +22,7 @@ namespace Discord_Bot.Modulos
 {
     public class Test : BaseCommandModule
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        //private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         //[Command("test")]
         //public async Task Test1(CommandContext ctx)

@@ -2,19 +2,10 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.EventHandling;
 using DSharpPlus.VoiceNext;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot.Modulos
 {
@@ -142,6 +133,5 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync("Me voy onii-chan..");
             Environment.Exit(0);
         }
-
     }
 }

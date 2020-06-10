@@ -1,21 +1,13 @@
-﻿using DSharpPlus;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.EventHandling;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static DSharpPlus.Entities.DiscordEmbedBuilder;
-using DSharpPlus.VoiceNext;
 using System.Configuration;
+using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot.Modulos
 {
@@ -150,6 +142,5 @@ namespace Discord_Bot.Modulos
             await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
         }
-        
     }
 }
