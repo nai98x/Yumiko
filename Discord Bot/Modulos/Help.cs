@@ -8,7 +8,7 @@ namespace Discord_Bot.Modulos
 {
     public class Help : BaseCommandModule
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        //private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         [Command("help")]
         [Aliases("ayuda")]
