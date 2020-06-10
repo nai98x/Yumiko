@@ -11,6 +11,7 @@ using DSharpPlus.VoiceNext;
 using System;
 using System.Configuration;
 using System.Threading.Tasks;
+using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
 {
@@ -112,15 +113,43 @@ namespace Discord_Bot
             }
             if (e.Exception is ChecksFailedException ex)
             {
-                //ex.
-                var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
-                var embed = new DiscordEmbedBuilder
+                foreach (var exep in ex.FailedChecks)
                 {
-                    Title = "Acceso denegado",
-                    Description = $"{emoji} No tienes los suficientes permisos para ejecutar este comando.",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await e.Context.RespondAsync("", embed: embed);
+                    string exepcion = exep.ToString();
+                    string titulo, descripcion;
+                    switch (exepcion)
+                    {
+                        case "DSharpPlus.CommandsNext.Attributes.CooldownAttribute":
+                            titulo = "Cooldown";
+                            descripcion = "Debes esperar para volver a ejecutar este comando.";
+                            break;
+                        case "DSharpPlus.CommandsNext.Attributes.RequirePermissions":
+                            titulo = "Acceso denegado";
+                            descripcion = "No tienes los suficientes permisos para ejecutar este comando.";
+                            break;
+                        case "DSharpPlus.CommandsNext.Attributes.RequireOwner":
+                            titulo = "Acceso denegado";
+                            descripcion = "Solo el dueño del bot puede ejecutar este comando.";
+                            break;
+                        default:
+                            titulo = "Error inesperado";
+                            descripcion = "No tienes los suficientes permisos para ejecutar este comando.";
+                            break;
+                    }
+                    var miembro = e.Context.Member;
+                    EmbedFooter footer = new EmbedFooter()
+                    {
+                        Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
+                        IconUrl = miembro.AvatarUrl
+                    };
+                    await e.Context.RespondAsync("", embed: new DiscordEmbedBuilder
+                    {
+                        Title = titulo,
+                        Description = descripcion,
+                        Color = new DiscordColor(0xFF0000),
+                        Footer = footer
+                    });
+                }
             }
         }
     }
