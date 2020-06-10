@@ -102,7 +102,6 @@ namespace Discord_Bot.Modulos
         {
             Track findQueue = Queue.Find(r => r.Id == e.Track.Identifier);
             Queue.Remove(findQueue);
-            
             if(Queue.Count > 0)
             {
                 Track primero = Queue.First();
@@ -117,13 +116,11 @@ namespace Discord_Bot.Modulos
                         break;
                 }
             }
-
             return Task.CompletedTask;
         }
 
         private Task Lavalink_TrackException(TrackExceptionEventArgs e)
         {
-            
             return Task.CompletedTask;
         }
 
@@ -139,7 +136,6 @@ namespace Discord_Bot.Modulos
                 await ctx.RespondAsync("Lavalink no está configurado correctamente.").ConfigureAwait(false);
                 return;
             }
-
             await this.Lavalink.StopAsync().ConfigureAwait(false);
             this.Lavalink = null;
             await ctx.RespondAsync("Desconectada de Lavalink.").ConfigureAwait(false);
@@ -152,19 +148,16 @@ namespace Discord_Bot.Modulos
             {
                 await ConnectAsync(ctx);
             }
-
             var vc = chn ?? ctx.Member?.VoiceState?.Channel;
             if (vc == null)
             {
                 await ctx.RespondAsync("No estas en ningun canal, baka").ConfigureAwait(false);
                 return;
             }
-
             if (chn == null)
             {
                 chn = ctx.Channel;
             }
-
             contexto = ctx;
             this.LavalinkVoice = await this.Lavalink.ConnectAsync(vc);
             this.LavalinkVoice.PlaybackFinished += this.LavalinkVoice_PlaybackFinished;
@@ -526,4 +519,3 @@ namespace Discord_Bot.Modulos
         }
     }
 }
-

@@ -67,13 +67,4 @@ namespace Discord_Bot
             return ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")";
         }
     }
-
-    public class Track
-    {
-        public string Id { get; set; }
-        public string Titulo { get; set; }
-        public string Source { get; set; }
-        public Uri Link { get; set; }
-        public int PosLocal { get; set; }
-    }
 }

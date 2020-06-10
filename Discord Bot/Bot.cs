@@ -64,7 +64,6 @@ namespace Discord_Bot
             Commands.RegisterCommands<Misc>();
             Commands.RegisterCommands<Musica>();
             Commands.RegisterCommands<Help>();
-            //Commands.RegisterCommands<Test>();
 
             await Client.ConnectAsync();
 
