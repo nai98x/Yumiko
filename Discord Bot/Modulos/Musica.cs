@@ -26,6 +26,8 @@ namespace Discord_Bot.Modulos
         private int Volumen { get; set; } = 100;
 
         private List<Track> Queue = new List<Track>();
+        private CommandContext contexto { get; set; }
+        private int posArchivo { get; set; }
 
         [Command]
         public async Task Test(CommandContext ctx)
@@ -71,18 +73,51 @@ namespace Discord_Bot.Modulos
             return Task.CompletedTask;
         }
 
-        private Task Lavalink_PlaybackFinished(TrackFinishEventArgs e)
+        private Task Lavalink_PlaybackStarted(TrackStartEventArgs e)
         {
-            Track findQueue = Queue.Find(r => r.Id == e.Track.Identifier);
-            if(findQueue != null)
+            var link = e.Track.Uri;
+            if(link != null)
             {
-                Queue.Remove(findQueue);
+                Queue.Add(new Track
+                {
+                    Id = e.Track.Identifier,
+                    Link = link,
+                    Titulo = e.Track.Title,
+                    Source = "Internet"
+                });
+            }
+            else
+            {
+                Queue.Add(new Track
+                {
+                    Id = e.Track.Identifier,
+                    PosLocal = posArchivo,
+                    Titulo = e.Track.Title,
+                    Source = "Local"
+                });
             }
             return Task.CompletedTask;
         }
 
-        private Task Lavalink_PlaybackStarted(TrackStartEventArgs e)
+        private Task Lavalink_PlaybackFinished(TrackFinishEventArgs e)
         {
+            Track findQueue = Queue.Find(r => r.Id == e.Track.Identifier);
+            Queue.Remove(findQueue);
+            
+            if(Queue.Count > 0)
+            {
+                Track primero = Queue.First();
+                switch (primero.Source)
+                {
+                    case "Internet":
+                        Queue.Remove(primero);
+                        _ = this.PlayAsync(contexto, primero.Link.ToString());
+                        break;
+                    case "Local":
+                        _ = this.PlayFileAsync(contexto, primero.PosLocal);
+                        break;
+                }
+            }
 
             return Task.CompletedTask;
         }
@@ -131,6 +166,7 @@ namespace Discord_Bot.Modulos
                 chn = ctx.Channel;
             }
 
+            contexto = ctx;
             this.LavalinkVoice = await this.Lavalink.ConnectAsync(vc);
             this.LavalinkVoice.PlaybackFinished += this.LavalinkVoice_PlaybackFinished;
             await ctx.RespondAsync($"Me he conectado a `{chn.Name}`").ConfigureAwait(false);
@@ -173,7 +209,6 @@ namespace Discord_Bot.Modulos
                 var trackLoad = await this.Lavalink.Rest.GetTracksAsync(uri);
                 track = trackLoad.Tracks.First();
                 titulo = track.Title;
-                await this.LavalinkVoice.PlayAsync(track);
             }
             else
             {
@@ -181,23 +216,43 @@ namespace Discord_Bot.Modulos
                 track = trackLoad.Tracks.First();
                 uri = track.Uri;
                 titulo = track.Title;
-                await this.LavalinkVoice.PlayAsync(track);
             }
 
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
-            EmbedFooter footer = new EmbedFooter()
+            if(track != null)
             {
-                Text = "Invocado por " + funciones.GetFooter(ctx),
-                IconUrl = ctx.Member.AvatarUrl
-            };
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-            {
-                Footer = footer,
-                Color = new DiscordColor(78, 63, 96),
-                Title = "Play",
-                Description = "Se está reproduciendo [" + titulo + "](" + uri + ")",
-                Timestamp = DateTime.Now
-            }).ConfigureAwait(false);
+                if(Queue.Count == 0)
+                {
+                    await this.LavalinkVoice.PlayAsync(track);
+                    DiscordMessage mensajeBorrar = await ctx.Channel.GetMessageAsync(ctx.Message.Id);
+                    if(mensajeBorrar != null)
+                        await ctx.Message.DeleteAsync().ConfigureAwait(false);
+                    EmbedFooter footer = new EmbedFooter()
+                    {
+                        Text = "Invocado por " + funciones.GetFooter(ctx),
+                        IconUrl = ctx.Member.AvatarUrl
+                    };
+                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Footer = footer,
+                        Color = new DiscordColor(78, 63, 96),
+                        Title = "Play",
+                        Description = "Se está reproduciendo [" + titulo + "](" + uri + ")",
+                        Timestamp = DateTime.Now
+                    }).ConfigureAwait(false);
+                }
+                else
+                {
+                    await ctx.Message.DeleteAsync().ConfigureAwait(false);
+                    Queue.Add(new Track
+                    {
+                        Id = track.Identifier,
+                        Link = track.Uri,
+                        Source = "Internet",
+                        Titulo = titulo
+                    });
+                    await ctx.RespondAsync($"Se ha añadido `{titulo}` a la lista de reproducción").ConfigureAwait(false);
+                }
+            }
         }
 
         [Command, Description("Reproduce una canción desde archivos locales.")]
@@ -217,24 +272,45 @@ namespace Discord_Bot.Modulos
                 return;
             }
 
+            posArchivo = posicion;
             var trackLoad = await this.Lavalink.Rest.GetTracksAsync(new FileInfo(filePath));
             var track = trackLoad.Tracks.First();
-            await this.LavalinkVoice.PlayAsync(track);
 
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
-            EmbedFooter footer = new EmbedFooter()
+            if (track != null)
             {
-                Text = "Invocado por " + funciones.GetFooter(ctx),
-                IconUrl = ctx.Member.AvatarUrl
-            };
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-            {
-                Footer = footer,
-                Color = new DiscordColor(78, 63, 96),
-                Title = "Play",
-                Description = "Se está reproduciendo ```" + archivo + "```",
-                Timestamp = DateTime.Now
-            }).ConfigureAwait(false);
+                if (Queue.Count == 0)
+                {
+                    await this.LavalinkVoice.PlayAsync(track);
+                    DiscordMessage mensajeBorrar = await ctx.Channel.GetMessageAsync(ctx.Message.Id);
+                    if (mensajeBorrar != null)
+                        await ctx.Message.DeleteAsync().ConfigureAwait(false);
+                    EmbedFooter footer = new EmbedFooter()
+                    {
+                        Text = "Invocado por " + funciones.GetFooter(ctx),
+                        IconUrl = ctx.Member.AvatarUrl
+                    };
+                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Footer = footer,
+                        Color = new DiscordColor(78, 63, 96),
+                        Title = "Play",
+                        Description = "Se está reproduciendo ```" + archivo + "```",
+                        Timestamp = DateTime.Now
+                    }).ConfigureAwait(false);
+                }
+                else
+                {
+                    await ctx.Message.DeleteAsync().ConfigureAwait(false);
+                    Queue.Add(new Track
+                    {
+                        Id = track.Identifier,
+                        PosLocal = posicion,
+                        Source = "Local",
+                        Titulo = archivo
+                    });
+                    await ctx.RespondAsync($"Se ha añadido `{archivo}` a la lista de reproducción").ConfigureAwait(false);
+                }
+            }
         }
 
         [Command, Description("Reproduce una canción desde soundcloud.")]
@@ -278,19 +354,32 @@ namespace Discord_Bot.Modulos
         {
             if (this.LavalinkVoice == null)
                 return;
-
+            
             await this.LavalinkVoice.ResumeAsync();
             await ctx.RespondAsync("Se ha reanudado la reproducción.").ConfigureAwait(false);
         }
 
-        [Command, Description("Para la musica."), Aliases("Skip")]
+        [Command, Description("Skipea la musica.")]
+        public async Task SkipAsync(CommandContext ctx)
+        {
+            if (this.LavalinkVoice == null)
+                return;
+
+            await this.LavalinkVoice.StopAsync();
+            await ctx.RespondAsync($"**{ctx.User.Mention}** ha skipeado la reproducción de {LavalinkVoice.CurrentState.CurrentTrack.Title}.").ConfigureAwait(false);
+        }
+
+        [Command, Description("Para la musica.")]
         public async Task StopAsync(CommandContext ctx)
         {
             if (this.LavalinkVoice == null)
                 return;
 
             await this.LavalinkVoice.StopAsync();
+            Queue.Clear();
             await ctx.RespondAsync("Se ha parado la reproducción.").ConfigureAwait(false);
+            await this.LavalinkVoice.DisconnectAsync().ConfigureAwait(false);
+            this.LavalinkVoice = null;
         }
 
         [Command, Description("Seeks in the current track.")]
@@ -367,6 +456,34 @@ namespace Discord_Bot.Modulos
                 listado += n.ToString() + "- " + preString.Remove(preString.Length - 4) + "\n";
                 n++;
             }
+            await ctx.TriggerTypingAsync();
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Color = new DiscordColor(78, 63, 96),
+                Description = listado
+            }).ConfigureAwait(false);
+        }
+
+        [Command("queue")]
+        [Description("Trae la cola de reproducción actual")]
+        public async Task QueueAsync(CommandContext ctx)
+        {
+            string listado = "";
+
+            if(Queue.Count > 0)
+            {
+                int n = 1;
+                foreach (Track track in Queue)
+                {
+                    listado += n.ToString() + "- " + track.Titulo + "\n";
+                    n++;
+                }
+            }
+            else
+            {
+                listado = "No hay elementos en la cola de reproducción";
+            }
+            
             await ctx.TriggerTypingAsync();
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {

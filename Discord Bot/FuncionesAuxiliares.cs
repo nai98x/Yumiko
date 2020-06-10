@@ -76,8 +76,9 @@ namespace Discord_Bot
     public class Track
     {
         public string Id { get; set; }
+        public string Titulo { get; set; }
         public string Source { get; set; }
         public Uri Link { get; set; }
-        public string RutaLocal { get; set; }
+        public int PosLocal { get; set; }
     }
 }
