@@ -37,10 +37,13 @@ namespace Discord_Bot.Modulos
                 return;
             }
 
+            string host = ConfigurationManager.AppSettings["LavalinkHost"];
+            int port = Int32.Parse(ConfigurationManager.AppSettings["LavalinkPort"]);
+            string pass = ConfigurationManager.AppSettings["LavalinkPass"];
             this.Lavalink = await lava.ConnectAsync(new LavalinkConfiguration
             {
-                RestEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
-                SocketEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
+                RestEndpoint = new ConnectionEndpoint { Hostname = host, Port = port },
+                SocketEndpoint = new ConnectionEndpoint { Hostname = host, Port = port },
                 Password = "shallnotpass"
             }).ConfigureAwait(false);
 

@@ -57,13 +57,6 @@ namespace Discord_Bot
             this.Commands.CommandExecuted += this.Commands_CommandExecuted;
             this.Commands.CommandErrored += this.Commands_CommandErrored;
 
-            var lavaconfig = new LavalinkConfiguration
-            {
-                RestEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
-                SocketEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2333 },
-                Password = "biguwu"
-            };
-
             Lavalink = Client.UseLavalink();
 
             Commands.RegisterCommands<Administracion>();
@@ -77,7 +70,6 @@ namespace Discord_Bot
 
             await Task.Delay(1000); // esperar a que autentifique xd
             await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = ConfigurationManager.AppSettings["Prefix"]  + "help"}, UserStatus.Online);
-            //await Lavalink.ConnectAsync(lavaconfig);
             await Task.Delay(-1);
         }
 

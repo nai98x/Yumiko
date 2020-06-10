@@ -82,6 +82,7 @@ namespace Discord_Bot.Modulos
 
         [Command("waifu")]
         [Description("Te digo si soy tu waifu")]
+        [Cooldown(1, 300, CooldownBucketType.User)]
         public async Task Waifu(CommandContext ctx, DiscordMember miembro = null)
         {
             string nombre;
