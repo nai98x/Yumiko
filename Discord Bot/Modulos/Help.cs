@@ -44,7 +44,7 @@ namespace Discord_Bot.Modulos
                 };
                 embed.AddField("✍️ Interactuar", "`say`, `tts`, `pregunta`, `elegir`");
                 embed.AddField("😂 Memes", "`eli`, `meme`, `mutear`, `waifu`, `earrape`");
-                embed.AddField("🎵 Musica", "`join`, `leave`, `play`, `playfile`, `pause`, `resume`, `stop`, `nowplaying`, `volume`, `seek`, `equializer`, `archivos`");
+                embed.AddField("🎵 Musica", "`join`, `leave`, `play`, `playfile`, `pause`, `resume`, `skip`, `stop`, `nowplaying`, `queue`, `volume`, `seek`, `equializer`, `archivos`");
                 embed.AddField("☕️ Otros", "`invite`, `donar`, `ping`, `clear`, `expulsar`, `reiniciar`, `apagar`");
                 await ctx.RespondAsync(null, false, embed);
             }
@@ -184,6 +184,14 @@ namespace Discord_Bot.Modulos
                     case "earrape":
                         descripcion = "EARRAPE por 5 segundos en el reproductor";
                         uso = "earrape";
+                        break;
+                    case "skip":
+                        descripcion = "Yumiko salta esta musicota";
+                        uso = "skip";
+                        break;
+                    case "queue":
+                        descripcion = "Se muestra la cola de reproduccion";
+                        uso = "queue";
                         break;
                     default:
                         ok = false;

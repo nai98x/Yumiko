@@ -483,12 +483,20 @@ namespace Discord_Bot.Modulos
             {
                 listado = "No hay elementos en la cola de reproducción";
             }
-            
+
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Invocado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
+            };
             await ctx.TriggerTypingAsync();
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
+                Title = "Cola de reproducción",
                 Color = new DiscordColor(78, 63, 96),
-                Description = listado
+                Description = listado,
+                Footer = footer,
+                Timestamp = DateTime.Now
             }).ConfigureAwait(false);
         }
 
