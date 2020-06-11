@@ -308,8 +308,12 @@ namespace Discord_Bot.Modulos
         [Command, Description("Reproduce una canción desde soundcloud.")]
         public async Task PlaySoundCloudAsync(CommandContext ctx, string search)
         {
-            if (this.Lavalink == null)
+            if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
+            }
 
             var result = await this.Lavalink.Rest.GetTracksAsync(search, LavalinkSearchType.SoundCloud);
             var track = result.Tracks.First();
@@ -322,7 +326,11 @@ namespace Discord_Bot.Modulos
         public async Task PlayPartialAsync(CommandContext ctx, TimeSpan start, TimeSpan stop, [RemainingText] Uri uri)
         {
             if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
+            }
 
             var trackLoad = await this.Lavalink.Rest.GetTracksAsync(uri);
             var track = trackLoad.Tracks.First();
@@ -335,7 +343,11 @@ namespace Discord_Bot.Modulos
         public async Task PauseAsync(CommandContext ctx)
         {
             if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
+            }
 
             await this.LavalinkVoice.PauseAsync();
             await ctx.RespondAsync("Se ha pausado la reproducción.").ConfigureAwait(false);
@@ -345,8 +357,12 @@ namespace Discord_Bot.Modulos
         public async Task ResumeAsync(CommandContext ctx)
         {
             if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
-            
+            }
+
             await this.LavalinkVoice.ResumeAsync();
             await ctx.RespondAsync("Se ha reanudado la reproducción.").ConfigureAwait(false);
         }
@@ -355,7 +371,11 @@ namespace Discord_Bot.Modulos
         public async Task SkipAsync(CommandContext ctx)
         {
             if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
+            }
 
             await this.LavalinkVoice.StopAsync();
             await ctx.RespondAsync($"**{ctx.User.Mention}** ha skipeado la reproducción de {LavalinkVoice.CurrentState.CurrentTrack.Title}.").ConfigureAwait(false);
@@ -365,7 +385,11 @@ namespace Discord_Bot.Modulos
         public async Task StopAsync(CommandContext ctx)
         {
             if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
+            }
 
             await this.LavalinkVoice.StopAsync();
             Queue.Clear();
@@ -378,7 +402,11 @@ namespace Discord_Bot.Modulos
         public async Task SeekAsync(CommandContext ctx, TimeSpan position)
         {
             if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
+            }
 
             await this.LavalinkVoice.SeekAsync(position);
             await ctx.RespondAsync($"Moviendo al minuto {position}.").ConfigureAwait(false);
@@ -388,7 +416,11 @@ namespace Discord_Bot.Modulos
         public async Task VolumeAsync(CommandContext ctx, int volume)
         {
             if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
+            }
 
             if (volume < 0 || volume > 100)
             {
@@ -406,7 +438,11 @@ namespace Discord_Bot.Modulos
         public async Task NowPlayingAsync(CommandContext ctx)
         {
             if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
+            }
 
             var state = this.LavalinkVoice.CurrentState;
             var track = state.CurrentTrack;
@@ -417,7 +453,11 @@ namespace Discord_Bot.Modulos
         public async Task EqualizerAsync(CommandContext ctx)
         {
             if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
+            }
 
             await this.LavalinkVoice.ResetEqualizerAsync();
             await ctx.RespondAsync("Equalizador reseteado.").ConfigureAwait(false);
@@ -427,7 +467,11 @@ namespace Discord_Bot.Modulos
         public async Task EqualizerAsync(CommandContext ctx, int band, float gain)
         {
             if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
                 return;
+            }
 
             await this.LavalinkVoice.AdjustEqualizerAsync(new LavalinkBandAdjustment(band, gain));
             await ctx.RespondAsync($"Band {band} adjusted by {gain}").ConfigureAwait(false);
@@ -496,6 +540,13 @@ namespace Discord_Bot.Modulos
         [Cooldown(1, 300, CooldownBucketType.Guild)]
         public async Task Earrape(CommandContext ctx)
         {
+            if (this.LavalinkVoice == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync("Debo estar conectada a un canal de voz para realizar esta acción").ConfigureAwait(false);
+                return;
+            }
+
             EmbedFooter footer = new EmbedFooter()
             {
                 Text = "Invocado por " + funciones.GetFooter(ctx),
