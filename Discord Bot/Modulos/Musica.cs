@@ -25,16 +25,120 @@ namespace Discord_Bot.Modulos
         private int Volumen { get; set; } = 100;
 
         private List<Track> Queue = new List<Track>();
-        private CommandContext contexto { get; set; }
-        private int posArchivo { get; set; }
+        private CommandContext Contexto { get; set; }
+        private int PosArchivo { get; set; }
 
-        [Command]
-        public async Task Test(CommandContext ctx)
+        private Task Lavalink_Disconnected(NodeDisconnectedEventArgs e)
         {
-            foreach(Track t in Queue)
+            this.Lavalink = null;
+            this.LavalinkVoice = null;
+            return Task.CompletedTask;
+        }
+
+        private Task Lavalink_PlaybackStarted(TrackStartEventArgs e)
+        {
+            if (!e.Track.Uri.ToString().StartsWith($"file://"))
             {
-                await ctx.RespondAsync(t.Id + " " + t.Link);
+                Queue.Add(new Track
+                {
+                    Id = e.Track.Identifier,
+                    Link = e.Track.Uri,
+                    Titulo = e.Track.Title,
+                    Source = "Internet"
+                });
             }
+            else
+            {
+                string preString = e.Track.Uri.ToString().Remove(0, ConfigurationManager.AppSettings["PathMusica"].Length + 8);
+                preString = preString.Remove(preString.Length - 4);
+                Queue.Add(new Track
+                {
+                    Id = e.Track.Identifier,
+                    PosLocal = PosArchivo,
+                    Titulo = preString,
+                    Source = "Local"
+                });
+            }
+            return Task.CompletedTask;
+        }
+
+        private Task Lavalink_PlaybackFinished(TrackFinishEventArgs e)
+        {
+            Track findQueue = Queue.Find(r => r.Id == e.Track.Identifier);
+            Queue.Remove(findQueue);
+            if (Queue.Count > 0)
+            {
+                Track primero = Queue.First();
+                switch (primero.Source)
+                {
+                    case "Internet":
+                        Queue.Remove(primero);
+                        _ = this.PlayAsync(Contexto, primero.Link.ToString());
+                        break;
+                    case "Local":
+                        _ = this.PlayFileAsync(Contexto, primero.PosLocal);
+                        break;
+                }
+            }
+            return Task.CompletedTask;
+        }
+
+        private Task Lavalink_TrackException(TrackExceptionEventArgs e)
+        {
+            return Task.CompletedTask;
+        }
+
+        private async Task LavalinkVoice_PlaybackStarted(TrackStartEventArgs e)
+        {
+            if (this.ContextChannel == null)
+                return;
+
+            string descripcion;
+            if(!e.Track.Uri.ToString().StartsWith($"file://"))
+            {
+                descripcion = "Se está reproduciendo [" + e.Track.Title + "](" + e.Track.Uri + ")";
+            }
+            else
+            {
+                string preString = e.Track.Uri.ToString().Remove(0, ConfigurationManager.AppSettings["PathMusica"].Length + 8);
+                preString = preString.Remove(preString.Length - 4);
+                descripcion = "Se está reproduciendo ```" + preString + "```";
+            }
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Invocado por " + funciones.GetFooter(Contexto),
+                IconUrl = Contexto.Member.AvatarUrl
+            };
+            await Contexto.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Footer = footer,
+                Color = new DiscordColor(78, 63, 96),
+                Title = "Play",
+                Description = descripcion,
+                Timestamp = DateTime.Now
+            }).ConfigureAwait(false);
+        }
+
+        
+
+        private async Task LavalinkVoice_PlaybackFinished(TrackFinishEventArgs e)
+        {
+            if (this.ContextChannel == null)
+                return;
+
+            string titulo;
+            if (!e.Track.Uri.ToString().StartsWith($"file://"))
+            {
+                titulo = e.Track.Title;
+            }
+            else
+            {
+                string preString = e.Track.Uri.ToString().Remove(0, ConfigurationManager.AppSettings["PathMusica"].Length + 8);
+                titulo = preString.Remove(preString.Length - 4);
+            }
+            await this.ContextChannel.SendMessageAsync($"La reproducción de {Formatter.Bold(Formatter.Sanitize(titulo))} ha terminado.").ConfigureAwait(false);
+
+            this.ContextChannel = null;
         }
 
         public async Task ConnectAsync(CommandContext ctx)
@@ -65,66 +169,6 @@ namespace Discord_Bot.Modulos
             Lavalink.TrackException += Lavalink_TrackException;
         }
 
-        private Task Lavalink_Disconnected(NodeDisconnectedEventArgs e)
-        {
-            this.Lavalink = null;
-            this.LavalinkVoice = null;
-            return Task.CompletedTask;
-        }
-
-        private Task Lavalink_PlaybackStarted(TrackStartEventArgs e)
-        {
-            var link = e.Track.Uri;
-            if(link != null)
-            {
-                Queue.Add(new Track
-                {
-                    Id = e.Track.Identifier,
-                    Link = link,
-                    Titulo = e.Track.Title,
-                    Source = "Internet"
-                });
-            }
-            else
-            {
-                Queue.Add(new Track
-                {
-                    Id = e.Track.Identifier,
-                    PosLocal = posArchivo,
-                    Titulo = e.Track.Title,
-                    Source = "Local"
-                });
-            }
-            return Task.CompletedTask;
-        }
-
-        private Task Lavalink_PlaybackFinished(TrackFinishEventArgs e)
-        {
-            Track findQueue = Queue.Find(r => r.Id == e.Track.Identifier);
-            Queue.Remove(findQueue);
-            if(Queue.Count > 0)
-            {
-                Track primero = Queue.First();
-                switch (primero.Source)
-                {
-                    case "Internet":
-                        Queue.Remove(primero);
-                        _ = this.PlayAsync(contexto, primero.Link.ToString());
-                        break;
-                    case "Local":
-                        _ = this.PlayFileAsync(contexto, primero.PosLocal);
-                        break;
-                }
-            }
-            return Task.CompletedTask;
-        }
-
-        private Task Lavalink_TrackException(TrackExceptionEventArgs e)
-        {
-            return Task.CompletedTask;
-        }
-
-        [Command, Description("Se desconecta de Lavalink"), Hidden]
         public async Task DisconnectAsync(CommandContext ctx)
         {
             if (this.Lavalink == null)
@@ -158,19 +202,11 @@ namespace Discord_Bot.Modulos
             {
                 chn = ctx.Channel;
             }
-            contexto = ctx;
-            this.LavalinkVoice = await this.Lavalink.ConnectAsync(vc);
-            this.LavalinkVoice.PlaybackFinished += this.LavalinkVoice_PlaybackFinished;
+            Contexto = ctx;
+            LavalinkVoice = await Lavalink.ConnectAsync(vc);
+            LavalinkVoice.PlaybackStarted += LavalinkVoice_PlaybackStarted;
+            LavalinkVoice.PlaybackFinished += LavalinkVoice_PlaybackFinished;
             await ctx.RespondAsync($"Me he conectado a `{chn.Name}`").ConfigureAwait(false);
-        }
-
-        private async Task LavalinkVoice_PlaybackFinished(TrackFinishEventArgs e)
-        {
-            if (this.ContextChannel == null)
-                return;
-
-            await this.ContextChannel.SendMessageAsync($"La reproducción de {Formatter.Bold(Formatter.Sanitize(e.Track.Title))} ha terminado.").ConfigureAwait(false);
-            this.ContextChannel = null;
         }
 
         [Command, Description("Deja un canal de voz.")]
@@ -218,19 +254,7 @@ namespace Discord_Bot.Modulos
                     DiscordMessage mensajeBorrar = await ctx.Channel.GetMessageAsync(ctx.Message.Id);
                     if(mensajeBorrar != null)
                         await ctx.Message.DeleteAsync().ConfigureAwait(false);
-                    EmbedFooter footer = new EmbedFooter()
-                    {
-                        Text = "Invocado por " + funciones.GetFooter(ctx),
-                        IconUrl = ctx.Member.AvatarUrl
-                    };
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Footer = footer,
-                        Color = new DiscordColor(78, 63, 96),
-                        Title = "Play",
-                        Description = "Se está reproduciendo [" + titulo + "](" + uri + ")",
-                        Timestamp = DateTime.Now
-                    }).ConfigureAwait(false);
+                    Contexto = ctx;
                 }
                 else
                 {
@@ -253,6 +277,8 @@ namespace Discord_Bot.Modulos
             if (this.LavalinkVoice == null)
                 await JoinAsync(ctx);
 
+            this.ContextChannel = ctx.Channel;
+
             string archivo = funciones.GetCancionByPosicion(posicion);
 
             string filePath = ConfigurationManager.AppSettings["PathMusica"] + archivo + ".mp3";
@@ -264,7 +290,7 @@ namespace Discord_Bot.Modulos
                 return;
             }
 
-            posArchivo = posicion;
+            PosArchivo = posicion;
             var trackLoad = await this.Lavalink.Rest.GetTracksAsync(new FileInfo(filePath));
             var track = trackLoad.Tracks.First();
 
@@ -276,19 +302,6 @@ namespace Discord_Bot.Modulos
                     DiscordMessage mensajeBorrar = await ctx.Channel.GetMessageAsync(ctx.Message.Id);
                     if (mensajeBorrar != null)
                         await ctx.Message.DeleteAsync().ConfigureAwait(false);
-                    EmbedFooter footer = new EmbedFooter()
-                    {
-                        Text = "Invocado por " + funciones.GetFooter(ctx),
-                        IconUrl = ctx.Member.AvatarUrl
-                    };
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Footer = footer,
-                        Color = new DiscordColor(78, 63, 96),
-                        Title = "Play",
-                        Description = "Se está reproduciendo ```" + archivo + "```",
-                        Timestamp = DateTime.Now
-                    }).ConfigureAwait(false);
                 }
                 else
                 {
@@ -378,7 +391,7 @@ namespace Discord_Bot.Modulos
             }
 
             await this.LavalinkVoice.StopAsync();
-            await ctx.RespondAsync($"**{ctx.User.Mention}** ha skipeado la reproducción de {LavalinkVoice.CurrentState.CurrentTrack.Title}.").ConfigureAwait(false);
+            await ctx.RespondAsync($"**{ctx.User.Mention}** ha skipeado la reproducción.").ConfigureAwait(false);
         }
 
         [Command, Description("Para la musica.")]
@@ -446,7 +459,20 @@ namespace Discord_Bot.Modulos
 
             var state = this.LavalinkVoice.CurrentState;
             var track = state.CurrentTrack;
-            await ctx.RespondAsync($"Reproduciendo: {Formatter.Bold(Formatter.Sanitize(track.Title))} by {Formatter.Bold(Formatter.Sanitize(track.Author))} [{state.PlaybackPosition}/{track.Length}].").ConfigureAwait(false);
+            
+            string descripcion;
+            if (!track.Uri.ToString().StartsWith($"file://"))
+            {
+                descripcion = "[" + track.Title + "](" + track.Uri + ")";
+            }
+            else
+            {
+                string preString = track.Uri.ToString().Remove(0, ConfigurationManager.AppSettings["PathMusica"].Length + 8);
+                preString = preString.Remove(preString.Length - 4);
+                descripcion = preString;
+            }
+
+            await ctx.RespondAsync($"Reproduciendo: {Formatter.Bold(Formatter.Sanitize(descripcion))} [{state.PlaybackPosition}/{track.Length}].").ConfigureAwait(false);
         }
 
         [Command, Description("Cambia la configuración del ecualizador."), Aliases("eq")]

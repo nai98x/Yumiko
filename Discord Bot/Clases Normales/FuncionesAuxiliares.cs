@@ -58,7 +58,7 @@ namespace Discord_Bot
             int lenghtPath = ConfigurationManager.AppSettings["PathMusica"].Length;
             string[] filePaths = Directory.GetFiles(ConfigurationManager.AppSettings["PathMusica"]);
             string elegido = filePaths.ElementAt(posicion - 1);
-            string preString = elegido.Remove(0, lenghtPath); // Cantidad de caracteres del path original
+            string preString = elegido.Remove(0, lenghtPath);
             return preString.Remove(preString.Length - 4);
         }
 
