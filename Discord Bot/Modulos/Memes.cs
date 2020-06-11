@@ -88,36 +88,36 @@ namespace Discord_Bot.Modulos
                 Text = "Preguntado por " + funciones.GetFooter(ctx),
                 IconUrl = ctx.Member.AvatarUrl
             };
-            if(waifuLevel < 25)
+            if (waifuLevel < 25)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = footer,
                     Color = DiscordColor.Red,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**",
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nMe pego un tiro antes de tocarte, virgen de mierda.",
                     ImageUrl = "https://i.imgur.com/BOxbruw.png"
                 }).ConfigureAwait(false);
             }
-            if(waifuLevel >= 25 && waifuLevel < 50)
+            if (waifuLevel >= 25 && waifuLevel < 50)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = footer,
                     Color = DiscordColor.Orange,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**",
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nMe das asquito, mejor me alejo de vos.",
                     ImageUrl = "https://i.imgur.com/ys2HoiL.jpg"
                 }).ConfigureAwait(false);
             }
-            if(waifuLevel >= 50 && waifuLevel < 75)
+            if (waifuLevel >= 50 && waifuLevel < 75)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = footer,
                     Color = DiscordColor.Yellow,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**",
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nNo estás mal, pero no tenes posibilidades conmigo.",
                     ImageUrl = "https://i.imgur.com/jCfDrGa.png"
                 }).ConfigureAwait(false);
             }
@@ -128,7 +128,7 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Green,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**",
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nSoy tu waifu, podes hacer lo que quieras conmigo.",
                     ImageUrl = "https://i.imgur.com/dhXR8mV.png"
                 }).ConfigureAwait(false);
             }
@@ -137,9 +137,9 @@ namespace Discord_Bot.Modulos
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = footer,
-                    Color = DiscordColor.Gold,
+                    Color = DiscordColor.Blue,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**",
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nNo puedo parar de pensar en cojer con vos.",
                     ImageUrl = "https://i.imgur.com/b5g1LEP.png"
                 }).ConfigureAwait(false);
             }
