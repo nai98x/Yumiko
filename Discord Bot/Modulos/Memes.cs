@@ -72,7 +72,7 @@ namespace Discord_Bot.Modulos
 
         [Command("waifu")]
         [Description("Te digo si soy tu waifu")]
-        [Cooldown(1, 300, CooldownBucketType.User)]
+        //[Cooldown(1, 300, CooldownBucketType.User)]
         public async Task Waifu(CommandContext ctx, DiscordMember miembro = null)
         {
             string nombre;
@@ -95,8 +95,8 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Red,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**"
-                    //ImageUrl = url
+                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**",
+                    ImageUrl = "https://i.imgur.com/BOxbruw.png"
                 }).ConfigureAwait(false);
             }
             if(waifuLevel >= 25 && waifuLevel < 50)
@@ -106,8 +106,8 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Orange,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**"
-                    //ImageUrl = url
+                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**",
+                    ImageUrl = "https://i.imgur.com/ys2HoiL.jpg"
                 }).ConfigureAwait(false);
             }
             if(waifuLevel >= 50 && waifuLevel < 75)
@@ -117,19 +117,30 @@ namespace Discord_Bot.Modulos
                     Footer = footer,
                     Color = DiscordColor.Yellow,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**"
-                    //ImageUrl = url
+                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**",
+                    ImageUrl = "https://i.imgur.com/jCfDrGa.png"
                 }).ConfigureAwait(false);
             }
-            if (waifuLevel >= 75)
+            if (waifuLevel >= 75 && waifuLevel < 100)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = footer,
                     Color = DiscordColor.Green,
                     Title = "Nivel de waifu",
-                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**"
-                    //ImageUrl = url
+                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**",
+                    ImageUrl = "https://i.imgur.com/dhXR8mV.png"
+                }).ConfigureAwait(false);
+            }
+            if (waifuLevel == 100)
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Footer = footer,
+                    Color = DiscordColor.Gold,
+                    Title = "Nivel de waifu",
+                    Description = "El nivel de husbando de **" + nombre + "** conmigo es de **" + waifuLevel + "%**",
+                    ImageUrl = "https://i.imgur.com/b5g1LEP.png"
                 }).ConfigureAwait(false);
             }
             await ctx.Message.DeleteAsync();
