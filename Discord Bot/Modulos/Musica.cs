@@ -119,8 +119,6 @@ namespace Discord_Bot.Modulos
             }).ConfigureAwait(false);
         }
 
-        
-
         private async Task LavalinkVoice_PlaybackFinished(TrackFinishEventArgs e)
         {
             if (this.ContextChannel == null)
