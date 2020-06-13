@@ -231,7 +231,7 @@ namespace Discord_Bot.Modulos
                     break;
                 case "love":
                     Descripcion = "Te digo el nivel de amor entre dos usuarios";
-                    Uso = "love";
+                    Uso = "love @usuario1 @usuario2";
                     break;
                 default:
                     Ok = false;

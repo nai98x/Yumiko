@@ -154,11 +154,14 @@ namespace Discord_Bot.Modulos
         [Cooldown(1, 300, CooldownBucketType.User)]
         public async Task Love(CommandContext ctx, DiscordUser primero = null, DiscordUser segundo = null)
         {
-            if(primero == null || segundo == null)
+            if(primero == null && segundo == null)
             {
                 await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync($"Debes especificar los dos usuarios, {ctx.Member.DisplayName} baka").ConfigureAwait(false);
             }
+
+            if(segundo == null)
+                segundo = ctx.Member;
 
             Random rnd = new Random();
             int waifuLevel = rnd.Next(101);
@@ -184,9 +187,8 @@ namespace Discord_Bot.Modulos
             {
                 Footer = footer,
                 Color = DiscordColor.Blue,
-                Title = "Amor",
-                Description = $"El nivel de atracción entre {primero.Username} y {segundo.Username} es de {waifuLevel}%\n{frase}",
-                ImageUrl = "https://i.imgur.com/b5g1LEP.png"
+                Title = "Nivel de amor",
+                Description = $"El nivel de atracción entre {primero.Username} y {segundo.Username} es de {waifuLevel}%\n{frase}"
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync();
         }
