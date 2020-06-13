@@ -21,6 +21,7 @@ namespace Discord_Bot.Modulos
                 Text = "Invocado por " + funciones.GetFooter(ctx),
                 IconUrl = ctx.Member.AvatarUrl
             };
+            await ctx.TriggerTypingAsync();
             if (opcionRandom != "DORADO")
             {
                 DiscordGuildEmoji emoji = await ctx.Guild.GetEmojiAsync(424965118900830238);
@@ -62,6 +63,7 @@ namespace Discord_Bot.Modulos
                 Text = "Imagen posteada por " + funciones.GetFooter(ctx),
                 IconUrl = ctx.Member.AvatarUrl
             };
+            await ctx.TriggerTypingAsync();
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = footer,
@@ -88,6 +90,7 @@ namespace Discord_Bot.Modulos
                 Text = "Preguntado por " + funciones.GetFooter(ctx),
                 IconUrl = ctx.Member.AvatarUrl
             };
+            await ctx.TriggerTypingAsync();
             if (waifuLevel < 25)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
@@ -143,6 +146,48 @@ namespace Discord_Bot.Modulos
                     ImageUrl = "https://i.imgur.com/b5g1LEP.png"
                 }).ConfigureAwait(false);
             }
+            await ctx.Message.DeleteAsync();
+        }
+
+        [Command("Love")]
+        [Description("Te digo el nivel de amor entre dos usuarios")]
+        [Cooldown(1, 300, CooldownBucketType.User)]
+        public async Task Love(CommandContext ctx, DiscordUser primero = null, DiscordUser segundo = null)
+        {
+            if(primero == null || segundo == null)
+            {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync($"Debes especificar los dos usuarios, {ctx.Member.DisplayName} baka").ConfigureAwait(false);
+            }
+
+            Random rnd = new Random();
+            int waifuLevel = rnd.Next(101);
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Preguntado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
+            };
+
+            string frase;
+            if (waifuLevel < 25)
+                frase = "Ustedes dos se suicidan con una lija antes de verse";
+            if (waifuLevel >= 25 && waifuLevel < 50)
+                frase = "Mejor que estén lejos, no son el uno para el otro";
+            if (waifuLevel >= 50 && waifuLevel < 75)
+                frase = "Casi pero no";
+            if (waifuLevel >= 75 && waifuLevel < 100)
+                frase = "Shippeo intenso incomming";
+            else
+                frase = "PUEDEN COJER YA? GRACIAS";
+
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Footer = footer,
+                Color = DiscordColor.Blue,
+                Title = "Amor",
+                Description = $"El nivel de atracción entre {primero.Username} y {segundo.Username} es de {waifuLevel}%\n{frase}",
+                ImageUrl = "https://i.imgur.com/b5g1LEP.png"
+            }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync();
         }
     }

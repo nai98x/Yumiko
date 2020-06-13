@@ -85,7 +85,7 @@ namespace Discord_Bot.Modulos
                 Color = new DiscordColor(78, 63, 96)
             };
             embed.AddField("✍️ Interactuar", "`say`, `tts`, `pregunta`, `elegir`");
-            embed.AddField("😂 Memes", "`eli`, `meme`, `mutear`, `waifu`, `earrape`");
+            embed.AddField("😂 Memes", "`eli`, `meme`, `mutear`, `waifu`, `love`, `earrape`");
             embed.AddField("🎵 Musica", "`join`, `leave`, `play`, `playfile`, `pause`, `resume`, `skip`, `stop`, `nowplaying`, `queue`, `volume`, `seek`, `equializer`, `archivos`");
             embed.AddField("☕️ Otros", "`invite`, `donar`, `ping`, `clear`, `expulsar`, `reiniciar`, `apagar`");
             await ctx.RespondAsync(null, false, embed);
@@ -228,6 +228,10 @@ namespace Discord_Bot.Modulos
                 case "queue":
                     Descripcion = "Se muestra la cola de reproduccion";
                     Uso = "queue";
+                    break;
+                case "love":
+                    Descripcion = "Te digo el nivel de amor entre dos usuarios";
+                    Uso = "love";
                     break;
                 default:
                     Ok = false;
