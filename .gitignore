@@ -341,3 +341,7 @@ healthchecksdb
 
 # Visual studio temp folder
 /.vs
+
+# Configuracion general
+Discord Bot/App.config
+App.config
