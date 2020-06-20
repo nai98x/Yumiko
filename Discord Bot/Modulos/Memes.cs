@@ -70,6 +70,7 @@ namespace Discord_Bot.Modulos
                 ImageUrl = url,
                 Color = new DiscordColor(78, 63, 96)
             }).ConfigureAwait(false);
+            await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
 
         [Command("waifu")]
@@ -151,6 +152,7 @@ namespace Discord_Bot.Modulos
 
         [Command("Love")]
         [Description("Te digo el nivel de amor entre dos usuarios")]
+        [Aliases("amor","husbando")]
         [Cooldown(1, 300, CooldownBucketType.User)]
         public async Task Love(CommandContext ctx, DiscordUser primero = null, DiscordUser segundo = null)
         {
@@ -171,7 +173,7 @@ namespace Discord_Bot.Modulos
                 IconUrl = ctx.Member.AvatarUrl
             };
 
-            string frase;
+            string frase = "ERROR";
             if (waifuLevel < 25)
                 frase = "Ustedes dos se suicidan con una lija antes de verse";
             if (waifuLevel >= 25 && waifuLevel < 50)
@@ -180,15 +182,15 @@ namespace Discord_Bot.Modulos
                 frase = "Casi pero no";
             if (waifuLevel >= 75 && waifuLevel < 100)
                 frase = "Shippeo intenso incomming";
-            else
+            if (waifuLevel == 100)
                 frase = "PUEDEN COJER YA? GRACIAS";
 
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = footer,
-                Color = DiscordColor.Blue,
+                Color = new DiscordColor(78, 63, 96),
                 Title = "Nivel de amor",
-                Description = $"El nivel de atracción entre {primero.Username} y {segundo.Username} es de {waifuLevel}%\n{frase}"
+                Description = $"El nivel de atracción entre {primero.Mention} y {segundo.Mention} es de {waifuLevel}%\n{frase}"
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync();
         }

@@ -132,6 +132,7 @@ namespace Discord_Bot.Modulos
         {
             await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("Puedes apoyarme a comprarme una dakimakura en:\n" + ConfigurationManager.AppSettings["Donar"]);
+            await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
 
         [Command("invite")]
@@ -141,6 +142,7 @@ namespace Discord_Bot.Modulos
         {
             await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
+            await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
     }
 }
