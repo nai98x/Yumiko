@@ -153,7 +153,7 @@ namespace Discord_Bot.Modulos
 
         [Command("Love")]
         [Description("Te digo el nivel de amor entre dos usuarios")]
-        [Aliases("amor","husbando")]
+        [Aliases("amor")]
         [Cooldown(1, 300, CooldownBucketType.User)]
         public async Task Love(CommandContext ctx, DiscordUser primero = null, DiscordUser segundo = null)
         {
@@ -214,7 +214,7 @@ namespace Discord_Bot.Modulos
                 Footer = footer,
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Husbando",
-                Description = $"Mi husbando es: {elegido.DisplayName} ({elegido.Username}#{elegido.Discriminator}) 💘",
+                Description = $"Mi husbando es: **{elegido.DisplayName} ({elegido.Username}#{elegido.Discriminator})** 💘",
                 ImageUrl = elegido.AvatarUrl
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync();

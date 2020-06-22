@@ -232,7 +232,7 @@ namespace Discord_Bot.Modulos
                 case "love":
                     Descripcion = "Te digo el nivel de amor entre dos usuarios";
                     Uso = "love usuario1 usuario2 (menciones)";
-                    Aliases = "`amor`, `husbando`";
+                    Aliases = "`amor`";
                     break;
                 case "husbando":
                     Descripcion = "Yumiko elige a su husbando";

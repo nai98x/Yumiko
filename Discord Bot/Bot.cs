@@ -9,6 +9,7 @@ using DSharpPlus.Lavalink;
 using DSharpPlus.Net;
 using DSharpPlus.VoiceNext;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
@@ -113,6 +114,7 @@ namespace Discord_Bot
             }
             if (e.Exception is ChecksFailedException ex)
             {
+                List<DiscordMessage> mensajes = new List<DiscordMessage>();
                 foreach (var exep in ex.FailedChecks)
                 {
                     string exepcion = exep.ToString();
@@ -142,14 +144,40 @@ namespace Discord_Bot
                         Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
                         IconUrl = miembro.AvatarUrl
                     };
-                    await e.Context.RespondAsync("", embed: new DiscordEmbedBuilder
+                    DiscordMessage msg = await e.Context.RespondAsync("", embed: new DiscordEmbedBuilder
                     {
                         Title = titulo,
                         Description = descripcion,
                         Color = new DiscordColor(0xFF0000),
                         Footer = footer
                     });
+                    mensajes.Add(msg);
                 }
+                await Task.Delay(3000);
+                await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                foreach (DiscordMessage mensaje in mensajes)
+                {
+                    await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                }
+            }
+            else
+            {
+                var miembro = e.Context.Member;
+                EmbedFooter footer = new EmbedFooter()
+                {
+                    Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
+                    IconUrl = miembro.AvatarUrl
+                };
+                DiscordMessage msg = await e.Context.RespondAsync("", embed: new DiscordEmbedBuilder
+                {
+                    Title = "Error desconocido",
+                    Description = "Ha ocurrido un error que no puedo manejar",
+                    Color = new DiscordColor(0xFF0000),
+                    Footer = footer
+                });
+                await Task.Delay(3000);
+                await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                await msg.DeleteAsync("Auto borrado de Yumiko");
             }
         }
     }
