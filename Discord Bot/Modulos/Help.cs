@@ -85,7 +85,7 @@ namespace Discord_Bot.Modulos
                 Color = new DiscordColor(78, 63, 96)
             };
             embed.AddField("✍️ Interactuar", "`say`, `tts`, `pregunta`, `elegir`");
-            embed.AddField("😂 Memes", "`eli`, `meme`, `mutear`, `waifu`, `love`, `earrape`");
+            embed.AddField("😂 Memes", "`eli`, `meme`, `mutear`, `waifu`, `husbando`, `love`, `earrape`");
             embed.AddField("🎵 Musica", "`join`, `leave`, `play`, `playfile`, `pause`, `resume`, `skip`, `stop`, `nowplaying`, `queue`, `volume`, `seek`, `equializer`, `archivos`");
             embed.AddField("☕️ Otros", "`invite`, `donar`, `ping`, `clear`, `expulsar`, `reiniciar`, `apagar`");
             await ctx.RespondAsync(null, false, embed);
@@ -233,6 +233,10 @@ namespace Discord_Bot.Modulos
                     Descripcion = "Te digo el nivel de amor entre dos usuarios";
                     Uso = "love usuario1 usuario2 (menciones)";
                     Aliases = "`amor`, `husbando`";
+                    break;
+                case "husbando":
+                    Descripcion = "Yumiko elige a su husbando";
+                    Uso = "husbando";
                     break;
                 default:
                     Ok = false;

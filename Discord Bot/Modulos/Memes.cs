@@ -2,6 +2,7 @@
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
@@ -191,6 +192,30 @@ namespace Discord_Bot.Modulos
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Nivel de amor",
                 Description = $"El nivel de atracción entre {primero.Mention} y {segundo.Mention} es de {waifuLevel}%\n{frase}"
+            }).ConfigureAwait(false);
+            await ctx.Message.DeleteAsync();
+        }
+
+        [Command("husbando")]
+        [Description("Elijo mi husbando")]
+        [Cooldown(1, 300, CooldownBucketType.Guild)]
+        public async Task Husbando(CommandContext ctx)
+        {
+            Random rnd = new Random();
+            var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false);
+            DiscordMember elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Invocado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
+            };
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Footer = footer,
+                Color = new DiscordColor(78, 63, 96),
+                Title = "Husbando",
+                Description = $"Mi husbando es: {elegido.DisplayName} ({elegido.Username}#{elegido.Discriminator}) 💘",
+                ImageUrl = elegido.AvatarUrl
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync();
         }
