@@ -36,6 +36,19 @@ namespace Discord_Bot
                 "https://i.imgur.com/ypuwqV8.jpg", // Eli holocausto
                 "https://i.imgur.com/UUVMxJE.jpg", // Eli sakura fanservice
                 "https://i.imgur.com/RFHhH4h.png", // Eli como te ve ella
+                "https://i.imgur.com/fGDHFsd.jpg", // Hairo ni una menos
+                "https://i.imgur.com/2Ru0Eb6.jpg", // Elias torta
+                "https://i.imgur.com/ryEKzEx.jpg", // Eli touchdown
+                "https://i.imgur.com/YmjJGD7.jpg", // Nai te chamuyo
+                "https://i.imgur.com/xKlnevm.jpg", // Nai tenia 12
+                "https://i.imgur.com/AyMh2wG.jpg", // Dario flores
+                "https://i.imgur.com/ap83pq7.jpg", // Nai viento
+                "https://i.imgur.com/slePBLn.jpg", // Hairo pedo
+                "https://i.imgur.com/wbMdeoK.jpg", // Nai deformed
+                "https://i.imgur.com/SpsqBpc.jpg", // Nai sol
+                "https://i.imgur.com/RDd3gyq.jpg", // Team vengadores
+                "https://i.imgur.com/Djpziyr.jpg", // Dario Elias santa
+                "https://i.imgur.com/pE0iixq.png", // Sadi Eli brazzers
             };
 
             Random rnd = new Random();
