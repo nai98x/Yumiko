@@ -90,51 +90,6 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync();
         }
 
-        [Command("Love")]
-        [Description("Te digo el nivel de amor entre dos usuarios")]
-        [Aliases("amor")]
-        public async Task Love(CommandContext ctx, DiscordUser primero = null, DiscordUser segundo = null)
-        {
-            if(primero == null && segundo == null)
-            {
-                await ctx.TriggerTypingAsync();
-                await ctx.RespondAsync($"Debes especificar los dos usuarios, {ctx.Member.DisplayName} baka").ConfigureAwait(false);
-                return;
-            }
-
-            if(segundo == null)
-                segundo = ctx.Member;
-
-            Random rnd = new Random();
-            int waifuLevel = rnd.Next(101);
-            EmbedFooter footer = new EmbedFooter()
-            {
-                Text = "Preguntado por " + funciones.GetFooter(ctx),
-                IconUrl = ctx.Member.AvatarUrl
-            };
-
-            string frase = "ERROR";
-            if (waifuLevel < 25)
-                frase = "Ustedes dos se suicidan con una lija antes de verse";
-            if (waifuLevel >= 25 && waifuLevel < 50)
-                frase = "Mejor que estén lejos, no son el uno para el otro";
-            if (waifuLevel >= 50 && waifuLevel < 75)
-                frase = "Esto termina en friendzone";
-            if (waifuLevel >= 75 && waifuLevel < 100)
-                frase = "Ustedes pueden formar una gran pareja";
-            if (waifuLevel == 100)
-                frase = "PUEDEN CASARSE YA? GRACIAS";
-
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-            {
-                Footer = footer,
-                Color = new DiscordColor(78, 63, 96),
-                Title = "Nivel de amor",
-                Description = $"El nivel de atracción entre {primero.Mention} y {segundo.Mention} es de {waifuLevel}%\n{frase}"
-            }).ConfigureAwait(false);
-            await ctx.Message.DeleteAsync();
-        }
-
         [Command("husbando")]
         [Description("Elijo mi husbando")]
         public async Task Husbando(CommandContext ctx)
@@ -175,9 +130,23 @@ namespace Discord_Bot.Modulos
                 await ctx.RespondAsync("Error al obtener canal **#capturas** del servidor **AniList ESP OOC**").ConfigureAwait(false);
                 return;
             }
-            var mensajes = await channel.GetMessagesAsync();
+            IReadOnlyList<DiscordMessage> mensajes = await channel.GetMessagesAsync();
+            List<DiscordMessage> msgs = mensajes.ToList<DiscordMessage>();
+            int cntMensajes = msgs.Count();
+            DiscordMessage last = msgs.LastOrDefault();
+            while (cntMensajes == 100)
+            {
+                var mensajesAux = await channel.GetMessagesBeforeAsync(last.Id);
+
+                cntMensajes = mensajesAux.Count();
+                last = mensajesAux.LastOrDefault();
+
+                foreach (DiscordMessage mensaje in mensajesAux){
+                    msgs.Add(mensaje);
+                }
+            }
             List<Imagen> opciones = new List<Imagen>();
-            foreach(DiscordMessage msg in mensajes)
+            foreach(DiscordMessage msg in msgs)
             {
                 var att = msg.Attachments.FirstOrDefault();
                 if(att != null && att.Url != null)
@@ -196,7 +165,6 @@ namespace Discord_Bot.Modulos
                 Text = "Invocado por " + funciones.GetFooter(ctx),
                 IconUrl = ctx.Member.AvatarUrl
             };
-            
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = footer,

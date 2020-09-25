@@ -67,7 +67,7 @@ namespace Discord_Bot
             await Client.ConnectAsync();
 
             await Task.Delay(1000); // esperar a que autentifique
-            await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = ConfigurationManager.AppSettings["Prefix"]  + "help"}, UserStatus.Online);
+            await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = ConfigurationManager.AppSettings["Prefix"]  + "help | yumiko.uwu.ai | Desarrollado con <3 por Nai" }, UserStatus.Online);
             await Task.Delay(-1);
         }
 
