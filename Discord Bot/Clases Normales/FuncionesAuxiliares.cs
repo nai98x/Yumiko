@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -19,5 +20,11 @@ namespace Discord_Bot
         {
             return ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")";
         }
+    }
+
+    public class Imagen
+    {
+        public string url { get; set; }
+        public DiscordUser autor { get; set; }
     }
 }

@@ -160,6 +160,7 @@ namespace Discord_Bot.Modulos
 
         [Command("ooc")]
         [Description("Out of Context")]
+        [RequireNsfw]
         public async Task OOC(CommandContext ctx)
         {
             DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(748315008131268693);
@@ -175,17 +176,20 @@ namespace Discord_Bot.Modulos
                 return;
             }
             var mensajes = await channel.GetMessagesAsync();
-            List<string> opciones = new List<string>();
+            List<Imagen> opciones = new List<Imagen>();
             foreach(DiscordMessage msg in mensajes)
             {
                 var att = msg.Attachments.FirstOrDefault();
                 if(att != null && att.Url != null)
                 {
-                    opciones.Add(att.Url);
+                    opciones.Add(new Imagen {
+                        url = att.Url,
+                        autor = msg.Author
+                    });
                 }
             }
             Random rnd = new Random();
-            string meme = opciones[rnd.Next(opciones.Count)];
+            Imagen meme = opciones[rnd.Next(opciones.Count)];
 
             EmbedFooter footer = new EmbedFooter()
             {
@@ -198,7 +202,8 @@ namespace Discord_Bot.Modulos
                 Footer = footer,
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Out of Context",
-                ImageUrl = meme
+                Description = $"Imagen posteada por {meme.autor.Username + "#" + meme.autor.Discriminator}",
+                ImageUrl = meme.url
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync();
         }

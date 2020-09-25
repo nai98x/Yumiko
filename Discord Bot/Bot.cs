@@ -130,9 +130,13 @@ namespace Discord_Bot
                             titulo = "Acceso denegado";
                             descripcion = "Solo el dueño del bot puede ejecutar este comando.";
                             break;
+                        case "DSharpPlus.CommandsNext.Attributes.RequireNsfwAttribute":
+                            titulo = "Requiere NSFW";
+                            descripcion = "Este comando debe ser invocado en un canal NSFW.";
+                            break;
                         default:
                             titulo = "Error inesperado";
-                            descripcion = "No tienes los suficientes permisos para ejecutar este comando.";
+                            descripcion = "Ha ocurrido un error que no puedo manejar.";
                             break;
                     }
                     var miembro = e.Context.Member;
