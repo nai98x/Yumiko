@@ -35,15 +35,7 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
             await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
         }
-
-        [Command("tts")]
-        [Description("Te habla la waifu")]
-        public async Task TTS(CommandContext ctx, [RemainingText][Description("Tu mensaje")]string mensaje)
-        {
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
-            await ctx.Channel.SendMessageAsync(mensaje, true).ConfigureAwait(false);
-        }
-
+        
         [Command("pregunta")]
         [Aliases("p", "question", "sisonon")]
         [Description("Responde con SIS O NON")]
@@ -124,17 +116,7 @@ namespace Discord_Bot.Modulos
                 await ctx.RespondAsync("No escribiste las opciones, sos una pija " + ctx.User.Mention);
             }
         }
-
-        [Command("donar")]
-        [Aliases("support", "donate")]
-        [Description("Enlace de donación uwu")]
-        public async Task Donate(CommandContext ctx)
-        {
-            await ctx.TriggerTypingAsync();
-            await ctx.RespondAsync("Puedes apoyarme a comprarme una dakimakura en:\n" + ConfigurationManager.AppSettings["Donar"]);
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
-        }
-
+        
         [Command("invite")]
         [Aliases("invitar")]
         [Description("Invitacón del bot para que se una a un server")]

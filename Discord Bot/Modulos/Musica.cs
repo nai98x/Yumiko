@@ -277,7 +277,7 @@ namespace Discord_Bot.Modulos
 
             this.ContextChannel = ctx.Channel;
 
-            string archivo = funciones.GetCancionByPosicion(posicion);
+            string archivo = "disabled";//funciones.GetCancionByPosicion(posicion);
 
             string filePath = ConfigurationManager.AppSettings["PathMusica"] + archivo + ".mp3";
 
