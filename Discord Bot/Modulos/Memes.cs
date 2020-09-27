@@ -152,8 +152,8 @@ namespace Discord_Bot.Modulos
                 if(att != null && att.Url != null)
                 {
                     opciones.Add(new Imagen {
-                        url = att.Url,
-                        autor = msg.Author
+                        Url = att.Url,
+                        Autor = msg.Author
                     });
                 }
             }
@@ -170,8 +170,8 @@ namespace Discord_Bot.Modulos
                 Footer = footer,
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Out of Context",
-                Description = $"Imagen posteada por {meme.autor.Username + "#" + meme.autor.Discriminator}",
-                ImageUrl = meme.url
+                Description = $"Imagen posteada por {meme.Autor.Username + "#" + meme.Autor.Discriminator}",
+                ImageUrl = meme.Url
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync();
         }

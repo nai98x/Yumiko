@@ -23,6 +23,11 @@
     <PackageReference Include="DSharpPlus.Lavalink" Version="4.0.0-nightly-00727" />
     <PackageReference Include="DSharpPlus.Rest" Version="4.0.0-nightly-00727" />
     <PackageReference Include="DSharpPlus.VoiceNext" Version="4.0.0-nightly-00727" />
+    <PackageReference Include="GraphQL" Version="3.0.0.2026" />
+    <PackageReference Include="GraphQL.Client" Version="3.1.9" />
+    <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="3.1.9" />
+    <PackageReference Include="Miki.Anilist" Version="0.6.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
   </ItemGroup>
   <ProjectExtensions>

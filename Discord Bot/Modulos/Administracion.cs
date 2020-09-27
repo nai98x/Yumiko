@@ -11,8 +11,6 @@ namespace Discord_Bot.Modulos
 {
     public class Administracion : BaseCommandModule
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-        
         [Command("reiniciar")]
         [Aliases("restart")]
         [Description("Reinicia a Yumiko")]

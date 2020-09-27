@@ -25,8 +25,6 @@ namespace Discord_Bot
         public DiscordActivity Activity { get; private set; }
         public LavalinkExtension Lavalink { get; private set; }
 
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-
         public async Task RunAsync()
         {
             var Config = new DiscordConfiguration
@@ -47,7 +45,7 @@ namespace Discord_Bot
 
             var commandsConfig = new CommandsNextConfiguration
             {
-                StringPrefixes = new string[] { ConfigurationManager.AppSettings["Prefix"] },
+                StringPrefixes = new string[] { ConfigurationManager.AppSettings["Prefix"], "yumiko" },
                 EnableMentionPrefix = true,
                 EnableDms = false,
                 DmHelp = false,
@@ -62,6 +60,7 @@ namespace Discord_Bot
             Commands.RegisterCommands<Administracion>();
             Commands.RegisterCommands<Memes>();
             Commands.RegisterCommands<Misc>();
+            Commands.RegisterCommands<Games>();
             Commands.RegisterCommands<Help>();
 
             await Client.ConnectAsync();
