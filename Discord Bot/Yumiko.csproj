@@ -17,6 +17,7 @@
     <None Remove="obj\**" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AniSharp" Version="1.6.5" />
     <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00727" />
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00727" />
     <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00727" />

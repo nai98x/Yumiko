@@ -4,6 +4,7 @@ using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
@@ -109,6 +110,44 @@ namespace Discord_Bot.Modulos
                 Title = "Husbando",
                 Description = $"Mi husbando es: **{elegido.DisplayName} ({elegido.Username}#{elegido.Discriminator})** 💘",
                 ImageUrl = elegido.AvatarUrl
+            }).ConfigureAwait(false);
+            await ctx.Message.DeleteAsync();
+        }
+
+        [Command("ship")]
+        [Description("Elijo a tu shippeo")]
+        public async Task Ship(CommandContext ctx, DiscordUser usuario = null)
+        {
+            Random rnd = new Random();
+            DiscordRole kohai = ctx.Guild.GetRole(713484136001700042);
+            DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
+            var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai)));
+
+            DiscordMember elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Invocado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
+            };
+            string shipeoUsr;
+            if(usuario == null) 
+            {
+                DiscordMember ctxMiembro = await ctx.Guild.GetMemberAsync(ctx.User.Id);
+                shipeoUsr = ctxMiembro.DisplayName;
+            }
+            else 
+            {
+                DiscordMember ctxMiembro = await ctx.Guild.GetMemberAsync(usuario.Id);
+                shipeoUsr = ctxMiembro.DisplayName;
+            }
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Footer = footer,
+                Color = new DiscordColor(78, 63, 96),
+                Title = "Shippeo",
+                Description = $"Shippeo a **{shipeoUsr}** con **{elegido.DisplayName}** 💘",
+                ImageUrl = funciones.GetImagenRandomShip()
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync();
         }

@@ -17,6 +17,24 @@ namespace Discord_Bot
             return opciones[rnd.Next(opciones.Count)];
         }
 
+        public string GetImagenRandomShip()
+        {
+            string[] opciones = new string[]
+            {
+                "https://i.imgur.com/nmXB1j3.gif",
+                "https://i.imgur.com/apvPrPH.gif",
+                "https://i.imgur.com/x3L3O3l.gif",
+                "https://i.imgur.com/AgsLqLO.gif",
+                "https://i.imgur.com/G4YLOal.gif",
+                "https://i.imgur.com/gp3bj3R.gif",
+                "https://i.imgur.com/EgmqF5t.gif",
+                "https://i.imgur.com/aLSqypv.gif",
+                "https://i.imgur.com/EI09P4S.gif"
+            };
+            Random rnd = new Random();
+            return opciones[rnd.Next(opciones.Length -1)];
+        }
+
         public string GetFooter(CommandContext ctx)
         {
             return ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")";
@@ -60,7 +78,7 @@ namespace Discord_Bot
 
     public class Page
     {
-        public List<Character> characters { get; set; }
+        public List<Miki.Anilist.ICharacter> characters { get; set; }
     }
 
     public class Data
