@@ -47,7 +47,7 @@ namespace Discord_Bot.Modulos
                 //var characters = await client.QueryAsync(query, new { page = i });
             }*/
 
-            int asd = 1;
+            //int asd = 1;
         }
     }
 }

@@ -96,8 +96,19 @@ namespace Discord_Bot.Modulos
         public async Task Husbando(CommandContext ctx)
         {
             Random rnd = new Random();
-            var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false);
-            DiscordMember elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+            DiscordMember elegido;
+            if (ctx.Guild.Id == 701813281718927441) // Anilist ESP
+            {
+                DiscordRole kohai = ctx.Guild.GetRole(713484136001700042);
+                DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
+                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai)));
+                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+            }
+            else
+            {
+                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false);
+                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+            }
             EmbedFooter footer = new EmbedFooter()
             {
                 Text = "Invocado por " + funciones.GetFooter(ctx),
@@ -118,35 +129,76 @@ namespace Discord_Bot.Modulos
         [Description("Elijo a tu shippeo")]
         public async Task Ship(CommandContext ctx, DiscordUser usuario = null)
         {
+            if(usuario == null)
+            {
+                usuario = ctx.User;
+            }
             Random rnd = new Random();
-            DiscordRole kohai = ctx.Guild.GetRole(713484136001700042);
-            DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
-            var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai)));
-
-            DiscordMember elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
-
+            DiscordMember elegido;
+            if (ctx.Guild.Id == 701813281718927441) // Anilist ESP
+            {
+                DiscordRole kohai = ctx.Guild.GetRole(713484136001700042);
+                DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
+                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai)) && x.Value.Id != usuario.Id);
+                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+            }
+            else
+            {
+                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && x.Value.Id != usuario.Id);
+                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+            }
             EmbedFooter footer = new EmbedFooter()
             {
                 Text = "Invocado por " + funciones.GetFooter(ctx),
                 IconUrl = ctx.Member.AvatarUrl
             };
             string shipeoUsr;
-            if(usuario == null) 
-            {
-                DiscordMember ctxMiembro = await ctx.Guild.GetMemberAsync(ctx.User.Id);
-                shipeoUsr = ctxMiembro.DisplayName;
-            }
-            else 
-            {
-                DiscordMember ctxMiembro = await ctx.Guild.GetMemberAsync(usuario.Id);
-                shipeoUsr = ctxMiembro.DisplayName;
-            }
+            DiscordMember ctxMiembro = await ctx.Guild.GetMemberAsync(usuario.Id);
+            shipeoUsr = ctxMiembro.DisplayName;
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = footer,
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Shippeo",
                 Description = $"Shippeo a **{shipeoUsr}** con **{elegido.DisplayName}** 💘",
+                ImageUrl = funciones.GetImagenRandomShip()
+            }).ConfigureAwait(false);
+            await ctx.Message.DeleteAsync();
+        }
+
+        [Command("shipr")]
+        [Description("Elijo a tu shippeo")]
+        public async Task ShipRandom(CommandContext ctx)
+        {
+            Random rnd = new Random();
+            DiscordMember elegido, elegido2;
+            if (ctx.Guild.Id == 701813281718927441) // Anilist ESP
+            {
+                DiscordRole kohai = ctx.Guild.GetRole(713484136001700042);
+                DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
+                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai)));
+                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+                elegido2 = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+            }
+            else
+            {
+                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false);
+                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+                elegido2 = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+            }
+
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Invocado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
+            };
+            
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Footer = footer,
+                Color = new DiscordColor(78, 63, 96),
+                Title = "Shippeo random",
+                Description = $"Shippeo a **{elegido.DisplayName}** con **{elegido2.DisplayName}** 💘",
                 ImageUrl = funciones.GetImagenRandomShip()
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync();
