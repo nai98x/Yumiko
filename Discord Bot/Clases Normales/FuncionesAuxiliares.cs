@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Discord_Bot
 {
     public class FuncionesAuxiliares
     {
+        private static readonly Random getrandom = new Random();
         public string GetImagenRandomMeme(List<string> opciones)
         {
             Random rnd = new Random();
@@ -38,6 +40,30 @@ namespace Discord_Bot
         public string GetFooter(CommandContext ctx)
         {
             return ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")";
+        }
+    }
+
+    public static class RNGUtil
+    {
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="min" /> is greater than <paramref name="max" />.</exception>
+        public static int Next(int min, int max)
+        {
+            if (min > max) throw new ArgumentOutOfRangeException(nameof(min));
+            if (min == max) return min;
+
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                var data = new byte[4];
+                rng.GetBytes(data);
+
+                int generatedValue = Math.Abs(BitConverter.ToInt32(data, startIndex: 0));
+
+                int diff = max - min;
+                int mod = generatedValue % diff;
+                int normalizedNumber = min + mod;
+
+                return normalizedNumber;
+            }
         }
     }
 

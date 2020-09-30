@@ -11,6 +11,7 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.EventHandling;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography;
 
 namespace Discord_Bot.Modulos
 {
@@ -21,8 +22,12 @@ namespace Discord_Bot.Modulos
         [Command("quiz")]
         [Description("Adivina el personaje")]
         [RequireOwner]
-        public async Task QuizCharactersGlobal(CommandContext ctx, int rondas)
+        public async Task QuizCharactersGlobal(CommandContext ctx, int rondas = 0)
         {
+            if(rondas <= 0)
+            {
+                rondas = 10; // Default
+            }
             await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
             await ctx.RespondAsync($"Adivina el personaje! Sesión inciada por **{ctx.User.Username}#{ctx.User.Discriminator}**! Rondas: **{rondas}**");
             string query= "query($page: Int) {" +
@@ -41,8 +46,9 @@ namespace Discord_Bot.Modulos
             "}";
             List<Character> characterList = new List<Character>();
             var graphQLClient = new GraphQLClient("https://graphql.anilist.co");
-            DiscordMessage mensaje = await ctx.RespondAsync("Recolectando pesonajes...").ConfigureAwait(false);
-            for (int i=1; i<=20; i++) // 1000 personajes LIMITE 90 PETICIONES POR MINUTO
+            int iteraciones = 40;
+            DiscordMessage mensaje = await ctx.RespondAsync($"Recolectando pesonajes... (Total: {50*iteraciones})").ConfigureAwait(false);
+            for (int i=1; i<=iteraciones; i++) // 2000 personajes LIMITE 90 PETICIONES POR MINUTO
             {
                 var response = await graphQLClient.QueryAsync(query, new { page = i });
                 var data = JsonConvert.DeserializeObject<dynamic>(response);
@@ -64,28 +70,40 @@ namespace Discord_Bot.Modulos
                 Description = "Reacciona para participar!"
             };
             var joinMessage = await ctx.Channel.SendMessageAsync(embed: joinEmbed).ConfigureAwait(false);
-            var thumbsUpEmoji = DiscordEmoji.FromName(ctx.Client, ":+1:");
-            var thumbsDownEmoji = DiscordEmoji.FromName(ctx.Client, ":-1:");
-            await joinMessage.CreateReactionAsync(thumbsUpEmoji).ConfigureAwait(false);
-            var resultado = await interactivity.CollectReactionsAsync(joinMessage, TimeSpan.FromMinutes(1));
-            Reaction reaccion = resultado.FirstOrDefault();
+            var emojiReaccion = DiscordEmoji.FromName(ctx.Client, ":pencil:");
+            await joinMessage.CreateReactionAsync(emojiReaccion).ConfigureAwait(false);
+            var resultado = await interactivity.CollectReactionsAsync(joinMessage, TimeSpan.FromSeconds(20));
             List<UsuarioJuego> participantes = new List<UsuarioJuego>();
-            foreach (DiscordUser partic in reaccion.Users)
+            foreach (Reaction rec in resultado)
             {
-                if (!partic.IsBot)
+                if(rec.Emoji == emojiReaccion)
                 {
-                    participantes.Add(new UsuarioJuego()
+                    foreach (DiscordUser partic in rec.Users)
                     {
-                        usuario = partic,
-                        puntaje = 0
-                    });
+                        if (!partic.IsBot)
+                        {
+                            participantes.Add(new UsuarioJuego()
+                            {
+                                usuario = partic,
+                                puntaje = 0
+                            });
+                        }
+                    }
                 }
             }
-            await interactivity.WaitForReactionAsync(x => x.Message == joinMessage && x.Emoji == thumbsUpEmoji);
-            Random rnd = new Random();
+            string participantes1 = "";
+            foreach (UsuarioJuego uj in participantes)
+            {
+                participantes1 += $"- {uj.usuario.Username}#{uj.usuario.Discriminator}\n";
+            }
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
+            {
+                Title = "Adivina el personaje - Jugadores",
+                Description = participantes1
+            }).ConfigureAwait(false);
             for (int ronda = 1; ronda <= rondas; ronda++)
             {
-                int random = rnd.Next(characterList.Count - 1);
+                int random = RNGUtil.Next(0, characterList.Count - 1);
                 Character elegido = characterList[random];
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
@@ -94,21 +112,32 @@ namespace Discord_Bot.Modulos
                     Description = $"Ronda {ronda} de {rondas}",
                     ImageUrl = elegido.Image
                 }).ConfigureAwait(false);
-                var msg = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && (xm.Content.ToLower() == elegido.NameFull.ToLower() || xm.Content.ToLower() == elegido.NameFirst.ToLower()), TimeSpan.FromSeconds(20));
+                var msg = await interactivity.WaitForMessageAsync
+                    (xm => xm.Channel == ctx.Channel && 
+                    (xm.Content.ToLower() == elegido.NameFull.ToLower() || xm.Content.ToLower() == elegido.NameFirst.ToLower() &&
+                    participantes.Find(x => x.usuario == xm.Author) != null
+                    ), TimeSpan.FromSeconds(20));
                 if(!msg.TimedOut)
                 {
                     DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
+                    UsuarioJuego usr = participantes.Find(x => x.usuario == msg.Result.Author);
+                    usr.puntaje++;
                     await ctx.RespondAsync($"**{acertador.DisplayName}** ha acertado!").ConfigureAwait(false);
-                    /*if (reaccion.Users.Where(x => x == msg.Result.Author))
-                    {
-
-                    }*/
                 }
                 else
                 {
                     await ctx.RespondAsync($"Nadie ha acertado! El nombre era **{elegido.NameFull}**").ConfigureAwait(false);
                 }
             }
+            string resultados = "";
+            foreach (UsuarioJuego uj in participantes)
+            {
+                resultados += $"- {uj.usuario.Username}#{uj.usuario.Discriminator}: {uj.puntaje}\n";
+            }
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder() {
+                Title = "Adivina el personaje - Resultados",
+                Description = resultados
+            }).ConfigureAwait(false);
         }
     }
 }
