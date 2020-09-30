@@ -34,5 +34,12 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync("Me voy onii-chan..");
             Environment.Exit(0);
         }
+
+        [Command("test")]
+        public async Task Test(CommandContext ctx)
+        {
+            FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+            await ctx.RespondAsync(funciones.GetNumeroRandomAsync(0, 1999).ToString());
+        }
     }
 }

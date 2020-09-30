@@ -1,12 +1,18 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
+using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Discord_Bot
 {
@@ -17,6 +23,20 @@ namespace Discord_Bot
         {
             Random rnd = new Random();
             return opciones[rnd.Next(opciones.Count)];
+        }
+
+        public int GetNumeroRandomAsync(int min, int max)
+        {
+            var client = new RestClient("http://www.randomnumberapi.com/api/v1.0/random?min=" + min + "&max=" + max + "&count=1");
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            IRestResponse response = client.Execute(request);
+            if(response.StatusCode == HttpStatusCode.OK)
+            {
+                var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
+                return resp;
+            }
+            return 0;
         }
 
         public string GetImagenRandomShip()
