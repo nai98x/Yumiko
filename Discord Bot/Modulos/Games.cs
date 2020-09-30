@@ -122,7 +122,7 @@ namespace Discord_Bot.Modulos
                     DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
                     UsuarioJuego usr = participantes.Find(x => x.usuario == msg.Result.Author);
                     usr.puntaje++;
-                    await ctx.RespondAsync($"**{acertador.DisplayName}** ha acertado!").ConfigureAwait(false);
+                    await ctx.RespondAsync($"**{acertador.DisplayName}** ha acertado! {elegido.NameFull} (puesto en popularidad: {random+1})").ConfigureAwait(false);
                 }
                 else
                 {
