@@ -10,8 +10,7 @@ using System;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.EventHandling;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Cryptography;
+using System.Runtime.CompilerServices;
 
 namespace Discord_Bot.Modulos
 {
@@ -30,12 +29,21 @@ namespace Discord_Bot.Modulos
             }
             await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
             await ctx.RespondAsync($"Adivina el personaje! Sesión inciada por **{ctx.User.Username}#{ctx.User.Discriminator}**! Rondas: **{rondas}**");
-            string query= "query($page: Int) {" +
-                "Page(page: $page) {" +
+            List<Character> characterList = new List<Character>();
+            var graphQLClient = new GraphQLClient("https://graphql.anilist.co");
+            Random rnd = new Random();
+            int iteraciones = 20;
+            DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo pesonajes...").ConfigureAwait(false);
+            for (int i=1; i<=iteraciones; i++) 
+            {
+                string queryIni = "{" +
+                "Page (page: ";
+                string queryFin = ") { " +
                     "characters(sort: FAVOURITES_DESC){" +
                         "siteUrl," +
                         "name{" +
                             "first," +
+                            "last," +
                             "full" +
                         "}" +
                         "image{" +
@@ -43,14 +51,9 @@ namespace Discord_Bot.Modulos
                         "}" +
                     "}" +
                 "}" +
-            "}";
-            List<Character> characterList = new List<Character>();
-            var graphQLClient = new GraphQLClient("https://graphql.anilist.co");
-            int iteraciones = 40;
-            DiscordMessage mensaje = await ctx.RespondAsync($"Recolectando pesonajes... (Total: {50*iteraciones})").ConfigureAwait(false);
-            for (int i=1; i<=iteraciones; i++) // 2000 personajes LIMITE 90 PETICIONES POR MINUTO
-            {
-                var response = await graphQLClient.QueryAsync(query, new { page = i });
+                "}";
+                string query = queryIni + i + queryFin;
+                var response = await graphQLClient.QueryAsync(query, new { page = 1});
                 var data = JsonConvert.DeserializeObject<dynamic>(response);
                 foreach (var x in data.data.Page.characters)
                 {
@@ -58,6 +61,7 @@ namespace Discord_Bot.Modulos
                         Image = x.image.large,
                         NameFull = x.name.full,
                         NameFirst = x.name.first,
+                        NameLast = x.name.last,
                         SiteUrl = x.siteUrl
                     });
                 }
@@ -103,7 +107,7 @@ namespace Discord_Bot.Modulos
             }).ConfigureAwait(false);
             for (int ronda = 1; ronda <= rondas; ronda++)
             {
-                int random = RNGUtil.Next(0, characterList.Count - 1);
+                int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
                 Character elegido = characterList[random];
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
@@ -114,9 +118,9 @@ namespace Discord_Bot.Modulos
                 }).ConfigureAwait(false);
                 var msg = await interactivity.WaitForMessageAsync
                     (xm => xm.Channel == ctx.Channel && 
-                    (xm.Content.ToLower() == elegido.NameFull.ToLower() || xm.Content.ToLower() == elegido.NameFirst.ToLower() &&
+                    (xm.Content.ToLower() == elegido.NameFull.ToLower() || xm.Content.ToLower() == elegido.NameFirst.ToLower() || (elegido.NameLast != null && xm.Content.ToLower() == elegido.NameLast.ToLower())) &&
                     participantes.Find(x => x.usuario == xm.Author) != null
-                    ), TimeSpan.FromSeconds(20));
+                    , TimeSpan.FromSeconds(20));
                 if(!msg.TimedOut)
                 {
                     DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -130,6 +134,7 @@ namespace Discord_Bot.Modulos
                 }
             }
             string resultados = "";
+            participantes.OrderBy(x => x.puntaje);
             foreach (UsuarioJuego uj in participantes)
             {
                 resultados += $"- {uj.usuario.Username}#{uj.usuario.Discriminator}: {uj.puntaje}\n";

@@ -25,7 +25,7 @@ namespace Discord_Bot
             return opciones[rnd.Next(opciones.Count)];
         }
 
-        public int GetNumeroRandomAsync(int min, int max)
+        public int GetNumeroRandom(int min, int max)
         {
             var client = new RestClient("http://www.randomnumberapi.com/api/v1.0/random?min=" + min + "&max=" + max + "&count=1");
             var request = new RestRequest(Method.GET);
@@ -34,7 +34,7 @@ namespace Discord_Bot
             if(response.StatusCode == HttpStatusCode.OK)
             {
                 var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
-                return resp;
+                return resp.First;
             }
             return 0;
         }
@@ -96,6 +96,7 @@ namespace Discord_Bot
     public class Character
     {
         public string NameFirst { get; set; }
+        public string NameLast { get; set; }
         public string NameFull { get; set; }
         public string Image { get; set; }
         public string SiteUrl { get; set; }
