@@ -39,19 +39,6 @@ namespace Discord_Bot
         {
             return ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")";
         }
-
-        public string RemoveSpecialCharacters(string str)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (char c in str)
-            {
-                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_')
-                {
-                    sb.Append(c);
-                }
-            }
-            return sb.ToString();
-        }
     }
 
     public class Imagen
@@ -60,29 +47,17 @@ namespace Discord_Bot
         public DiscordUser Autor { get; set; }
     }
 
-    public class name
-    {
-        public string full { get; set; }
-    }
-
-    public class image
-    {
-        public string large { get; set; }
-    }
-
     public class Character
     {
-        public name Name { get; set; }
-        public image Image { get; set; }
+        public string NameFirst { get; set; }
+        public string NameFull { get; set; }
+        public string Image { get; set; }
+        public string SiteUrl { get; set; }
     }
 
-    public class Page
+    public class UsuarioJuego
     {
-        public List<Miki.Anilist.ICharacter> characters { get; set; }
-    }
-
-    public class Data
-    {
-        public Page data { get; set; }
+        public DiscordUser usuario { get; set; }
+        public int puntaje { get; set; }
     }
 }
