@@ -102,6 +102,14 @@ namespace Discord_Bot
         public string SiteUrl { get; set; }
     }
 
+    public class Anime
+    {
+        public string TitleRomaji { get; set; }
+        public string TitleEnglish { get; set; }
+        public string Image { get; set; }
+        public string SiteUrl { get; set; }
+    }
+
     public class UsuarioJuego
     {
         public DiscordUser usuario { get; set; }
