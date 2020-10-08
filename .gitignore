@@ -348,3 +348,4 @@ App.config
 .Discord_Bot/App.config
 .Discord Bot/App.config
 .App.config
+*.config
