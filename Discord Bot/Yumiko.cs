@@ -6,7 +6,6 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Lavalink;
-using DSharpPlus.Net;
 using DSharpPlus.VoiceNext;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,13 +16,10 @@ using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
 {
-    public class Bot
+    public class Yumiko
     {
         public DiscordClient Client { get; private set; }
-        public InteractivityExtension Interactivity { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
-        public DiscordActivity Activity { get; private set; }
-        public LavalinkExtension Lavalink { get; private set; }
 
         public async Task RunAsync()
         {

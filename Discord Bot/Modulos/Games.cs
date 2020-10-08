@@ -4,14 +4,9 @@ using System.Threading.Tasks;
 using Miki.GraphQL;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using Miki.Anilist;
 using DSharpPlus.Entities;
 using System;
 using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.EventHandling;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Xml.Serialization;
 
 namespace Discord_Bot.Modulos
 {

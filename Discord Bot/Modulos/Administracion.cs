@@ -1,10 +1,6 @@
-﻿using DSharpPlus;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-using DSharpPlus.VoiceNext;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Modulos
@@ -15,7 +11,7 @@ namespace Discord_Bot.Modulos
         public async Task Reiniciar(CommandContext ctx)
         {
             await ctx.RespondAsync("Reiniciando..");
-            System.Diagnostics.Process.Start(System.AppDomain.CurrentDomain.FriendlyName);
+            System.Diagnostics.Process.Start(AppDomain.CurrentDomain.FriendlyName);
             Environment.Exit(0);
         }
 
