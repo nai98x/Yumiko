@@ -133,21 +133,7 @@ namespace Discord_Bot.Modulos
                                         if(msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                                         {
                                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                                            string results = "";
-                                            int total1 = 0;
-                                            participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
-                                            foreach (UsuarioJuego uj in participantes)
-                                            {
-                                                results += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
-                                                total1 += uj.Puntaje;
-                                            }
-                                            results += $"\nTotal ({total1}/{rondas})";
-                                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
-                                            {
-                                                Title = "Resultados",
-                                                Description = results,
-                                                Color = new DiscordColor(78, 63, 96)
-                                            }).ConfigureAwait(false);
+                                            await GetResultados(ctx, participantes, rondas);
                                             return;
                                         }
                                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id); 
@@ -181,21 +167,7 @@ namespace Discord_Bot.Modulos
                                         }).ConfigureAwait(false);
                                     }
                                 }
-                                string resultados = "";
-                                participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
-                                int tot = 0;
-                                foreach (UsuarioJuego uj in participantes)
-                                {
-                                    resultados += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
-                                    tot += uj.Puntaje;
-                                }
-                                resultados += $"\nTotal ({tot}/{rondas})";
-                                await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
-                                {
-                                    Title = "Resultados",
-                                    Description = resultados,
-                                    Color = new DiscordColor(78, 63, 96)
-                                }).ConfigureAwait(false);
+                                await GetResultados(ctx, participantes, rondas);
                             }
                             else
                             {
@@ -346,21 +318,7 @@ namespace Discord_Bot.Modulos
                                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                                         {
                                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                                            string results = "";
-                                            participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
-                                            int totall = 0;
-                                            foreach (UsuarioJuego uj in participantes)
-                                            {
-                                                results += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
-                                                totall += uj.Puntaje;
-                                            }
-                                            results += $"\nTotal ({totall}/{rondas})";
-                                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
-                                            {
-                                                Title = "Resultados",
-                                                Description = results,
-                                                Color = new DiscordColor(78, 63, 96)
-                                            }).ConfigureAwait(false);
+                                            await GetResultados(ctx, participantes, rondas);
                                             return;
                                         }
                                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -393,21 +351,7 @@ namespace Discord_Bot.Modulos
                                         }).ConfigureAwait(false);
                                     }
                                 }
-                                string resultados = "";
-                                participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
-                                int tot = 0;
-                                foreach (UsuarioJuego uj in participantes)
-                                {
-                                    resultados += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
-                                    tot += uj.Puntaje;
-                                }
-                                resultados += $"\nTotal ({tot}/{rondas})";
-                                await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
-                                {
-                                    Title = "Resultados",
-                                    Description = resultados,
-                                    Color = new DiscordColor(78, 63, 96)
-                                }).ConfigureAwait(false);
+                                await GetResultados(ctx, participantes, rondas);
                             }
                             else
                             {
@@ -439,5 +383,24 @@ namespace Discord_Bot.Modulos
                 // Msg de timeout (ingresar rondas) borrar msg anteriores
             }
         }
+
+        public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas)
+        {
+            string resultados = "";
+            participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
+            int tot = 0;
+            foreach (UsuarioJuego uj in participantes)
+            {
+                resultados += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
+                tot += uj.Puntaje;
+            }
+            resultados += $"\nTotal ({tot}/{rondas})";
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
+            {
+                Title = "Resultados",
+                Description = resultados,
+                Color = new DiscordColor(78, 63, 96)
+            }).ConfigureAwait(false);
+        } 
     }
 }
