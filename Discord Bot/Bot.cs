@@ -96,7 +96,6 @@ namespace Discord_Bot
 
         private async Task Commands_CommandErrored(CommandErrorEventArgs e)
         {
-            e.Context.Client.Logger.LogWarning($"{e.Context.User.Username} trato de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}", DateTime.Now);
             if (e.Exception.Message == "Specified command was not found.")
             {
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
@@ -106,38 +105,68 @@ namespace Discord_Bot
                     Description = $"{emoji} Pone el comando bien, " + e.Context.User.Username + " baka.",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await e.Context.RespondAsync("", embed: embed);
+                var mensajeErr = await e.Context.RespondAsync("", embed: embed);
+                await Task.Delay(3000);
+                await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                await mensajeErr.DeleteAsync("Auto borrado de yumiko");
             }
-            if (e.Exception is ChecksFailedException ex)
+            else
             {
-                List<DiscordMessage> mensajes = new List<DiscordMessage>();
-                foreach (var exep in ex.FailedChecks)
+                e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} trato de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}", DateTime.Now);
+                if (e.Exception is ChecksFailedException ex)
                 {
-                    string exepcion = exep.ToString();
-                    string titulo, descripcion;
-                    switch (exepcion)
+                    List<DiscordMessage> mensajes = new List<DiscordMessage>();
+                    foreach (var exep in ex.FailedChecks)
                     {
-                        case "DSharpPlus.CommandsNext.Attributes.CooldownAttribute":
-                            titulo = "Cooldown";
-                            descripcion = "Debes esperar para volver a ejecutar este comando.";
-                            break;
-                        case "DSharpPlus.CommandsNext.Attributes.RequirePermissions":
-                            titulo = "Acceso denegado";
-                            descripcion = "No tienes los suficientes permisos para ejecutar este comando.";
-                            break;
-                        case "DSharpPlus.CommandsNext.Attributes.RequireOwner":
-                            titulo = "Acceso denegado";
-                            descripcion = "Solo el dueño del bot puede ejecutar este comando.";
-                            break;
-                        case "DSharpPlus.CommandsNext.Attributes.RequireNsfwAttribute":
-                            titulo = "Requiere NSFW";
-                            descripcion = "Este comando debe ser invocado en un canal NSFW.";
-                            break;
-                        default:
-                            titulo = "Error inesperado";
-                            descripcion = "Ha ocurrido un error que no puedo manejar.";
-                            break;
+                        string exepcion = exep.ToString();
+                        string titulo, descripcion;
+                        switch (exepcion)
+                        {
+                            case "DSharpPlus.CommandsNext.Attributes.CooldownAttribute":
+                                titulo = "Cooldown";
+                                descripcion = "Debes esperar para volver a ejecutar este comando.";
+                                break;
+                            case "DSharpPlus.CommandsNext.Attributes.RequirePermissions":
+                                titulo = "Acceso denegado";
+                                descripcion = "No tienes los suficientes permisos para ejecutar este comando.";
+                                break;
+                            case "DSharpPlus.CommandsNext.Attributes.RequireOwner":
+                                titulo = "Acceso denegado";
+                                descripcion = "Solo el dueño del bot puede ejecutar este comando.";
+                                break;
+                            case "DSharpPlus.CommandsNext.Attributes.RequireNsfwAttribute":
+                                titulo = "Requiere NSFW";
+                                descripcion = "Este comando debe ser invocado en un canal NSFW.";
+                                break;
+                            default:
+                                titulo = "Error inesperado";
+                                descripcion = "Ha ocurrido un error que no puedo manejar.";
+                                break;
+                        }
+                        var miembro = e.Context.Member;
+                        EmbedFooter footer = new EmbedFooter()
+                        {
+                            Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
+                            IconUrl = miembro.AvatarUrl
+                        };
+                        DiscordMessage msg = await e.Context.RespondAsync("", embed: new DiscordEmbedBuilder
+                        {
+                            Title = titulo,
+                            Description = descripcion,
+                            Color = new DiscordColor(0xFF0000),
+                            Footer = footer
+                        });
+                        mensajes.Add(msg);
                     }
+                    await Task.Delay(3000);
+                    await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                    foreach (DiscordMessage mensaje in mensajes)
+                    {
+                        await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                }
+                else
+                {
                     var miembro = e.Context.Member;
                     EmbedFooter footer = new EmbedFooter()
                     {
@@ -146,38 +175,15 @@ namespace Discord_Bot
                     };
                     DiscordMessage msg = await e.Context.RespondAsync("", embed: new DiscordEmbedBuilder
                     {
-                        Title = titulo,
-                        Description = descripcion,
+                        Title = "Error desconocido",
+                        Description = "Ha ocurrido un error que no puedo manejar",
                         Color = new DiscordColor(0xFF0000),
                         Footer = footer
                     });
-                    mensajes.Add(msg);
+                    await Task.Delay(3000);
+                    await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                    await msg.DeleteAsync("Auto borrado de Yumiko");
                 }
-                await Task.Delay(3000);
-                await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
-                foreach (DiscordMessage mensaje in mensajes)
-                {
-                    await mensaje.DeleteAsync("Auto borrado de Yumiko");
-                }
-            }
-            else
-            {
-                var miembro = e.Context.Member;
-                EmbedFooter footer = new EmbedFooter()
-                {
-                    Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
-                    IconUrl = miembro.AvatarUrl
-                };
-                DiscordMessage msg = await e.Context.RespondAsync("", embed: new DiscordEmbedBuilder
-                {
-                    Title = "Error desconocido",
-                    Description = "Ha ocurrido un error que no puedo manejar",
-                    Color = new DiscordColor(0xFF0000),
-                    Footer = footer
-                });
-                await Task.Delay(3000);
-                await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
-                await msg.DeleteAsync("Auto borrado de Yumiko");
             }
         }
     }

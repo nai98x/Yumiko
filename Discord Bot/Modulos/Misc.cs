@@ -35,7 +35,29 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
             await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
         }
-        
+
+        [Command("avatar")]
+        [Description("Muestra el avatar")]
+        public async Task Avatar(CommandContext ctx, DiscordUser usuario = null)
+        {
+            if(usuario == null)
+            {
+                usuario = ctx.User;
+            }
+            EmbedFooter footer = new EmbedFooter()
+            {
+                Text = "Invocado por " + funciones.GetFooter(ctx),
+                IconUrl = ctx.Member.AvatarUrl
+            };
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                Title = $"Avatar de {usuario.Username}#{usuario.Discriminator}",
+                ImageUrl = usuario.AvatarUrl,
+                Footer = footer,
+                Color = new DiscordColor(78, 63, 96)
+            }).ConfigureAwait(false);
+            await ctx.Message.DeleteAsync().ConfigureAwait(false);
+        }
+
         [Command("pregunta")]
         [Aliases("p", "question", "sisonon")]
         [Description("Responde con SIS O NON")]
