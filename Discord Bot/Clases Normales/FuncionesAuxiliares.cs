@@ -13,18 +13,12 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
 {
     public class FuncionesAuxiliares
     {
-        private static readonly Random getrandom = new Random();
-        public string GetImagenRandomMeme(List<string> opciones)
-        {
-            Random rnd = new Random();
-            return opciones[rnd.Next(opciones.Count)];
-        }
-
         public int GetNumeroRandom(int min, int max)
         {
             var client = new RestClient("http://www.randomnumberapi.com/api/v1.0/random?min=" + min + "&max=" + max + "&count=1");
@@ -57,33 +51,13 @@ namespace Discord_Bot
             return opciones[rnd.Next(opciones.Length -1)];
         }
 
-        public string GetFooter(CommandContext ctx)
+        public EmbedFooter GetFooter(CommandContext ctx, string comando)
         {
-            return ctx.Member.DisplayName + " (" + ctx.Member.Username + "#" + ctx.Member.Discriminator + ")";
-        }
-    }
-
-    public static class RNGUtil
-    {
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="min" /> is greater than <paramref name="max" />.</exception>
-        public static int Next(int min, int max)
-        {
-            if (min > max) throw new ArgumentOutOfRangeException(nameof(min));
-            if (min == max) return min;
-
-            using (var rng = new RNGCryptoServiceProvider())
+            return  new EmbedFooter()
             {
-                var data = new byte[4];
-                rng.GetBytes(data);
-
-                int generatedValue = Math.Abs(BitConverter.ToInt32(data, startIndex: 0));
-
-                int diff = max - min;
-                int mod = generatedValue % diff;
-                int normalizedNumber = min + mod;
-
-                return normalizedNumber;
-            }
+                Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator}) | {ConfigurationManager.AppSettings["Prefix"]}{comando}",
+                IconUrl = ctx.Member.AvatarUrl
+            };
         }
     }
 
@@ -112,7 +86,7 @@ namespace Discord_Bot
 
     public class UsuarioJuego
     {
-        public DiscordUser usuario { get; set; }
-        public int puntaje { get; set; }
+        public DiscordUser Usuario { get; set; }
+        public int Puntaje { get; set; }
     }
 }

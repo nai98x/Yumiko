@@ -11,26 +11,17 @@ namespace Discord_Bot.Modulos
 {
     public class Administracion : BaseCommandModule
     {
-        [Command("reiniciar")]
-        [Aliases("restart")]
-        [Description("Reinicia a Yumiko")]
-        [Hidden]
-        [RequireOwner]
+        [Command("reiniciar"), Aliases("restart"), RequireOwner]
         public async Task Reiniciar(CommandContext ctx)
         {
-            await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("Reiniciando..");
             System.Diagnostics.Process.Start(System.AppDomain.CurrentDomain.FriendlyName);
             Environment.Exit(0);
         }
 
-        [Command("apagar")]
-        [Description("Apaga a Yumiko")]
-        [Hidden]
-        [RequireOwner]
+        [Command("apagar"), RequireOwner]
         public async Task Stop(CommandContext ctx)
         {
-            await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("Me voy onii-chan..");
             Environment.Exit(0);
         }

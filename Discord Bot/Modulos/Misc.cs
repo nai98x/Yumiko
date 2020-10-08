@@ -16,10 +16,8 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         [Command("ping")]
-        [Description("Pong")]
         public async Task Ping(CommandContext ctx)
         {
-            await ctx.TriggerTypingAsync();
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(78, 63, 96),
@@ -27,55 +25,40 @@ namespace Discord_Bot.Modulos
             }).ConfigureAwait(false);
         }
 
-        [Command("say")]
-        [Aliases("s")]
-        [Description("El bot reenvia tu mensaje eliminándolo después")]
-        public async Task Say(CommandContext ctx, [RemainingText][Description("Tu mensaje")]string mensaje)
+        [Command("say"), Aliases("s")]
+        public async Task Say(CommandContext ctx, [RemainingText]string mensaje)
         {
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
             await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
         }
 
         [Command("avatar")]
-        [Description("Muestra el avatar")]
         public async Task Avatar(CommandContext ctx, DiscordUser usuario = null)
         {
             if(usuario == null)
             {
                 usuario = ctx.User;
             }
-            EmbedFooter footer = new EmbedFooter()
-            {
-                Text = "Invocado por " + funciones.GetFooter(ctx),
-                IconUrl = ctx.Member.AvatarUrl
-            };
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
                 Title = $"Avatar de {usuario.Username}#{usuario.Discriminator}",
                 ImageUrl = usuario.AvatarUrl,
-                Footer = footer,
+                Footer = funciones.GetFooter(ctx, "avatar"),
                 Color = new DiscordColor(78, 63, 96)
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
 
-        [Command("pregunta")]
-        [Aliases("p", "question", "sisonon")]
-        [Description("Responde con SIS O NON")]
-        public async Task Sisonon(CommandContext ctx, [RemainingText][Description("La pregunta en cuestion")]string pregunta)
+        [Command("pregunta"), Aliases("p", "question", "sisonon")]
+        public async Task Sisonon(CommandContext ctx, [RemainingText]string pregunta)
         {
             Random rnd = new Random();
             int random = rnd.Next(2);
-            EmbedFooter footer = new EmbedFooter()
-            {
-                Text = "Preguntado por " + funciones.GetFooter(ctx),
-                IconUrl = ctx.Member.AvatarUrl
-            };
             switch (random)
             {
                 case 0:
                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
-                        Footer = footer,
+                        Footer = funciones.GetFooter(ctx, "pregunta"),
                         Color = DiscordColor.Red,
                         Title = "¿SIS O NON?",
                         Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** NON"
@@ -84,7 +67,7 @@ namespace Discord_Bot.Modulos
                 case 1:
                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
-                        Footer = footer,
+                        Footer = funciones.GetFooter(ctx, "pregunta"),
                         Color = DiscordColor.Green,
                         Title = "¿SIS O NON?",
                         Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** SIS"
@@ -94,19 +77,17 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync();
         }
 
-        [Command("elegir")]
-        [Aliases("e")]
-        [Description("Elige entre varias opciones")]
-        public async Task Elegir(CommandContext ctx, [RemainingText][Description("La pregunta en cuestion")]string pregunta)
+        [Command("elegir"), Aliases("e")]
+        public async Task Elegir(CommandContext ctx, [RemainingText]string pregunta)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            DiscordMessage mensajeBot = await ctx.Channel.SendMessageAsync("Ingrese las opciones separadas por un espacio").ConfigureAwait(false);
+            DiscordMessage mensajeBot = await ctx.Channel.SendMessageAsync("Ingrese las opciones separadas por comas").ConfigureAwait(false);
             var msg = await interactivity.WaitForMessageAsync(xm => xm.Author == ctx.User, TimeSpan.FromSeconds(60));
             if (!msg.TimedOut)
             {
                 List<string> opciones = new List<string>();
                 string msgResponse = msg.Result.Content;
-                opciones = msgResponse.Split(" ").ToList();
+                opciones = msgResponse.Split(",").ToList();
                 Random rnd = new Random();
                 int random = rnd.Next(opciones.Count);
                 string options = "**Opciones:**";
@@ -118,33 +99,23 @@ namespace Discord_Bot.Modulos
                 await mensajeBot.DeleteAsync().ConfigureAwait(false);
                 await msg.Result.DeleteAsync().ConfigureAwait(false);
 
-                EmbedFooter footer = new EmbedFooter()
-                {
-                    Text = "Preguntado por " + funciones.GetFooter(ctx),
-                    IconUrl = ctx.Member.AvatarUrl
-                };
-                await ctx.TriggerTypingAsync();
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = footer,
+                    Footer = funciones.GetFooter(ctx, "elegir"),
                     Color = new DiscordColor(78, 63, 96),
                     Title = "Pregunta",
-                    Description = "**Pregunta:** " + pregunta + "\n\n" + options + "\n\n**Respuesta:** " + opciones[random]
+                    Description = "** " + pregunta + "**\n\n" + options + "\n\n**Respuesta:** " + opciones[random]
                 }).ConfigureAwait(false);
             }
             else
             {
-                await ctx.TriggerTypingAsync();
-                await ctx.RespondAsync("No escribiste las opciones, sos una pija " + ctx.User.Mention);
+                await ctx.RespondAsync("No escribiste las opciones onii-chan" + ctx.User.Mention);
             }
         }
         
-        [Command("invite")]
-        [Aliases("invitar")]
-        [Description("Invitacón del bot para que se una a un server")]
+        [Command("invite"), Aliases("invitar")]
         public async Task Invite(CommandContext ctx)
         {
-            await ctx.TriggerTypingAsync();
             await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }

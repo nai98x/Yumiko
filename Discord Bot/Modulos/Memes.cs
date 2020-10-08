@@ -15,7 +15,6 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         [Command("waifu")]
-        [Description("Te digo si soy tu waifu")]
         public async Task Waifu(CommandContext ctx, DiscordMember miembro = null)
         {
             string nombre;
@@ -26,17 +25,11 @@ namespace Discord_Bot.Modulos
 
             Random rnd = new Random();
             int waifuLevel = rnd.Next(101);
-            EmbedFooter footer = new EmbedFooter()
-            {
-                Text = "Preguntado por " + funciones.GetFooter(ctx),
-                IconUrl = ctx.Member.AvatarUrl
-            };
-            await ctx.TriggerTypingAsync();
             if (waifuLevel < 25)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = footer,
+                    Footer = funciones.GetFooter(ctx, "waifu"),
                     Color = DiscordColor.Red,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nMe pego un tiro antes de tocarte.",
@@ -47,7 +40,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = footer,
+                    Footer = funciones.GetFooter(ctx, "waifu"),
                     Color = DiscordColor.Orange,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nMe das asquito, mejor me alejo de vos.",
@@ -58,7 +51,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = footer,
+                    Footer = funciones.GetFooter(ctx, "waifu"),
                     Color = DiscordColor.Yellow,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nNo estás mal, pero no tenes posibilidades conmigo.",
@@ -69,7 +62,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = footer,
+                    Footer = funciones.GetFooter(ctx, "waifu"),
                     Color = DiscordColor.Green,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nSoy tu waifu, podes hacer lo que quieras conmigo.",
@@ -80,7 +73,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = footer,
+                    Footer = funciones.GetFooter(ctx, "waifu"),
                     Color = DiscordColor.Blue,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\n.Estoy completamente enamorada de ti, ¿cuándo nos casamos?",
@@ -92,7 +85,6 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("husbando")]
-        [Description("Elijo mi husbando")]
         public async Task Husbando(CommandContext ctx)
         {
             Random rnd = new Random();
@@ -109,14 +101,9 @@ namespace Discord_Bot.Modulos
                 var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false);
                 elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
             }
-            EmbedFooter footer = new EmbedFooter()
-            {
-                Text = "Invocado por " + funciones.GetFooter(ctx),
-                IconUrl = ctx.Member.AvatarUrl
-            };
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Footer = footer,
+                Footer = funciones.GetFooter(ctx, "husbando"),
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Husbando",
                 Description = $"Mi husbando es: **{elegido.DisplayName} ({elegido.Username}#{elegido.Discriminator})** 💘",
@@ -126,7 +113,6 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("ship")]
-        [Description("Elijo a tu shippeo")]
         public async Task Ship(CommandContext ctx, DiscordUser usuario = null)
         {
             if(usuario == null)
@@ -147,17 +133,12 @@ namespace Discord_Bot.Modulos
                 var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && x.Value.Id != usuario.Id);
                 elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
             }
-            EmbedFooter footer = new EmbedFooter()
-            {
-                Text = "Invocado por " + funciones.GetFooter(ctx),
-                IconUrl = ctx.Member.AvatarUrl
-            };
             string shipeoUsr;
             DiscordMember ctxMiembro = await ctx.Guild.GetMemberAsync(usuario.Id);
             shipeoUsr = ctxMiembro.DisplayName;
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Footer = footer,
+                Footer = funciones.GetFooter(ctx, "ship"),
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Shippeo",
                 Description = $"Shippeo a **{shipeoUsr}** con **{elegido.DisplayName}** 💘",
@@ -167,7 +148,6 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("shipr")]
-        [Description("Elijo a tu shippeo")]
         public async Task ShipRandom(CommandContext ctx)
         {
             Random rnd = new Random();
@@ -186,16 +166,9 @@ namespace Discord_Bot.Modulos
                 elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
                 elegido2 = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
             }
-
-            EmbedFooter footer = new EmbedFooter()
-            {
-                Text = "Invocado por " + funciones.GetFooter(ctx),
-                IconUrl = ctx.Member.AvatarUrl
-            };
-            
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Footer = footer,
+                Footer = funciones.GetFooter(ctx, "shipr"),
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Shippeo random",
                 Description = $"Shippeo a **{elegido.DisplayName}** con **{elegido2.DisplayName}** 💘",
@@ -205,7 +178,6 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("ooc")]
-        [Description("Out of Context")]
         [RequireNsfw]
         public async Task OOC(CommandContext ctx)
         {
@@ -250,15 +222,9 @@ namespace Discord_Bot.Modulos
             }
             Random rnd = new Random();
             Imagen meme = opciones[rnd.Next(opciones.Count)];
-
-            EmbedFooter footer = new EmbedFooter()
-            {
-                Text = "Invocado por " + funciones.GetFooter(ctx),
-                IconUrl = ctx.Member.AvatarUrl
-            };
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Footer = footer,
+                Footer = funciones.GetFooter(ctx, "ooc"),
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Out of Context",
                 Description = $"Imagen posteada por {meme.Autor.Username + "#" + meme.Autor.Discriminator}",

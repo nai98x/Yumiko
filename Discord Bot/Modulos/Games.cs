@@ -20,7 +20,6 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         [Command("quizC"), Aliases("adivinaelpersonaje")]
-        [Description("Adivina el personaje")]
         public async Task QuizCharactersGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
@@ -31,8 +30,7 @@ namespace Discord_Bot.Modulos
             var msgRondasInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(10));
             if (!msgRondasInter.TimedOut)
             {
-                int rondas;
-                bool result = int.TryParse(msgRondasInter.Result.Content, out rondas);
+                bool result = int.TryParse(msgRondasInter.Result.Content, out int rondas);
                 if (result)
                 {
                     string dificultadStr;
@@ -44,8 +42,7 @@ namespace Discord_Bot.Modulos
                     var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(10));
                     if (!msgDificultadInter.TimedOut)
                     {
-                        int dificultad;
-                        result = int.TryParse(msgDificultadInter.Result.Content, out dificultad);
+                        result = int.TryParse(msgDificultadInter.Result.Content, out int dificultad);
                         if (result)
                         {
                             if (dificultad == 1 || dificultad == 2 || dificultad == 3)
@@ -143,11 +140,11 @@ namespace Discord_Bot.Modulos
                                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                                             string results = "";
                                             int total1 = 0;
-                                            participantes.Sort((x, y) => y.puntaje.CompareTo(x.puntaje));
+                                            participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
                                             foreach (UsuarioJuego uj in participantes)
                                             {
-                                                results += $"- {uj.usuario.Username}#{uj.usuario.Discriminator}: {uj.puntaje} aciertos\n";
-                                                total1 += uj.puntaje;
+                                                results += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
+                                                total1 += uj.Puntaje;
                                             }
                                             results += $"\nTotal ({total1}/{rondas})";
                                             await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
@@ -159,17 +156,17 @@ namespace Discord_Bot.Modulos
                                             return;
                                         }
                                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id); 
-                                        UsuarioJuego usr = participantes.Find(x => x.usuario == msg.Result.Author);
+                                        UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
                                         if (usr != null)
                                         {
-                                            usr.puntaje++;
+                                            usr.Puntaje++;
                                         }
                                         else
                                         {
                                             participantes.Add(new UsuarioJuego()
                                             {
-                                                usuario = msg.Result.Author,
-                                                puntaje = 1
+                                                Usuario = msg.Result.Author,
+                                                Puntaje = 1
                                             });
                                         }
                                         await ctx.RespondAsync(embed: new DiscordEmbedBuilder
@@ -190,12 +187,12 @@ namespace Discord_Bot.Modulos
                                     }
                                 }
                                 string resultados = "";
-                                participantes.Sort((x, y) => y.puntaje.CompareTo(x.puntaje));
+                                participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
                                 int tot = 0;
                                 foreach (UsuarioJuego uj in participantes)
                                 {
-                                    resultados += $"- {uj.usuario.Username}#{uj.usuario.Discriminator}: {uj.puntaje} aciertos\n";
-                                    tot += uj.puntaje;
+                                    resultados += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
+                                    tot += uj.Puntaje;
                                 }
                                 resultados += $"\nTotal ({tot}/{rondas})";
                                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
@@ -237,7 +234,6 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("quizA"), Aliases("adivinaelanime")]
-        [Description("Adivina el anime")]
         public async Task QuizAnimeGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
@@ -249,8 +245,7 @@ namespace Discord_Bot.Modulos
             var msgRondasInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(10));
             if (!msgRondasInter.TimedOut)
             {
-                int rondas;
-                bool result = int.TryParse(msgRondasInter.Result.Content, out rondas);
+                bool result = int.TryParse(msgRondasInter.Result.Content, out int rondas);
                 if (result)
                 {
                     var msgDificultad = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
@@ -261,8 +256,7 @@ namespace Discord_Bot.Modulos
                     var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(10));
                     if (!msgDificultadInter.TimedOut)
                     {
-                        int dificultad;
-                        result = int.TryParse(msgDificultadInter.Result.Content, out dificultad);
+                        result = int.TryParse(msgDificultadInter.Result.Content, out int dificultad);
                         if (result)
                         {
                             string dificultadStr;
@@ -364,12 +358,12 @@ namespace Discord_Bot.Modulos
                                         {
                                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                                             string results = "";
-                                            participantes.Sort((x, y) => y.puntaje.CompareTo(x.puntaje));
+                                            participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
                                             int totall = 0;
                                             foreach (UsuarioJuego uj in participantes)
                                             {
-                                                results += $"- {uj.usuario.Username}#{uj.usuario.Discriminator}: {uj.puntaje} aciertos\n";
-                                                totall += uj.puntaje;
+                                                results += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
+                                                totall += uj.Puntaje;
                                             }
                                             results += $"\nTotal ({totall}/{rondas})";
                                             await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
@@ -381,17 +375,17 @@ namespace Discord_Bot.Modulos
                                             return;
                                         }
                                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
-                                        UsuarioJuego usr = participantes.Find(x => x.usuario == msg.Result.Author);
+                                        UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
                                         if (usr != null)
                                         {
-                                            usr.puntaje++;
+                                            usr.Puntaje++;
                                         }
                                         else
                                         {
                                             participantes.Add(new UsuarioJuego()
                                             {
-                                                usuario = msg.Result.Author,
-                                                puntaje = 1
+                                                Usuario = msg.Result.Author,
+                                                Puntaje = 1
                                             });
                                         }
                                         await ctx.RespondAsync(embed: new DiscordEmbedBuilder
@@ -411,12 +405,12 @@ namespace Discord_Bot.Modulos
                                     }
                                 }
                                 string resultados = "";
-                                participantes.Sort((x, y) => y.puntaje.CompareTo(x.puntaje));
+                                participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
                                 int tot = 0;
                                 foreach (UsuarioJuego uj in participantes)
                                 {
-                                    resultados += $"- {uj.usuario.Username}#{uj.usuario.Discriminator}: {uj.puntaje} aciertos\n";
-                                    tot += uj.puntaje;
+                                    resultados += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
+                                    tot += uj.Puntaje;
                                 }
                                 resultados += $"\nTotal ({tot}/{rondas})";
                                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
