@@ -130,7 +130,7 @@ namespace Discord_Bot.Modulos
                                         ImageUrl = elegido.Image
                                     }).ConfigureAwait(false);
                                     var msg = await interactivity.WaitForMessageAsync
-                                        (xm => xm.Channel == ctx.Channel &&
+                                        (xm => (xm.Channel == ctx.Channel) &&
                                         (xm.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim() || xm.Content.ToLower().Trim() == elegido.NameFirst.ToLower().Trim() || (elegido.NameLast != null && xm.Content.ToLower().Trim() == elegido.NameLast.ToLower().Trim())) || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
                                         , TimeSpan.FromSeconds(20));
                                     if (!msg.TimedOut)
@@ -287,12 +287,6 @@ namespace Discord_Bot.Modulos
                                 await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
                                 await msgDificultad.DeleteAsync("Auto borrado de Yumiko");
                                 await msgDificultadInter.Result.DeleteAsync("Auto borrado de Yumiko");
-
-                                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                                {
-                                    Title= "Adivina el anime",
-                                    
-                                }).ConfigureAwait(false);
                                 DiscordEmbed embebido = new DiscordEmbedBuilder
                                 {
                                     Title = "Adivina el anime",
@@ -349,7 +343,7 @@ namespace Discord_Bot.Modulos
                                         ImageUrl = elegido.Image
                                     }).ConfigureAwait(false);
                                     var msg = await interactivity.WaitForMessageAsync
-                                        (xm => xm.Channel == ctx.Channel &&
+                                        (xm => (xm.Channel == ctx.Channel) &&
                                         ((elegido.TitleEnglish != null && elegido.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim()) || elegido.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
                                         , TimeSpan.FromSeconds(20));
                                     if (!msg.TimedOut)

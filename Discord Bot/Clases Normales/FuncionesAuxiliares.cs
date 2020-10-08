@@ -60,33 +60,4 @@ namespace Discord_Bot
             };
         }
     }
-
-    public class Imagen
-    {
-        public string Url { get; set; }
-        public DiscordUser Autor { get; set; }
-    }
-
-    public class Character
-    {
-        public string NameFirst { get; set; }
-        public string NameLast { get; set; }
-        public string NameFull { get; set; }
-        public string Image { get; set; }
-        public string SiteUrl { get; set; }
-    }
-
-    public class Anime
-    {
-        public string TitleRomaji { get; set; }
-        public string TitleEnglish { get; set; }
-        public string Image { get; set; }
-        public string SiteUrl { get; set; }
-    }
-
-    public class UsuarioJuego
-    {
-        public DiscordUser Usuario { get; set; }
-        public int Puntaje { get; set; }
-    }
 }
