@@ -1,8 +1,6 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using System.Threading.Tasks;
-using Miki.GraphQL;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using DSharpPlus.Entities;
 using System;
@@ -16,6 +14,7 @@ namespace Discord_Bot.Modulos
     public class Anilist : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         [Command("quizC"), Aliases("adivinaelpersonaje")]
         public async Task QuizCharactersGlobal(CommandContext ctx)
@@ -78,46 +77,69 @@ namespace Discord_Bot.Modulos
                                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
                                 await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
                                 List<Character> characterList = new List<Character>();
-                                var graphQLClient = new GraphQLClient("https://graphql.anilist.co");
                                 Random rnd = new Random();
                                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
                                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo pesonajes...").ConfigureAwait(false);
                                 for (int i = 1; i <= iteraciones; i++)
                                 {
-                                    string queryIni = "{" +
-                                    "Page (page: ";
-                                    string queryFin = ") { " +
-                                        "characters(sort: FAVOURITES_DESC){" +
-                                            "siteUrl," +
-                                            "name{" +
-                                                "first," +
-                                                "last," +
-                                                "full" +
-                                            "}" +
-                                            "image{" +
-                                                "large" +
-                                            "}" +
-                                        "}" +
-                                    "}" +
-                                    "}";
-                                    string query = queryIni + i + queryFin;
-                                    var response = await graphQLClient.QueryAsync(query, new { page = 1 });
-                                    var data = JsonConvert.DeserializeObject<dynamic>(response);
-                                    foreach (var x in data.data.Page.characters)
+                                    var request = new GraphQLRequest
                                     {
-                                        characterList.Add(new Character()
+                                        Query =
+                                        "query($pagina : Int){" +
+                                        "   Page(page: $pagina){" +
+                                        "       characters(sort: FAVOURITES_DESC){" +
+                                        "           siteUrl," +
+                                        "           name{" +
+                                        "               first," +
+                                        "               last," +
+                                        "               full" +
+                                        "           }," +
+                                        "           image{" +
+                                        "               large" +
+                                        "           }" +
+                                        "       }" +
+                                        "   }" +
+                                        "}",
+                                        Variables = new
                                         {
-                                            Image = x.image.large,
-                                            NameFull = x.name.full,
-                                            NameFirst = x.name.first,
-                                            NameLast = x.name.last,
-                                            SiteUrl = x.siteUrl
-                                        });
+                                            pagina = i
+                                        }
+                                    };
+                                    try
+                                    {
+                                        var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                                        foreach (var x in data.Data.Page.characters)
+                                        {
+                                            characterList.Add(new Character()
+                                            {
+                                                Image = x.image.large,
+                                                NameFull = x.name.full,
+                                                NameFirst = x.name.first,
+                                                NameLast = x.name.last,
+                                                SiteUrl = x.siteUrl
+                                            });
+                                        }
                                     }
+                                    catch (Exception ex)
+                                    {
+                                        DiscordMessage msg;
+                                        switch (ex.Message)
+                                        {
+                                            default:
+                                                msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
+                                                break;
+                                        }
+                                        await Task.Delay(3000);
+                                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                                        await msg.DeleteAsync("Auto borrado de yumiko");
+                                        return;
+                                    };
                                 }
                                 await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                                int lastRonda;
                                 for (int ronda = 1; ronda <= rondas; ronda++)
                                 {
+                                    lastRonda = ronda;
                                     int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
                                     Character elegido = characterList[random];
                                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
@@ -136,7 +158,7 @@ namespace Discord_Bot.Modulos
                                         if(msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                                         {
                                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                                            await GetResultados(ctx, participantes, rondas);
+                                            await GetResultados(ctx, participantes, lastRonda);
                                             return;
                                         }
                                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id); 
@@ -265,44 +287,67 @@ namespace Discord_Bot.Modulos
                                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
                                 await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
                                 List<Anime> animeList = new List<Anime>();
-                                var graphQLClient = new GraphQLClient("https://graphql.anilist.co");
                                 Random rnd = new Random();
                                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
                                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo animes...").ConfigureAwait(false);
                                 for (int i = 1; i <= iteraciones; i++)
                                 {
-                                    string queryIni = "{" +
-                                    "Page (page: ";
-                                    string queryFin = ") { " +
-                                        "media(sort: POPULARITY_DESC, type: ANIME){" +
-                                            "siteUrl," +
-                                            "title{" +
-                                                "romaji," +
-                                                "english," +
-                                            "}" +
-                                            "coverImage{" +
-                                                "large" +
-                                            "}" +
-                                        "}" +
-                                    "}" +
-                                    "}";
-                                    string query = queryIni + i + queryFin;
-                                    var response = await graphQLClient.QueryAsync(query, new { page = 1 });
-                                    var data = JsonConvert.DeserializeObject<dynamic>(response);
-                                    foreach (var x in data.data.Page.media)
+                                    var request = new GraphQLRequest
                                     {
-                                        animeList.Add(new Anime()
+                                        Query =
+                                        "query($pagina : Int){" +
+                                        "   Page(page: $pagina){" +
+                                        "       media(sort: POPULARITY_DESC, type: ANIME){" +
+                                        "           siteUrl," +
+                                        "           title{" +
+                                        "               romaji," +
+                                        "               english," +
+                                        "           }," +
+                                        "           coverImage{" +
+                                        "               large" +
+                                        "           }" +
+                                        "       }" +
+                                        "   }" +
+                                        "}",
+                                        Variables = new
                                         {
-                                            Image = x.coverImage.large,
-                                            TitleEnglish = x.title.romaji,
-                                            TitleRomaji = x.title.english,
-                                            SiteUrl = x.siteUrl
-                                        });
+                                            pagina = i
+                                        }
+                                    };
+                                    try
+                                    {
+                                        var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                                        foreach (var x in data.Data.Page.media)
+                                        {
+                                            animeList.Add(new Anime()
+                                            {
+                                                Image = x.coverImage.large,
+                                                TitleEnglish = x.title.romaji,
+                                                TitleRomaji = x.title.english,
+                                                SiteUrl = x.siteUrl
+                                            });
+                                        }
                                     }
+                                    catch (Exception ex)
+                                    {
+                                        DiscordMessage msg;
+                                        switch (ex.Message)
+                                        {
+                                            default:
+                                                msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
+                                                break;
+                                        }
+                                        await Task.Delay(3000);
+                                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                                        await msg.DeleteAsync("Auto borrado de yumiko");
+                                        return;
+                                    };
                                 }
                                 await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                                int lastRonda;
                                 for (int ronda = 1; ronda <= rondas; ronda++)
                                 {
+                                    lastRonda = ronda;
                                     int random = funciones.GetNumeroRandom(0, animeList.Count - 1);
                                     Anime elegido = animeList[random];
                                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
@@ -321,7 +366,7 @@ namespace Discord_Bot.Modulos
                                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                                         {
                                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                                            await GetResultados(ctx, participantes, rondas);
+                                            await GetResultados(ctx, participantes, lastRonda);
                                             return;
                                         }
                                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -390,7 +435,6 @@ namespace Discord_Bot.Modulos
         [Command("anilist"), Aliases("user")]
         public async Task Profile(CommandContext ctx, string usuario)
         {
-            var graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
             var request = new GraphQLRequest
             {
                 Query =
@@ -468,8 +512,8 @@ namespace Discord_Bot.Modulos
                 var data = await graphQLClient.SendQueryAsync<dynamic>(request);
                 if (data.Data != null)
                 {
-                    string animeStats = $"Total: `{data.Data.User.statistics.anime.count}`\nEpisodes: `{data.Data.User.statistics.anime.episodesWatched}`\nScore: `{data.Data.User.statistics.anime.meanScore}`";
-                    string mangaStats = $"Total: `{data.Data.User.statistics.manga.count}`\nRead: `{data.Data.User.statistics.manga.chaptersRead}`\nScore: `{data.Data.User.statistics.manga.meanScore}`";
+                    string animeStats = $"Total: `{data.Data.User.statistics.anime.count}`\nEpisodios: `{data.Data.User.statistics.anime.episodesWatched}`\nPuntaje promedio: `{data.Data.User.statistics.anime.meanScore}`";
+                    string mangaStats = $"Total: `{data.Data.User.statistics.manga.count}`\nLeído: `{data.Data.User.statistics.manga.chaptersRead}`\nPuntaje promedio: `{data.Data.User.statistics.manga.meanScore}`";
                     string favoriteAnime = "";
                     foreach (var anime in data.Data.User.favourites.anime.nodes)
                     {
@@ -495,6 +539,26 @@ namespace Discord_Bot.Modulos
                     {
                         favoriteStudios += $"[{studio.name}]({studio.siteUrl})\n";
                     }
+                    if (favoriteAnime == "")
+                    {
+                        favoriteAnime = "`Vacío`";
+                    }
+                    if (favoriteManga == "")
+                    {
+                        favoriteManga = "`Vacío`";
+                    }
+                    if (favoriteCharacters == "")
+                    {
+                        favoriteCharacters = "`Vacío`";
+                    }
+                    if (favoriteStaff == "")
+                    {
+                        favoriteStaff = "`Vacío`";
+                    }
+                    if (favoriteStudios == "")
+                    {
+                        favoriteStudios = "`Vacío`";
+                    }
                     string nombre = data.Data.User.name;
                     string avatar = data.Data.User.avatar.medium;
                     string siteurl = data.Data.User.siteUrl;
@@ -505,13 +569,13 @@ namespace Discord_Bot.Modulos
                         Color = new DiscordColor(78, 63, 96),
                         ImageUrl = data.Data.User.bannerImage
                     }
-                    .AddField("Anime stats", animeStats, true)
-                    .AddField("Manga stats", mangaStats, true)
-                    .AddField("Favorite anime", favoriteAnime, true)
-                    .AddField("Favorite manga", favoriteManga, true)
-                    .AddField("Favorite characters", favoriteCharacters, true)
-                    .AddField("Favorite staff", favoriteStaff, true)
-                    .AddField("Favorite studios", favoriteStudios, true)
+                    .AddField("Estadisticas - Anime", animeStats, true)
+                    .AddField("Estadisticas - Manga", mangaStats, true)
+                    .AddField("Animes favoritos", favoriteAnime, true)
+                    .AddField("Mangas favoritos", favoriteManga, true)
+                    .AddField("Personajes favoritos", favoriteCharacters, true)
+                    .AddField("Staff favoritos", favoriteStaff, true)
+                    .AddField("Estudios favoritos", favoriteStudios, true)
                     ).ConfigureAwait(false);
                 }
                 else
