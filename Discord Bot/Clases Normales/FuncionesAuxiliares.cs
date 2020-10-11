@@ -50,5 +50,15 @@ namespace Discord_Bot
                 IconUrl = ctx.Member.AvatarUrl
             };
         }
+
+        public EmbedAuthor GetAuthor(string nombre, string avatar, string url)
+        {
+            return new EmbedAuthor()
+            {
+                IconUrl = avatar,
+                Name = nombre,
+                Url = url
+            };
+        }
     }
 }

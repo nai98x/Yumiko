@@ -7,10 +7,13 @@ using System.Collections.Generic;
 using DSharpPlus.Entities;
 using System;
 using DSharpPlus.Interactivity;
+using GraphQL.Client.Http;
+using GraphQL;
+using GraphQL.Client.Serializer.Newtonsoft;
 
 namespace Discord_Bot.Modulos
 {
-    public class Games : BaseCommandModule
+    public class Anilist : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
@@ -382,6 +385,162 @@ namespace Discord_Bot.Modulos
                 var error = await ctx.RespondAsync("Tiempo agotado esperando la cantidad de rondas").ConfigureAwait(false);
                 // Msg de timeout (ingresar rondas) borrar msg anteriores
             }
+        }
+
+        [Command("anilist"), Aliases("user")]
+        public async Task Profile(CommandContext ctx, string usuario)
+        {
+            var graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
+            var request = new GraphQLRequest
+            {
+                Query =
+                "query($nombre : String){" +
+                "   User(search: $nombre){" +
+                "       id," +
+                "       name," +
+                "       siteUrl," +
+                "       avatar{" +
+                "           medium" +
+                "       }" +
+                "       bannerImage," +
+                "       statistics{" +
+                "           anime{" +
+                "               count," +
+                "               episodesWatched," +
+                "               meanScore" +
+                "           }," +
+                "           manga{" +
+                "               count," +
+                "               chaptersRead," +
+                "               meanScore" +
+                "           }" +
+                "       }," +
+                "       favourites{" +
+                "           anime(perPage:3){" +
+                "               nodes{" +
+                "                   title{" +
+                "                       romaji" +
+                "                   }," +
+                "                   siteUrl" +
+                "               }" +
+                "           }," +
+                "           manga(perPage:3){" +
+                "               nodes{" +
+                "                   title{" +
+                "                       romaji" +
+                "                   }," +
+                "                   siteUrl" +
+                "               }" +
+                "           }," +
+                "           characters(perPage:3){" +
+                "               nodes{" +
+                "                   name{" +
+                "                       full" +
+                "                   }," +
+                "                   siteUrl" +
+                "               }" +
+                "           }," +
+                "           staff(perPage:3){" +
+                "               nodes{" +
+                "                   name{" +
+                "                       full" +
+                "                   }," +
+                "                   siteUrl" +
+                "               }" +
+                "           }," +
+                "           studios(perPage:3){" +
+                "               nodes{" +
+                "                   name," +
+                "                   siteUrl" +
+                "               }" +
+                "           }" +
+                "       }" +
+                "   }" +
+                "}",
+                Variables = new
+                {
+                    nombre = usuario
+                }
+            };
+
+            try
+            {
+                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                if (data.Data != null)
+                {
+                    string animeStats = $"Total: `{data.Data.User.statistics.anime.count}`\nEpisodes: `{data.Data.User.statistics.anime.episodesWatched}`\nScore: `{data.Data.User.statistics.anime.meanScore}`";
+                    string mangaStats = $"Total: `{data.Data.User.statistics.manga.count}`\nRead: `{data.Data.User.statistics.manga.chaptersRead}`\nScore: `{data.Data.User.statistics.manga.meanScore}`";
+                    string favoriteAnime = "";
+                    foreach (var anime in data.Data.User.favourites.anime.nodes)
+                    {
+                        favoriteAnime += $"[{anime.title.romaji}]({anime.siteUrl})\n";
+                    }
+                    string favoriteManga = "";
+                    foreach (var manga in data.Data.User.favourites.manga.nodes)
+                    {
+                        favoriteManga += $"[{manga.title.romaji}]({manga.siteUrl})\n";
+                    }
+                    string favoriteCharacters = "";
+                    foreach (var character in data.Data.User.favourites.characters.nodes)
+                    {
+                        favoriteCharacters += $"[{character.name.full}]({character.siteUrl})\n";
+                    }
+                    string favoriteStaff = "";
+                    foreach (var staff in data.Data.User.favourites.staff.nodes)
+                    {
+                        favoriteStaff += $"[{staff.name.full}]({staff.siteUrl})\n";
+                    }
+                    string favoriteStudios = "";
+                    foreach (var studio in data.Data.User.favourites.studios.nodes)
+                    {
+                        favoriteStudios += $"[{studio.name}]({studio.siteUrl})\n";
+                    }
+                    string nombre = data.Data.User.name;
+                    string avatar = data.Data.User.avatar.medium;
+                    string siteurl = data.Data.User.siteUrl;
+                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Author = funciones.GetAuthor(nombre, avatar, siteurl),
+                        Footer = funciones.GetFooter(ctx, "anilist"),
+                        Color = new DiscordColor(78, 63, 96),
+                        ImageUrl = data.Data.User.bannerImage
+                    }
+                    .AddField("Anime stats", animeStats, true)
+                    .AddField("Manga stats", mangaStats, true)
+                    .AddField("Favorite anime", favoriteAnime, true)
+                    .AddField("Favorite manga", favoriteManga, true)
+                    .AddField("Favorite characters", favoriteCharacters, true)
+                    .AddField("Favorite staff", favoriteStaff, true)
+                    .AddField("Favorite studios", favoriteStudios, true)
+                    ).ConfigureAwait(false);
+                }
+                else
+                {
+                    foreach (var x in data.Errors)
+                    {
+                        var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
+                        await Task.Delay(3000);
+                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                        await msg.DeleteAsync("Auto borrado de yumiko");
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                DiscordMessage msg;
+                switch (ex.Message)
+                {
+                    case "The HTTP request failed with status code NotFound":
+                        msg = await ctx.RespondAsync($"No se ha encontrado al usuario de anilist `{usuario}`").ConfigureAwait(false);
+                        break;
+                    default:
+                        msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
+                        break;
+                }
+                await Task.Delay(3000);
+                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                await msg.DeleteAsync("Auto borrado de yumiko");
+            };
         }
 
         public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas)

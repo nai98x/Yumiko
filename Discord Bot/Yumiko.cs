@@ -56,7 +56,7 @@ namespace Discord_Bot
             Commands.RegisterCommands<Administracion>();
             Commands.RegisterCommands<Memes>();
             Commands.RegisterCommands<Misc>();
-            Commands.RegisterCommands<Games>();
+            Commands.RegisterCommands<Anilist>();
             Commands.RegisterCommands<Help>();
 
             await Client.ConnectAsync();
@@ -126,7 +126,7 @@ namespace Discord_Bot
                                 titulo = "Acceso denegado";
                                 descripcion = "No tienes los suficientes permisos para ejecutar este comando.";
                                 break;
-                            case "DSharpPlus.CommandsNext.Attributes.RequireOwner":
+                            case "DSharpPlus.CommandsNext.Attributes.RequireOwnerAttribute":
                                 titulo = "Acceso denegado";
                                 descripcion = "Solo el dueño del bot puede ejecutar este comando.";
                                 break;
