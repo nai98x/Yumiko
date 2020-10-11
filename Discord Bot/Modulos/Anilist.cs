@@ -447,6 +447,11 @@ namespace Discord_Bot.Modulos
                 "           medium" +
                 "       }" +
                 "       bannerImage," +
+                "       options{" +
+                "           titleLanguage," +
+                "           displayAdultContent," +
+                "           profileColor" +
+                "       }" +
                 "       statistics{" +
                 "           anime{" +
                 "               count," +
@@ -506,14 +511,20 @@ namespace Discord_Bot.Modulos
                     nombre = usuario
                 }
             };
-
             try
             {
                 var data = await graphQLClient.SendQueryAsync<dynamic>(request);
                 if (data.Data != null)
                 {
+                    string nsfw1 = data.Data.User.options.displayAdultContent;
+                    string nsfw;
+                    if (nsfw1 == "True")
+                        nsfw = "Si";
+                    else
+                        nsfw = "No";
                     string animeStats = $"Total: `{data.Data.User.statistics.anime.count}`\nEpisodios: `{data.Data.User.statistics.anime.episodesWatched}`\nPuntaje promedio: `{data.Data.User.statistics.anime.meanScore}`";
                     string mangaStats = $"Total: `{data.Data.User.statistics.manga.count}`\nLeído: `{data.Data.User.statistics.manga.chaptersRead}`\nPuntaje promedio: `{data.Data.User.statistics.manga.meanScore}`";
+                    string options = $"Titulos: `{data.Data.User.options.titleLanguage}`\nNSFW: `{nsfw}`\nColor: `{data.Data.User.options.profileColor}`";
                     string favoriteAnime = "";
                     foreach (var anime in data.Data.User.favourites.anime.nodes)
                     {
@@ -539,44 +550,31 @@ namespace Discord_Bot.Modulos
                     {
                         favoriteStudios += $"[{studio.name}]({studio.siteUrl})\n";
                     }
-                    if (favoriteAnime == "")
-                    {
-                        favoriteAnime = "`Vacío`";
-                    }
-                    if (favoriteManga == "")
-                    {
-                        favoriteManga = "`Vacío`";
-                    }
-                    if (favoriteCharacters == "")
-                    {
-                        favoriteCharacters = "`Vacío`";
-                    }
-                    if (favoriteStaff == "")
-                    {
-                        favoriteStaff = "`Vacío`";
-                    }
-                    if (favoriteStudios == "")
-                    {
-                        favoriteStudios = "`Vacío`";
-                    }
                     string nombre = data.Data.User.name;
                     string avatar = data.Data.User.avatar.medium;
                     string siteurl = data.Data.User.siteUrl;
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    var builder = new DiscordEmbedBuilder
                     {
                         Author = funciones.GetAuthor(nombre, avatar, siteurl),
                         Footer = funciones.GetFooter(ctx, "anilist"),
                         Color = new DiscordColor(78, 63, 96),
                         ImageUrl = data.Data.User.bannerImage
-                    }
-                    .AddField("Estadisticas - Anime", animeStats, true)
-                    .AddField("Estadisticas - Manga", mangaStats, true)
-                    .AddField("Animes favoritos", favoriteAnime, true)
-                    .AddField("Mangas favoritos", favoriteManga, true)
-                    .AddField("Personajes favoritos", favoriteCharacters, true)
-                    .AddField("Staff favoritos", favoriteStaff, true)
-                    .AddField("Estudios favoritos", favoriteStudios, true)
-                    ).ConfigureAwait(false);
+                    };
+                    builder.AddField("Estadisticas - Anime", animeStats, true);
+                    builder.AddField("Estadisticas - Manga", mangaStats, true);
+                    builder.AddField("Opciones", options, true);
+                    if (favoriteAnime != "")
+                        builder.AddField("Animes favoritos", favoriteAnime, true);
+                    if (favoriteManga != "")
+                        builder.AddField("Mangas favoritos", favoriteManga, true);
+                    if (favoriteCharacters != "")
+                        builder.AddField("Personajes favoritos", favoriteCharacters, true);
+                    if (favoriteStaff != "")
+                        builder.AddField("Staff favoritos", favoriteStaff, true);
+                    if (favoriteStudios != "")
+                        builder.AddField("Estudios favoritos", favoriteStudios, true);
+                    await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                    await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                 }
                 else
                 {
