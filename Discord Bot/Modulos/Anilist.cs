@@ -133,7 +133,7 @@ namespace Discord_Bot.Modulos
                                         await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                                         await msg.DeleteAsync("Auto borrado de yumiko");
                                         return;
-                                    };
+                                    }
                                 }
                                 await mensaje.DeleteAsync("Auto borrado de Yumiko");
                                 int lastRonda;
@@ -341,7 +341,7 @@ namespace Discord_Bot.Modulos
                                         await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                                         await msg.DeleteAsync("Auto borrado de yumiko");
                                         return;
-                                    };
+                                    }
                                 }
                                 await mensaje.DeleteAsync("Auto borrado de Yumiko");
                                 int lastRonda;
@@ -602,7 +602,7 @@ namespace Discord_Bot.Modulos
                 await Task.Delay(3000);
                 await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                 await msg.DeleteAsync("Auto borrado de yumiko");
-            };
+            }
         }
 
         public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas)
