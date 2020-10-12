@@ -341,7 +341,10 @@ namespace Discord_Bot.Modulos
                                                     SiteUrl = y.siteUrl
                                                 });
                                             }
-                                            characterList.Add(c);
+                                            if(c.Animes.Count() > 0)
+                                            {
+                                                characterList.Add(c);
+                                            }
                                         }
                                     }
                                     catch (Exception ex)
