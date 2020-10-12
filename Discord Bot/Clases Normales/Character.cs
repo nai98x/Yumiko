@@ -1,4 +1,6 @@
-﻿namespace Discord_Bot
+﻿using System.Collections.Generic;
+
+namespace Discord_Bot
 {
     public class Character
     {
@@ -7,5 +9,6 @@
         public string NameFull { get; set; }
         public string Image { get; set; }
         public string SiteUrl { get; set; }
+        public List<Anime> Animes { get; set; }
     }
 }

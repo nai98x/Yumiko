@@ -8,6 +8,7 @@ using DSharpPlus.Interactivity;
 using GraphQL.Client.Http;
 using GraphQL;
 using GraphQL.Client.Serializer.Newtonsoft;
+using System.Linq;
 
 namespace Discord_Bot.Modulos
 {
@@ -122,13 +123,10 @@ namespace Discord_Bot.Modulos
                                     }
                                     catch (Exception ex)
                                     {
-                                        DiscordMessage msg;
-                                        switch (ex.Message)
+                                        DiscordMessage msg = ex.Message switch
                                         {
-                                            default:
-                                                msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
-                                                break;
-                                        }
+                                            _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
+                                        };
                                         await Task.Delay(3000);
                                         await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                                         await msg.DeleteAsync("Auto borrado de yumiko");
@@ -286,10 +284,10 @@ namespace Discord_Bot.Modulos
                                     Color = new DiscordColor(78, 63, 96)
                                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
                                 await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
-                                List<Anime> animeList = new List<Anime>();
                                 Random rnd = new Random();
                                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
-                                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo animes...").ConfigureAwait(false);
+                                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo personajes...").ConfigureAwait(false);
+                                var characterList = new List<Character>();
                                 for (int i = 1; i <= iteraciones; i++)
                                 {
                                     var request = new GraphQLRequest
@@ -297,14 +295,22 @@ namespace Discord_Bot.Modulos
                                         Query =
                                         "query($pagina : Int){" +
                                         "   Page(page: $pagina){" +
-                                        "       media(sort: POPULARITY_DESC, type: ANIME){" +
+                                        "       characters(sort: FAVOURITES_DESC){" +
                                         "           siteUrl," +
-                                        "           title{" +
-                                        "               romaji," +
-                                        "               english," +
+                                        "           name{" +
+                                        "               full" +
                                         "           }," +
-                                        "           coverImage{" +
+                                        "           image{" +
                                         "               large" +
+                                        "           }," +
+                                        "           media(type:ANIME){" +
+                                        "               nodes{" +
+                                        "                   title{" +
+                                        "                       romaji," +
+                                        "                       english" +
+                                        "                   }," +
+                                        "                   siteUrl" +
+                                        "               }" +
                                         "           }" +
                                         "       }" +
                                         "   }" +
@@ -317,26 +323,33 @@ namespace Discord_Bot.Modulos
                                     try
                                     {
                                         var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                                        foreach (var x in data.Data.Page.media)
+                                        foreach (var x in data.Data.Page.characters)
                                         {
-                                            animeList.Add(new Anime()
+                                            Character c = new Character()
                                             {
-                                                Image = x.coverImage.large,
-                                                TitleEnglish = x.title.romaji,
-                                                TitleRomaji = x.title.english,
-                                                SiteUrl = x.siteUrl
-                                            });
+                                                Image = x.image.large,
+                                                NameFull = x.name.full,
+                                                SiteUrl = x.siteUrl,
+                                                Animes = new List<Anime>()
+                                            };
+                                            foreach (var y in x.media.nodes)
+                                            {
+                                                c.Animes.Add(new Anime()
+                                                {
+                                                    TitleEnglish = y.title.english,
+                                                    TitleRomaji = y.title.romaji,
+                                                    SiteUrl = y.siteUrl
+                                                });
+                                            }
+                                            characterList.Add(c);
                                         }
                                     }
                                     catch (Exception ex)
                                     {
-                                        DiscordMessage msg;
-                                        switch (ex.Message)
+                                        DiscordMessage msg = ex.Message switch
                                         {
-                                            default:
-                                                msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
-                                                break;
-                                        }
+                                            _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
+                                        };
                                         await Task.Delay(3000);
                                         await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                                         await msg.DeleteAsync("Auto borrado de yumiko");
@@ -348,19 +361,25 @@ namespace Discord_Bot.Modulos
                                 for (int ronda = 1; ronda <= rondas; ronda++)
                                 {
                                     lastRonda = ronda;
-                                    int random = funciones.GetNumeroRandom(0, animeList.Count - 1);
-                                    Anime elegido = animeList[random];
+                                    int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
+                                    Character elegido = characterList[random];
                                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                                     {
                                         Color = DiscordColor.Gold,
-                                        Title = "Adivina el anime",
+                                        Title = $"Adivina el anime del personaje",
                                         Description = $"Ronda {ronda} de {rondas}",
                                         ImageUrl = elegido.Image
                                     }).ConfigureAwait(false);
                                     var msg = await interactivity.WaitForMessageAsync
                                         (xm => (xm.Channel == ctx.Channel) &&
-                                        ((elegido.TitleEnglish != null && elegido.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim()) || elegido.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
-                                        , TimeSpan.FromSeconds(20));
+                                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                                        ((elegido.Animes.Find(x => (x.TitleEnglish != null && x.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim())) != null)) || (elegido.Animes.Find(x => x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
+                                        ), TimeSpan.FromSeconds(20));
+                                    string descAnimes = $"Los animes de [{elegido.NameFull}]({elegido.SiteUrl}) son:\n\n";
+                                    foreach(Anime anim in elegido.Animes)
+                                    {
+                                        descAnimes += $"- [{anim.TitleRomaji}]({anim.SiteUrl})\n";
+                                    }
                                     if (!msg.TimedOut)
                                     {
                                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
@@ -386,7 +405,7 @@ namespace Discord_Bot.Modulos
                                         await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                                         {
                                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
-                                            Description = $"El nombre es: [{elegido.TitleRomaji}]({elegido.SiteUrl})",
+                                            Description = descAnimes,
                                             Color = DiscordColor.Green
                                         }).ConfigureAwait(false);
                                     }
@@ -394,7 +413,7 @@ namespace Discord_Bot.Modulos
                                     {
                                         await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
                                             Title = "¡Nadie ha acertado!",
-                                            Description = $"El nombre era: [{elegido.TitleRomaji}]({elegido.SiteUrl})",
+                                            Description = descAnimes,
                                             Color = DiscordColor.Red
                                         }).ConfigureAwait(false);
                                     }
@@ -589,16 +608,11 @@ namespace Discord_Bot.Modulos
             }
             catch(Exception ex)
             {
-                DiscordMessage msg;
-                switch (ex.Message)
+                DiscordMessage msg = ex.Message switch
                 {
-                    case "The HTTP request failed with status code NotFound":
-                        msg = await ctx.RespondAsync($"No se ha encontrado al usuario de anilist `{usuario}`").ConfigureAwait(false);
-                        break;
-                    default:
-                        msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
-                        break;
-                }
+                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado al usuario de anilist `{usuario}`").ConfigureAwait(false),
+                    _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
+                };
                 await Task.Delay(3000);
                 await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                 await msg.DeleteAsync("Auto borrado de yumiko");
