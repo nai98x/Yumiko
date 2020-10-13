@@ -9,6 +9,7 @@ using GraphQL.Client.Http;
 using GraphQL;
 using GraphQL.Client.Serializer.Newtonsoft;
 using System.Linq;
+using System.Configuration;
 
 namespace Discord_Bot.Modulos
 {
@@ -107,7 +108,7 @@ namespace Discord_Bot.Modulos
                     var msg = await interactivity.WaitForMessageAsync
                         (xm => (xm.Channel == ctx.Channel) &&
                         (xm.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim() || xm.Content.ToLower().Trim() == elegido.NameFirst.ToLower().Trim() || (elegido.NameLast != null && xm.Content.ToLower().Trim() == elegido.NameLast.ToLower().Trim())) || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
-                        , TimeSpan.FromSeconds(20));
+                        , TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                     if (!msg.TimedOut)
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
@@ -264,8 +265,9 @@ namespace Discord_Bot.Modulos
                     var msg = await interactivity.WaitForMessageAsync
                         (xm => (xm.Channel == ctx.Channel) &&
                         ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
-                        ((elegido.Animes.Find(x => (x.TitleEnglish != null && x.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim())) != null)) || (elegido.Animes.Find(x => x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
-                        ), TimeSpan.FromSeconds(20));
+                        (elegido.Animes.Find(x => x.TitleEnglish != null && x.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) || 
+                        (elegido.Animes.Find(x => x.TitleRomaji != null && x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)), 
+                        TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                     string descAnimes = $"Los animes de [{elegido.NameFull}]({elegido.SiteUrl}) son:\n\n";
                     foreach (Anime anim in elegido.Animes)
                     {
@@ -512,7 +514,7 @@ namespace Discord_Bot.Modulos
                 Title = "Elige la cantidad de rondas",
                 Description = "Por ejemplo: 10"
             });
-            var msgRondasInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(10));
+            var msgRondasInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
             if (!msgRondasInter.TimedOut)
             {
                 bool result = int.TryParse(msgRondasInter.Result.Content, out int rondas);
@@ -523,7 +525,7 @@ namespace Discord_Bot.Modulos
                         Title = "Elije la dificultad",
                         Description = "1- Fácil (300 animes)\n2- Media (1000 animes)\n3- Dificil (3000 animes)"
                     });
-                    var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(10));
+                    var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
                     if (!msgDificultadInter.TimedOut)
                     {
                         result = int.TryParse(msgDificultadInter.Result.Content, out int dificultad);
