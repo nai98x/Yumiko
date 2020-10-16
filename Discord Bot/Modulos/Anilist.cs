@@ -27,7 +27,8 @@ namespace Discord_Bot.Modulos
             {
                 int rondas = settings.Rondas;
                 string dificultadStr = settings.Dificultad;
-                int iteraciones = settings.Iteraciones;
+                int iterIni = settings.IterIni;
+                int iterFin = settings.IterFin;
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el personaje",
@@ -39,7 +40,7 @@ namespace Discord_Bot.Modulos
                 Random rnd = new Random();
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo pesonajes...").ConfigureAwait(false);
-                for (int i = 1; i <= iteraciones; i++)
+                for (int i = iterIni; i <= iterFin; i++)
                 {
                     var request = new GraphQLRequest
                     {
@@ -165,7 +166,8 @@ namespace Discord_Bot.Modulos
             {
                 int rondas = settings.Rondas;
                 string dificultadStr = settings.Dificultad;
-                int iteraciones = settings.Iteraciones;
+                int iterIni = settings.IterIni;
+                int iterFin = settings.IterFin;
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el anime",
@@ -177,7 +179,7 @@ namespace Discord_Bot.Modulos
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo personajes...").ConfigureAwait(false);
                 var characterList = new List<Character>();
-                for (int i = 1; i <= iteraciones; i++)
+                for (int i = iterIni; i <= iterFin; i++)
                 {
                     var request = new GraphQLRequest
                     {
@@ -511,7 +513,7 @@ namespace Discord_Bot.Modulos
         {
             var msgCntRondas = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
-                Title = "Elige la cantidad de rondas",
+                Title = "Elige la cantidad de rondas (máximo 100)",
                 Description = "Por ejemplo: 10"
             });
             var msgRondasInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
@@ -520,59 +522,81 @@ namespace Discord_Bot.Modulos
                 bool result = int.TryParse(msgRondasInter.Result.Content, out int rondas);
                 if (result)
                 {
-                    var msgDificultad = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    if(rondas > 0 && rondas <= 100)
                     {
-                        Title = "Elije la dificultad",
-                        Description = "1- Fácil (300 animes)\n2- Media (1000 animes)\n3- Dificil (3000 animes)"
-                    });
-                    var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-                    if (!msgDificultadInter.TimedOut)
-                    {
-                        result = int.TryParse(msgDificultadInter.Result.Content, out int dificultad);
-                        if (result)
+                        var msgDificultad = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                         {
-                            string dificultadStr;
-                            if (dificultad == 1 || dificultad == 2 || dificultad == 3)
+                            Title = "Elije la dificultad",
+                            Description = "1- Fácil\n2- Media\n3- Dificil\n4- Extremo"
+                        });
+                        var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                        if (!msgDificultadInter.TimedOut)
+                        {
+                            result = int.TryParse(msgDificultadInter.Result.Content, out int dificultad);
+                            if (result)
                             {
-                                int iteraciones;
-                                switch (dificultad)
+                                string dificultadStr;
+                                if (dificultad == 1 || dificultad == 2 || dificultad == 3 || dificultad == 4)
                                 {
-                                    case 1:
-                                        iteraciones = 6;
-                                        dificultadStr = "Fácil";
-                                        break;
-                                    case 2:
-                                        iteraciones = 20;
-                                        dificultadStr = "Media";
-                                        break;
-                                    case 3:
-                                        iteraciones = 60;
-                                        dificultadStr = "Dificil";
-                                        break;
-                                    default:
-                                        iteraciones = 20;
-                                        dificultadStr = "Medio";
-                                        break;
+                                    int iterIni;
+                                    int iterFin;
+                                    switch (dificultad)
+                                    {
+                                        case 1:
+                                            iterIni = 1;
+                                            iterFin = 6;
+                                            dificultadStr = "Fácil";
+                                            break;
+                                        case 2:
+                                            iterIni = 6;
+                                            iterFin = 20;
+                                            dificultadStr = "Media";
+                                            break;
+                                        case 3:
+                                            iterIni = 20;
+                                            iterFin = 60;
+                                            dificultadStr = "Dificil";
+                                            break;
+                                        case 4:
+                                            iterIni = 60;
+                                            iterFin = 100;
+                                            dificultadStr = "Extremo";
+                                            break;
+                                        default:
+                                            iterIni = 6;
+                                            iterFin = 20;
+                                            dificultadStr = "Medio";
+                                            break;
+                                    }
+                                    await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
+                                    await msgCntRondas.DeleteAsync("Auto borrado de Yumiko");
+                                    await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                    await msgDificultad.DeleteAsync("Auto borrado de Yumiko");
+                                    await msgDificultadInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                    return new SettingsJuego()
+                                    {
+                                        Ok = true,
+                                        Rondas = rondas,
+                                        IterIni = iterIni,
+                                        IterFin = iterFin,
+                                        Dificultad = dificultadStr
+                                    };
                                 }
-                                await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
-                                await msgCntRondas.DeleteAsync("Auto borrado de Yumiko");
-                                await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                await msgDificultad.DeleteAsync("Auto borrado de Yumiko");
-                                await msgDificultadInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                return new SettingsJuego()
+                                else
                                 {
-                                    Ok = true,
-                                    Rondas = rondas,
-                                    Iteraciones = iteraciones,
-                                    Dificultad = dificultadStr
-                                };
+                                    return new SettingsJuego()
+                                    {
+                                        Ok = false,
+                                        MsgError = "La dificultad debe ser 1, 2, 3 o 4"
+                                    };
+                                }
                             }
                             else
                             {
                                 return new SettingsJuego()
                                 {
                                     Ok = false,
-                                    MsgError = "La dificultad debe ser 1, 2 o 3"
+                                    MsgError = "La dificultad debe ser un número (1, 2, 3 o 4)"
                                 };
                             }
                         }
@@ -581,7 +605,7 @@ namespace Discord_Bot.Modulos
                             return new SettingsJuego()
                             {
                                 Ok = false,
-                                MsgError = "La dificultad debe ser un número (1, 2 o 3)"
+                                MsgError = "Tiempo agotado esperando la dificultad"
                             };
                         }
                     }
@@ -590,7 +614,7 @@ namespace Discord_Bot.Modulos
                         return new SettingsJuego()
                         {
                             Ok = false,
-                            MsgError = "Tiempo agotado esperando la dificultad"
+                            MsgError = "La cantidad de rondas debe ser mayor a 0 y menor a 100"
                         };
                     }
                 }

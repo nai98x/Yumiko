@@ -91,7 +91,8 @@ namespace Discord_Bot.Modulos
             {
                 DiscordRole kohai = ctx.Guild.GetRole(713484136001700042);
                 DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
-                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai)));
+                DiscordRole master = ctx.Guild.GetRole(713484545944584273);
+                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai) || x.Value.Roles.Contains(master)));
                 elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
             }
             else
@@ -123,7 +124,8 @@ namespace Discord_Bot.Modulos
             {
                 DiscordRole kohai = ctx.Guild.GetRole(713484136001700042);
                 DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
-                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai)) && x.Value.Id != usuario.Id);
+                DiscordRole master = ctx.Guild.GetRole(713484545944584273);
+                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai) || x.Value.Roles.Contains(master)) && x.Value.Id != usuario.Id);
                 elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
             }
             else
@@ -154,7 +156,8 @@ namespace Discord_Bot.Modulos
             {
                 DiscordRole kohai = ctx.Guild.GetRole(713484136001700042);
                 DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
-                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai)));
+                DiscordRole master = ctx.Guild.GetRole(713484545944584273);
+                var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai) || x.Value.Roles.Contains(master)));
                 elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
                 elegido2 = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
             }

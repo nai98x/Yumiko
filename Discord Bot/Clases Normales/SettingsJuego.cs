@@ -9,7 +9,8 @@ namespace Discord_Bot
         public bool Ok { get; set; }
         public string MsgError { get; set; }
         public int Rondas { get; set; }
-        public int Iteraciones { get; set; }
+        public int  IterIni { get; set; }
+        public int IterFin { get; set; }
         public string Dificultad { get; set; }
     }
 }
