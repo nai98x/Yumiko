@@ -139,7 +139,7 @@ namespace Discord_Bot.Modulos
                     Color = new DiscordColor(78, 63, 96),
                     Title = "Sauce (Trace.moe)",
                     Description = $"{resultados}",
-                    //ImageUrl = 
+                    ImageUrl = url
                 }).ConfigureAwait(false);
             }
             else
