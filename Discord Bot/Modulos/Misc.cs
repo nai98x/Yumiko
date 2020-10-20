@@ -118,33 +118,74 @@ namespace Discord_Bot.Modulos
         [Command("sauce"), RequireNsfw]
         public async Task Sauce(CommandContext ctx, string url)
         {
-            var client = new RestClient("https://trace.moe/api/search?url=" + url);
-            var request = new RestRequest(Method.GET);
-            request.AddHeader("content-type", "application/json");
-            await ctx.RespondAsync("Procesando imagen..").ConfigureAwait(false);
-            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
-            IRestResponse response = client.Execute(request);
-            if (response.StatusCode == HttpStatusCode.OK)
+            DiscordMessage msgError = null;
+            string msg = "OK";
+            if (url.Length > 0)
             {
-                string resultados = "Los posibles animes de la imagen son:\n\n";
-                var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
-                foreach(var result in resp.docs)
+                if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                 {
-                    string enlace = "https://anilist.co/anime/";
-                    resultados += $"[{result.title_romaji}]({enlace += result.anilist_id}) - Similitud: {result.similarity}\n";
+                    string extension = url.Substring(url.Length - 4);
+                    if(extension == ".jpg" || extension == ".png" || extension == "jpeg")
+                    {
+                        var client = new RestClient("https://trace.moe/api/search?url=" + url);
+                        var request = new RestRequest(Method.GET);
+                        request.AddHeader("content-type", "application/json");
+                        await ctx.RespondAsync("Procesando imagen..").ConfigureAwait(false);
+                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                        IRestResponse response = client.Execute(request);
+                        switch (response.StatusCode)
+                        {
+                            case HttpStatusCode.OK:
+                                string resultados = "Los posibles animes de la imagen son:\n\n";
+                                var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
+                                foreach (var result in resp.docs)
+                                {
+                                    string enlace = "https://anilist.co/anime/";
+                                    resultados += $"[{result.title_romaji}]({enlace += result.anilist_id}) - Similitud: {result.similarity}\n";
+                                }
+                                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                {
+                                    Footer = funciones.GetFooter(ctx, "sauce"),
+                                    Color = new DiscordColor(78, 63, 96),
+                                    Title = "Sauce (Trace.moe)",
+                                    Description = $"{resultados}",
+                                    ImageUrl = url
+                                }).ConfigureAwait(false);
+                                break;
+                            case HttpStatusCode.BadRequest:
+                                msg = "Debes ingresar un link";
+                                break;
+                            case HttpStatusCode.Forbidden:
+                                msg = "Acceso denegado";
+                                break;
+                            case HttpStatusCode.TooManyRequests:
+                                msg = "Ratelimit excedido";
+                                break;
+                            case HttpStatusCode.InternalServerError:
+                            case HttpStatusCode.ServiceUnavailable:
+                                msg = "Error interno en el servidor de Trace.moe";
+                                break;
+                            default:
+                                msg = "Error inesperado";
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        msg = "La imagen debe ser JPG, PNG o JPEG";
+                    }
                 }
-                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                else
                 {
-                    Footer = funciones.GetFooter(ctx, "sauce"),
-                    Color = new DiscordColor(78, 63, 96),
-                    Title = "Sauce (Trace.moe)",
-                    Description = $"{resultados}",
-                    ImageUrl = url
-                }).ConfigureAwait(false);
+                    msg = "Debes ingresar el link de una imagen";
+                }
             }
-            else
+            if (msg != "OK")
             {
-                var msg = await ctx.RespondAsync("Error inesperado").ConfigureAwait(false);
+                msgError = await ctx.RespondAsync(msg).ConfigureAwait(false);
+                await Task.Delay(3000);
+                await msgError.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
+                await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
             }
         }
         
@@ -152,7 +193,7 @@ namespace Discord_Bot.Modulos
         public async Task Invite(CommandContext ctx)
         {
             await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
+            await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
         }
     }
 }

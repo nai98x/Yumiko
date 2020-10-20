@@ -92,7 +92,7 @@ namespace Discord_Bot
 
         private async Task Commands_CommandErrored(CommandErrorEventArgs e)
         {
-            if (e.Exception.Message == "Specified command was not found.")
+            if (e.Exception.Message == "Specified command was not found." || e.Exception.Message == "Could not find a suitable overload for the command.")
             {
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
                 var embed = new DiscordEmbedBuilder
