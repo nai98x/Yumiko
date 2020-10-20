@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Configuration;
+using RestSharp;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace Discord_Bot.Modulos
 {
@@ -109,6 +112,39 @@ namespace Discord_Bot.Modulos
             else
             {
                 await ctx.RespondAsync("No escribiste las opciones onii-chan" + ctx.User.Mention);
+            }
+        }
+
+        [Command("sauce"), RequireNsfw]
+        public async Task Sauce(CommandContext ctx, string url)
+        {
+            var client = new RestClient("https://trace.moe/api/search?url=" + url);
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("content-type", "application/json");
+            await ctx.RespondAsync("Procesando imagen..").ConfigureAwait(false);
+            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+            IRestResponse response = client.Execute(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                string resultados = "Los posibles animes de la imagen son:\n\n";
+                var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
+                foreach(var result in resp.docs)
+                {
+                    string enlace = "https://anilist.co/anime/";
+                    resultados += $"[{result.title_romaji}]({enlace += result.anilist_id}) - Similitud: {result.similarity}\n";
+                }
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx, "sauce"),
+                    Color = new DiscordColor(78, 63, 96),
+                    Title = "Sauce (Trace.moe)",
+                    Description = $"{resultados}",
+                    //ImageUrl = 
+                }).ConfigureAwait(false);
+            }
+            else
+            {
+                var msg = await ctx.RespondAsync("Error inesperado").ConfigureAwait(false);
             }
         }
         
