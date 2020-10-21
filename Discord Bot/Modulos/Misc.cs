@@ -137,11 +137,24 @@ namespace Discord_Bot.Modulos
                         {
                             case HttpStatusCode.OK:
                                 string resultados = "Los posibles animes de la imagen son:\n\n";
+                                bool hayResultado = false;
                                 var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
                                 foreach (var result in resp.docs)
                                 {
                                     string enlace = "https://anilist.co/anime/";
-                                    resultados += $"[{result.title_romaji}]({enlace += result.anilist_id}) - Similitud: {result.similarity}\n";
+                                    int similaridad = result.similarity * 100;
+                                    if (similaridad > 87)
+                                    {
+                                        hayResultado = true;
+                                        int segundo = result.at;
+                                        TimeSpan time = TimeSpan.FromSeconds(segundo);
+                                        string at = time.ToString(@"mm\:ss");
+                                        resultados += $"[{result.title_romaji}]({enlace += result.anilist_id}) | Similitud: {similaridad} | Minuto: {at} | NSFW: {result.is_adult}\n";
+                                    }
+                                }
+                                if (!hayResultado)
+                                {
+                                    resultados = "No se encontraron resultados! (Prueba con buscar una imagen que sea parte de un capítulo)";
                                 }
                                 await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                 {
