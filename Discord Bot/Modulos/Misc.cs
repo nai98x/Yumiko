@@ -139,6 +139,7 @@ namespace Discord_Bot.Modulos
                             case HttpStatusCode.OK:
                                 var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
                                 string resultados = "";
+                                string titulo = "El posible anime de la imagen es:";
                                 bool encontro = false;
                                 foreach (var resultado in resp.docs)
                                 {
@@ -159,7 +160,8 @@ namespace Discord_Bot.Modulos
                                 }
                                 if (!encontro)
                                 {
-                                    resultados = "No se han encontrado resultados para esta imagen.\nRecuerda que solamente funciona con imágenes que sean partes de un episodio";
+                                    titulo = "No se han encontrado resultados para esta imagen.";
+                                    resultados = "Recuerda que solamente funciona con imágenes que sean partes de un episodio";
                                 }
                                 var embed = new DiscordEmbedBuilder
                                 {
@@ -168,7 +170,7 @@ namespace Discord_Bot.Modulos
                                     Title = "Sauce (Trace.moe)",
                                     ImageUrl = url
                                 };
-                                embed.AddField("El posible anime de la imagen es", resultados);
+                                embed.AddField(titulo, resultados);
                                 await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
                                 break;
                             case HttpStatusCode.BadRequest:
