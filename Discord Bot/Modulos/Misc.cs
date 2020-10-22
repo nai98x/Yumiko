@@ -208,7 +208,16 @@ namespace Discord_Bot.Modulos
                 await msgError.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
             }
         }
-        
+
+        [Command("doujin"), RequireNsfw]
+        public async Task Doujin(CommandContext ctx, int numero)
+        {
+            string baseUrl = "https://nhentai.net/g/";
+            string url = baseUrl + numero;
+            await ctx.RespondAsync(url).ConfigureAwait(false);
+            await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
+        }
+
         [Command("invite"), Aliases("invitar")]
         public async Task Invite(CommandContext ctx)
         {
