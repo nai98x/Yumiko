@@ -115,7 +115,7 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("sauce"), RequireNsfw]
+        [Command("sauce")]
         public async Task Sauce(CommandContext ctx, string url)
         {
             DiscordMessage msgError = null;
@@ -160,7 +160,7 @@ namespace Discord_Bot.Modulos
                                 }
                                 if (!encontro)
                                 {
-                                    titulo = "No se han encontrado resultados para esta imagen.";
+                                    titulo = "No se han encontrado resultados para esta imagen";
                                     resultados = "Recuerda que solamente funciona con imágenes que sean partes de un episodio";
                                 }
                                 var embed = new DiscordEmbedBuilder
