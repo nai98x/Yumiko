@@ -52,8 +52,8 @@ namespace Discord_Bot.Modulos
                     Footer = funciones.GetFooter(ctx, "waifu"),
                     Color = DiscordColor.Yellow,
                     Title = "Nivel de waifu",
-                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nNo estás mal, pero no tenes posibilidades conmigo.",
-                    ImageUrl = "https://i.imgur.com/jCfDrGa.png"
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nNo estás mal, quizas tengas posibilidades conmigo.",
+                    ImageUrl = "https://i.imgur.com/h7Ic2rk.jpg"
                 }).ConfigureAwait(false);
             }
             if (waifuLevel >= 75 && waifuLevel < 100)
@@ -75,8 +75,7 @@ namespace Discord_Bot.Modulos
                     Color = DiscordColor.Blue,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\n.Estoy completamente enamorada de ti, ¿cuándo nos casamos?",
-                    ImageUrl = "https://i.imgur.com/dhXR8mV.png"
-                    //ImageUrl = "https://i.imgur.com/b5g1LEP.png" quitada por NSFW
+                    ImageUrl = "https://i.imgur.com/Vk6JMJi.jpg"
                 }).ConfigureAwait(false);
             }
             await ctx.Message.DeleteAsync();
