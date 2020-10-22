@@ -206,7 +206,6 @@ namespace Discord_Bot.Modulos
                 msgError = await ctx.RespondAsync(msg).ConfigureAwait(false);
                 await Task.Delay(3000);
                 await msgError.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
-                await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
             }
         }
         
