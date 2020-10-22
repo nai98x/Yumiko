@@ -142,17 +142,20 @@ namespace Discord_Bot.Modulos
                                 bool encontro = false;
                                 foreach (var resultado in resp.docs)
                                 {
-                                    encontro = true;
                                     string enlace = "https://anilist.co/anime/";
                                     int similaridad = resultado.similarity * 100;
-                                    int segundo = resultado.at;
-                                    TimeSpan time = TimeSpan.FromSeconds(segundo);
-                                    string at = time.ToString(@"mm\:ss");
-                                    resultados =
-                                        $"Nombre:    [{resultado.title_romaji}]({enlace += resultado.anilist_id})\n" +
-                                        $"Similitud: {similaridad}%\n" +
-                                        $"Episodio:  {resultado.episode} (Minuto: {at})\n";
-                                    break;
+                                    if(similaridad >= 87)
+                                    {
+                                        encontro = true;
+                                        int segundo = resultado.at;
+                                        TimeSpan time = TimeSpan.FromSeconds(segundo);
+                                        string at = time.ToString(@"mm\:ss");
+                                        resultados =
+                                            $"Nombre:    [{resultado.title_romaji}]({enlace += resultado.anilist_id})\n" +
+                                            $"Similitud: {similaridad}%\n" +
+                                            $"Episodio:  {resultado.episode} (Minuto: {at})\n";
+                                        break;
+                                    }
                                 }
                                 if (!encontro)
                                 {
