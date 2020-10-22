@@ -130,16 +130,19 @@ namespace Discord_Bot.Modulos
                         var client = new RestClient("https://trace.moe/api/search?url=" + url);
                         var request = new RestRequest(Method.GET);
                         request.AddHeader("content-type", "application/json");
-                        await ctx.RespondAsync("Procesando imagen..").ConfigureAwait(false);
+                        var procesando = await ctx.RespondAsync("Procesando imagen..").ConfigureAwait(false);
                         await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         IRestResponse response = client.Execute(request);
+                        await procesando.DeleteAsync("Auto borrado de yumiko");
                         switch (response.StatusCode)
                         {
                             case HttpStatusCode.OK:
                                 var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
                                 string resultados = "";
+                                bool encontro = false;
                                 foreach (var resultado in resp.docs)
                                 {
+                                    encontro = true;
                                     string enlace = "https://anilist.co/anime/";
                                     int similaridad = resultado.similarity * 100;
                                     int segundo = resultado.at;
@@ -150,6 +153,10 @@ namespace Discord_Bot.Modulos
                                         $"Similitud: {similaridad}%\n" +
                                         $"Episodio:  {resultado.episode} (Minuto: {at})\n";
                                     break;
+                                }
+                                if (!encontro)
+                                {
+                                    resultados = "No se han encontrado resultados para esta imagen.\nRecuerda que solamente funciona con imágenes que sean partes de un episodio";
                                 }
                                 var embed = new DiscordEmbedBuilder
                                 {
