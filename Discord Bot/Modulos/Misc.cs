@@ -136,34 +136,30 @@ namespace Discord_Bot.Modulos
                         switch (response.StatusCode)
                         {
                             case HttpStatusCode.OK:
-                                string resultados = "Los posibles animes de la imagen son:\n\n";
-                                bool hayResultado = false;
                                 var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
-                                foreach (var result in resp.docs)
+                                string resultados = "";
+                                foreach (var resultado in resp.docs)
                                 {
                                     string enlace = "https://anilist.co/anime/";
-                                    int similaridad = result.similarity * 100;
-                                    if (similaridad > 87)
-                                    {
-                                        hayResultado = true;
-                                        int segundo = result.at;
-                                        TimeSpan time = TimeSpan.FromSeconds(segundo);
-                                        string at = time.ToString(@"mm\:ss");
-                                        resultados += $"[{result.title_romaji}]({enlace += result.anilist_id}) | Similitud: {similaridad} | Minuto: {at} | NSFW: {result.is_adult}\n";
-                                    }
+                                    int similaridad = resultado.similarity * 100;
+                                    int segundo = resultado.at;
+                                    TimeSpan time = TimeSpan.FromSeconds(segundo);
+                                    string at = time.ToString(@"mm\:ss");
+                                    resultados =
+                                        $"Nombre:    [{resultado.title_romaji}]({enlace += resultado.anilist_id})\n" +
+                                        $"Similitud: {similaridad}%\n" +
+                                        $"Episodio:  {resultado.episode} (Minuto: {at})\n";
+                                    break;
                                 }
-                                if (!hayResultado)
-                                {
-                                    resultados = "No se encontraron resultados! (Prueba con buscar una imagen que sea parte de un capítulo)";
-                                }
-                                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                var embed = new DiscordEmbedBuilder
                                 {
                                     Footer = funciones.GetFooter(ctx, "sauce"),
                                     Color = new DiscordColor(78, 63, 96),
                                     Title = "Sauce (Trace.moe)",
-                                    Description = $"{resultados}",
                                     ImageUrl = url
-                                }).ConfigureAwait(false);
+                                };
+                                embed.AddField("El posible anime de la imagen es", resultados);
+                                await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
                                 break;
                             case HttpStatusCode.BadRequest:
                                 msg = "Debes ingresar un link";
