@@ -208,6 +208,28 @@ namespace Discord_Bot.Modulos
             }
         }
 
+        [Command("jumbo")]
+        public async Task Jumbo(CommandContext ctx, DiscordEmoji emote)
+        {
+            if(emote != null)
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx, "jumbo"),
+                    Color = new DiscordColor(78, 63, 96),
+                    Title = emote.Name,
+                    ImageUrl = emote.Url
+                });
+            }
+            else
+            {
+                DiscordMessage msgError = await ctx.RespondAsync("Debes pasar un emote").ConfigureAwait(false);
+                await Task.Delay(3000);
+                await msgError.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
+            }
+            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+        }
+
         [Command("invite"), Aliases("invitar")]
         public async Task Invite(CommandContext ctx)
         {
