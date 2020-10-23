@@ -50,13 +50,14 @@ namespace Discord_Bot
 
             Commands = Client.UseCommandsNext(commandsConfig);
 
-            this.Commands.CommandExecuted += this.Commands_CommandExecuted;
-            this.Commands.CommandErrored += this.Commands_CommandErrored;
+            Commands.CommandExecuted += Commands_CommandExecuted;
+            Commands.CommandErrored += Commands_CommandErrored;
 
             Commands.RegisterCommands<Administracion>();
             Commands.RegisterCommands<Memes>();
             Commands.RegisterCommands<Misc>();
             Commands.RegisterCommands<Anilist>();
+            Commands.RegisterCommands<Reacciones>();
             Commands.RegisterCommands<Help>();
 
             await Client.ConnectAsync();
