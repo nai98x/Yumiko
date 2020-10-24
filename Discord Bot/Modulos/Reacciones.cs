@@ -2,7 +2,6 @@
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using System;
-using System.Configuration;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Modulos
@@ -11,49 +10,19 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        /*
-        [Command("fuck"), RequireNsfw]
-        public async Task Fuck(CommandContext ctx, DiscordUser usuario = null)
-        {
-            DiscordMember user = await ctx.Guild.GetMemberAsync(ctx.User.Id);
-            string comando = "fuck";
-            string titulo = "Fuck";
-            string descripcion;
-            if (usuario == null)
-            {
-                string[] opciones = new string[]
-                {
-                    ""
-                };
-                descripcion = $"";
-                await Reaccionar(ctx, opciones, comando, titulo, descripcion);
-            }
-            else
-            {
-                string[] opciones = new string[]
-                {
-                    ""
-                };
-                descripcion = $"";
-                await Reaccionar(ctx, opciones, comando, titulo, descripcion);
-            }
-            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
-        }
-        */
-
         [Command("fuck"), RequireNsfw]
         public async Task Fuck(CommandContext ctx, DiscordMember usuario = null)
         {
-            DiscordMember user = await ctx.Guild.GetMemberAsync(ctx.User.Id);
+            DiscordMember self = await ctx.Guild.GetMemberAsync(ctx.User.Id);
             string comando = "fuck";
             string descripcion;
-            if (usuario == null)
+            if (usuario == null || usuario.Id == ctx.User.Id)
             {
                 string[] opciones = new string[]
                 {
-                    ""
+                    "https://i.imgur.com/s9ZzGvz.gif"
                 };
-                descripcion = $"";
+                descripcion = $"{self.Mention}, no puedes hacerte eso a ti mismo.";
                 await Reaccionar(ctx, opciones, comando, descripcion);
             }
             else
@@ -63,9 +32,51 @@ namespace Discord_Bot.Modulos
                     "https://i.imgur.com/LUxZdZV.gif",
                     "https://i.imgur.com/axBHueH.gif",
                     "https://i.imgur.com/Bq60h6f.gif",
-                    "https://i.imgur.com/zVGiJBm.gif"
+                    "https://i.imgur.com/zVGiJBm.gif",
+                    "https://i.imgur.com/EjCnwCr.gif",
+                    "https://i.imgur.com/JgC2PGx.gif",
+                    "https://i.imgur.com/PQNbcBC.gif",
+                    "https://i.imgur.com/1gqgFqi.gif",
+                    "https://i.imgur.com/uSu3SNi.gif",
+                    "https://i.imgur.com/lg5MhsK.gif"
                 };
-                descripcion = $"**{user.DisplayName}** se folló a **{usuario.DisplayName}** OwO";
+                descripcion = $"{self.Mention} se folló a {usuario.Mention} OwO";
+                await Reaccionar(ctx, opciones, comando, descripcion);
+            }
+            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+        }
+
+        [Command("blowjob"), Aliases("suck"), RequireNsfw]
+        public async Task Blowjob(CommandContext ctx, DiscordMember usuario = null)
+        {
+            DiscordMember self = await ctx.Guild.GetMemberAsync(ctx.User.Id);
+            string comando = "blowjob";
+            string descripcion;
+            if (usuario == null || usuario.Id == ctx.User.Id)
+            {
+                string[] opciones = new string[]
+                {
+                    "https://i.imgur.com/s9ZzGvz.gif"
+                };
+                descripcion = $"{self.Mention}, no puedes hacerte eso a ti mismo.";
+                await Reaccionar(ctx, opciones, comando, descripcion);
+            }
+            else
+            {
+                string[] opciones = new string[]
+                {
+                    "https://i.imgur.com/6QGq5kE.gif",
+                    "https://i.imgur.com/W4msRFP.gif",
+                    "https://i.imgur.com/eP5Soa4.gif",
+                    "https://i.imgur.com/Op23bBq.gif",
+                    "https://i.imgur.com/8Vrb7J5.gif",
+                    "https://i.imgur.com/DSNciLo.gif",
+                    "https://i.imgur.com/aa4jgyn.gif",
+                    "https://i.imgur.com/Blrl61W.gif",
+                    "https://i.imgur.com/6LgfOA0.gif",
+                    "https://i.imgur.com/IadM6d5.gif"
+                };
+                descripcion = $"{self.Mention} le chupó el pene a {usuario.Mention} OwO";
                 await Reaccionar(ctx, opciones, comando, descripcion);
             }
             await ctx.Message.DeleteAsync("Auto borrado de yumiko");

@@ -227,7 +227,6 @@ namespace Discord_Bot.Modulos
                 Footer = funciones.GetFooter(ctx, "ooc"),
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Out of Context",
-                Description = $"Imagen posteada por {meme.Autor.Username + "#" + meme.Autor.Discriminator}",
                 ImageUrl = meme.Url
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync();
