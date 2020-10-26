@@ -44,7 +44,7 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
                 Title = $"Avatar de {usuario.Username}#{usuario.Discriminator}",
                 ImageUrl = usuario.AvatarUrl,
-                Footer = funciones.GetFooter(ctx, "avatar"),
+                Footer = funciones.GetFooter(ctx),
                 Color = new DiscordColor(78, 63, 96)
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
@@ -60,7 +60,7 @@ namespace Discord_Bot.Modulos
                 case 0:
                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
-                        Footer = funciones.GetFooter(ctx, "pregunta"),
+                        Footer = funciones.GetFooter(ctx),
                         Color = DiscordColor.Red,
                         Title = "¿SIS O NON?",
                         Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** NON"
@@ -69,7 +69,7 @@ namespace Discord_Bot.Modulos
                 case 1:
                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
-                        Footer = funciones.GetFooter(ctx, "pregunta"),
+                        Footer = funciones.GetFooter(ctx),
                         Color = DiscordColor.Green,
                         Title = "¿SIS O NON?",
                         Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** SIS"
@@ -103,7 +103,7 @@ namespace Discord_Bot.Modulos
 
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = funciones.GetFooter(ctx, "elegir"),
+                    Footer = funciones.GetFooter(ctx),
                     Color = new DiscordColor(78, 63, 96),
                     Title = "Pregunta",
                     Description = "** " + pregunta + "**\n\n" + options + "\n\n**Respuesta:** " + opciones[random]
@@ -164,7 +164,7 @@ namespace Discord_Bot.Modulos
                                 }
                                 var embed = new DiscordEmbedBuilder
                                 {
-                                    Footer = funciones.GetFooter(ctx, "sauce"),
+                                    Footer = funciones.GetFooter(ctx),
                                     Color = new DiscordColor(78, 63, 96),
                                     Title = "Sauce (Trace.moe)",
                                     ImageUrl = url
@@ -215,7 +215,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = funciones.GetFooter(ctx, "jumbo"),
+                    Footer = funciones.GetFooter(ctx),
                     Color = new DiscordColor(78, 63, 96),
                     Title = emote.Name,
                     ImageUrl = emote.Url

@@ -27,7 +27,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = funciones.GetFooter(ctx, "waifu"),
+                    Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Red,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nMe pego un tiro antes de tocarte.",
@@ -38,7 +38,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = funciones.GetFooter(ctx, "waifu"),
+                    Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Orange,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nMe das asquito, mejor me alejo de vos.",
@@ -49,7 +49,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = funciones.GetFooter(ctx, "waifu"),
+                    Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Yellow,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nNo estás mal, quizas tengas posibilidades conmigo.",
@@ -60,7 +60,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = funciones.GetFooter(ctx, "waifu"),
+                    Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Green,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nSoy tu waifu, podes hacer lo que quieras conmigo.",
@@ -71,7 +71,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Footer = funciones.GetFooter(ctx, "waifu"),
+                    Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Blue,
                     Title = "Nivel de waifu",
                     Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\n.Estoy completamente enamorada de ti, ¿cuándo nos casamos?",
@@ -101,7 +101,7 @@ namespace Discord_Bot.Modulos
             }
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Footer = funciones.GetFooter(ctx, "husbando"),
+                Footer = funciones.GetFooter(ctx),
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Husbando",
                 Description = $"Mi husbando es: **{elegido.DisplayName} ({elegido.Username}#{elegido.Discriminator})** 💘",
@@ -137,7 +137,7 @@ namespace Discord_Bot.Modulos
             shipeoUsr = ctxMiembro.DisplayName;
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Footer = funciones.GetFooter(ctx, "ship"),
+                Footer = funciones.GetFooter(ctx),
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Shippeo",
                 Description = $"Shippeo a **{shipeoUsr}** con **{elegido.DisplayName}** 💘",
@@ -168,7 +168,7 @@ namespace Discord_Bot.Modulos
             }
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Footer = funciones.GetFooter(ctx, "shipr"),
+                Footer = funciones.GetFooter(ctx),
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Shippeo random",
                 Description = $"Shippeo a **{elegido.DisplayName}** con **{elegido2.DisplayName}** 💘",
@@ -224,7 +224,7 @@ namespace Discord_Bot.Modulos
             Imagen meme = opciones[rnd.Next(opciones.Count)];
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Footer = funciones.GetFooter(ctx, "ooc"),
+                Footer = funciones.GetFooter(ctx),
                 Color = new DiscordColor(78, 63, 96),
                 Title = "Out of Context",
                 ImageUrl = meme.Url

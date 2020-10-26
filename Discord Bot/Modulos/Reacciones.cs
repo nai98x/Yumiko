@@ -14,7 +14,6 @@ namespace Discord_Bot.Modulos
         public async Task Fuck(CommandContext ctx, DiscordMember usuario = null)
         {
             DiscordMember self = await ctx.Guild.GetMemberAsync(ctx.User.Id);
-            string comando = "fuck";
             string descripcion;
             if (usuario == null || usuario.Id == ctx.User.Id)
             {
@@ -23,7 +22,7 @@ namespace Discord_Bot.Modulos
                     "https://i.imgur.com/s9ZzGvz.gif"
                 };
                 descripcion = $"{self.Mention}, no puedes hacerte eso a ti mismo.";
-                await Reaccionar(ctx, opciones, comando, descripcion);
+                await Reaccionar(ctx, opciones, descripcion);
             }
             else
             {
@@ -41,8 +40,35 @@ namespace Discord_Bot.Modulos
                     "https://i.imgur.com/lg5MhsK.gif"
                 };
                 descripcion = $"{self.Mention} se folló a {usuario.Mention} OwO";
-                await Reaccionar(ctx, opciones, comando, descripcion);
+                await Reaccionar(ctx, opciones, descripcion);
             }
+            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+        }
+
+        [Command("fuckme"), RequireNsfw]
+        public async Task FuckMe(CommandContext ctx, DiscordMember usuario = null)
+        {
+            DiscordMember yumiko = await ctx.Guild.GetMemberAsync(295182825521545218);
+            string descripcion;
+            if (usuario == null)
+            {
+                usuario = await ctx.Guild.GetMemberAsync(ctx.User.Id);
+            }
+            string[] opciones = new string[]
+            {
+                "https://i.imgur.com/LUxZdZV.gif",
+                "https://i.imgur.com/axBHueH.gif",
+                "https://i.imgur.com/Bq60h6f.gif",
+                "https://i.imgur.com/zVGiJBm.gif",
+                "https://i.imgur.com/EjCnwCr.gif",
+                "https://i.imgur.com/JgC2PGx.gif",
+                "https://i.imgur.com/PQNbcBC.gif",
+                "https://i.imgur.com/1gqgFqi.gif",
+                "https://i.imgur.com/uSu3SNi.gif",
+                "https://i.imgur.com/lg5MhsK.gif"
+            };
+            descripcion = $"{yumiko.Mention} se folló a {usuario.Mention} OwO";
+            await Reaccionar(ctx, opciones, descripcion);
             await ctx.Message.DeleteAsync("Auto borrado de yumiko");
         }
 
@@ -50,7 +76,6 @@ namespace Discord_Bot.Modulos
         public async Task Blowjob(CommandContext ctx, DiscordMember usuario = null)
         {
             DiscordMember self = await ctx.Guild.GetMemberAsync(ctx.User.Id);
-            string comando = "blowjob";
             string descripcion;
             if (usuario == null || usuario.Id == ctx.User.Id)
             {
@@ -59,7 +84,7 @@ namespace Discord_Bot.Modulos
                     "https://i.imgur.com/s9ZzGvz.gif"
                 };
                 descripcion = $"{self.Mention}, no puedes hacerte eso a ti mismo.";
-                await Reaccionar(ctx, opciones, comando, descripcion);
+                await Reaccionar(ctx, opciones, descripcion);
             }
             else
             {
@@ -77,18 +102,18 @@ namespace Discord_Bot.Modulos
                     "https://i.imgur.com/IadM6d5.gif"
                 };
                 descripcion = $"{self.Mention} le chupó el pene a {usuario.Mention} OwO";
-                await Reaccionar(ctx, opciones, comando, descripcion);
+                await Reaccionar(ctx, opciones, descripcion);
             }
             await ctx.Message.DeleteAsync("Auto borrado de yumiko");
         }
 
-        public async Task Reaccionar(CommandContext ctx, string[] opciones, string comando, string descripcion)
+        public async Task Reaccionar(CommandContext ctx, string[] opciones, string descripcion)
         {
             Random rnd = new Random();
             string imgElegida = opciones[rnd.Next(opciones.Length - 1)];
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
                 Description = descripcion,
-                Footer = funciones.GetFooter(ctx, comando),
+                Footer = funciones.GetFooter(ctx),
                 Color = new DiscordColor(78, 63, 96),
                 ImageUrl = imgElegida
             }).ConfigureAwait(false);

@@ -42,11 +42,11 @@ namespace Discord_Bot
             return opciones[rnd.Next(opciones.Length -1)];
         }
 
-        public EmbedFooter GetFooter(CommandContext ctx, string comando)
+        public EmbedFooter GetFooter(CommandContext ctx)
         {
             return  new EmbedFooter()
             {
-                Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator}) | {ConfigurationManager.AppSettings["Prefix"]}{comando}",
+                Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator}) | {ConfigurationManager.AppSettings["Prefix"]}{ctx.Command.Name}",
                 IconUrl = ctx.Member.AvatarUrl
             };
         }

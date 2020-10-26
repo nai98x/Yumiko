@@ -446,7 +446,7 @@ namespace Discord_Bot.Modulos
                     var builder = new DiscordEmbedBuilder
                     {
                         Author = funciones.GetAuthor(nombre, avatar, siteurl),
-                        Footer = funciones.GetFooter(ctx, "anilist"),
+                        Footer = funciones.GetFooter(ctx),
                         Color = new DiscordColor(78, 63, 96),
                         ImageUrl = data.Data.User.bannerImage
                     };
