@@ -57,7 +57,6 @@ namespace Discord_Bot
             Commands.RegisterCommands<Memes>();
             Commands.RegisterCommands<Misc>();
             Commands.RegisterCommands<Anilist>();
-            Commands.RegisterCommands<Reacciones>();
             Commands.RegisterCommands<Help>();
 
             await Client.ConnectAsync();

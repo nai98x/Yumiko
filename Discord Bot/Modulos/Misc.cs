@@ -208,8 +208,8 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("jumbo")]
-        public async Task Jumbo(CommandContext ctx, DiscordEmoji emote)
+        [Command("emote"), Aliases("emoji")]
+        public async Task Emote(CommandContext ctx, DiscordEmoji emote)
         {
             if(emote != null)
             {
