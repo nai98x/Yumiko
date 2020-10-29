@@ -503,7 +503,7 @@ namespace Discord_Bot.Modulos
                 "           romaji" +
                 "       }," +
                 "       coverImage{" +
-                "           medium" +
+                "           large" +
                 "       }," +
                 "       siteUrl," +
                 "       description," +
@@ -524,7 +524,7 @@ namespace Discord_Bot.Modulos
                 "       genres," +
                 "       tags{" +
                 "           name," +
-                "           isGeneralSpoiler" +
+                "           isMediaSpoiler" +
                 "       }," +
                 "       synonyms," +
                 "       studios{" +
@@ -555,6 +555,8 @@ namespace Discord_Bot.Modulos
                     {
                         string descripcion = datos.description;
                         descripcion = descripcion.Replace("<br>", "");
+                        descripcion = descripcion.Replace("<i>", "");
+                        descripcion = descripcion.Replace("</i>", "");
                         string estado = datos.status;
                         string formato = datos.format;
                         string score = $"{datos.meanScore}/100";
@@ -565,11 +567,12 @@ namespace Discord_Bot.Modulos
                             generos += genero;
                             generos += ", ";
                         }
-                        generos = generos.Remove(generos.Length - 2);
+                        if (generos.Length >= 2)
+                            generos = generos.Remove(generos.Length - 2);
                         string tags = "";
                         foreach (var tag in datos.tags)
                         {
-                            if (tag.isGeneralSpoiler == "false")
+                            if (tag.isMediaSpoiler == "false")
                             {
                                 tags += tag.name;
                             }
@@ -579,25 +582,29 @@ namespace Discord_Bot.Modulos
                             }
                             tags += ", ";
                         }
-                        tags = tags.Remove(tags.Length - 2);
+                        if(tags.Length >= 2)
+                            tags = tags.Remove(tags.Length - 2);
                         string titulos = "";
                         foreach (var title in datos.synonyms)
                         {
                             titulos += $"`{title}`, ";
                         }
-                        titulos = titulos.Remove(titulos.Length - 2);
+                        if (titulos.Length >= 2)
+                            titulos = titulos.Remove(titulos.Length - 2);
                         string estudios = "";
-                        foreach (var studio in datos.studios.nodes)
+                        foreach (var studio in datos.studios.nodes) // ERROR ACA, NODES A VECES NO TIENE ELEMENTOS BUSCAR IF PARA VERIFICAR
                         {
                             estudios += $"[{studio.name}]({studio.siteUrl}), ";
                         }
-                        estudios = estudios.Remove(estudios.Length - 2);
+                        if (estudios.Length >= 2)
+                            estudios = estudios.Remove(estudios.Length - 2);
                         string linksExternos = "";
                         foreach (var external in datos.externalLinks)
                         {
                             linksExternos += $"[{external.site}]({external.url}), ";
                         }
-                        linksExternos = linksExternos.Remove(linksExternos.Length - 2);
+                        if (linksExternos.Length >= 2)
+                            linksExternos = linksExternos.Remove(linksExternos.Length - 2);
                         if (datos.startDate.day != null)
                         {
                             if (datos.endDate.day != null)
@@ -608,17 +615,16 @@ namespace Discord_Bot.Modulos
                         else
                         {
                             fechas = $"Este anime todavía no tiene fecha de emisión";
-                        }  
+                        }
+                        string titulo = datos.title.romaji;
+                        string urlAnilist = datos.siteUrl;
                         var builder = new DiscordEmbedBuilder
                         {
-                            Author = new DiscordEmbedBuilder.EmbedAuthor()
-                            {
-                                Name = datos.title.romaji,
-                                Url = datos.siteUrl
-                            },
+                            Title = titulo,
+                            Url = urlAnilist,
                             Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
                             {
-                                Url = datos.coverImage.medium
+                                Url = datos.coverImage.large
                             },
                             Footer = funciones.GetFooter(ctx),
                             Color = new DiscordColor(78, 63, 96),
