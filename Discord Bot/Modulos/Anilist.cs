@@ -553,6 +553,8 @@ namespace Discord_Bot.Modulos
                     var datos = data.Data.Media;
                     if(datos.isAdult == "false")
                     {
+                        string descripcion = datos.description;
+                        descripcion = descripcion.Replace("<br>", "");
                         string estado = datos.status;
                         string formato = datos.format;
                         string score = $"{datos.meanScore}/100";
@@ -563,6 +565,7 @@ namespace Discord_Bot.Modulos
                             generos += genero;
                             generos += ", ";
                         }
+                        generos = generos.Remove(generos.Length - 2);
                         string tags = "";
                         foreach (var tag in datos.tags)
                         {
@@ -576,21 +579,25 @@ namespace Discord_Bot.Modulos
                             }
                             tags += ", ";
                         }
+                        tags = tags.Remove(tags.Length - 2);
                         string titulos = "";
                         foreach (var title in datos.synonyms)
                         {
                             titulos += $"`{title}`, ";
                         }
+                        titulos = titulos.Remove(titulos.Length - 2);
                         string estudios = "";
                         foreach (var studio in datos.studios.nodes)
                         {
                             estudios += $"[{studio.name}]({studio.siteUrl}), ";
                         }
+                        estudios = estudios.Remove(estudios.Length - 2);
                         string linksExternos = "";
                         foreach (var external in datos.externalLinks)
                         {
                             linksExternos += $"[{external.site}]({external.url}), ";
                         }
+                        linksExternos = linksExternos.Remove(linksExternos.Length - 2);
                         if (datos.startDate.day != null)
                         {
                             if (datos.endDate.day != null)
@@ -615,7 +622,7 @@ namespace Discord_Bot.Modulos
                             },
                             Footer = funciones.GetFooter(ctx),
                             Color = new DiscordColor(78, 63, 96),
-                            Description = datos.description
+                            Description = descripcion
                         };
                         builder.AddField("Formato", formato, true);
                         builder.AddField("Estado", estado.ToLower().ToUpperFirst(), true);
