@@ -53,10 +53,11 @@ namespace Discord_Bot
             Commands.CommandExecuted += Commands_CommandExecuted;
             Commands.CommandErrored += Commands_CommandErrored;
 
-            Commands.RegisterCommands<Administracion>();
-            Commands.RegisterCommands<Memes>();
-            Commands.RegisterCommands<Misc>();
+            Commands.RegisterCommands<Interactuar>();
+            Commands.RegisterCommands<Fun>();
             Commands.RegisterCommands<Anilist>();
+            Commands.RegisterCommands<Juegos>();
+            Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
 
             await Client.ConnectAsync();

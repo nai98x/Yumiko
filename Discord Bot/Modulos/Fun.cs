@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Discord_Bot.Modulos
 {
-    public class Memes : BaseCommandModule
+    public class Fun : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        [Command("waifu")]
+        [Command("waifu"), Description("Te dice mi nivel de waifu hacia un usuario.")]
         public async Task Waifu(CommandContext ctx, DiscordMember miembro = null)
         {
             string nombre;
@@ -81,7 +81,7 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync();
         }
 
-        [Command("husbando")]
+        [Command("husbando"), Description("Elijo a mi husbando del servidor.")]
         public async Task Husbando(CommandContext ctx)
         {
             Random rnd = new Random();
@@ -110,10 +110,10 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync();
         }
 
-        [Command("ship")]
+        [Command("ship"), Description("Te digo con quien te shippearia.")]
         public async Task Ship(CommandContext ctx, DiscordUser usuario = null)
         {
-            if(usuario == null)
+            if (usuario == null)
             {
                 usuario = ctx.User;
             }
@@ -146,7 +146,7 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync();
         }
 
-        [Command("shipr")]
+        [Command("shipr"), Description("Eligo un ship en el servidor.")]
         public async Task ShipRandom(CommandContext ctx)
         {
             Random rnd = new Random();
@@ -177,7 +177,7 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync();
         }
 
-        [Command("ooc")]
+        [Command("ooc"), Description("Imagen aleatoria de Out of Context.")]
         [RequireNsfw]
         public async Task OOC(CommandContext ctx)
         {
@@ -204,17 +204,19 @@ namespace Discord_Bot.Modulos
                 cntMensajes = mensajesAux.Count();
                 last = mensajesAux.LastOrDefault();
 
-                foreach (DiscordMessage mensaje in mensajesAux){
+                foreach (DiscordMessage mensaje in mensajesAux)
+                {
                     msgs.Add(mensaje);
                 }
             }
             List<Imagen> opciones = new List<Imagen>();
-            foreach(DiscordMessage msg in msgs)
+            foreach (DiscordMessage msg in msgs)
             {
                 var att = msg.Attachments.FirstOrDefault();
-                if(att != null && att.Url != null)
+                if (att != null && att.Url != null)
                 {
-                    opciones.Add(new Imagen {
+                    opciones.Add(new Imagen
+                    {
                         Url = att.Url,
                         Autor = msg.Author
                     });

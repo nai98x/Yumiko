@@ -78,6 +78,18 @@ namespace Discord_Bot.Modulos
                     }
                     if(descripcion != null)
                         builder.AddField("Descripcion", descripcion, false);
+                    foreach (var overload in comandoEncontrado.Overloads) 
+                    {
+                        string parametros = "";
+                        foreach (var argument in overload.Arguments)
+                        {
+                            if(argument.Description != null)
+                                parametros += $":arrow_right: **{argument.Name}** | Descripcion: {argument.Description} | Opcional: {argument.IsOptional}\n";
+                            else
+                                parametros += $":arrow_right: **{argument.Name}** | Opcional: {argument.IsOptional}\n";
+                        }
+                        builder.AddField("Parametros", parametros, false);
+                    }
                     await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
                 }
                 else

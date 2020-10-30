@@ -1,16 +1,15 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using DSharpPlus.Entities;
 using System;
-using DSharpPlus.Interactivity;
 using GraphQL.Client.Http;
 using GraphQL;
 using GraphQL.Client.Serializer.Newtonsoft;
-using System.Linq;
-using System.Configuration;
 using GraphQL.Client.Abstractions.Utilities;
+using RestSharp;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace Discord_Bot.Modulos
 {
@@ -19,311 +18,7 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
         private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        [Command("quizC"), Aliases("adivinaelpersonaje")]
-        public async Task QuizCharactersGlobal(CommandContext ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await InicializarJuego(ctx, interactivity);
-            if (settings.Ok)
-            {
-                int rondas = settings.Rondas;
-                string dificultadStr = settings.Dificultad;
-                int iterIni = settings.IterIni;
-                int iterFin = settings.IterFin;
-                DiscordEmbed embebido = new DiscordEmbedBuilder
-                {
-                    Title = "Adivina el personaje",
-                    Description = $"Sesión iniciada por {ctx.User.Mention}",
-                    Color = funciones.GetColor()
-                }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
-                await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
-                List<Character> characterList = new List<Character>();
-                Random rnd = new Random();
-                List<UsuarioJuego> participantes = new List<UsuarioJuego>();
-                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo pesonajes...").ConfigureAwait(false);
-                for (int i = iterIni; i <= iterFin; i++)
-                {
-                    var request = new GraphQLRequest
-                    {
-                        Query =
-                        "query($pagina : Int){" +
-                        "   Page(page: $pagina){" +
-                        "       characters(sort: FAVOURITES_DESC){" +
-                        "           siteUrl," +
-                        "           name{" +
-                        "               first," +
-                        "               last," +
-                        "               full" +
-                        "           }," +
-                        "           image{" +
-                        "               large" +
-                        "           }" +
-                        "       }" +
-                        "   }" +
-                        "}",
-                        Variables = new
-                        {
-                            pagina = i
-                        }
-                    };
-                    try
-                    {
-                        var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                        foreach (var x in data.Data.Page.characters)
-                        {
-                            characterList.Add(new Character()
-                            {
-                                Image = x.image.large,
-                                NameFull = x.name.full,
-                                NameFirst = x.name.first,
-                                NameLast = x.name.last,
-                                SiteUrl = x.siteUrl
-                            });
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        DiscordMessage msg = ex.Message switch
-                        {
-                            _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
-                        };
-                        await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
-                        await msg.DeleteAsync("Auto borrado de yumiko");
-                        return;
-                    }
-                }
-                await mensaje.DeleteAsync("Auto borrado de Yumiko");
-                int lastRonda;
-                for (int ronda = 1; ronda <= rondas; ronda++)
-                {
-                    lastRonda = ronda;
-                    int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
-                    Character elegido = characterList[random];
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Color = DiscordColor.Gold,
-                        Title = "Adivina el personaje",
-                        Description = $"Ronda {ronda} de {rondas}",
-                        ImageUrl = elegido.Image
-                    }).ConfigureAwait(false);
-                    var msg = await interactivity.WaitForMessageAsync
-                        (xm => (xm.Channel == ctx.Channel) &&
-                        (xm.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim() || xm.Content.ToLower().Trim() == elegido.NameFirst.ToLower().Trim() || (elegido.NameLast != null && xm.Content.ToLower().Trim() == elegido.NameLast.ToLower().Trim())) || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
-                        , TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
-                    if (!msg.TimedOut)
-                    {
-                        if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
-                        {
-                            await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                            await GetResultados(ctx, participantes, lastRonda);
-                            return;
-                        }
-                        DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
-                        UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
-                        if (usr != null)
-                        {
-                            usr.Puntaje++;
-                        }
-                        else
-                        {
-                            participantes.Add(new UsuarioJuego()
-                            {
-                                Usuario = msg.Result.Author,
-                                Puntaje = 1
-                            });
-                        }
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Title = $"¡**{acertador.DisplayName}** ha acertado!",
-                            Description = $"El nombre es: [{elegido.NameFull}]({elegido.SiteUrl})",
-                            Color = DiscordColor.Green
-                        }).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Title = "¡Nadie ha acertado!",
-                            Description = $"El nombre era: [{elegido.NameFull}]({elegido.SiteUrl})",
-                            Color = DiscordColor.Red
-                        }).ConfigureAwait(false);
-                    }
-                }
-                await GetResultados(ctx, participantes, rondas);
-            }
-            else
-            {
-                var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
-            }
-        }
-
-        [Command("quizA"), Aliases("adivinaelanime")]
-        public async Task QuizAnimeGlobal(CommandContext ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await InicializarJuego(ctx, interactivity);
-            if (settings.Ok)
-            {
-                int rondas = settings.Rondas;
-                string dificultadStr = settings.Dificultad;
-                int iterIni = settings.IterIni;
-                int iterFin = settings.IterFin;
-                DiscordEmbed embebido = new DiscordEmbedBuilder
-                {
-                    Title = "Adivina el anime",
-                    Description = $"Sesión iniciada por {ctx.User.Mention}",
-                    Color = funciones.GetColor()
-                }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
-                await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
-                Random rnd = new Random();
-                List<UsuarioJuego> participantes = new List<UsuarioJuego>();
-                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo personajes...").ConfigureAwait(false);
-                var characterList = new List<Character>();
-                for (int i = iterIni; i <= iterFin; i++)
-                {
-                    var request = new GraphQLRequest
-                    {
-                        Query =
-                        "query($pagina : Int){" +
-                        "   Page(page: $pagina){" +
-                        "       characters(sort: FAVOURITES_DESC){" +
-                        "           siteUrl," +
-                        "           name{" +
-                        "               full" +
-                        "           }," +
-                        "           image{" +
-                        "               large" +
-                        "           }," +
-                        "           media(type:ANIME){" +
-                        "               nodes{" +
-                        "                   title{" +
-                        "                       romaji," +
-                        "                       english" +
-                        "                   }," +
-                        "                   siteUrl" +
-                        "               }" +
-                        "           }" +
-                        "       }" +
-                        "   }" +
-                        "}",
-                        Variables = new
-                        {
-                            pagina = i
-                        }
-                    };
-                    try
-                    {
-                        var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                        foreach (var x in data.Data.Page.characters)
-                        {
-                            Character c = new Character()
-                            {
-                                Image = x.image.large,
-                                NameFull = x.name.full,
-                                SiteUrl = x.siteUrl,
-                                Animes = new List<Anime>()
-                            };
-                            foreach (var y in x.media.nodes)
-                            {
-                                c.Animes.Add(new Anime()
-                                {
-                                    TitleEnglish = y.title.english,
-                                    TitleRomaji = y.title.romaji,
-                                    SiteUrl = y.siteUrl
-                                });
-                            }
-                            if (c.Animes.Count() > 0)
-                            {
-                                characterList.Add(c);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        DiscordMessage msg = ex.Message switch
-                        {
-                            _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
-                        };
-                        await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
-                        await msg.DeleteAsync("Auto borrado de yumiko");
-                        return;
-                    }
-                }
-                await mensaje.DeleteAsync("Auto borrado de Yumiko");
-                int lastRonda;
-                for (int ronda = 1; ronda <= rondas; ronda++)
-                {
-                    lastRonda = ronda;
-                    int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
-                    Character elegido = characterList[random];
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Color = DiscordColor.Gold,
-                        Title = $"Adivina el anime del personaje",
-                        Description = $"Ronda {ronda} de {rondas}",
-                        ImageUrl = elegido.Image
-                    }).ConfigureAwait(false);
-                    var msg = await interactivity.WaitForMessageAsync
-                        (xm => (xm.Channel == ctx.Channel) &&
-                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
-                        (elegido.Animes.Find(x => x.TitleEnglish != null && x.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) || 
-                        (elegido.Animes.Find(x => x.TitleRomaji != null && x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)), 
-                        TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
-                    string descAnimes = $"Los animes de [{elegido.NameFull}]({elegido.SiteUrl}) son:\n\n";
-                    foreach (Anime anim in elegido.Animes)
-                    {
-                        descAnimes += $"- [{anim.TitleRomaji}]({anim.SiteUrl})\n";
-                    }
-                    if (!msg.TimedOut)
-                    {
-                        if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
-                        {
-                            await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                            await GetResultados(ctx, participantes, lastRonda);
-                            return;
-                        }
-                        DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
-                        UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
-                        if (usr != null)
-                        {
-                            usr.Puntaje++;
-                        }
-                        else
-                        {
-                            participantes.Add(new UsuarioJuego()
-                            {
-                                Usuario = msg.Result.Author,
-                                Puntaje = 1
-                            });
-                        }
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Title = $"¡**{acertador.DisplayName}** ha acertado!",
-                            Description = descAnimes,
-                            Color = DiscordColor.Green
-                        }).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Title = "¡Nadie ha acertado!",
-                            Description = descAnimes,
-                            Color = DiscordColor.Red
-                        }).ConfigureAwait(false);
-                    }
-                }
-                await GetResultados(ctx, participantes, rondas);
-            }
-            else
-            {
-                var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
-            }
-        }
-
-        [Command("anilist"), Aliases("user")]
+        [Command("anilist"), Aliases("user"), Description("Busca un perfil de AniList.")]
         public async Task Profile(CommandContext ctx, string usuario)
         {
             var request = new GraphQLRequest
@@ -491,7 +186,7 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("anime")]
+        [Command("anime"), Description("Busco un anime en AniList")]
         public async Task Anime(CommandContext ctx, [RemainingText]string anime)
         {
             var request = new GraphQLRequest
@@ -680,152 +375,97 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas)
+        [Command("sauce"), Description("Busca el anime de una imagen.")]
+        public async Task Sauce(CommandContext ctx, string url)
         {
-            string resultados = "";
-            participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
-            int tot = 0;
-            foreach (UsuarioJuego uj in participantes)
+            string msg = "OK";
+            if (url.Length > 0)
             {
-                resultados += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
-                tot += uj.Puntaje;
-            }
-            resultados += $"\nTotal ({tot}/{rondas})";
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
-            {
-                Title = "Resultados",
-                Description = resultados,
-                Color = funciones.GetColor()
-            }).ConfigureAwait(false);
-        } 
-
-        public async Task<SettingsJuego> InicializarJuego(CommandContext ctx, InteractivityExtension interactivity)
-        {
-            var msgCntRondas = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-            {
-                Title = "Elige la cantidad de rondas (máximo 100)",
-                Description = "Por ejemplo: 10"
-            });
-            var msgRondasInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-            if (!msgRondasInter.TimedOut)
-            {
-                bool result = int.TryParse(msgRondasInter.Result.Content, out int rondas);
-                if (result)
+                if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                 {
-                    if(rondas > 0 && rondas <= 100)
+                    string extension = url.Substring(url.Length - 4);
+                    if (extension == ".jpg" || extension == ".png" || extension == "jpeg")
                     {
-                        var msgDificultad = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        var client = new RestClient("https://trace.moe/api/search?url=" + url);
+                        var request = new RestRequest(Method.GET);
+                        request.AddHeader("content-type", "application/json");
+                        var procesando = await ctx.RespondAsync("Procesando imagen..").ConfigureAwait(false);
+                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                        IRestResponse response = client.Execute(request);
+                        await procesando.DeleteAsync("Auto borrado de yumiko");
+                        switch (response.StatusCode)
                         {
-                            Title = "Elije la dificultad",
-                            Description = "1- Fácil\n2- Media\n3- Dificil\n4- Extremo"
-                        });
-                        var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-                        if (!msgDificultadInter.TimedOut)
-                        {
-                            result = int.TryParse(msgDificultadInter.Result.Content, out int dificultad);
-                            if (result)
-                            {
-                                string dificultadStr;
-                                if (dificultad == 1 || dificultad == 2 || dificultad == 3 || dificultad == 4)
+                            case HttpStatusCode.OK:
+                                var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
+                                string resultados = "";
+                                string titulo = "El posible anime de la imagen es:";
+                                bool encontro = false;
+                                foreach (var resultado in resp.docs)
                                 {
-                                    int iterIni;
-                                    int iterFin;
-                                    switch (dificultad)
+                                    string enlace = "https://anilist.co/anime/";
+                                    int similaridad = resultado.similarity * 100;
+                                    if (similaridad >= 87)
                                     {
-                                        case 1:
-                                            iterIni = 1;
-                                            iterFin = 6;
-                                            dificultadStr = "Fácil";
-                                            break;
-                                        case 2:
-                                            iterIni = 6;
-                                            iterFin = 20;
-                                            dificultadStr = "Media";
-                                            break;
-                                        case 3:
-                                            iterIni = 20;
-                                            iterFin = 60;
-                                            dificultadStr = "Dificil";
-                                            break;
-                                        case 4:
-                                            iterIni = 60;
-                                            iterFin = 100;
-                                            dificultadStr = "Extremo";
-                                            break;
-                                        default:
-                                            iterIni = 6;
-                                            iterFin = 20;
-                                            dificultadStr = "Medio";
-                                            break;
+                                        encontro = true;
+                                        int segundo = resultado.at;
+                                        TimeSpan time = TimeSpan.FromSeconds(segundo);
+                                        string at = time.ToString(@"mm\:ss");
+                                        resultados =
+                                            $"Nombre:    [{resultado.title_romaji}]({enlace += resultado.anilist_id})\n" +
+                                            $"Similitud: {similaridad}%\n" +
+                                            $"Episodio:  {resultado.episode} (Minuto: {at})\n";
+                                        break;
                                     }
-                                    await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
-                                    await msgCntRondas.DeleteAsync("Auto borrado de Yumiko");
-                                    await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                    await msgDificultad.DeleteAsync("Auto borrado de Yumiko");
-                                    await msgDificultadInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                    return new SettingsJuego()
-                                    {
-                                        Ok = true,
-                                        Rondas = rondas,
-                                        IterIni = iterIni,
-                                        IterFin = iterFin,
-                                        Dificultad = dificultadStr
-                                    };
                                 }
-                                else
+                                if (!encontro)
                                 {
-                                    return new SettingsJuego()
-                                    {
-                                        Ok = false,
-                                        MsgError = "La dificultad debe ser 1, 2, 3 o 4"
-                                    };
+                                    titulo = "No se han encontrado resultados para esta imagen";
+                                    resultados = "Recuerda que solamente funciona con imágenes que sean partes de un episodio";
                                 }
-                            }
-                            else
-                            {
-                                return new SettingsJuego()
+                                var embed = new DiscordEmbedBuilder
                                 {
-                                    Ok = false,
-                                    MsgError = "La dificultad debe ser un número (1, 2, 3 o 4)"
+                                    Footer = funciones.GetFooter(ctx),
+                                    Color = funciones.GetColor(),
+                                    Title = "Sauce (Trace.moe)",
+                                    ImageUrl = url
                                 };
-                            }
-                        }
-                        else
-                        {
-                            return new SettingsJuego()
-                            {
-                                Ok = false,
-                                MsgError = "Tiempo agotado esperando la dificultad"
-                            };
+                                embed.AddField(titulo, resultados);
+                                await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+                                break;
+                            case HttpStatusCode.BadRequest:
+                                msg = "Debes ingresar un link";
+                                break;
+                            case HttpStatusCode.Forbidden:
+                                msg = "Acceso denegado";
+                                break;
+                            case HttpStatusCode.TooManyRequests:
+                                msg = "Ratelimit excedido";
+                                break;
+                            case HttpStatusCode.InternalServerError:
+                            case HttpStatusCode.ServiceUnavailable:
+                                msg = "Error interno en el servidor de Trace.moe";
+                                break;
+                            default:
+                                msg = "Error inesperado";
+                                break;
                         }
                     }
                     else
                     {
-                        return new SettingsJuego()
-                        {
-                            Ok = false,
-                            MsgError = "La cantidad de rondas debe ser mayor a 0 y menor a 100"
-                        };
+                        msg = "La imagen debe ser JPG, PNG o JPEG";
                     }
                 }
                 else
                 {
-                    return new SettingsJuego()
-                    {
-                        Ok = false,
-                        MsgError = "La cantidad de rondas debe ser un numero"
-                    };
+                    msg = "Debes ingresar el link de una imagen";
                 }
             }
-            else
+            if (msg != "OK")
             {
-                return new SettingsJuego()
-                {
-                    Ok = false,
-                    MsgError = "Tiempo agotado esperando la cantidad de rondas"
-                };
+                DiscordMessage msgError = await ctx.RespondAsync(msg).ConfigureAwait(false);
+                await Task.Delay(3000);
+                await msgError.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
             }
         }
-
     }
 }
