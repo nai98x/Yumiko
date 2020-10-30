@@ -15,32 +15,78 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         [Command("help"), Aliases("ayuda")]
-        public async Task Ayuda(CommandContext ctx)
+        public async Task Ayuda(CommandContext ctx, string comando = null)
         {
             var commandsNext = ctx.CommandsNext;
             var comandos = commandsNext.RegisteredCommands.Values;
-            var comandosFiltrados = from com in comandos
-                           group com by com.Module.ModuleType.Name;
-            string comandosDesc = "";
-            var builder = new DiscordEmbedBuilder
+            string web = ConfigurationManager.AppSettings["Web"] + "#commands";
+            if (comando == null)
             {
-                Title = "Comandos Disponibles",
-                Url = ConfigurationManager.AppSettings["Web"] + "#commands",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            };
-            foreach (var grp in comandosFiltrados)
-            {
-                comandosDesc = "";
-                var grupo = grp.Distinct();
-                string nomGrupo = grp.Key;
-                foreach (var comando in grupo)
+                var comandosFiltrados = from com in comandos
+                                        group com by com.Module.ModuleType.Name;
+                string comandosDesc = "";
+                var builder = new DiscordEmbedBuilder
                 {
-                    comandosDesc += $"`{comando.Name}` ";
+                    Title = "Comandos disponibles",
+                    Description = $"Puedes llamarme con `{ConfigurationManager.AppSettings["Prefix"]}`, con `yumiko` o con {ctx.Client.CurrentUser.Mention}.\nSi quieres ver ejemplos puedes visitar mi [página web]({web}).",
+                    Url = web,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                };
+                foreach (var grp in comandosFiltrados)
+                {
+                    comandosDesc = "";
+                    var grupo = grp.Distinct();
+                    string nomGrupo = grp.Key;
+                    foreach (var comando1 in grupo)
+                    {
+                        comandosDesc += $"`{comando1.Name}` ";
+                    }
+                    builder.AddField(nomGrupo, comandosDesc, false);
                 }
-                builder.AddField(nomGrupo, comandosDesc, false);
+                await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
             }
-            await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+            else
+            {
+                var comanditos = comandos.Distinct();
+                var listaComandos = comanditos.ToList();
+                Command comandoEncontrado = listaComandos.Find(x => x.Name == comando);
+                string nomComando = comandoEncontrado.Name;
+                if(comandoEncontrado != null)
+                {
+                    var builder = new DiscordEmbedBuilder
+                    {
+                        Title = $"Comando {nomComando}",
+                        Url = web,
+                        Footer = funciones.GetFooter(ctx),
+                        Color = funciones.GetColor()
+                    };
+                    string modulo = comandoEncontrado.Module.ModuleType.Name;
+                    var aliases = comandoEncontrado.Aliases;
+                    string descripcion = comandoEncontrado.Description;
+                    if(modulo != null)
+                        builder.AddField("Modulo", modulo, false);
+                    if(aliases.Count > 0)
+                    {
+                        List<string> listaAliases = new List<string>();
+                        foreach(string a in aliases)
+                        {
+                            listaAliases.Add($"`{a}`");
+                        }
+                        string aliasesC = string.Join(" ", listaAliases);
+                        builder.AddField("Aliases", aliasesC, false);
+                    }
+                    if(descripcion != null)
+                        builder.AddField("Descripcion", descripcion, false);
+                    await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                }
+                else
+                {
+                    var msgError = await ctx.RespondAsync($"No se ha encontrado el comando `{comando}`").ConfigureAwait(false);
+                    await Task.Delay(3000);
+                    await msgError.DeleteAsync().ConfigureAwait(false);
+                }
+            }
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
     }
