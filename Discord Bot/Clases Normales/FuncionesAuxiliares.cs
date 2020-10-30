@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -70,6 +71,11 @@ namespace Discord_Bot
                 Name = nombre,
                 Url = url
             };
+        }
+
+        public DiscordColor GetColor()
+        {
+            return new DiscordColor(78, 63, 96);
         }
     }
 }

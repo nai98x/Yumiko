@@ -34,7 +34,7 @@ namespace Discord_Bot.Modulos
                 {
                     Title = "Adivina el personaje",
                     Description = $"Sesión iniciada por {ctx.User.Mention}",
-                    Color = new DiscordColor(78, 63, 96)
+                    Color = funciones.GetColor()
                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
                 await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
                 List<Character> characterList = new List<Character>();
@@ -173,7 +173,7 @@ namespace Discord_Bot.Modulos
                 {
                     Title = "Adivina el anime",
                     Description = $"Sesión iniciada por {ctx.User.Mention}",
-                    Color = new DiscordColor(78, 63, 96)
+                    Color = funciones.GetColor()
                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
                 await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
                 Random rnd = new Random();
@@ -448,7 +448,7 @@ namespace Discord_Bot.Modulos
                     {
                         Author = funciones.GetAuthor(nombre, avatar, siteurl),
                         Footer = funciones.GetFooter(ctx),
-                        Color = new DiscordColor(78, 63, 96),
+                        Color = funciones.GetColor(),
                         ImageUrl = data.Data.User.bannerImage
                     };
                     builder.AddField("Estadisticas - Anime", animeStats, true);
@@ -627,7 +627,7 @@ namespace Discord_Bot.Modulos
                                 Url = datos.coverImage.large
                             },
                             Footer = funciones.GetFooter(ctx),
-                            Color = new DiscordColor(78, 63, 96),
+                            Color = funciones.GetColor(),
                             Description = descripcion
                         };
                         builder.AddField("Formato", formato, true);
@@ -695,7 +695,7 @@ namespace Discord_Bot.Modulos
             {
                 Title = "Resultados",
                 Description = resultados,
-                Color = new DiscordColor(78, 63, 96)
+                Color = funciones.GetColor()
             }).ConfigureAwait(false);
         } 
 

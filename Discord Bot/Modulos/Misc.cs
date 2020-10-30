@@ -22,7 +22,7 @@ namespace Discord_Bot.Modulos
         {
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
-                Color = new DiscordColor(78, 63, 96),
+                Color = funciones.GetColor(),
                 Description = "🏓 Pong! `" + ctx.Client.Ping.ToString() + " ms" + "`"
             }).ConfigureAwait(false);
         }
@@ -45,7 +45,7 @@ namespace Discord_Bot.Modulos
                 Title = $"Avatar de {usuario.Username}#{usuario.Discriminator}",
                 ImageUrl = usuario.AvatarUrl,
                 Footer = funciones.GetFooter(ctx),
-                Color = new DiscordColor(78, 63, 96)
+                Color = funciones.GetColor()
             }).ConfigureAwait(false);
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
@@ -104,7 +104,7 @@ namespace Discord_Bot.Modulos
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
-                    Color = new DiscordColor(78, 63, 96),
+                    Color = funciones.GetColor(),
                     Title = "Pregunta",
                     Description = "** " + pregunta + "**\n\n" + options + "\n\n**Respuesta:** " + opciones[random]
                 }).ConfigureAwait(false);
@@ -165,7 +165,7 @@ namespace Discord_Bot.Modulos
                                 var embed = new DiscordEmbedBuilder
                                 {
                                     Footer = funciones.GetFooter(ctx),
-                                    Color = new DiscordColor(78, 63, 96),
+                                    Color = funciones.GetColor(),
                                     Title = "Sauce (Trace.moe)",
                                     ImageUrl = url
                                 };
@@ -216,7 +216,7 @@ namespace Discord_Bot.Modulos
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
-                    Color = new DiscordColor(78, 63, 96),
+                    Color = funciones.GetColor(),
                     Title = emote.Name,
                     ImageUrl = emote.Url
                 });

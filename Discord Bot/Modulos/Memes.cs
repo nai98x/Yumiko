@@ -102,7 +102,7 @@ namespace Discord_Bot.Modulos
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = funciones.GetFooter(ctx),
-                Color = new DiscordColor(78, 63, 96),
+                Color = funciones.GetColor(),
                 Title = "Husbando",
                 Description = $"Mi husbando es: **{elegido.DisplayName} ({elegido.Username}#{elegido.Discriminator})** 💘",
                 ImageUrl = elegido.AvatarUrl
@@ -138,7 +138,7 @@ namespace Discord_Bot.Modulos
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = funciones.GetFooter(ctx),
-                Color = new DiscordColor(78, 63, 96),
+                Color = funciones.GetColor(),
                 Title = "Shippeo",
                 Description = $"Shippeo a **{shipeoUsr}** con **{elegido.DisplayName}** 💘",
                 ImageUrl = funciones.GetImagenRandomShip()
@@ -169,7 +169,7 @@ namespace Discord_Bot.Modulos
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = funciones.GetFooter(ctx),
-                Color = new DiscordColor(78, 63, 96),
+                Color = funciones.GetColor(),
                 Title = "Shippeo random",
                 Description = $"Shippeo a **{elegido.DisplayName}** con **{elegido2.DisplayName}** 💘",
                 ImageUrl = funciones.GetImagenRandomShip()
@@ -225,7 +225,7 @@ namespace Discord_Bot.Modulos
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = funciones.GetFooter(ctx),
-                Color = new DiscordColor(78, 63, 96),
+                Color = funciones.GetColor(),
                 Title = "Out of Context",
                 ImageUrl = meme.Url
             }).ConfigureAwait(false);
