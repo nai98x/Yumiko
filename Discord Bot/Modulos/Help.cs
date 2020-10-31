@@ -15,7 +15,7 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         [Command("help"), Aliases("ayuda")]
-        public async Task Ayuda(CommandContext ctx, string comando = null)
+        public async Task Ayuda(CommandContext ctx, [Description("Comando para ver en detalle, si se deja vacío se muestran todos los comandos")] string comando = null)
         {
             var commandsNext = ctx.CommandsNext;
             var comandos = commandsNext.RegisteredCommands.Values;
@@ -35,13 +35,14 @@ namespace Discord_Bot.Modulos
                 };
                 foreach (var grp in comandosFiltrados)
                 {
-                    comandosDesc = "";
                     var grupo = grp.Distinct();
                     string nomGrupo = grp.Key;
+                    List<string> listaComandos = new List<string>();
                     foreach (var comando1 in grupo)
                     {
-                        comandosDesc += $"`{comando1.Name}` ";
+                        listaComandos.Add($"`{comando1.Name}`");
                     }
+                    comandosDesc = string.Join(", ", listaComandos);
                     builder.AddField(nomGrupo, comandosDesc, false);
                 }
                 await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
@@ -50,10 +51,10 @@ namespace Discord_Bot.Modulos
             {
                 var comanditos = comandos.Distinct();
                 var listaComandos = comanditos.ToList();
-                Command comandoEncontrado = listaComandos.Find(x => x.Name == comando);
-                string nomComando = comandoEncontrado.Name;
+                Command comandoEncontrado = listaComandos.Find(x => x.Name == comando || x.Aliases.Contains(comando));
                 if(comandoEncontrado != null)
                 {
+                    string nomComando = comandoEncontrado.Name;
                     var builder = new DiscordEmbedBuilder
                     {
                         Title = $"Comando {nomComando}",
@@ -73,7 +74,7 @@ namespace Discord_Bot.Modulos
                         {
                             listaAliases.Add($"`{a}`");
                         }
-                        string aliasesC = string.Join(" ", listaAliases);
+                        string aliasesC = string.Join(", ", listaAliases);
                         builder.AddField("Aliases", aliasesC, false);
                     }
                     if(descripcion != null)
@@ -84,9 +85,20 @@ namespace Discord_Bot.Modulos
                         foreach (var argument in overload.Arguments)
                         {
                             if(argument.Description != null)
-                                parametros += $":arrow_right: **{argument.Name}** | Descripcion: {argument.Description} | Opcional: {argument.IsOptional}\n";
+                            {
+                                if(argument.IsOptional)
+                                    parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Obligatorio: **No**\n";
+                                else
+                                    parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Obligatorio: **Si**\n";
+                            }
                             else
-                                parametros += $":arrow_right: **{argument.Name}** | Opcional: {argument.IsOptional}\n";
+                            {
+                                if(argument.IsOptional)
+                                    parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **No**\n";
+                                else
+                                    parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **Si**\n";
+                            }
+                                
                         }
                         builder.AddField("Parametros", parametros, false);
                     }

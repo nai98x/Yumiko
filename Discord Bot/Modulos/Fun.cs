@@ -13,7 +13,7 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         [Command("waifu"), Description("Te dice mi nivel de waifu hacia un usuario.")]
-        public async Task Waifu(CommandContext ctx, DiscordMember miembro = null)
+        public async Task Waifu(CommandContext ctx, [Description("Miembro para ver su nivel de waifu, si se deja vacío lo hace de tí")] DiscordMember miembro = null)
         {
             string nombre;
             if (miembro == null)
@@ -111,7 +111,7 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("ship"), Description("Te digo con quien te shippearia.")]
-        public async Task Ship(CommandContext ctx, DiscordUser usuario = null)
+        public async Task Ship(CommandContext ctx, [Description("Usuario para shippear, si se deja vacío lo hace de tí")] DiscordUser usuario = null)
         {
             if (usuario == null)
             {

@@ -19,7 +19,7 @@ namespace Discord_Bot.Modulos
         private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         [Command("anilist"), Aliases("user"), Description("Busca un perfil de AniList.")]
-        public async Task Profile(CommandContext ctx, string usuario)
+        public async Task Profile(CommandContext ctx, [Description("El nick del perfil de AniList")]string usuario)
         {
             var request = new GraphQLRequest
             {
@@ -187,7 +187,7 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("anime"), Description("Busco un anime en AniList")]
-        public async Task Anime(CommandContext ctx, [RemainingText]string anime)
+        public async Task Anime(CommandContext ctx, [RemainingText][Description("Nombre del anime a buscar")] string anime)
         {
             var request = new GraphQLRequest
             {
@@ -376,7 +376,7 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("sauce"), Description("Busca el anime de una imagen.")]
-        public async Task Sauce(CommandContext ctx, string url)
+        public async Task Sauce(CommandContext ctx, [Description("Link de la imagen")] string url)
         {
             string msg = "OK";
             if (url.Length > 0)

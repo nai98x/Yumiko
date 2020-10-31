@@ -14,14 +14,14 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         [Command("say"), Aliases("s"), Description("Yumiko habla en el chat.")]
-        public async Task Say(CommandContext ctx, [RemainingText] string mensaje)
+        public async Task Say(CommandContext ctx, [Description("Mensaje para replicar")][RemainingText]string mensaje)
         {
             await ctx.Message.DeleteAsync().ConfigureAwait(false);
             await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
         }
 
         [Command("pregunta"), Aliases("p", "question", "sisonon"), Description("Responde con SIS O NON.")]
-        public async Task Sisonon(CommandContext ctx, [RemainingText] string pregunta)
+        public async Task Sisonon(CommandContext ctx, [Description("La pregunta que le quieres hacer")][RemainingText]string pregunta)
         {
             Random rnd = new Random();
             int random = rnd.Next(2);
@@ -50,7 +50,7 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("elegir"), Aliases("e"), Description("Elige entre varias opciones.")]
-        public async Task Elegir(CommandContext ctx, [RemainingText] string pregunta)
+        public async Task Elegir(CommandContext ctx, [Description("La pregunta de la cuál se eligirá una respuesta")][RemainingText]string pregunta)
         {
             var interactivity = ctx.Client.GetInteractivity();
             DiscordMessage mensajeBot = await ctx.Channel.SendMessageAsync("Ingrese las opciones separadas por comas").ConfigureAwait(false);
@@ -86,7 +86,7 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("emote"), Aliases("emoji"), Description("Muestra un emote en grande.")]
-        public async Task Emote(CommandContext ctx, DiscordEmoji emote)
+        public async Task Emote(CommandContext ctx, [Description("El emote para agrandar")] DiscordEmoji emote)
         {
             if (emote != null)
             {
