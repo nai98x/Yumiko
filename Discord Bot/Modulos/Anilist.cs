@@ -287,10 +287,19 @@ namespace Discord_Bot.Modulos
                         if (titulos.Length >= 2)
                             titulos = titulos.Remove(titulos.Length - 2);
                         string estudios = "";
-                        foreach (var studio in datos.studios.nodes) // ERROR ACA, NODES A VECES NO TIENE ELEMENTOS BUSCAR IF PARA VERIFICAR
+                        var nodos = datos.studios.nodes;
+                        if (nodos.HasValues)
                         {
-                            estudios += $"[{studio.name}]({studio.siteUrl}), ";
+                            foreach (var studio in datos.studios.nodes) // ERROR ACA, NODES A VECES NO TIENE ELEMENTOS BUSCAR IF PARA VERIFICAR
+                            {
+                                estudios += $"[{studio.name}]({studio.siteUrl}), ";
+                            }
                         }
+                        else
+                        {
+                            int i = 0;
+                        }
+                        
                         if (estudios.Length >= 2)
                             estudios = estudios.Remove(estudios.Length - 2);
                         string linksExternos = "";
@@ -309,7 +318,7 @@ namespace Discord_Bot.Modulos
                         }
                         else
                         {
-                            fechas = $"Este anime todavía no tiene fecha de emisión";
+                            fechas = $"Este anime no tiene fecha de emisión";
                         }
                         string titulo = datos.title.romaji;
                         string urlAnilist = datos.siteUrl;
@@ -325,15 +334,24 @@ namespace Discord_Bot.Modulos
                             Color = funciones.GetColor(),
                             Description = descripcion
                         };
-                        builder.AddField("Formato", formato, true);
-                        builder.AddField("Estado", estado.ToLower().ToUpperFirst(), true);
-                        builder.AddField("Puntuación", score, true);
-                        builder.AddField("Fecha emisión", fechas, false);
-                        builder.AddField("Generos", generos, false);
-                        builder.AddField("Etiquetas", tags, false);
-                        builder.AddField("Titulos alternativos", titulos, false);
-                        builder.AddField("Estudios", estudios, false);
-                        builder.AddField("Links externos", linksExternos, false);
+                        if (formato.Length > 0)
+                            builder.AddField("Formato", formato, true);
+                        if (estado.Length > 0)
+                            builder.AddField("Estado", estado.ToLower().ToUpperFirst(), true);
+                        if (score.Length > 0)
+                            builder.AddField("Puntuación", score, true);
+                        if (fechas.Length > 0)
+                            builder.AddField("Fecha emisión", fechas, false);
+                        if (generos.Length > 0)
+                            builder.AddField("Generos", generos, false);
+                        if (tags.Length > 0)
+                            builder.AddField("Etiquetas", tags, false);
+                        if (titulos.Length > 0)
+                            builder.AddField("Titulos alternativos", titulos, false);
+                        if (estudios.Length > 0)
+                            builder.AddField("Estudios", estudios, false);
+                        if (linksExternos.Length > 0)
+                            builder.AddField("Links externos", linksExternos, false);
                         await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
                         await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                     }
