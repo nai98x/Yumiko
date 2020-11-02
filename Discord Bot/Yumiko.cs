@@ -5,6 +5,7 @@ using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.Lavalink;
 using DSharpPlus.VoiceNext;
 using Microsoft.Extensions.Logging;
@@ -67,31 +68,31 @@ namespace Discord_Bot
             await Task.Delay(-1);
         }
 
-        private Task OnClientReady(ReadyEventArgs e)
+        private Task OnClientReady(DiscordClient c, ReadyEventArgs e)
         {
-            e.Client.Logger.LogInformation("El cliente esta listo para procesar eventos.", DateTime.Now);
+            c.Logger.LogInformation("El cliente esta listo para procesar eventos.", DateTime.Now);
             return Task.CompletedTask;
         }
 
-        private Task Client_GuildAvailable(GuildCreateEventArgs e)
+        private Task Client_GuildAvailable(DiscordClient c, GuildCreateEventArgs e)
         {
-            e.Client.Logger.LogInformation($"Servidor disponible: {e.Guild.Name}", DateTime.Now);
+            c.Logger.LogInformation($"Servidor disponible: {e.Guild.Name}", DateTime.Now);
             return Task.CompletedTask;
         }
 
-        private Task Client_ClientError(ClientErrorEventArgs e)
+        private Task Client_ClientError(DiscordClient c, ClientErrorEventArgs e)
         {
-            e.Client.Logger.LogError($"Ha ocurrido una excepcion: {e.Exception.GetType()}: {e.Exception.Message}", DateTime.Now);
+            c.Logger.LogError($"Ha ocurrido una excepcion: {e.Exception.GetType()}: {e.Exception.Message}", DateTime.Now);
             return Task.CompletedTask;
         }
 
-        private Task Commands_CommandExecuted(CommandExecutionEventArgs e)
+        private Task Commands_CommandExecuted(CommandsNextExtension cm, CommandExecutionEventArgs e)
         {
             e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} ejecuto el comando '{e.Command.QualifiedName}'", DateTime.Now);
             return Task.CompletedTask;
         }
 
-        private async Task Commands_CommandErrored(CommandErrorEventArgs e)
+        private async Task Commands_CommandErrored(CommandsNextExtension cm, CommandErrorEventArgs e)
         {
             if (e.Exception.Message == "Specified command was not found." || e.Exception.Message == "Could not find a suitable overload for the command.")
             {

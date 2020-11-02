@@ -17,12 +17,12 @@
     <None Remove="obj\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00727" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00727" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00727" />
-    <PackageReference Include="DSharpPlus.Lavalink" Version="4.0.0-nightly-00727" />
-    <PackageReference Include="DSharpPlus.Rest" Version="4.0.0-nightly-00727" />
-    <PackageReference Include="DSharpPlus.VoiceNext" Version="4.0.0-nightly-00727" />
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00745" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00745" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00745" />
+    <PackageReference Include="DSharpPlus.Lavalink" Version="4.0.0-nightly-00745" />
+    <PackageReference Include="DSharpPlus.Rest" Version="4.0.0-nightly-00745" />
+    <PackageReference Include="DSharpPlus.VoiceNext" Version="4.0.0-nightly-00745" />
     <PackageReference Include="GraphQL" Version="3.0.0.2026" />
     <PackageReference Include="GraphQL.Client" Version="3.1.9" />
     <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="3.1.9" />

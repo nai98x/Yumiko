@@ -10,6 +10,7 @@ using GraphQL;
 using GraphQL.Client.Serializer.Newtonsoft;
 using System.Linq;
 using System.Configuration;
+using DSharpPlus.Interactivity.Extensions;
 
 namespace Discord_Bot.Modulos
 {
