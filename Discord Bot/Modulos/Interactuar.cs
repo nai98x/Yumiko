@@ -86,7 +86,7 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("emote"), Aliases("emoji"), Description("Muestra un emote en grande.")]
+        [Command("emote"), Aliases("emoji"), Description("Muestra un emote en grande."), RequireGuild]
         public async Task Emote(CommandContext ctx, [Description("El emote para agrandar")] DiscordEmoji emote)
         {
             if (emote != null)
@@ -108,7 +108,7 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync("Auto borrado de yumiko");
         }
 
-        [Command("avatar"), Description("Muestra el avatar de un usuario.")]
+        [Command("avatar"), Description("Muestra el avatar de un usuario."), RequireGuild]
         public async Task Avatar(CommandContext ctx, DiscordUser usuario = null)
         {
             if (usuario == null)

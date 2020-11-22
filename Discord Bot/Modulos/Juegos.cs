@@ -19,7 +19,7 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
         private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        [Command("quizC"), Aliases("adivinaelpersonaje"), Description("Empieza el juego de adivina el personaje.")]
+        [Command("quizC"), Aliases("adivinaelpersonaje"), Description("Empieza el juego de adivina el personaje."), RequireGuild]
         public async Task QuizCharactersGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
@@ -158,7 +158,7 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("quizA"), Aliases("adivinaelanime"), Description("Empieza el juego de adivina el anime.")]
+        [Command("quizA"), Aliases("adivinaelanime"), Description("Empieza el juego de adivina el anime."), RequireGuild]
         public async Task QuizAnimeGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();

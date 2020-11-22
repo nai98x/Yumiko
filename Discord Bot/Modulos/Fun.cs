@@ -81,7 +81,7 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync();
         }
 
-        [Command("husbando"), Description("Elijo a mi husbando del servidor.")]
+        [Command("husbando"), Description("Elijo a mi husbando del servidor."), RequireGuild]
         public async Task Husbando(CommandContext ctx)
         {
             Random rnd = new Random();
@@ -110,7 +110,7 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync();
         }
 
-        [Command("ship"), Description("Te digo con quien te shippearia.")]
+        [Command("ship"), Description("Te digo con quien te shippearia."), RequireGuild]
         public async Task Ship(CommandContext ctx, [Description("Usuario para shippear, si se deja vacío lo hace de tí")] DiscordUser usuario = null)
         {
             if (usuario == null)
@@ -146,7 +146,7 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync();
         }
 
-        [Command("shipr"), Description("Eligo un ship en el servidor.")]
+        [Command("shipr"), Description("Eligo un ship en el servidor."), RequireGuild]
         public async Task ShipRandom(CommandContext ctx)
         {
             Random rnd = new Random();
@@ -177,8 +177,7 @@ namespace Discord_Bot.Modulos
             await ctx.Message.DeleteAsync();
         }
 
-        [Command("ooc"), Description("Imagen aleatoria de Out of Context.")]
-        [RequireNsfw]
+        [Command("ooc"), Description("Imagen aleatoria de Out of Context."), RequireGuild, RequireNsfw]
         public async Task OOC(CommandContext ctx)
         {
             DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(748315008131268693);
