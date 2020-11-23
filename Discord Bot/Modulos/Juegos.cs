@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using DSharpPlus.Entities;
 using System;
-using DSharpPlus.Interactivity;
 using GraphQL.Client.Http;
 using GraphQL;
 using GraphQL.Client.Serializer.Newtonsoft;
@@ -41,14 +40,11 @@ namespace Discord_Bot.Modulos
                 Random rnd = new Random();
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo personajes...").ConfigureAwait(false);
-                for (int i = iterIni; i <= iterFin; i++)
-                {
-                    var request = new GraphQLRequest
-                    {
-                        Query =
-                        "query($pagina : Int){" +
+                string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
-                        "       characters(sort: FAVOURITES_DESC){" +
+                        "       characters(sort:";
+                query += settings.Orden;
+                query +="){" +
                         "           siteUrl," +
                         "           name{" +
                         "               first," +
@@ -60,7 +56,12 @@ namespace Discord_Bot.Modulos
                         "           }" +
                         "       }" +
                         "   }" +
-                        "}",
+                        "}";
+                for (int i = iterIni; i <= iterFin; i++)
+                {
+                    var request = new GraphQLRequest
+                    {
+                        Query = query,
                         Variables = new
                         {
                             pagina = i
@@ -180,14 +181,11 @@ namespace Discord_Bot.Modulos
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo personajes...").ConfigureAwait(false);
                 var characterList = new List<Character>();
-                for (int i = iterIni; i <= iterFin; i++)
-                {
-                    var request = new GraphQLRequest
-                    {
-                        Query =
-                        "query($pagina : Int){" +
+                string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
-                        "       characters(sort: FAVOURITES_DESC){" +
+                        "       characters(sort: ";
+                query += settings.Orden;
+                query += "){" +
                         "           siteUrl," +
                         "           name{" +
                         "               full" +
@@ -206,7 +204,12 @@ namespace Discord_Bot.Modulos
                         "           }" +
                         "       }" +
                         "   }" +
-                        "}",
+                        "}";
+                for (int i = iterIni; i <= iterFin; i++)
+                {
+                    var request = new GraphQLRequest
+                    {
+                        Query = query,
                         Variables = new
                         {
                             pagina = i

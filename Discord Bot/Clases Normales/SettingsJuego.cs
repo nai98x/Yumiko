@@ -12,5 +12,6 @@ namespace Discord_Bot
         public int  IterIni { get; set; }
         public int IterFin { get; set; }
         public string Dificultad { get; set; }
+        public string Orden { get; set; }
     }
 }

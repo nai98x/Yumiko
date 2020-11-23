@@ -153,37 +153,44 @@ namespace Discord_Bot
                                 {
                                     int iterIni;
                                     int iterFin;
+                                    string orden;
                                     switch (dificultad)
                                     {
                                         case 1:
                                             iterIni = 1;
                                             iterFin = 6;
                                             dificultadStr = "Fácil";
+                                            orden = "FAVOURITES_DESC";
                                             break;
                                         case 2:
                                             iterIni = 6;
                                             iterFin = 20;
                                             dificultadStr = "Media";
+                                            orden = "FAVOURITES_DESC";
                                             break;
                                         case 3:
                                             iterIni = 20;
                                             iterFin = 60;
                                             dificultadStr = "Dificil";
+                                            orden = "FAVOURITES_DESC";
                                             break;
                                         case 4:
                                             iterIni = 60;
                                             iterFin = 100;
                                             dificultadStr = "Extremo";
+                                            orden = "FAVOURITES_DESC";
                                             break;
                                         case 5:
-                                            iterIni = 160;
-                                            iterFin = 200;
+                                            iterIni = 1;
+                                            iterFin = 40;
                                             dificultadStr = "Kusan";
+                                            orden = "FAVOURITES";
                                             break;
                                         default:
                                             iterIni = 6;
                                             iterFin = 20;
                                             dificultadStr = "Medio";
+                                            orden = "FAVOURITES_DESC";
                                             break;
                                     }
                                     await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
@@ -197,7 +204,8 @@ namespace Discord_Bot
                                         Rondas = rondas,
                                         IterIni = iterIni,
                                         IterFin = iterFin,
-                                        Dificultad = dificultadStr
+                                        Dificultad = dificultadStr,
+                                        Orden = orden
                                     };
                                 }
                                 else
