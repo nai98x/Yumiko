@@ -40,7 +40,7 @@ namespace Discord_Bot.Modulos
                 List<Character> characterList = new List<Character>();
                 Random rnd = new Random();
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
-                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo pesonajes...").ConfigureAwait(false);
+                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo personajes...").ConfigureAwait(false);
                 for (int i = iterIni; i <= iterFin; i++)
                 {
                     var request = new GraphQLRequest

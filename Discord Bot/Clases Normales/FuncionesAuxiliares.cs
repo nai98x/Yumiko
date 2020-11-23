@@ -140,7 +140,7 @@ namespace Discord_Bot
                         var msgDificultad = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "Elije la dificultad",
-                            Description = "1- Fácil\n2- Media\n3- Dificil\n4- Extremo"
+                            Description = "1- Fácil\n2- Media\n3- Dificil\n4- Extremo\n 5- Kusan"
                         });
                         var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
                         if (!msgDificultadInter.TimedOut)
@@ -149,7 +149,7 @@ namespace Discord_Bot
                             if (result)
                             {
                                 string dificultadStr;
-                                if (dificultad == 1 || dificultad == 2 || dificultad == 3 || dificultad == 4)
+                                if (dificultad == 1 || dificultad == 2 || dificultad == 3 || dificultad == 4 || dificultad == 5)
                                 {
                                     int iterIni;
                                     int iterFin;
@@ -174,6 +174,11 @@ namespace Discord_Bot
                                             iterIni = 60;
                                             iterFin = 100;
                                             dificultadStr = "Extremo";
+                                            break;
+                                        case 5:
+                                            iterIni = 160;
+                                            iterFin = 200;
+                                            dificultadStr = "Kusan";
                                             break;
                                         default:
                                             iterIni = 6;
