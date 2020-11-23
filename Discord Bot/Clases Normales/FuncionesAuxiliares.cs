@@ -77,5 +77,27 @@ namespace Discord_Bot
         {
             return new DiscordColor(78, 63, 96);
         }
+
+        public string limpiarTexto(string texto)
+        {
+            if (texto != null)
+            {
+                texto = texto.Replace("<br>", "\n");
+                texto = texto.Replace("<Br>", "\n");
+                texto = texto.Replace("<bR>", "\n");
+                texto = texto.Replace("<BR>", "\n");
+                texto = texto.Replace("<i>", "*");
+                texto = texto.Replace("<I>", "*");
+                texto = texto.Replace("</i>", "*");
+                texto = texto.Replace("</I>", "*");
+                texto = texto.Replace("~!", "||");
+                texto = texto.Replace("!~", "||");
+            }
+            else
+            {
+                texto = "";
+            }
+            return texto;
+        }
     }
 }

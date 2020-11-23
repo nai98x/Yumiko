@@ -249,14 +249,9 @@ namespace Discord_Bot.Modulos
                     if(datos.isAdult == "false")
                     {
                         string descripcion = datos.description;
-                        descripcion = descripcion.Replace("<br>", "");
-                        descripcion = descripcion.Replace("<Br>", "");
-                        descripcion = descripcion.Replace("<bR>", "");
-                        descripcion = descripcion.Replace("<BR>", "");
-                        descripcion = descripcion.Replace("<i>", "");
-                        descripcion = descripcion.Replace("<I>", "");
-                        descripcion = descripcion.Replace("</i>", "");
-                        descripcion = descripcion.Replace("</I>", "");
+                        descripcion = funciones.limpiarTexto(descripcion);
+                        if (descripcion == "")
+                            descripcion = "(Sin descripción)";
                         string estado = datos.status;
                         string formato = datos.format;
                         string score = $"{datos.meanScore}/100";
@@ -446,14 +441,9 @@ namespace Discord_Bot.Modulos
                     if (datos.isAdult == "false")
                     {
                         string descripcion = datos.description;
-                        descripcion = descripcion.Replace("<br>", "");
-                        descripcion = descripcion.Replace("<Br>", "");
-                        descripcion = descripcion.Replace("<bR>", "");
-                        descripcion = descripcion.Replace("<BR>", "");
-                        descripcion = descripcion.Replace("<i>", "");
-                        descripcion = descripcion.Replace("<I>", "");
-                        descripcion = descripcion.Replace("</i>", "");
-                        descripcion = descripcion.Replace("</I>", "");
+                        descripcion = funciones.limpiarTexto(descripcion);
+                        if (descripcion == "")
+                            descripcion = "(Sin descripción)";
                         string estado = datos.status;
                         string formato = datos.format;
                         string score = $"{datos.meanScore}/100";
@@ -560,6 +550,224 @@ namespace Discord_Bot.Modulos
                 DiscordMessage msg = ex.Message switch
                 {
                     "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false),
+                    _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
+                };
+                await Task.Delay(3000);
+                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                await msg.DeleteAsync("Auto borrado de yumiko");
+            }
+        }
+
+        [Command("character"), Aliases("personaje"), Description("Busco un personaje en AniList")]
+        public async Task Character(CommandContext ctx, [RemainingText][Description("Nombre del personaje a buscar")] string personaje)
+        {
+            var request = new GraphQLRequest
+            {
+                Query =
+                "query($nombre : String){" +
+                "   Character(search: $nombre){" +
+                "       name{" +
+                "           full" +
+                "       }," +
+                "       image{" +
+                "           large" +
+                "       }," +
+                "       siteUrl," +
+                "       description," +
+                "       animes: media(type: ANIME){" +
+                "           nodes{" +
+                "               title{" +
+                "                   romaji" +
+                "               }," +
+                "               siteUrl" +
+                "           }" +
+                "       }" +
+                "       mangas: media(type: MANGA){" +
+                "           nodes{" +
+                "               title{" +
+                "                   romaji" +
+                "               }," +
+                "               siteUrl" +
+                "           }" +
+                "       }" +
+                "   }" +
+                "}",
+                Variables = new
+                {
+                    nombre = personaje
+                }
+            };
+            try
+            {
+                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                if (data.Data != null)
+                {
+                    var datos = data.Data.Character;
+                    string descripcion = datos.description;
+                    descripcion = funciones.limpiarTexto(descripcion);
+                    if (descripcion == "")
+                        descripcion = "(Sin descripción)";
+                    string nombre = datos.name.full;
+                    string imagen = datos.image.large;
+                    string urlAnilist = datos.siteUrl;
+                    string animes = "";
+                    foreach(var anime in datos.animes.nodes)
+                    {
+                        animes += $"[{anime.title.romaji}]({anime.siteUrl})\n";
+                    }
+                    string mangas = "";
+                    foreach (var manga in datos.mangas.nodes)
+                    {
+                        mangas += $"[{manga.title.romaji}]({manga.siteUrl})\n";
+                    }
+                    var builder = new DiscordEmbedBuilder
+                    {
+                        Title = nombre,
+                        Url = urlAnilist,
+                        Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
+                        {
+                            Url = imagen
+                        },
+                        Footer = funciones.GetFooter(ctx),
+                        Color = funciones.GetColor(),
+                        Description = descripcion
+                    };
+                    if (animes.Length > 0)
+                    {
+                        if (animes.Length > 1024)
+                            animes= animes.Remove(1024);
+                        builder.AddField("Animes", animes, false);
+                    }
+                    if (mangas.Length > 0)
+                    {
+                        if (mangas.Length > 1024)
+                            mangas = mangas.Remove(1024);
+                        builder.AddField("Mangas", mangas, false);
+                    }
+                    await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                    await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
+                }
+                else
+                {
+                    foreach (var x in data.Errors)
+                    {
+                        var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
+                        await Task.Delay(3000);
+                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                        await msg.DeleteAsync("Auto borrado de yumiko");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DiscordMessage msg = ex.Message switch
+                {
+                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el personaje `{personaje}`").ConfigureAwait(false),
+                    _ => await ctx.RespondAsync($"Error inesperado, mensaje: [{ex.Message}").ConfigureAwait(false),
+                };
+                await Task.Delay(5000);
+                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                await msg.DeleteAsync("Auto borrado de yumiko");
+            }
+        }
+
+        [Command("staff"), Description("Busco alguien del staff de una obra en AniList")]
+        public async Task Staff(CommandContext ctx, [RemainingText][Description("Nombre del staff a buscar")] string personaje)
+        {
+            var request = new GraphQLRequest
+            {
+                Query =
+                "query($nombre : String){" +
+                "   Character(search: $nombre){" +
+                "       name{" +
+                "           full" +
+                "       }," +
+                "       image{" +
+                "           large" +
+                "       }," +
+                "       siteUrl," +
+                "       description," +
+                "       animes: media(type: ANIME){" +
+                "           nodes{" +
+                "               title{" +
+                "                   romaji" +
+                "               }," +
+                "               siteUrl" +
+                "           }" +
+                "       }" +
+                "       mangas: media(type: MANGA){" +
+                "           nodes{" +
+                "               title{" +
+                "                   romaji" +
+                "               }," +
+                "               siteUrl" +
+                "           }" +
+                "       }" +
+                "   }" +
+                "}",
+                Variables = new
+                {
+                    nombre = personaje
+                }
+            };
+            try
+            {
+                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                if (data.Data != null)
+                {
+                    var datos = data.Data.Character;
+                    string descripcion = datos.description;
+                    descripcion = funciones.limpiarTexto(descripcion);
+                    if (descripcion == "")
+                        descripcion = "(Sin descripción)";
+                    string nombre = datos.name.full;
+                    string imagen = datos.image.large;
+                    string urlAnilist = datos.siteUrl;
+                    string animes = "";
+                    foreach (var anime in datos.animes.nodes)
+                    {
+                        animes += $"[{anime.title.romaji}]({anime.siteUrl})\n";
+                    }
+                    string mangas = "";
+                    foreach (var manga in datos.mangas.nodes)
+                    {
+                        mangas += $"[{manga.title.romaji}]({manga.siteUrl})\n";
+                    }
+                    var builder = new DiscordEmbedBuilder
+                    {
+                        Title = nombre,
+                        Url = urlAnilist,
+                        Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
+                        {
+                            Url = imagen
+                        },
+                        Footer = funciones.GetFooter(ctx),
+                        Color = funciones.GetColor(),
+                        Description = descripcion
+                    };
+                    if (animes.Length > 0)
+                        builder.AddField("Animes", animes, false);
+                    if (mangas.Length > 0)
+                        builder.AddField("Mangas", mangas, false);
+                    await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                    await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
+                }
+                else
+                {
+                    foreach (var x in data.Errors)
+                    {
+                        var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
+                        await Task.Delay(3000);
+                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                        await msg.DeleteAsync("Auto borrado de yumiko");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DiscordMessage msg = ex.Message switch
+                {
+                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el personaje `{personaje}`").ConfigureAwait(false),
                     _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
                 };
                 await Task.Delay(3000);
