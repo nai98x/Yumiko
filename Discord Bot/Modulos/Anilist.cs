@@ -249,7 +249,7 @@ namespace Discord_Bot.Modulos
                     if(datos.isAdult == "false")
                     {
                         string descripcion = datos.description;
-                        descripcion = funciones.limpiarTexto(descripcion);
+                        descripcion = funciones.LimpiarTexto(descripcion);
                         if (descripcion == "")
                             descripcion = "(Sin descripción)";
                         string estado = datos.status;
@@ -441,7 +441,7 @@ namespace Discord_Bot.Modulos
                     if (datos.isAdult == "false")
                     {
                         string descripcion = datos.description;
-                        descripcion = funciones.limpiarTexto(descripcion);
+                        descripcion = funciones.LimpiarTexto(descripcion);
                         if (descripcion == "")
                             descripcion = "(Sin descripción)";
                         string estado = datos.status;
@@ -604,7 +604,7 @@ namespace Discord_Bot.Modulos
                 {
                     var datos = data.Data.Character;
                     string descripcion = datos.description;
-                    descripcion = funciones.limpiarTexto(descripcion);
+                    descripcion = funciones.LimpiarTexto(descripcion);
                     if (descripcion == "")
                         descripcion = "(Sin descripción)";
                     string nombre = datos.name.full;
