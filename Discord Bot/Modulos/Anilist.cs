@@ -670,7 +670,7 @@ namespace Discord_Bot.Modulos
                 await msg.DeleteAsync("Auto borrado de yumiko");
             }
         }
-
+        /*
         [Command("staff"), Description("Busco alguien del staff de una obra en AniList")]
         public async Task Staff(CommandContext ctx, [RemainingText][Description("Nombre del staff a buscar")] string personaje)
         {
@@ -775,7 +775,7 @@ namespace Discord_Bot.Modulos
                 await msg.DeleteAsync("Auto borrado de yumiko");
             }
         }
-
+        */
         [Command("sauce"), Description("Busca el anime de una imagen.")]
         public async Task Sauce(CommandContext ctx, [Description("Link de la imagen")] string url)
         {
