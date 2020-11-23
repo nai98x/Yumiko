@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
@@ -81,6 +82,13 @@ namespace Discord_Bot
             return new DiscordColor(78, 63, 96);
         }
 
+        public string QuitarCaracteresEspeciales(string str)
+        {
+            if(str != null)
+                return Regex.Replace(str, @"[^a-zA-Z0-9]+", " ").Trim();
+            return null;
+        }
+
         public string LimpiarTexto(string texto)
         {
             if (texto != null)
@@ -108,12 +116,17 @@ namespace Discord_Bot
             string resultados = "";
             participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
             int tot = 0;
+            int pos = 0;
+            int lastScore = 0;
             foreach (UsuarioJuego uj in participantes)
             {
-                resultados += $"- {uj.Usuario.Username}#{uj.Usuario.Discriminator}: {uj.Puntaje} aciertos\n";
+                if (lastScore != uj.Puntaje)
+                    pos++;
+                resultados += $"#{pos} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos\n";
+                lastScore = uj.Puntaje;
                 tot += uj.Puntaje;
             }
-            resultados += $"\nTotal ({tot}/{rondas})";
+            resultados += $"\n**Total ({tot}/{rondas})**";
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
             {
                 Title = "Resultados",

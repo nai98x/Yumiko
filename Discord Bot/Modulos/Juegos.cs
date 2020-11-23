@@ -229,10 +229,12 @@ namespace Discord_Bot.Modulos
                             };
                             foreach (var y in x.media.nodes)
                             {
+                                string titleEnglish = y.title.english;
+                                string titleRomaji = y.title.romaji;
                                 c.Animes.Add(new Anime()
                                 {
-                                    TitleEnglish = y.title.english,
-                                    TitleRomaji = y.title.romaji,
+                                    TitleEnglish = funciones.QuitarCaracteresEspeciales(titleEnglish),
+                                    TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
                                     SiteUrl = y.siteUrl
                                 });
                             }
