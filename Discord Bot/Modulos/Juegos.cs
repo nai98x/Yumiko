@@ -19,8 +19,11 @@ namespace Discord_Bot.Modulos
         private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         [Command("quizC"), Aliases("adivinaelpersonaje"), Description("Empieza el juego de adivina el personaje."), RequireGuild]
-        public async Task QuizCharactersGlobal(CommandContext ctx)
+        public async Task QuizCharactersGlobal(CommandContext ctx, string modoMegu = null)
         {
+            bool meguMode = false;
+            if (modoMegu == "-m" || modoMegu == "-megu")
+                meguMode = true;
             var interactivity = ctx.Client.GetInteractivity();
             SettingsJuego settings = await funciones.InicializarJuego(ctx, interactivity);
             if (settings.Ok)
@@ -101,7 +104,7 @@ namespace Discord_Bot.Modulos
                     lastRonda = ronda;
                     int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
                     Character elegido = characterList[random];
-                    if (ctx.Guild.Id == 701813281718927441)
+                    if (meguMode)
                     {
                         await ctx.RespondAsync("ATENTOOOOS");
                         await Task.Delay(funciones.GetNumeroRandom(100, 3000));
@@ -166,8 +169,11 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("quizA"), Aliases("adivinaelanime"), Description("Empieza el juego de adivina el anime."), RequireGuild]
-        public async Task QuizAnimeGlobal(CommandContext ctx)
+        public async Task QuizAnimeGlobal(CommandContext ctx, string modoMegu = null)
         {
+            bool meguMode = false;
+            if (modoMegu == "-m" || modoMegu == "-megu")
+                meguMode = true;
             var interactivity = ctx.Client.GetInteractivity();
             SettingsJuego settings = await funciones.InicializarJuego(ctx, interactivity);
             if (settings.Ok)
@@ -269,7 +275,7 @@ namespace Discord_Bot.Modulos
                     lastRonda = ronda;
                     int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
                     Character elegido = characterList[random];
-                    if (ctx.Guild.Id == 701813281718927441)
+                    if (meguMode)
                     {
                         await ctx.RespondAsync("ATENTOOOOS");
                         await Task.Delay(funciones.GetNumeroRandom(100, 3000));
