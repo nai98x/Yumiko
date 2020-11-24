@@ -101,6 +101,11 @@ namespace Discord_Bot.Modulos
                     lastRonda = ronda;
                     int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
                     Character elegido = characterList[random];
+                    if (ctx.Guild.Id == 701813281718927441)
+                    {
+                        await ctx.RespondAsync("ATENTOOOOS");
+                        await Task.Delay(funciones.GetNumeroRandom(100, 3000));
+                    }
                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
                         Color = DiscordColor.Gold,
@@ -134,6 +139,7 @@ namespace Discord_Bot.Modulos
                                 Puntaje = 1
                             });
                         }
+                        characterList.Remove(characterList[random]);
                         await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
@@ -263,6 +269,11 @@ namespace Discord_Bot.Modulos
                     lastRonda = ronda;
                     int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
                     Character elegido = characterList[random];
+                    if (ctx.Guild.Id == 701813281718927441)
+                    {
+                        await ctx.RespondAsync("ATENTOOOOS");
+                        await Task.Delay(funciones.GetNumeroRandom(100, 3000));
+                    }
                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
                         Color = DiscordColor.Gold,
@@ -303,6 +314,7 @@ namespace Discord_Bot.Modulos
                                 Puntaje = 1
                             });
                         }
+                        characterList.Remove(characterList[random]);
                         await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
