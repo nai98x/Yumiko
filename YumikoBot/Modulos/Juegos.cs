@@ -87,10 +87,13 @@ namespace Discord_Bot.Modulos
                     }
                     catch (Exception ex)
                     {
-                        DiscordMessage msg = ex.Message switch
+                        DiscordMessage msg;
+                        switch (ex.Message)
                         {
-                            _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
-                        };
+                            default:
+                                msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
+                                break;
+                        }
                         await Task.Delay(3000);
                         await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
@@ -258,10 +261,13 @@ namespace Discord_Bot.Modulos
                     }
                     catch (Exception ex)
                     {
-                        DiscordMessage msg = ex.Message switch
+                        DiscordMessage msg;
+                        switch (ex.Message)
                         {
-                            _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
-                        };
+                            default:
+                                msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
+                                break;
+                        }
                         await Task.Delay(3000);
                         await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");

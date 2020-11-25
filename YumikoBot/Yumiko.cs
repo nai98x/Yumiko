@@ -6,7 +6,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
-using DSharpPlus.Lavalink;
+//using DSharpPlus.Lavalink;
 using DSharpPlus.VoiceNext;
 using Microsoft.Extensions.Logging;
 using System;

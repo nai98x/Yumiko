@@ -175,11 +175,16 @@ namespace Discord_Bot.Modulos
             }
             catch(Exception ex)
             {
-                DiscordMessage msg = ex.Message switch
+                DiscordMessage msg;
+                switch (ex.Message)
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado al usuario de anilist `{usuario}`").ConfigureAwait(false),
-                    _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
-                };
+                    case "The HTTP request failed with status code NotFound":
+                        msg = await ctx.RespondAsync($"No se ha encontrado al usuario de anilist `{usuario}`").ConfigureAwait(false);
+                        break;
+                    default:
+                        msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
+                        break;
+                }
                 await Task.Delay(3000);
                 await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                 await msg.DeleteAsync("Auto borrado de yumiko");
@@ -377,11 +382,16 @@ namespace Discord_Bot.Modulos
             }
             catch (Exception ex)
             {
-                DiscordMessage msg = ex.Message switch
+                DiscordMessage msg;
+                switch (ex.Message)
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false),
-                    _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
-                };
+                    case "The HTTP request failed with status code NotFound":
+                        msg = await ctx.RespondAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false);
+                        break;
+                    default:
+                        msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
+                        break;
+                }
                 await Task.Delay(3000);
                 await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                 await msg.DeleteAsync("Auto borrado de yumiko");
@@ -547,11 +557,16 @@ namespace Discord_Bot.Modulos
             }
             catch (Exception ex)
             {
-                DiscordMessage msg = ex.Message switch
+                DiscordMessage msg;
+                switch (ex.Message)
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false),
-                    _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
-                };
+                    case "The HTTP request failed with status code NotFound":
+                        msg = await ctx.RespondAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false);
+                        break;
+                    default:
+                        msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
+                        break;
+                }
                 await Task.Delay(3000);
                 await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                 await msg.DeleteAsync("Auto borrado de yumiko");
@@ -660,11 +675,16 @@ namespace Discord_Bot.Modulos
             }
             catch (Exception ex)
             {
-                DiscordMessage msg = ex.Message switch
+                DiscordMessage msg;
+                switch (ex.Message)
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el personaje `{personaje}`").ConfigureAwait(false),
-                    _ => await ctx.RespondAsync($"Error inesperado, mensaje: [{ex.Message}").ConfigureAwait(false),
-                };
+                    case "The HTTP request failed with status code NotFound":
+                        msg = await ctx.RespondAsync($"No se ha encontrado el personaje `{personaje}`").ConfigureAwait(false);
+                        break;
+                    default:
+                        msg = await ctx.RespondAsync($"Error inesperado, mensaje: [{ex.Message}").ConfigureAwait(false);
+                        break;
+                }
                 await Task.Delay(5000);
                 await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                 await msg.DeleteAsync("Auto borrado de yumiko");
@@ -839,9 +859,9 @@ namespace Discord_Bot.Modulos
                             case HttpStatusCode.Forbidden:
                                 msg = "Acceso denegado";
                                 break;
-                            case HttpStatusCode.TooManyRequests:
-                                msg = "Ratelimit excedido";
-                                break;
+                            //case HttpStatusCode.TooManyRequests:
+                            //    msg = "Ratelimit excedido";
+                            //    break;
                             case HttpStatusCode.InternalServerError:
                             case HttpStatusCode.ServiceUnavailable:
                                 msg = "Error interno en el servidor de Trace.moe";

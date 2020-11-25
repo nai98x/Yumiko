@@ -60,7 +60,7 @@ namespace Discord_Bot.Modulos
             {
                 List<string> opciones = new List<string>();
                 string msgResponse = msg.Result.Content;
-                opciones = msgResponse.Split(",").ToList();
+                opciones = msgResponse.Split(',').ToList();
                 Random rnd = new Random();
                 int random = rnd.Next(opciones.Count);
                 string options = "**Opciones:**";
