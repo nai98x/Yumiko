@@ -259,6 +259,7 @@
     <Compile Include="Data Access Layer\LeaderboardAn.cs">
       <DependentUpon>modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data Access Layer\LeaderboardAnimes.cs" />
     <Compile Include="Data Access Layer\LeaderboardPersonajes.cs" />
     <Compile Include="Data Access Layer\LeaderboardPj.cs">
       <DependentUpon>modelo.tt</DependentUpon>

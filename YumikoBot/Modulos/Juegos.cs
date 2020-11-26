@@ -129,7 +129,7 @@ namespace Discord_Bot.Modulos
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                            await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad);
+                            await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "personaje");
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -164,7 +164,7 @@ namespace Discord_Bot.Modulos
                     }
                     characterList.Remove(characterList[random]);
                 }
-                await funciones.GetResultados(ctx, participantes, rondas, settings.Dificultad);
+                await funciones.GetResultados(ctx, participantes, rondas, settings.Dificultad, "personaje");
             }
             else
             {
@@ -310,7 +310,7 @@ namespace Discord_Bot.Modulos
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                            await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad);
+                            await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "anime");
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -345,7 +345,7 @@ namespace Discord_Bot.Modulos
                     }
                     characterList.Remove(characterList[random]);
                 }
-                await funciones.GetResultados(ctx, participantes, rondas, settings.Dificultad);
+                await funciones.GetResultados(ctx, participantes, rondas, settings.Dificultad, "anime");
             }
             else
             {

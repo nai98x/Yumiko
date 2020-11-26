@@ -17,6 +17,7 @@ namespace Discord_Bot
     public class FuncionesAuxiliares
     {
         private readonly LeaderboardPersonajes leaderboardPjs = new LeaderboardPersonajes();
+        private readonly LeaderboardAnimes leaderboardAns = new LeaderboardAnimes();
 
         public int GetNumeroRandom(int min, int max)
         {
@@ -114,7 +115,7 @@ namespace Discord_Bot
             return texto;
         }
 
-        public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas, string dificultad)
+        public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas, string dificultad, string juego)
         {
             string resultados = "";
             participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
@@ -129,7 +130,15 @@ namespace Discord_Bot
                 resultados += $"#{pos} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
                 lastScore = uj.Puntaje;
                 tot += uj.Puntaje;
-                leaderboardPjs.AddRegistro(Int64.Parse(uj.Usuario.Id.ToString()), Int64.Parse(ctx.Guild.Id.ToString()), dificultad, uj.Puntaje, rondas);
+                switch (juego)
+                {
+                    case "anime":
+                        leaderboardAns.AddRegistro(Int64.Parse(uj.Usuario.Id.ToString()), Int64.Parse(ctx.Guild.Id.ToString()), dificultad, uj.Puntaje, rondas);
+                        break;
+                    case "personaje":
+                        leaderboardPjs.AddRegistro(Int64.Parse(uj.Usuario.Id.ToString()), Int64.Parse(ctx.Guild.Id.ToString()), dificultad, uj.Puntaje, rondas);
+                        break;
+                }
             }
             resultados += $"\n**Total ({tot}/{rondas})**";
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder()

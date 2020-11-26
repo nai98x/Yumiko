@@ -10,6 +10,8 @@ using GraphQL.Client.Abstractions.Utilities;
 using RestSharp;
 using System.Net;
 using Newtonsoft.Json;
+using System.Configuration;
+using DSharpPlus.Interactivity.Extensions;
 
 namespace Discord_Bot.Modulos
 {
@@ -198,46 +200,48 @@ namespace Discord_Bot.Modulos
             {
                 Query =
                 "query($nombre : String){" +
-                "   Media(type: ANIME, search: $nombre){" +
-                "       title{" +
-                "           romaji" +
-                "       }," +
-                "       coverImage{" +
-                "           large" +
-                "       }," +
-                "       siteUrl," +
-                "       description," +
-                "       format," +
-                "       episodes" +
-                "       status," +
-                "       meanScore," +
-                "       startDate{" +
-                "           year," +
-                "           month," +
-                "           day" +
-                "       }," +
-                "       endDate{" +
-                "           year," +
-                "           month," +
-                "           day" +
-                "       }," +
-                "       genres," +
-                "       tags{" +
-                "           name," +
-                "           isMediaSpoiler" +
-                "       }," +
-                "       synonyms," +
-                "       studios{" +
-                "           nodes{" +
+                "   Page(perPage:10){" +
+                "       media(type: ANIME, search: $nombre){" +
+                "           title{" +
+                "               romaji" +
+                "           }," +
+                "           coverImage{" +
+                "               large" +
+                "           }," +
+                "           siteUrl," +
+                "           description," +
+                "           format," +
+                "           episodes" +
+                "           status," +
+                "           meanScore," +
+                "           startDate{" +
+                "               year," +
+                "               month," +
+                "               day" +
+                "           }," +
+                "           endDate{" +
+                "               year," +
+                "               month," +
+                "               day" +
+                "           }," +
+                "           genres," +
+                "           tags{" +
                 "               name," +
-                "               siteUrl" +
-                "           }" +
-                "       }," +
-                "       externalLinks{" +
-                "           site," +
-                "           url" +
-                "       }," +
-                "       isAdult" +
+                "               isMediaSpoiler" +
+                "           }," +
+                "           synonyms," +
+                "           studios{" +
+                "               nodes{" +
+                "                   name," +
+                "                   siteUrl" +
+                "               }" +
+                "           }," +
+                "           externalLinks{" +
+                "               site," +
+                "               url" +
+                "           }," +
+                "           isAdult" +
+                "       }" +
                 "   }" +
                 "}",
                 Variables = new
@@ -250,123 +254,165 @@ namespace Discord_Bot.Modulos
                 var data = await graphQLClient.SendQueryAsync<dynamic>(request);
                 if (data.Data != null)
                 {
-                    var datos = data.Data.Media;
-                    if(datos.isAdult == "false")
+                    int cont = 1;
+                    string opc = "";
+                    foreach (var animeP in data.Data.Page.media)
                     {
-                        string descripcion = datos.description;
-                        descripcion = funciones.LimpiarTexto(descripcion);
-                        if (descripcion == "")
-                            descripcion = "(Sin descripción)";
-                        string estado = datos.status;
-                        string formato = datos.format;
-                        string score = $"{datos.meanScore}/100";
-                        string fechas;
-                        string generos = "";
-                        foreach (var genero in datos.genres)
+                        opc += $"{cont} - {animeP.title.romaji}\n";
+                        cont++;
+                    }
+                    DiscordMessage elegirMsg = await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+                        Footer = funciones.GetFooter(ctx),
+                        Color = funciones.GetColor(),
+                        Title = "Elije la opcion escribiendo su número a continuación",
+                        Description = opc
+                    });
+                    var interactivity = ctx.Client.GetInteractivity();
+                    var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                    if (!msgElegir.TimedOut)
+                    {
+                        bool result = int.TryParse(msgElegir.Result.Content, out int elegido);
+                        if (result && elegido > 0)
                         {
-                            generos += genero;
-                            generos += ", ";
-                        }
-                        if (generos.Length >= 2)
-                            generos = generos.Remove(generos.Length - 2);
-                        string tags = "";
-                        foreach (var tag in datos.tags)
-                        {
-                            if (tag.isMediaSpoiler == "false")
+                            await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
+                            await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
+                            var datos = data.Data.Page.media[elegido - 1];
+                            if (datos.isAdult == "false")
                             {
-                                tags += tag.name;
+                                string descripcion = datos.description;
+                                descripcion = funciones.LimpiarTexto(descripcion);
+                                if (descripcion == "")
+                                    descripcion = "(Sin descripción)";
+                                string estado = datos.status;
+                                string formato = datos.format;
+                                string score = $"{datos.meanScore}/100";
+                                string fechas;
+                                string generos = "";
+                                foreach (var genero in datos.genres)
+                                {
+                                    generos += genero;
+                                    generos += ", ";
+                                }
+                                if (generos.Length >= 2)
+                                    generos = generos.Remove(generos.Length - 2);
+                                string tags = "";
+                                foreach (var tag in datos.tags)
+                                {
+                                    if (tag.isMediaSpoiler == "false")
+                                    {
+                                        tags += tag.name;
+                                    }
+                                    else
+                                    {
+                                        tags += $"||{tag.name}||";
+                                    }
+                                    tags += ", ";
+                                }
+                                if (tags.Length >= 2)
+                                    tags = tags.Remove(tags.Length - 2);
+                                string titulos = "";
+                                foreach (var title in datos.synonyms)
+                                {
+                                    titulos += $"`{title}`, ";
+                                }
+                                if (titulos.Length >= 2)
+                                    titulos = titulos.Remove(titulos.Length - 2);
+                                string estudios = "";
+                                var nodos = datos.studios.nodes;
+                                if (nodos.HasValues)
+                                {
+                                    foreach (var studio in datos.studios.nodes)
+                                    {
+                                        estudios += $"[{studio.name}]({studio.siteUrl}), ";
+                                    }
+                                }
+                                if (estudios.Length >= 2)
+                                    estudios = estudios.Remove(estudios.Length - 2);
+                                string linksExternos = "";
+                                foreach (var external in datos.externalLinks)
+                                {
+                                    linksExternos += $"[{external.site}]({external.url}), ";
+                                }
+                                if (linksExternos.Length >= 2)
+                                    linksExternos = linksExternos.Remove(linksExternos.Length - 2);
+                                if (datos.startDate.day != null)
+                                {
+                                    if (datos.endDate.day != null)
+                                        fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
+                                    else
+                                        fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
+                                }
+                                else
+                                {
+                                    fechas = $"Este anime no tiene fecha de emisión";
+                                }
+                                string titulo = datos.title.romaji;
+                                string urlAnilist = datos.siteUrl;
+                                var builder = new DiscordEmbedBuilder
+                                {
+                                    Title = titulo,
+                                    Url = urlAnilist,
+                                    Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
+                                    {
+                                        Url = datos.coverImage.large
+                                    },
+                                    Footer = funciones.GetFooter(ctx),
+                                    Color = funciones.GetColor(),
+                                    Description = descripcion
+                                };
+                                if (formato.Length > 0)
+                                    builder.AddField("Formato", formato, true);
+                                if (estado.Length > 0)
+                                    builder.AddField("Estado", estado.ToLower().ToUpperFirst(), true);
+                                if (score.Length > 0)
+                                    builder.AddField("Puntuación", score, true);
+                                if (fechas.Length > 0)
+                                    builder.AddField("Fecha emisión", fechas, false);
+                                if (generos.Length > 0)
+                                    builder.AddField("Generos", generos, false);
+                                if (tags.Length > 0)
+                                    builder.AddField("Etiquetas", tags, false);
+                                if (titulos.Length > 0)
+                                    builder.AddField("Titulos alternativos", titulos, false);
+                                if (estudios.Length > 0)
+                                    builder.AddField("Estudios", estudios, false);
+                                if (linksExternos.Length > 0)
+                                    builder.AddField("Links externos", linksExternos, false);
+                                await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                                await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                             }
                             else
                             {
-                                tags += $"||{tag.name}||";
+                                DiscordMessage msg = await ctx.RespondAsync("", embed: new DiscordEmbedBuilder
+                                {
+                                    Title = "Requiere NSFW",
+                                    Description = "Este comando debe ser invocado en un canal NSFW.",
+                                    Color = new DiscordColor(0xFF0000),
+                                    Footer = funciones.GetFooter(ctx)
+                                });
+                                await Task.Delay(3000);
+                                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                                await msg.DeleteAsync("Auto borrado de yumiko");
                             }
-                            tags += ", ";
-                        }
-                        if(tags.Length >= 2)
-                            tags = tags.Remove(tags.Length - 2);
-                        string titulos = "";
-                        foreach (var title in datos.synonyms)
-                        {
-                            titulos += $"`{title}`, ";
-                        }
-                        if (titulos.Length >= 2)
-                            titulos = titulos.Remove(titulos.Length - 2);
-                        string estudios = "";
-                        var nodos = datos.studios.nodes;
-                        if (nodos.HasValues)
-                        {
-                            foreach (var studio in datos.studios.nodes)
-                            {
-                                estudios += $"[{studio.name}]({studio.siteUrl}), ";
-                            }
-                        }
-                        if (estudios.Length >= 2)
-                            estudios = estudios.Remove(estudios.Length - 2);
-                        string linksExternos = "";
-                        foreach (var external in datos.externalLinks)
-                        {
-                            linksExternos += $"[{external.site}]({external.url}), ";
-                        }
-                        if (linksExternos.Length >= 2)
-                            linksExternos = linksExternos.Remove(linksExternos.Length - 2);
-                        if (datos.startDate.day != null)
-                        {
-                            if (datos.endDate.day != null)
-                                fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
-                            else
-                                fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
                         }
                         else
                         {
-                            fechas = $"Este anime no tiene fecha de emisión";
+                            var msg = await ctx.RespondAsync($"Debes escribir un numero válido").ConfigureAwait(false);
+                            await Task.Delay(3000);
+                            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                            await msg.DeleteAsync("Auto borrado de yumiko");
+                            await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
+                            await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
                         }
-                        string titulo = datos.title.romaji;
-                        string urlAnilist = datos.siteUrl;
-                        var builder = new DiscordEmbedBuilder
-                        {
-                            Title = titulo,
-                            Url = urlAnilist,
-                            Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
-                            {
-                                Url = datos.coverImage.large
-                            },
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            Description = descripcion
-                        };
-                        if (formato.Length > 0)
-                            builder.AddField("Formato", formato, true);
-                        if (estado.Length > 0)
-                            builder.AddField("Estado", estado.ToLower().ToUpperFirst(), true);
-                        if (score.Length > 0)
-                            builder.AddField("Puntuación", score, true);
-                        if (fechas.Length > 0)
-                            builder.AddField("Fecha emisión", fechas, false);
-                        if (generos.Length > 0)
-                            builder.AddField("Generos", generos, false);
-                        if (tags.Length > 0)
-                            builder.AddField("Etiquetas", tags, false);
-                        if (titulos.Length > 0)
-                            builder.AddField("Titulos alternativos", titulos, false);
-                        if (estudios.Length > 0)
-                            builder.AddField("Estudios", estudios, false);
-                        if (linksExternos.Length > 0)
-                            builder.AddField("Links externos", linksExternos, false);
-                        await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                     }
                     else
                     {
-                        DiscordMessage msg = await ctx.RespondAsync("", embed: new DiscordEmbedBuilder
-                        {
-                            Title = "Requiere NSFW",
-                            Description = "Este comando debe ser invocado en un canal NSFW.",
-                            Color = new DiscordColor(0xFF0000),
-                            Footer = funciones.GetFooter(ctx)
-                        });
+                        var msg = await ctx.RespondAsync($"Tiempo agotado esperando el número").ConfigureAwait(false);
                         await Task.Delay(3000);
                         await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
+                        await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
+                        await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
                     }
                 }
                 else
@@ -405,36 +451,38 @@ namespace Discord_Bot.Modulos
             {
                 Query =
                 "query($nombre : String){" +
-                "   Media(type: MANGA, search: $nombre){" +
-                "       title{" +
-                "           romaji" +
-                "       }," +
-                "       coverImage{" +
-                "           large" +
-                "       }," +
-                "       siteUrl," +
-                "       description," +
-                "       format," +
-                "       chapters" +
-                "       status," +
-                "       meanScore," +
-                "       startDate{" +
-                "           year," +
-                "           month," +
-                "           day" +
-                "       }," +
-                "       endDate{" +
-                "           year," +
-                "           month," +
-                "           day" +
-                "       }," +
-                "       genres," +
-                "       tags{" +
-                "           name," +
-                "           isMediaSpoiler" +
-                "       }," +
-                "       synonyms," +
-                "       isAdult" +
+                "   Page(perPage:10){" +
+                "       media(type: MANGA, search: $nombre){" +
+                "           title{" +
+                "               romaji" +
+                "           }," +
+                "           coverImage{" +
+                "               large" +
+                "           }," +
+                "           siteUrl," +
+                "           description," +
+                "           format," +
+                "           chapters" +
+                "           status," +
+                "           meanScore," +
+                "           startDate{" +
+                "               year," +
+                "               month," +
+                "               day" +
+                "           }," +
+                "           endDate{" +
+                "               year," +
+                "               month," +
+                "               day" +
+                "           }," +
+                "           genres," +
+                "           tags{" +
+                "               name," +
+                "               isMediaSpoiler" +
+                "           }," +
+                "           synonyms," +
+                "           isAdult" +
+                "       }" +
                 "   }" +
                 "}",
                 Variables = new
@@ -447,101 +495,144 @@ namespace Discord_Bot.Modulos
                 var data = await graphQLClient.SendQueryAsync<dynamic>(request);
                 if (data.Data != null)
                 {
-                    var datos = data.Data.Media;
-                    if (datos.isAdult == "false")
+                    int cont = 1;
+                    string opc = "";
+                    foreach (var animeP in data.Data.Page.media)
                     {
-                        string descripcion = datos.description;
-                        descripcion = funciones.LimpiarTexto(descripcion);
-                        if (descripcion == "")
-                            descripcion = "(Sin descripción)";
-                        string estado = datos.status;
-                        string formato = datos.format;
-                        string score = $"{datos.meanScore}/100";
-                        string fechas;
-                        string generos = "";
-                        foreach (var genero in datos.genres)
+                        opc += $"{cont} - {animeP.title.romaji}\n";
+                        cont++;
+                    }
+                    DiscordMessage elegirMsg = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Footer = funciones.GetFooter(ctx),
+                        Color = funciones.GetColor(),
+                        Title = "Elije la opcion escribiendo su número a continuación",
+                        Description = opc
+                    });
+                    var interactivity = ctx.Client.GetInteractivity();
+                    var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                    if (!msgElegir.TimedOut)
+                    {
+                        bool result = int.TryParse(msgElegir.Result.Content, out int elegido);
+                        if (result && elegido > 0)
                         {
-                            generos += genero;
-                            generos += ", ";
-                        }
-                        if (generos.Length >= 2)
-                            generos = generos.Remove(generos.Length - 2);
-                        string tags = "";
-                        foreach (var tag in datos.tags)
-                        {
-                            if (tag.isMediaSpoiler == "false")
+                            await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
+                            await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
+                            var datos = data.Data.Page.media[elegido - 1];
+                            if (datos.isAdult == "false")
                             {
-                                tags += tag.name;
+                                string descripcion = datos.description;
+                                descripcion = funciones.LimpiarTexto(descripcion);
+                                if (descripcion == "")
+                                    descripcion = "(Sin descripción)";
+                                string estado = datos.status;
+                                string formato = datos.format;
+                                string score = $"{datos.meanScore}/100";
+                                string fechas;
+                                string generos = "";
+                                foreach (var genero in datos.genres)
+                                {
+                                    generos += genero;
+                                    generos += ", ";
+                                }
+                                if (generos.Length >= 2)
+                                    generos = generos.Remove(generos.Length - 2);
+                                string tags = "";
+                                foreach (var tag in datos.tags)
+                                {
+                                    if (tag.isMediaSpoiler == "false")
+                                    {
+                                        tags += tag.name;
+                                    }
+                                    else
+                                    {
+                                        tags += $"||{tag.name}||";
+                                    }
+                                    tags += ", ";
+                                }
+                                if (tags.Length >= 2)
+                                    tags = tags.Remove(tags.Length - 2);
+                                string titulos = "";
+                                foreach (var title in datos.synonyms)
+                                {
+                                    titulos += $"`{title}`, ";
+                                }
+                                if (titulos.Length >= 2)
+                                    titulos = titulos.Remove(titulos.Length - 2);
+                                if (datos.startDate.day != null)
+                                {
+                                    if (datos.endDate.day != null)
+                                        fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
+                                    else
+                                        fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
+                                }
+                                else
+                                {
+                                    fechas = $"Este manga no tiene fecha de emisión";
+                                }
+                                string titulo = datos.title.romaji;
+                                string urlAnilist = datos.siteUrl;
+                                var builder = new DiscordEmbedBuilder
+                                {
+                                    Title = titulo,
+                                    Url = urlAnilist,
+                                    Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
+                                    {
+                                        Url = datos.coverImage.large
+                                    },
+                                    Footer = funciones.GetFooter(ctx),
+                                    Color = funciones.GetColor(),
+                                    Description = descripcion
+                                };
+                                if (formato.Length > 0)
+                                    builder.AddField("Formato", formato, true);
+                                if (estado.Length > 0)
+                                    builder.AddField("Estado", estado.ToLower().ToUpperFirst(), true);
+                                if (score.Length > 0)
+                                    builder.AddField("Puntuación", score, true);
+                                if (fechas.Length > 0)
+                                    builder.AddField("Fecha emisión", fechas, false);
+                                if (generos.Length > 0)
+                                    builder.AddField("Generos", generos, false);
+                                if (tags.Length > 0)
+                                    builder.AddField("Etiquetas", tags, false);
+                                if (titulos.Length > 0)
+                                    builder.AddField("Titulos alternativos", titulos, false);
+                                await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                                await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                             }
                             else
                             {
-                                tags += $"||{tag.name}||";
+                                DiscordMessage msg = await ctx.RespondAsync("", embed: new DiscordEmbedBuilder
+                                {
+                                    Title = "Requiere NSFW",
+                                    Description = "Este comando debe ser invocado en un canal NSFW.",
+                                    Color = new DiscordColor(0xFF0000),
+                                    Footer = funciones.GetFooter(ctx)
+                                });
+                                await Task.Delay(3000);
+                                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                                await msg.DeleteAsync("Auto borrado de yumiko");
                             }
-                            tags += ", ";
-                        }
-                        if (tags.Length >= 2)
-                            tags = tags.Remove(tags.Length - 2);
-                        string titulos = "";
-                        foreach (var title in datos.synonyms)
-                        {
-                            titulos += $"`{title}`, ";
-                        }
-                        if (titulos.Length >= 2)
-                            titulos = titulos.Remove(titulos.Length - 2);
-                        if (datos.startDate.day != null)
-                        {
-                            if (datos.endDate.day != null)
-                                fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
-                            else
-                                fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
                         }
                         else
                         {
-                            fechas = $"Este manga no tiene fecha de emisión";
+                            var msg = await ctx.RespondAsync($"Debes escribir un numero válido").ConfigureAwait(false);
+                            await Task.Delay(3000);
+                            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                            await msg.DeleteAsync("Auto borrado de yumiko");
+                            await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
+                            await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
                         }
-                        string titulo = datos.title.romaji;
-                        string urlAnilist = datos.siteUrl;
-                        var builder = new DiscordEmbedBuilder
-                        {
-                            Title = titulo,
-                            Url = urlAnilist,
-                            Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
-                            {
-                                Url = datos.coverImage.large
-                            },
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            Description = descripcion
-                        };
-                        if (formato.Length > 0)
-                            builder.AddField("Formato", formato, true);
-                        if (estado.Length > 0)
-                            builder.AddField("Estado", estado.ToLower().ToUpperFirst(), true);
-                        if (score.Length > 0)
-                            builder.AddField("Puntuación", score, true);
-                        if (fechas.Length > 0)
-                            builder.AddField("Fecha emisión", fechas, false);
-                        if (generos.Length > 0)
-                            builder.AddField("Generos", generos, false);
-                        if (tags.Length > 0)
-                            builder.AddField("Etiquetas", tags, false);
-                        if (titulos.Length > 0)
-                            builder.AddField("Titulos alternativos", titulos, false);
-                        await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                     }
                     else
                     {
-                        DiscordMessage msg = await ctx.RespondAsync("", embed: new DiscordEmbedBuilder
-                        {
-                            Title = "Requiere NSFW",
-                            Description = "Este comando debe ser invocado en un canal NSFW.",
-                            Color = new DiscordColor(0xFF0000),
-                            Footer = funciones.GetFooter(ctx)
-                        });
+                        var msg = await ctx.RespondAsync($"Tiempo agotado esperando el número").ConfigureAwait(false);
                         await Task.Delay(3000);
                         await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
+                        await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
+                        await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
                     }
                 }
                 else
@@ -580,29 +671,31 @@ namespace Discord_Bot.Modulos
             {
                 Query =
                 "query($nombre : String){" +
-                "   Character(search: $nombre){" +
-                "       name{" +
-                "           full" +
-                "       }," +
-                "       image{" +
-                "           large" +
-                "       }," +
-                "       siteUrl," +
-                "       description," +
-                "       animes: media(type: ANIME){" +
-                "           nodes{" +
-                "               title{" +
-                "                   romaji" +
-                "               }," +
-                "               siteUrl" +
+                "   Page(perPage:10){" +
+                "       characters(search: $nombre){" +
+                "           name{" +
+                "               full" +
+                "           }," +
+                "           image{" +
+                "               large" +
+                "           }," +
+                "           siteUrl," +
+                "           description," +
+                "           animes: media(type: ANIME){" +
+                "               nodes{" +
+                "                   title{" +
+                "                       romaji" +
+                "                   }," +
+                "                   siteUrl" +
+                "               }" +
                 "           }" +
-                "       }" +
-                "       mangas: media(type: MANGA){" +
-                "           nodes{" +
-                "               title{" +
-                "                   romaji" +
-                "               }," +
-                "               siteUrl" +
+                "           mangas: media(type: MANGA){" +
+                "               nodes{" +
+                "                   title{" +
+                "                       romaji" +
+                "                   }," +
+                "                   siteUrl" +
+                "               }" +
                 "           }" +
                 "       }" +
                 "   }" +
@@ -617,50 +710,93 @@ namespace Discord_Bot.Modulos
                 var data = await graphQLClient.SendQueryAsync<dynamic>(request);
                 if (data.Data != null)
                 {
-                    var datos = data.Data.Character;
-                    string descripcion = datos.description;
-                    descripcion = funciones.LimpiarTexto(descripcion);
-                    if (descripcion == "")
-                        descripcion = "(Sin descripción)";
-                    string nombre = datos.name.full;
-                    string imagen = datos.image.large;
-                    string urlAnilist = datos.siteUrl;
-                    string animes = "";
-                    foreach(var anime in datos.animes.nodes)
+                    int cont = 1;
+                    string opc = "";
+                    foreach (var animeP in data.Data.Page.characters)
                     {
-                        animes += $"[{anime.title.romaji}]({anime.siteUrl})\n";
+                        opc += $"{cont} - {animeP.name.full}\n";
+                        cont++;
                     }
-                    string mangas = "";
-                    foreach (var manga in datos.mangas.nodes)
+                    DiscordMessage elegirMsg = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
-                        mangas += $"[{manga.title.romaji}]({manga.siteUrl})\n";
-                    }
-                    var builder = new DiscordEmbedBuilder
-                    {
-                        Title = nombre,
-                        Url = urlAnilist,
-                        Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
-                        {
-                            Url = imagen
-                        },
                         Footer = funciones.GetFooter(ctx),
                         Color = funciones.GetColor(),
-                        Description = descripcion
-                    };
-                    if (animes.Length > 0)
+                        Title = "Elije la opcion escribiendo su número a continuación",
+                        Description = opc
+                    });
+                    var interactivity = ctx.Client.GetInteractivity();
+                    var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                    if (!msgElegir.TimedOut)
                     {
-                        if (animes.Length > 1024)
-                            animes= animes.Remove(1024);
-                        builder.AddField("Animes", animes, false);
+                        bool result = int.TryParse(msgElegir.Result.Content, out int elegido);
+                        if (result && elegido > 0)
+                        {
+                            await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
+                            await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
+                            var datos = data.Data.Page.characters[elegido - 1];
+                            string descripcion = datos.description;
+                            descripcion = funciones.LimpiarTexto(descripcion);
+                            if (descripcion == "")
+                                descripcion = "(Sin descripción)";
+                            string nombre = datos.name.full;
+                            string imagen = datos.image.large;
+                            string urlAnilist = datos.siteUrl;
+                            string animes = "";
+                            foreach (var anime in datos.animes.nodes)
+                            {
+                                animes += $"[{anime.title.romaji}]({anime.siteUrl})\n";
+                            }
+                            string mangas = "";
+                            foreach (var manga in datos.mangas.nodes)
+                            {
+                                mangas += $"[{manga.title.romaji}]({manga.siteUrl})\n";
+                            }
+                            var builder = new DiscordEmbedBuilder
+                            {
+                                Title = nombre,
+                                Url = urlAnilist,
+                                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
+                                {
+                                    Url = imagen
+                                },
+                                Footer = funciones.GetFooter(ctx),
+                                Color = funciones.GetColor(),
+                                Description = descripcion
+                            };
+                            if (animes.Length > 0)
+                            {
+                                if (animes.Length > 1024)
+                                    animes = animes.Remove(1024);
+                                builder.AddField("Animes", animes, false);
+                            }
+                            if (mangas.Length > 0)
+                            {
+                                if (mangas.Length > 1024)
+                                    mangas = mangas.Remove(1024);
+                                builder.AddField("Mangas", mangas, false);
+                            }
+                            await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                            await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            var msg = await ctx.RespondAsync($"Debes escribir un numero válido").ConfigureAwait(false);
+                            await Task.Delay(3000);
+                            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                            await msg.DeleteAsync("Auto borrado de yumiko");
+                            await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
+                            await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
+                        }
                     }
-                    if (mangas.Length > 0)
+                    else
                     {
-                        if (mangas.Length > 1024)
-                            mangas = mangas.Remove(1024);
-                        builder.AddField("Mangas", mangas, false);
+                        var msg = await ctx.RespondAsync($"Tiempo agotado esperando el número").ConfigureAwait(false);
+                        await Task.Delay(3000);
+                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+                        await msg.DeleteAsync("Auto borrado de yumiko");
+                        await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
+                        await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
                     }
-                    await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
-                    await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                 }
                 else
                 {
@@ -690,112 +826,9 @@ namespace Discord_Bot.Modulos
                 await msg.DeleteAsync("Auto borrado de yumiko");
             }
         }
-        /*
-        [Command("staff"), Description("Busco alguien del staff de una obra en AniList")]
-        public async Task Staff(CommandContext ctx, [RemainingText][Description("Nombre del staff a buscar")] string personaje)
-        {
-            var request = new GraphQLRequest
-            {
-                Query =
-                "query($nombre : String){" +
-                "   Character(search: $nombre){" +
-                "       name{" +
-                "           full" +
-                "       }," +
-                "       image{" +
-                "           large" +
-                "       }," +
-                "       siteUrl," +
-                "       description," +
-                "       animes: media(type: ANIME){" +
-                "           nodes{" +
-                "               title{" +
-                "                   romaji" +
-                "               }," +
-                "               siteUrl" +
-                "           }" +
-                "       }" +
-                "       mangas: media(type: MANGA){" +
-                "           nodes{" +
-                "               title{" +
-                "                   romaji" +
-                "               }," +
-                "               siteUrl" +
-                "           }" +
-                "       }" +
-                "   }" +
-                "}",
-                Variables = new
-                {
-                    nombre = personaje
-                }
-            };
-            try
-            {
-                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                if (data.Data != null)
-                {
-                    var datos = data.Data.Character;
-                    string descripcion = datos.description;
-                    descripcion = funciones.limpiarTexto(descripcion);
-                    if (descripcion == "")
-                        descripcion = "(Sin descripción)";
-                    string nombre = datos.name.full;
-                    string imagen = datos.image.large;
-                    string urlAnilist = datos.siteUrl;
-                    string animes = "";
-                    foreach (var anime in datos.animes.nodes)
-                    {
-                        animes += $"[{anime.title.romaji}]({anime.siteUrl})\n";
-                    }
-                    string mangas = "";
-                    foreach (var manga in datos.mangas.nodes)
-                    {
-                        mangas += $"[{manga.title.romaji}]({manga.siteUrl})\n";
-                    }
-                    var builder = new DiscordEmbedBuilder
-                    {
-                        Title = nombre,
-                        Url = urlAnilist,
-                        Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
-                        {
-                            Url = imagen
-                        },
-                        Footer = funciones.GetFooter(ctx),
-                        Color = funciones.GetColor(),
-                        Description = descripcion
-                    };
-                    if (animes.Length > 0)
-                        builder.AddField("Animes", animes, false);
-                    if (mangas.Length > 0)
-                        builder.AddField("Mangas", mangas, false);
-                    await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
-                    await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
-                }
-                else
-                {
-                    foreach (var x in data.Errors)
-                    {
-                        var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
-                        await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
-                        await msg.DeleteAsync("Auto borrado de yumiko");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                DiscordMessage msg = ex.Message switch
-                {
-                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el personaje `{personaje}`").ConfigureAwait(false),
-                    _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
-                };
-                await Task.Delay(3000);
-                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
-                await msg.DeleteAsync("Auto borrado de yumiko");
-            }
-        }
-        */
+        
+        // Staff, algun dia
+
         [Command("sauce"), Description("Busca el anime de una imagen.")]
         public async Task Sauce(CommandContext ctx, [Description("Link de la imagen")] string url)
         {
