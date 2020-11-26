@@ -536,7 +536,7 @@ namespace Discord_Bot.Modulos
 
             var builder = new DiscordEmbedBuilder
             {
-                Title = "Estadisticas - Adivina el personaje",
+                Title = "Estadisticas - Adivina el anime",
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor()
             };
