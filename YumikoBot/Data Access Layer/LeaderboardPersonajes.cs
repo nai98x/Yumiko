@@ -49,7 +49,7 @@ namespace YumikoBot.Data_Access_Layer
                     });
                 });
                 lista.Sort((x, y) => y.PorcentajeAciertos.CompareTo(x.PorcentajeAciertos));
-                return lista;
+                return lista.Take(10).ToList();
             }
         }
     }
