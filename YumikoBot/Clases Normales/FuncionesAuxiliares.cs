@@ -127,7 +127,24 @@ namespace Discord_Bot
                 if (lastScore != uj.Puntaje)
                     pos++;
                 int porcentaje = (uj.Puntaje * 100) / rondas;
-                resultados += $"#{pos} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
+                switch (pos)
+                {
+                    case 1:
+                        DiscordEmoji emoji1 = DiscordEmoji.FromName(ctx.Client, ":first_place:");
+                        resultados += $"{emoji1} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
+                        break;
+                    case 2:
+                        DiscordEmoji emoji2 = DiscordEmoji.FromName(ctx.Client, ":second_place:");
+                        resultados += $"{emoji2} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
+                        break;
+                    case 3:
+                        DiscordEmoji emoji3 = DiscordEmoji.FromName(ctx.Client, ":third_place:");
+                        resultados += $"{emoji3} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
+                        break;
+                    default:
+                        resultados += $"{pos} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
+                        break;
+                }
                 lastScore = uj.Puntaje;
                 tot += uj.Puntaje;
                 switch (juego)
