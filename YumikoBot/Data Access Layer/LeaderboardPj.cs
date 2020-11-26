@@ -18,13 +18,16 @@ namespace YumikoBot.Data_Access_Layer
         public LeaderboardPj()
         {
             this.partidasJugadas = 0;
-            this.porcentajeAciertos = 0;
+            this.rondasAcertadas = 0;
+            this.rondasTotales = 0;
         }
     
-        public int user_id { get; set; }
-        public int guild_id { get; set; }
+        public int Id { get; set; }
+        public long user_id { get; set; }
+        public long guild_id { get; set; }
         public string dificultad { get; set; }
         public int partidasJugadas { get; set; }
-        public int porcentajeAciertos { get; set; }
+        public int rondasAcertadas { get; set; }
+        public int rondasTotales { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using GraphQL.Client.Serializer.Newtonsoft;
 using System.Linq;
 using System.Configuration;
 using DSharpPlus.Interactivity.Extensions;
+using YumikoBot.Data_Access_Layer;
 
 namespace Discord_Bot.Modulos
 {
@@ -128,7 +129,7 @@ namespace Discord_Bot.Modulos
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                            await funciones.GetResultados(ctx, participantes, lastRonda);
+                            await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad);
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -145,7 +146,6 @@ namespace Discord_Bot.Modulos
                                 Puntaje = 1
                             });
                         }
-                        characterList.Remove(characterList[random]);
                         await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
@@ -162,8 +162,9 @@ namespace Discord_Bot.Modulos
                             Color = DiscordColor.Red
                         }).ConfigureAwait(false);
                     }
+                    characterList.Remove(characterList[random]);
                 }
-                await funciones.GetResultados(ctx, participantes, rondas);
+                await funciones.GetResultados(ctx, participantes, rondas, settings.Dificultad);
             }
             else
             {
@@ -309,7 +310,7 @@ namespace Discord_Bot.Modulos
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                            await funciones.GetResultados(ctx, participantes, lastRonda);
+                            await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad);
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -326,7 +327,6 @@ namespace Discord_Bot.Modulos
                                 Puntaje = 1
                             });
                         }
-                        characterList.Remove(characterList[random]);
                         await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
@@ -343,13 +343,141 @@ namespace Discord_Bot.Modulos
                             Color = DiscordColor.Red
                         }).ConfigureAwait(false);
                     }
+                    characterList.Remove(characterList[random]);
                 }
-                await funciones.GetResultados(ctx, participantes, rondas);
+                await funciones.GetResultados(ctx, participantes, rondas, settings.Dificultad);
             }
             else
             {
                 var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
             }
+        }
+
+        [Command("statsC"), Aliases("estadisticaspersonajes"), Description("Estadisticas de adivina el personaje."), RequireGuild]
+        public async Task EstadisticasAdivinaPersonaje(CommandContext ctx)
+        {
+            LeaderboardPersonajes leaderboardPjs = new LeaderboardPersonajes();
+            List<StatsJuego> resFacil = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Fácil");
+            string facil = "";
+            int pos = 1;
+            foreach(StatsJuego jugador in resFacil)
+            {
+                long x = jugador.UserId;
+                ulong id = (ulong)x;
+                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                if(miembro != null)
+                {
+                    facil += $"#{pos} - {miembro.DisplayName} - Aciertos: {jugador.PorcentajeAciertos}% - Partidas: {jugador.PartidasTotales}\n";
+                    pos++;
+                }
+            }
+            if (resFacil.Count > 0)
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Estadisticas - Adivina el personaje (Fácil)",
+                    Description = facil,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                });
+            }
+            List<StatsJuego> resMedia = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Media");
+            string media = "";
+            pos = 1;
+            foreach (StatsJuego jugador in resMedia)
+            {
+                long x = jugador.UserId;
+                ulong id = (ulong)x;
+                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                if (miembro != null)
+                {
+                    media += $"#{pos} - {miembro.DisplayName} - Aciertos: {jugador.PorcentajeAciertos}% - Partidas: {jugador.PartidasTotales}\n";
+                    pos++;
+                }
+            }
+            if (resMedia.Count > 0)
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Estadisticas - Adivina el personaje (Media)",
+                    Description = media,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                });
+            }
+            List<StatsJuego> resDificil = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Dificil");
+            string dificil = "";
+            pos = 1;
+            foreach (StatsJuego jugador in resDificil)
+            {
+                long x = jugador.UserId;
+                ulong id = (ulong)x;
+                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                if (miembro != null)
+                {
+                    dificil += $"#{pos} - {miembro.DisplayName} - Aciertos: {jugador.PorcentajeAciertos}% - Partidas: {jugador.PartidasTotales}\n";
+                    pos++;
+                }
+            }
+            if (resDificil.Count > 0)
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Estadisticas - Adivina el personaje (Dificil)",
+                    Description = dificil,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                });
+            }
+            List<StatsJuego> resExtremo = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Extremo");
+            string extremo = "";
+            pos = 1;
+            foreach (StatsJuego jugador in resExtremo)
+            {
+                long x = jugador.UserId;
+                ulong id = (ulong)x;
+                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                if (miembro != null)
+                {
+                    extremo += $"#{pos} - {miembro.DisplayName} - Aciertos: {jugador.PorcentajeAciertos}% - Partidas: {jugador.PartidasTotales}\n";
+                    pos++;
+                }
+            }
+            if (resExtremo.Count > 0)
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Estadisticas - Adivina el personaje (Extremo)",
+                    Description = extremo,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                });
+            }
+            List<StatsJuego> resKusan = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Kusan");
+            string kusan = "";
+            pos = 1;
+            foreach (StatsJuego jugador in resKusan)
+            {
+                long x = jugador.UserId;
+                ulong id = (ulong)x;
+                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                if (miembro != null)
+                {
+                    kusan += $"#{pos} - {miembro.DisplayName} - Aciertos: {jugador.PorcentajeAciertos}% - Partidas: {jugador.PartidasTotales}\n";
+                    pos++;
+                }
+            }
+            if(resKusan.Count > 0)
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Estadisticas - Adivina el personaje (Kusan)",
+                    Description = kusan,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                });
+            }
+            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
         }
     }
 }

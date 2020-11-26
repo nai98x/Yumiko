@@ -1,47 +1,56 @@
-﻿using System;
+﻿using Discord_Bot;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YumikoBot.Data_Access_Layer
 {
     public class LeaderboardPersonajes
     {
-        public void AddRegistro(int userId, int guildId, string dificultad, int porcentajeNuevoAciertos)
+        public void AddRegistro(long userId, long guildId, string dificultad, int rondasAcertadas, int rondasTotales)
         {
             using (var context = new YumikoEntities())
             {
-                LeaderboardAn registro = context.LeaderboardAnimes.FirstOrDefault(x => x.user_id == userId && x.guild_id == guildId && x.dificultad == dificultad);
+                LeaderboardPj registro = context.LeaderboardPersonajes.FirstOrDefault(x => x.user_id == userId && x.guild_id == guildId && x.dificultad == dificultad);
                 if(registro == null)
                 {
-                    LeaderboardAn nuevo = new LeaderboardAn()
+                    LeaderboardPj nuevo = new LeaderboardPj()
                     {
                         user_id = userId,
                         guild_id = guildId,
                         dificultad = dificultad,
                         partidasJugadas = 1,
-                        porcentajeAciertos = porcentajeNuevoAciertos
+                        rondasAcertadas = rondasAcertadas,
+                        rondasTotales = rondasTotales
                     };
-                    context.LeaderboardAnimes.Add(nuevo);
+                    context.LeaderboardPersonajes.Add(nuevo);
                 }
                 else
                 {
                     registro.partidasJugadas++;
-                    registro.porcentajeAciertos = 1;
+                    registro.rondasAcertadas += rondasAcertadas;
+                    registro.rondasTotales += rondasTotales;
                 }
                 context.SaveChanges();
             }
         }
 
-        public List<LeaderboardAn> GetLeaderboard(int guildId, string dificultad)
+        public List<StatsJuego> GetLeaderboard(long guildId, string dificultad)
         {
-            List<LeaderboardAn> lista = null;
+            List<StatsJuego> lista = new List<StatsJuego>();
             using (var context = new YumikoEntities())
             {
-
+                var list = context.LeaderboardPersonajes.ToList().Where(x => x.guild_id == guildId && x.dificultad == dificultad);
+                list.ToList().ForEach(x =>
+                {
+                    lista.Add(new StatsJuego() { 
+                        UserId = x.user_id,
+                        PartidasTotales = x.partidasJugadas,
+                        PorcentajeAciertos = (x.rondasAcertadas * 100) / x.rondasTotales
+                    });
+                });
+                lista.Sort((x, y) => y.PorcentajeAciertos.CompareTo(x.PorcentajeAciertos));
+                return lista;
             }
-            return lista;
         }
     }
 }

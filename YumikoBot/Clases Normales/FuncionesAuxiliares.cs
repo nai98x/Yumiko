@@ -9,12 +9,15 @@ using System.Configuration;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using YumikoBot.Data_Access_Layer;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
 {
     public class FuncionesAuxiliares
     {
+        private readonly LeaderboardPersonajes leaderboardPjs = new LeaderboardPersonajes();
+
         public int GetNumeroRandom(int min, int max)
         {
             var client = new RestClient("http://www.randomnumberapi.com/api/v1.0/random?min=" + min + "&max=" + max + "&count=1");
@@ -111,7 +114,7 @@ namespace Discord_Bot
             return texto;
         }
 
-        public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas)
+        public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas, string dificultad)
         {
             string resultados = "";
             participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
@@ -122,9 +125,11 @@ namespace Discord_Bot
             {
                 if (lastScore != uj.Puntaje)
                     pos++;
-                resultados += $"#{pos} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos\n";
+                int porcentaje = (uj.Puntaje * 100) / rondas;
+                resultados += $"#{pos} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
                 lastScore = uj.Puntaje;
                 tot += uj.Puntaje;
+                leaderboardPjs.AddRegistro(Int64.Parse(uj.Usuario.Id.ToString()), Int64.Parse(ctx.Guild.Id.ToString()), dificultad, uj.Puntaje, rondas);
             }
             resultados += $"\n**Total ({tot}/{rondas})**";
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder()

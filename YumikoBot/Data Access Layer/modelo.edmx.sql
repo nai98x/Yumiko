@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 11/25/2020 19:04:23
+-- Date Created: 11/25/2020 23:28:20
 -- Generated from EDMX file: C:\Users\Mariano\source\repos\yumiko\YumikoBot\Data Access Layer\modelo.edmx
 -- --------------------------------------------------
 
@@ -35,21 +35,25 @@ GO
 
 -- Creating table 'LeaderboardPersonajes'
 CREATE TABLE [dbo].[LeaderboardPersonajes] (
-    [user_id] int IDENTITY(1,1) NOT NULL,
-    [guild_id] int  NOT NULL,
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [user_id] bigint  NOT NULL,
+    [guild_id] bigint  NOT NULL,
     [dificultad] nvarchar(max)  NOT NULL,
     [partidasJugadas] int  NOT NULL,
-    [porcentajeAciertos] int  NOT NULL
+    [rondasAcertadas] int  NOT NULL,
+    [rondasTotales] int  NOT NULL
 );
 GO
 
 -- Creating table 'LeaderboardAnimes'
 CREATE TABLE [dbo].[LeaderboardAnimes] (
-    [user_id] int IDENTITY(1,1) NOT NULL,
-    [guild_id] int  NOT NULL,
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [user_id] bigint  NOT NULL,
+    [guild_id] bigint  NOT NULL,
     [dificultad] nvarchar(max)  NOT NULL,
     [partidasJugadas] int  NOT NULL,
-    [porcentajeAciertos] int  NOT NULL
+    [rondasAcertadas] int  NOT NULL,
+    [rondasTotales] int  NOT NULL
 );
 GO
 
@@ -57,16 +61,16 @@ GO
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
 
--- Creating primary key on [user_id], [guild_id] in table 'LeaderboardPersonajes'
+-- Creating primary key on [Id] in table 'LeaderboardPersonajes'
 ALTER TABLE [dbo].[LeaderboardPersonajes]
 ADD CONSTRAINT [PK_LeaderboardPersonajes]
-    PRIMARY KEY CLUSTERED ([user_id], [guild_id] ASC);
+    PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [user_id], [guild_id] in table 'LeaderboardAnimes'
+-- Creating primary key on [Id] in table 'LeaderboardAnimes'
 ALTER TABLE [dbo].[LeaderboardAnimes]
 ADD CONSTRAINT [PK_LeaderboardAnimes]
-    PRIMARY KEY CLUSTERED ([user_id], [guild_id] ASC);
+    PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
 -- --------------------------------------------------

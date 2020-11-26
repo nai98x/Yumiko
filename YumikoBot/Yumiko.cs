@@ -6,7 +6,6 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
-//using DSharpPlus.Lavalink;
 using DSharpPlus.VoiceNext;
 using Microsoft.Extensions.Logging;
 using System;
@@ -179,7 +178,8 @@ namespace Discord_Bot
                         Footer = footer
                     });
                     await Task.Delay(3000);
-                    await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                    if(e.Context.Message != null)
+                        await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
                     await msg.DeleteAsync("Auto borrado de Yumiko");
                 }
             }
