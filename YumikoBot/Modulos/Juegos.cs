@@ -357,6 +357,7 @@ namespace Discord_Bot.Modulos
         public async Task EstadisticasAdivinaPersonaje(CommandContext ctx)
         {
             LeaderboardPersonajes leaderboardPjs = new LeaderboardPersonajes();
+
             List<StatsJuego> resFacil = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Fácil");
             string facil = "";
             int pos = 1;
@@ -371,16 +372,7 @@ namespace Discord_Bot.Modulos
                     pos++;
                 }
             }
-            if (resFacil.Count > 0)
-            {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Estadisticas - Adivina el personaje (Fácil)",
-                    Description = facil,
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor()
-                });
-            }
+
             List<StatsJuego> resMedia = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Media");
             string media = "";
             pos = 1;
@@ -395,16 +387,7 @@ namespace Discord_Bot.Modulos
                     pos++;
                 }
             }
-            if (resMedia.Count > 0)
-            {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Estadisticas - Adivina el personaje (Media)",
-                    Description = media,
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor()
-                });
-            }
+
             List<StatsJuego> resDificil = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Dificil");
             string dificil = "";
             pos = 1;
@@ -419,16 +402,7 @@ namespace Discord_Bot.Modulos
                     pos++;
                 }
             }
-            if (resDificil.Count > 0)
-            {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Estadisticas - Adivina el personaje (Dificil)",
-                    Description = dificil,
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor()
-                });
-            }
+
             List<StatsJuego> resExtremo = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Extremo");
             string extremo = "";
             pos = 1;
@@ -443,16 +417,7 @@ namespace Discord_Bot.Modulos
                     pos++;
                 }
             }
-            if (resExtremo.Count > 0)
-            {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Estadisticas - Adivina el personaje (Extremo)",
-                    Description = extremo,
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor()
-                });
-            }
+
             List<StatsJuego> resKusan = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Kusan");
             string kusan = "";
             pos = 1;
@@ -467,16 +432,25 @@ namespace Discord_Bot.Modulos
                     pos++;
                 }
             }
-            if(resKusan.Count > 0)
+
+            var builder = new DiscordEmbedBuilder
             {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Estadisticas - Adivina el personaje (Kusan)",
-                    Description = kusan,
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor()
-                });
-            }
+                Title = "Estadisticas - Adivina el personaje",
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor()
+            };
+            if (resFacil.Count > 0)
+                builder.AddField("Dificultad Fácil", facil);
+            if (resMedia.Count > 0)
+                builder.AddField("Dificultad Media", media);
+            if (resDificil.Count > 0)
+                builder.AddField("Dificultad Dificil", dificil);
+            if (resExtremo.Count > 0)
+                builder.AddField("Dificultad Extremo", extremo);
+            if (resKusan.Count > 0)
+                builder.AddField("Dificultad Kusan", kusan);
+            await ctx.RespondAsync(embed: builder);
+
             await ctx.Message.DeleteAsync("Auto borrado de yumiko");
         }
     }
