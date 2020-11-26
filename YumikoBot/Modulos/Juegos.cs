@@ -453,5 +453,106 @@ namespace Discord_Bot.Modulos
 
             await ctx.Message.DeleteAsync("Auto borrado de yumiko");
         }
+
+        [Command("statsA"), Aliases("estadisticasanimes"), Description("Estadisticas de adivina el anime."), RequireGuild]
+        public async Task EstadisticasAdivinaAnime(CommandContext ctx)
+        {
+            LeaderboardAnimes leaderboardAns = new LeaderboardAnimes();
+
+            List<StatsJuego> resFacil = leaderboardAns.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Fácil");
+            string facil = "";
+            int pos = 1;
+            foreach (StatsJuego jugador in resFacil)
+            {
+                long x = jugador.UserId;
+                ulong id = (ulong)x;
+                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                if (miembro != null)
+                {
+                    facil += $"#{pos} - {miembro.DisplayName} - Aciertos: {jugador.PorcentajeAciertos}% - Partidas: {jugador.PartidasTotales}\n";
+                    pos++;
+                }
+            }
+
+            List<StatsJuego> resMedia = leaderboardAns.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Media");
+            string media = "";
+            pos = 1;
+            foreach (StatsJuego jugador in resMedia)
+            {
+                long x = jugador.UserId;
+                ulong id = (ulong)x;
+                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                if (miembro != null)
+                {
+                    media += $"#{pos} - {miembro.DisplayName} - Aciertos: {jugador.PorcentajeAciertos}% - Partidas: {jugador.PartidasTotales}\n";
+                    pos++;
+                }
+            }
+
+            List<StatsJuego> resDificil = leaderboardAns.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Dificil");
+            string dificil = "";
+            pos = 1;
+            foreach (StatsJuego jugador in resDificil)
+            {
+                long x = jugador.UserId;
+                ulong id = (ulong)x;
+                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                if (miembro != null)
+                {
+                    dificil += $"#{pos} - {miembro.DisplayName} - Aciertos: {jugador.PorcentajeAciertos}% - Partidas: {jugador.PartidasTotales}\n";
+                    pos++;
+                }
+            }
+
+            List<StatsJuego> resExtremo = leaderboardAns.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Extremo");
+            string extremo = "";
+            pos = 1;
+            foreach (StatsJuego jugador in resExtremo)
+            {
+                long x = jugador.UserId;
+                ulong id = (ulong)x;
+                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                if (miembro != null)
+                {
+                    extremo += $"#{pos} - {miembro.DisplayName} - Aciertos: {jugador.PorcentajeAciertos}% - Partidas: {jugador.PartidasTotales}\n";
+                    pos++;
+                }
+            }
+
+            List<StatsJuego> resKusan = leaderboardAns.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Kusan");
+            string kusan = "";
+            pos = 1;
+            foreach (StatsJuego jugador in resKusan)
+            {
+                long x = jugador.UserId;
+                ulong id = (ulong)x;
+                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                if (miembro != null)
+                {
+                    kusan += $"#{pos} - {miembro.DisplayName} - Aciertos: {jugador.PorcentajeAciertos}% - Partidas: {jugador.PartidasTotales}\n";
+                    pos++;
+                }
+            }
+
+            var builder = new DiscordEmbedBuilder
+            {
+                Title = "Estadisticas - Adivina el personaje",
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor()
+            };
+            if (resFacil.Count > 0)
+                builder.AddField("Dificultad Fácil", facil);
+            if (resMedia.Count > 0)
+                builder.AddField("Dificultad Media", media);
+            if (resDificil.Count > 0)
+                builder.AddField("Dificultad Dificil", dificil);
+            if (resExtremo.Count > 0)
+                builder.AddField("Dificultad Extremo", extremo);
+            if (resKusan.Count > 0)
+                builder.AddField("Dificultad Kusan", kusan);
+            await ctx.RespondAsync(embed: builder);
+
+            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
+        }
     }
 }
