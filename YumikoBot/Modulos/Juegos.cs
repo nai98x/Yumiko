@@ -367,8 +367,8 @@ namespace Discord_Bot.Modulos
             {
                 long x = jugador.UserId;
                 ulong id = (ulong)x;
-                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
-                if(miembro != null)
+                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
+                if (miembro != null)
                 {
                     if (lastScore != jugador.PorcentajeAciertos)
                         pos++;
@@ -402,7 +402,7 @@ namespace Discord_Bot.Modulos
             {
                 long x = jugador.UserId;
                 ulong id = (ulong)x;
-                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
                 if (miembro != null)
                 {
                     if (lastScore != jugador.PorcentajeAciertos)
@@ -437,7 +437,7 @@ namespace Discord_Bot.Modulos
             {
                 long x = jugador.UserId;
                 ulong id = (ulong)x;
-                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
                 if (miembro != null)
                 {
                     if (lastScore != jugador.PorcentajeAciertos)
@@ -472,7 +472,7 @@ namespace Discord_Bot.Modulos
             {
                 long x = jugador.UserId;
                 ulong id = (ulong)x;
-                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
                 if (miembro != null)
                 {
                     if (lastScore != jugador.PorcentajeAciertos)
@@ -507,7 +507,7 @@ namespace Discord_Bot.Modulos
             {
                 long x = jugador.UserId;
                 ulong id = (ulong)x;
-                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
                 if (miembro != null)
                 {
                     if (lastScore != jugador.PorcentajeAciertos)
@@ -569,7 +569,7 @@ namespace Discord_Bot.Modulos
             {
                 long x = jugador.UserId;
                 ulong id = (ulong)x;
-                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
                 if (miembro != null)
                 {
                     if (lastScore != jugador.PorcentajeAciertos)
@@ -604,7 +604,7 @@ namespace Discord_Bot.Modulos
             {
                 long x = jugador.UserId;
                 ulong id = (ulong)x;
-                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
                 if (miembro != null)
                 {
                     if (lastScore != jugador.PorcentajeAciertos)
@@ -639,7 +639,7 @@ namespace Discord_Bot.Modulos
             {
                 long x = jugador.UserId;
                 ulong id = (ulong)x;
-                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
                 if (miembro != null)
                 {
                     if (lastScore != jugador.PorcentajeAciertos)
@@ -674,7 +674,7 @@ namespace Discord_Bot.Modulos
             {
                 long x = jugador.UserId;
                 ulong id = (ulong)x;
-                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
                 if (miembro != null)
                 {
                     if (lastScore != jugador.PorcentajeAciertos)
@@ -709,7 +709,7 @@ namespace Discord_Bot.Modulos
             {
                 long x = jugador.UserId;
                 ulong id = (ulong)x;
-                DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
+                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
                 if (miembro != null)
                 {
                     if (lastScore != jugador.PorcentajeAciertos)

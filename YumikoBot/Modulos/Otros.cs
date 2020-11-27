@@ -42,5 +42,13 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
             await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
         }
+
+        [Command("test"), RequireOwner]
+        public async Task Test(CommandContext ctx)
+        {
+            var guild = await ctx.Client.GetGuildAsync(713809173573271613);
+            var channel = guild.GetChannel(781679685838569502);
+            await channel.SendMessageAsync("prueba");
+        }
     }
 }

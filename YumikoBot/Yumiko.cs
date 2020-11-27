@@ -21,6 +21,8 @@ namespace Discord_Bot
         public DiscordClient Client { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
 
+        private DiscordChannel LogChannel;
+
         public async Task RunAsync()
         {
             var Config = new DiscordConfiguration
@@ -41,7 +43,7 @@ namespace Discord_Bot
 
             var commandsConfig = new CommandsNextConfiguration
             {
-                StringPrefixes = new string[] { ConfigurationManager.AppSettings["Prefix"], "yumiko" },
+                StringPrefixes = new string[] { ConfigurationManager.AppSettings["Prefix"] },
                 EnableMentionPrefix = true,
                 EnableDms = false,
                 DmHelp = false,
@@ -64,6 +66,9 @@ namespace Discord_Bot
 
             await Task.Delay(1000); // esperar a que autentifique
             await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = ConfigurationManager.AppSettings["Prefix"]  + "help | yumiko.uwu.ai | Desarrollado con <3 por Nai" }, UserStatus.Online);
+            var LogGuild = await Client.GetGuildAsync(713809173573271613);
+            LogChannel = LogGuild.GetChannel(781679685838569502);
+
             await Task.Delay(-1);
         }
 
@@ -82,12 +87,14 @@ namespace Discord_Bot
         private Task Client_ClientError(DiscordClient c, ClientErrorEventArgs e)
         {
             c.Logger.LogError($"Ha ocurrido una excepcion: {e.Exception.GetType()}: {e.Exception.Message}", DateTime.Now);
+            LogChannel.SendMessageAsync($"Ha ocurrido una excepcion: {e.Exception.GetType()}: {e.Exception.Message}");
             return Task.CompletedTask;
         }
 
         private Task Commands_CommandExecuted(CommandsNextExtension cm, CommandExecutionEventArgs e)
         {
             e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} ejecuto el comando '{e.Command.QualifiedName}'", DateTime.Now);
+            LogChannel.SendMessageAsync($"{e.Context.User.Username} ejecuto el comando '{e.Command.QualifiedName}' | Servidor: {e.Context.Guild.Name} | Canal: {e.Context.Channel.Name}");
             return Task.CompletedTask;
         }
 
@@ -110,6 +117,7 @@ namespace Discord_Bot
             else
             {
                 e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} trato de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}", DateTime.Now);
+                await LogChannel.SendMessageAsync($"{e.Context.User.Username} trato de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}");
                 if (e.Exception is ChecksFailedException ex)
                 {
                     List<DiscordMessage> mensajes = new List<DiscordMessage>();

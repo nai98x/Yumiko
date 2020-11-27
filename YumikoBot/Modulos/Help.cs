@@ -28,7 +28,7 @@ namespace Discord_Bot.Modulos
                 var builder = new DiscordEmbedBuilder
                 {
                     Title = "Comandos disponibles",
-                    Description = $"Puedes llamarme con `{ConfigurationManager.AppSettings["Prefix"]}`, con `yumiko` o con {ctx.Client.CurrentUser.Mention}.\nSi quieres ver ejemplos puedes visitar mi [página web]({web}).",
+                    Description = $"Puedes llamarme con `{ConfigurationManager.AppSettings["Prefix"]}` o con {ctx.Client.CurrentUser.Mention}.\nSi quieres ver ejemplos puedes visitar mi [página web]({web}).",
                     Url = web,
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
