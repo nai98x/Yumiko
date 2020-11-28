@@ -30,6 +30,7 @@ namespace Discord_Bot
                 Token = ConfigurationManager.AppSettings["DiscordAPIKey"],
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
+                ReconnectIndefinitely = true,
                 MinimumLogLevel = LogLevel.Information
             };
             Client = new DiscordClient(Config);

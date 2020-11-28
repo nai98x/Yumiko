@@ -122,7 +122,7 @@ namespace Discord_Bot.Modulos
                     }).ConfigureAwait(false);
                     var msg = await interactivity.WaitForMessageAsync
                         (xm => (xm.Channel == ctx.Channel) &&
-                        (xm.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim() || xm.Content.ToLower().Trim() == elegido.NameFirst.ToLower().Trim() || (elegido.NameLast != null && xm.Content.ToLower().Trim() == elegido.NameLast.ToLower().Trim())) || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
+                        ((xm.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim() || xm.Content.ToLower().Trim() == elegido.NameFirst.ToLower().Trim() || (elegido.NameLast != null && xm.Content.ToLower().Trim() == elegido.NameLast.ToLower().Trim())) && xm.Author.Id != ctx.Client.CurrentUser.Id) || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
                         , TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                     if (!msg.TimedOut)
                     {
@@ -298,7 +298,7 @@ namespace Discord_Bot.Modulos
                         (xm => (xm.Channel == ctx.Channel) &&
                         ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                         (elegido.Animes.Find(x => x.TitleEnglish != null && x.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
-                        (elegido.Animes.Find(x => x.TitleRomaji != null && x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)),
+                        (elegido.Animes.Find(x => x.TitleRomaji != null && x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) && xm.Author.Id != ctx.Client.CurrentUser.Id),
                         TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                     string descAnimes = $"Los animes de [{elegido.NameFull}]({elegido.SiteUrl}) son:\n\n";
                     foreach (Anime anim in elegido.Animes)
@@ -359,7 +359,7 @@ namespace Discord_Bot.Modulos
             LeaderboardPersonajes leaderboardPjs = new LeaderboardPersonajes();
             DiscordEmoji emoji;
 
-            List<StatsJuego> resFacil = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Fácil");
+            List<StatsJuego> resFacil = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Fácil");
             string facil = "";
             int pos = 0;
             int lastScore = 0;
@@ -394,7 +394,7 @@ namespace Discord_Bot.Modulos
                 }
             }
 
-            List<StatsJuego> resMedia = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Media");
+            List<StatsJuego> resMedia = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Media");
             string media = "";
             pos = 0;
             lastScore = 0;
@@ -429,7 +429,7 @@ namespace Discord_Bot.Modulos
                 }
             }
 
-            List<StatsJuego> resDificil = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Dificil");
+            List<StatsJuego> resDificil = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Dificil");
             string dificil = "";
             pos = 0;
             lastScore = 0;
@@ -464,7 +464,7 @@ namespace Discord_Bot.Modulos
                 }
             }
 
-            List<StatsJuego> resExtremo = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Extremo");
+            List<StatsJuego> resExtremo = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Extremo");
             string extremo = "";
             pos = 0;
             lastScore = 0;
@@ -499,7 +499,7 @@ namespace Discord_Bot.Modulos
                 }
             }
 
-            List<StatsJuego> resKusan = leaderboardPjs.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Kusan");
+            List<StatsJuego> resKusan = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Kusan");
             string kusan = "";
             pos = 0;
             lastScore = 0;
@@ -561,7 +561,7 @@ namespace Discord_Bot.Modulos
             LeaderboardAnimes leaderboardAns = new LeaderboardAnimes();
             DiscordEmoji emoji;
 
-            List<StatsJuego> resFacil = leaderboardAns.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Fácil");
+            List<StatsJuego> resFacil = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Fácil");
             string facil = "";
             int pos = 0;
             int lastScore = 0;
@@ -596,7 +596,7 @@ namespace Discord_Bot.Modulos
                 }
             }
 
-            List<StatsJuego> resMedia = leaderboardAns.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Media");
+            List<StatsJuego> resMedia = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Media");
             string media = "";
             pos = 0;
             lastScore = 0;
@@ -631,7 +631,7 @@ namespace Discord_Bot.Modulos
                 }
             }
 
-            List<StatsJuego> resDificil = leaderboardAns.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Dificil");
+            List<StatsJuego> resDificil = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Dificil");
             string dificil = "";
             pos = 0;
             lastScore = 0;
@@ -666,7 +666,7 @@ namespace Discord_Bot.Modulos
                 }
             }
 
-            List<StatsJuego> resExtremo = leaderboardAns.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Extremo");
+            List<StatsJuego> resExtremo = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Extremo");
             string extremo = "";
             pos = 0;
             lastScore = 0;
@@ -701,7 +701,7 @@ namespace Discord_Bot.Modulos
                 }
             }
 
-            List<StatsJuego> resKusan = leaderboardAns.GetLeaderboard(Int64.Parse(ctx.Guild.Id.ToString()), "Kusan");
+            List<StatsJuego> resKusan = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Kusan");
             string kusan = "";
             pos = 0;
             lastScore = 0;

@@ -22,7 +22,7 @@ namespace Discord_Bot.Modulos
                 nombre = miembro.DisplayName;
 
             Random rnd = new Random();
-            int waifuLevel = rnd.Next(101);
+            int waifuLevel = funciones.GetNumeroRandom(0, 100);
             if (waifuLevel < 25)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
@@ -92,12 +92,12 @@ namespace Discord_Bot.Modulos
                 DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
                 DiscordRole master = ctx.Guild.GetRole(713484545944584273);
                 var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai) || x.Value.Roles.Contains(master)));
-                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+                elegido = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
             }
             else
             {
                 var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false);
-                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+                elegido = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
             }
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
@@ -125,12 +125,12 @@ namespace Discord_Bot.Modulos
                 DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
                 DiscordRole master = ctx.Guild.GetRole(713484545944584273);
                 var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai) || x.Value.Roles.Contains(master)) && x.Value.Id != usuario.Id);
-                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+                elegido = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
             }
             else
             {
                 var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && x.Value.Id != usuario.Id);
-                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+                elegido = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
             }
             string shipeoUsr;
             DiscordMember ctxMiembro = await ctx.Guild.GetMemberAsync(usuario.Id);
@@ -157,14 +157,14 @@ namespace Discord_Bot.Modulos
                 DiscordRole senpai = ctx.Guild.GetRole(713484281950765138);
                 DiscordRole master = ctx.Guild.GetRole(713484545944584273);
                 var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false && (x.Value.Roles.Contains(kohai) || x.Value.Roles.Contains(senpai) || x.Value.Roles.Contains(master)));
-                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
-                elegido2 = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+                elegido = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
+                elegido2 = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
             }
             else
             {
                 var miembros = ctx.Guild.Members.Where(x => x.Value.IsBot == false);
-                elegido = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
-                elegido2 = miembros.ElementAt(rnd.Next(miembros.Count() - 1)).Value;
+                elegido = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
+                elegido2 = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
             }
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {

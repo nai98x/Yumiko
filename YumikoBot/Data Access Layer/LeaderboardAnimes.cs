@@ -1,4 +1,5 @@
 ﻿using Discord_Bot;
+using DSharpPlus.CommandsNext;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,19 +35,24 @@ namespace YumikoBot.Data_Access_Layer
             }
         }
 
-        public List<StatsJuego> GetLeaderboard(long guildId, string dificultad)
+        public List<StatsJuego> GetLeaderboard(CommandContext ctx, long guildId, string dificultad)
         {
             List<StatsJuego> lista = new List<StatsJuego>();
             using (var context = new YumikoEntities())
             {
                 var list = context.LeaderboardPersonajes.ToList().Where(x => x.guild_id == guildId && x.dificultad == dificultad);
+                var listaVerif = ctx.Guild.Members.Values.ToList();
                 list.ToList().ForEach(x =>
                 {
-                    lista.Add(new StatsJuego() { 
-                        UserId = x.user_id,
-                        PartidasTotales = x.partidasJugadas,
-                        PorcentajeAciertos = (x.rondasAcertadas * 100) / x.rondasTotales
-                    });
+                    if (listaVerif.Find(u => u.Id == (ulong)x.user_id) != null)
+                    {
+                        lista.Add(new StatsJuego()
+                        {
+                            UserId = x.user_id,
+                            PartidasTotales = x.partidasJugadas,
+                            PorcentajeAciertos = (x.rondasAcertadas * 100) / x.rondasTotales
+                        });
+                    }
                 });
                 lista.Sort((x, y) => y.PorcentajeAciertos.CompareTo(x.PorcentajeAciertos));
                 return lista.Take(10).ToList();
