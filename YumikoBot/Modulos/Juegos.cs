@@ -356,183 +356,11 @@ namespace Discord_Bot.Modulos
         [Command("statsC"), Aliases("estadisticaspersonajes"), Description("Estadisticas de adivina el personaje."), RequireGuild]
         public async Task EstadisticasAdivinaPersonaje(CommandContext ctx)
         {
-            LeaderboardPersonajes leaderboardPjs = new LeaderboardPersonajes();
-            DiscordEmoji emoji;
-
-            List<StatsJuego> resFacil = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Fácil");
-            string facil = "";
-            int pos = 0;
-            int lastScore = 0;
-            foreach (StatsJuego jugador in resFacil)
-            {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
-                {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            facil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            facil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            facil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            facil += $"#{pos} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                    }
-                    lastScore = jugador.PorcentajeAciertos;
-                }
-            }
-
-            List<StatsJuego> resMedia = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Media");
-            string media = "";
-            pos = 0;
-            lastScore = 0;
-            foreach (StatsJuego jugador in resMedia)
-            {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
-                {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            media += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            media += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            media += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            media += $"#{pos} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                    }
-                    lastScore = jugador.PorcentajeAciertos;
-                }
-            }
-
-            List<StatsJuego> resDificil = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Dificil");
-            string dificil = "";
-            pos = 0;
-            lastScore = 0;
-            foreach (StatsJuego jugador in resDificil)
-            {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
-                {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            dificil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            dificil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            dificil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            dificil += $"#{pos} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                    }
-                    lastScore = jugador.PorcentajeAciertos;
-                }
-            }
-
-            List<StatsJuego> resExtremo = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Extremo");
-            string extremo = "";
-            pos = 0;
-            lastScore = 0;
-            foreach (StatsJuego jugador in resExtremo)
-            {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
-                {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            extremo += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            extremo += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            extremo += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            extremo += $"#{pos} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                    }
-                    lastScore = jugador.PorcentajeAciertos;
-                }
-            }
-
-            List<StatsJuego> resKusan = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Kusan");
-            string kusan = "";
-            pos = 0;
-            lastScore = 0;
-            foreach (StatsJuego jugador in resKusan)
-            {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
-                {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            kusan += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            kusan += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            kusan += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            kusan += $"#{pos} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                    }
-                    lastScore = jugador.PorcentajeAciertos;
-                }
-            }
+            string facil = await funciones.GetEstadisticas(ctx, "personajes", "Fácil");
+            string media = await funciones.GetEstadisticas(ctx, "personajes", "Media");
+            string dificil = await funciones.GetEstadisticas(ctx, "personajes", "Dificil");
+            string extremo = await funciones.GetEstadisticas(ctx, "personajes", "Extremo");
+            string kusan = await funciones.GetEstadisticas(ctx, "personajes", "Kusan");
 
             var builder = new DiscordEmbedBuilder
             {
@@ -540,15 +368,15 @@ namespace Discord_Bot.Modulos
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor()
             };
-            if (resFacil.Count > 0)
+            if (!String.IsNullOrEmpty(facil))
                 builder.AddField("Dificultad Fácil", facil);
-            if (resMedia.Count > 0)
+            if (!String.IsNullOrEmpty(media))
                 builder.AddField("Dificultad Media", media);
-            if (resDificil.Count > 0)
+            if (!String.IsNullOrEmpty(dificil))
                 builder.AddField("Dificultad Dificil", dificil);
-            if (resExtremo.Count > 0)
+            if (!String.IsNullOrEmpty(extremo))
                 builder.AddField("Dificultad Extremo", extremo);
-            if (resKusan.Count > 0)
+            if (!String.IsNullOrEmpty(kusan))
                 builder.AddField("Dificultad Kusan", kusan);
             await ctx.RespondAsync(embed: builder);
 
@@ -558,199 +386,27 @@ namespace Discord_Bot.Modulos
         [Command("statsA"), Aliases("estadisticasanimes"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaAnime(CommandContext ctx)
         {
-            LeaderboardAnimes leaderboardAns = new LeaderboardAnimes();
-            DiscordEmoji emoji;
-
-            List<StatsJuego> resFacil = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Fácil");
-            string facil = "";
-            int pos = 0;
-            int lastScore = 0;
-            foreach (StatsJuego jugador in resFacil)
-            {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
-                {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            facil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            facil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            facil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            facil += $"#{pos} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                    }
-                    lastScore = jugador.PorcentajeAciertos;
-                }
-            }
-
-            List<StatsJuego> resMedia = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Media");
-            string media = "";
-            pos = 0;
-            lastScore = 0;
-            foreach (StatsJuego jugador in resMedia)
-            {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
-                {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            media += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            media += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            media += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            media += $"#{pos} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                    }
-                    lastScore = jugador.PorcentajeAciertos;
-                }
-            }
-
-            List<StatsJuego> resDificil = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Dificil");
-            string dificil = "";
-            pos = 0;
-            lastScore = 0;
-            foreach (StatsJuego jugador in resDificil)
-            {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
-                {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            dificil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            dificil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            dificil += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            dificil += $"#{pos} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                    }
-                    lastScore = jugador.PorcentajeAciertos;
-                }
-            }
-
-            List<StatsJuego> resExtremo = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Extremo");
-            string extremo = "";
-            pos = 0;
-            lastScore = 0;
-            foreach (StatsJuego jugador in resExtremo)
-            {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
-                {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            extremo += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            extremo += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            extremo += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            extremo += $"#{pos} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                    }
-                    lastScore = jugador.PorcentajeAciertos;
-                }
-            }
-
-            List<StatsJuego> resKusan = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), "Kusan");
-            string kusan = "";
-            pos = 0;
-            lastScore = 0;
-            foreach (StatsJuego jugador in resKusan)
-            {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
-                {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            kusan += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            kusan += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            kusan += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            kusan += $"#{pos} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                    }
-                    lastScore = jugador.PorcentajeAciertos;
-                }
-            }
+            string facil = await funciones.GetEstadisticas(ctx, "animes", "Fácil");
+            string media = await funciones.GetEstadisticas(ctx, "animes", "Media");
+            string dificil = await funciones.GetEstadisticas(ctx, "animes", "Dificil");
+            string extremo = await funciones.GetEstadisticas(ctx, "animes", "Extremo");
+            string kusan = await funciones.GetEstadisticas(ctx, "animes", "Kusan");
 
             var builder = new DiscordEmbedBuilder
             {
-                Title = "Estadisticas - Adivina el anime",
+                Title = "Estadisticas - Adivina el personaje",
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor()
             };
-            if (resFacil.Count > 0)
+            if (!String.IsNullOrEmpty(facil))
                 builder.AddField("Dificultad Fácil", facil);
-            if (resMedia.Count > 0)
+            if (!String.IsNullOrEmpty(media))
                 builder.AddField("Dificultad Media", media);
-            if (resDificil.Count > 0)
+            if (!String.IsNullOrEmpty(dificil))
                 builder.AddField("Dificultad Dificil", dificil);
-            if (resExtremo.Count > 0)
+            if (!String.IsNullOrEmpty(extremo))
                 builder.AddField("Dificultad Extremo", extremo);
-            if (resKusan.Count > 0)
+            if (!String.IsNullOrEmpty(kusan))
                 builder.AddField("Dificultad Kusan", kusan);
             await ctx.RespondAsync(embed: builder);
 

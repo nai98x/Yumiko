@@ -88,14 +88,14 @@ namespace Discord_Bot
         private Task Client_ClientError(DiscordClient c, ClientErrorEventArgs e)
         {
             c.Logger.LogError($"Ha ocurrido una excepcion: {e.Exception.GetType()}: {e.Exception.Message}", DateTime.Now);
-            LogChannel.SendMessageAsync($"Ha ocurrido una excepcion: {e.Exception.GetType()}: {e.Exception.Message}");
+            LogChannel.SendMessageAsync($"Ha ocurrido una excepcion: {e.Exception.Message}");
             return Task.CompletedTask;
         }
 
         private Task Commands_CommandExecuted(CommandsNextExtension cm, CommandExecutionEventArgs e)
         {
             e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} ejecuto el comando '{e.Command.QualifiedName}'", DateTime.Now);
-            LogChannel.SendMessageAsync($"{e.Context.User.Username} ejecuto el comando '{e.Command.QualifiedName}' | Servidor: {e.Context.Guild.Name} | Canal: {e.Context.Channel.Name}");
+            LogChannel.SendMessageAsync($"{e.Context.User.Username}#{e.Context.User.Discriminator} ejecuto el comando '{e.Command.QualifiedName}' | Servidor: {e.Context.Guild.Name} | Canal: {e.Context.Channel.Name}");
             return Task.CompletedTask;
         }
 
@@ -103,6 +103,7 @@ namespace Discord_Bot
         {
             if (e.Exception.Message == "Specified command was not found." || e.Exception.Message == "Could not find a suitable overload for the command.")
             {
+                await LogChannel.SendMessageAsync($"{e.Context.User.Username}#{e.Context.User.Discriminator} trato de ejecutar un comando que no existe").ConfigureAwait(false);
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
                 var embed = new DiscordEmbedBuilder
                 {
