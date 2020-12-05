@@ -21,7 +21,6 @@ namespace Discord_Bot.Modulos
             else
                 nombre = miembro.DisplayName;
 
-            Random rnd = new Random();
             int waifuLevel = funciones.GetNumeroRandom(0, 100);
             if (waifuLevel < 25)
             {

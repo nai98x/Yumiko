@@ -60,6 +60,7 @@ namespace Discord_Bot
             Commands.RegisterCommands<Fun>();
             Commands.RegisterCommands<Anilist>();
             Commands.RegisterCommands<Juegos>();
+            Commands.RegisterCommands<Usuarios>();
             Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
 

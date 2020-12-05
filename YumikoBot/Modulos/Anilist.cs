@@ -268,7 +268,7 @@ namespace Discord_Bot.Modulos
                         Description = opc
                     });
                     var interactivity = ctx.Client.GetInteractivity();
-                    var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                    var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
                     if (!msgElegir.TimedOut)
                     {
                         bool result = int.TryParse(msgElegir.Result.Content, out int elegido);
@@ -510,7 +510,7 @@ namespace Discord_Bot.Modulos
                         Description = opc
                     });
                     var interactivity = ctx.Client.GetInteractivity();
-                    var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                    var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
                     if (!msgElegir.TimedOut)
                     {
                         bool result = int.TryParse(msgElegir.Result.Content, out int elegido);
@@ -725,7 +725,7 @@ namespace Discord_Bot.Modulos
                         Description = opc
                     });
                     var interactivity = ctx.Client.GetInteractivity();
-                    var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                    var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
                     if (!msgElegir.TimedOut)
                     {
                         bool result = int.TryParse(msgElegir.Result.Content, out int elegido);

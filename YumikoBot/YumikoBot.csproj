@@ -259,8 +259,9 @@
     <Compile Include="Data Access Layer\LeaderboardAn.cs">
       <DependentUpon>modelo.tt</DependentUpon>
     </Compile>
-    <Compile Include="Data Access Layer\LeaderboardAnimes.cs" />
-    <Compile Include="Data Access Layer\LeaderboardPersonajes.cs" />
+    <Compile Include="Data Access Layer\Servicios\UsuariosDiscord.cs" />
+    <Compile Include="Data Access Layer\Servicios\LeaderboardAnimes.cs" />
+    <Compile Include="Data Access Layer\Servicios\LeaderboardPersonajes.cs" />
     <Compile Include="Data Access Layer\LeaderboardPj.cs">
       <DependentUpon>modelo.tt</DependentUpon>
     </Compile>
@@ -279,10 +280,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>modelo.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Data Access Layer\UsuarioDiscord.cs">
+      <DependentUpon>modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Modulos\Anilist.cs" />
     <Compile Include="Modulos\Fun.cs" />
     <Compile Include="Modulos\Help.cs" />
     <Compile Include="Modulos\Interactuar.cs" />
+    <Compile Include="Modulos\Usuarios.cs" />
     <Compile Include="Modulos\Juegos.cs" />
     <Compile Include="Modulos\Otros.cs" />
     <Compile Include="Program.cs" />
@@ -329,6 +334,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

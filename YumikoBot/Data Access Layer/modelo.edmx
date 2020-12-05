@@ -8,6 +8,7 @@
   <EntityContainer Name="YumikoModelStoreContainer">
     <EntitySet Name="LeaderboardPersonajes" EntityType="YumikoModel.Store.LeaderboardPersonajes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="LeaderboardAnimes" EntityType="YumikoModel.Store.LeaderboardAnimes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UsuariosDiscord" EntityType="YumikoModel.Store.UsuariosDiscord" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
   <EntityType Name="LeaderboardPersonajes">
     <Key>
@@ -33,6 +34,15 @@
     <Property Name="rondasAcertadas" Type="int" Nullable="false" DefaultValue="0" />
     <Property Name="rondasTotales" Type="int" Nullable="false" DefaultValue="0" />
   </EntityType>
+  <EntityType Name="UsuariosDiscord">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" Nullable="false" />
+    <Property Name="guild_id" Type="bigint" Nullable="false" />
+    <Property Name="Birthday" Type="datetime" Nullable="false" />
+    <Property Name="MostrarYear" Type="bit" Nullable="true" DefaultValue="true" />
+  </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -40,6 +50,7 @@
         <EntityContainer Name="YumikoEntities" annotation:LazyLoadingEnabled="true" >
           <EntitySet Name="LeaderboardPersonajes" EntityType="YumikoModel.LeaderboardPj" />
           <EntitySet Name="LeaderboardAnimes" EntityType="YumikoModel.LeaderboardAn" />
+          <EntitySet Name="UsuariosDiscord" EntityType="YumikoModel.UsuarioDiscord" />
         </EntityContainer>
         <EntityType Name="LeaderboardPj">
           <Key>
@@ -64,6 +75,15 @@
           <Property Name="partidasJugadas" Type="Int32" Nullable="false" DefaultValue="0" />
           <Property Name="rondasAcertadas" Type="Int32" Nullable="false" DefaultValue="0" />
           <Property Name="rondasTotales" Type="Int32" Nullable="false" DefaultValue="0" />
+        </EntityType>
+        <EntityType Name="UsuarioDiscord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="guild_id" Type="Int64" Nullable="false" />
+          <Property Name="Birthday" Type="DateTime" Nullable="false" />
+          <Property Name="MostrarYear" Type="Boolean" DefaultValue="true" Nullable="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -94,6 +114,16 @@
           <ScalarProperty Name="partidasJugadas" ColumnName="partidasJugadas" />
           <ScalarProperty Name="rondasAcertadas" ColumnName="rondasAcertadas" />
           <ScalarProperty Name="rondasTotales" ColumnName="rondasTotales" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UsuariosDiscord">
+      <EntityTypeMapping TypeName="IsTypeOf(YumikoModel.UsuarioDiscord)">
+        <MappingFragment StoreEntitySet="UsuariosDiscord">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="guild_id" ColumnName="guild_id" />
+          <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+          <ScalarProperty Name="MostrarYear" ColumnName="MostrarYear" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
