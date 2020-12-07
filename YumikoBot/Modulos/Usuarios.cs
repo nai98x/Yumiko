@@ -71,7 +71,6 @@ namespace Discord_Bot.Modulos
                 Title = titulo,
                 Description = desc
             }).ConfigureAwait(false);
-            await ctx.Message.DeleteAsync();
         }
 
         [Command("setcumpleaños"), Aliases("setbirthday"), Description("Agrega o modifica el cumpleaños del usuario."), RequireGuild]
@@ -115,18 +114,9 @@ namespace Discord_Bot.Modulos
                                     break;
                                 default:
                                     await ctx.RespondAsync("Ingresa bien la respuesta, baka");
-                                    await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                                     return;
                             }
-                            var usuarioBirthVerif = usuariosService.GetBirthday(ctx);
-                            if (usuarioBirthVerif != null)
-                            {
-                                usuariosService.ModifyBirthday(ctx, fecha, mostrarEdad);
-                            }
-                            else
-                            {
-                                usuariosService.CreateBirthday(ctx, fecha, mostrarEdad);
-                            }
+                            usuariosService.SetBirthday(ctx, fecha, mostrarEdad);
                         }
                         else
                         {
@@ -147,7 +137,6 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync("Tiempo agotado esperando la fecha de nacimiento");
             }
-            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
         }
 
         [Command("borrarcumpleaños"), Aliases("deletebirthday", "deletecumpleaños"), Description("Borra el cumpleaños del usuario."), RequireGuild]

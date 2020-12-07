@@ -97,6 +97,8 @@ namespace Discord_Bot
         {
             e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} ejecuto el comando '{e.Command.QualifiedName}'", DateTime.Now);
             LogChannel.SendMessageAsync($"{e.Context.User.Username}#{e.Context.User.Discriminator} ejecuto el comando '{e.Command.QualifiedName}' | Servidor: {e.Context.Guild.Name} | Canal: {e.Context.Channel.Name}");
+            if(e.Context.Message != null)
+                e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
             return Task.CompletedTask;
         }
 

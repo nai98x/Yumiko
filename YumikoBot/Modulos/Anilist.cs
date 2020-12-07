@@ -162,7 +162,6 @@ namespace Discord_Bot.Modulos
                     if (favoriteStudios != "")
                         builder.AddField("Estudios favoritos", favoriteStudios, true);
                     await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
-                    await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                 }
                 else
                 {
@@ -170,7 +169,6 @@ namespace Discord_Bot.Modulos
                     {
                         var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
                         await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
                     }
                 }
@@ -188,7 +186,6 @@ namespace Discord_Bot.Modulos
                         break;
                 }
                 await Task.Delay(3000);
-                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                 await msg.DeleteAsync("Auto borrado de yumiko");
             }
         }
@@ -379,7 +376,6 @@ namespace Discord_Bot.Modulos
                                 if (linksExternos.Length > 0)
                                     builder.AddField("Links externos", linksExternos, false);
                                 await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
-                                await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                             }
                             else
                             {
@@ -391,7 +387,6 @@ namespace Discord_Bot.Modulos
                                     Footer = funciones.GetFooter(ctx)
                                 });
                                 await Task.Delay(3000);
-                                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                                 await msg.DeleteAsync("Auto borrado de yumiko");
                             }
                         }
@@ -399,7 +394,6 @@ namespace Discord_Bot.Modulos
                         {
                             var msg = await ctx.RespondAsync($"Debes escribir un numero válido").ConfigureAwait(false);
                             await Task.Delay(3000);
-                            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                             await msg.DeleteAsync("Auto borrado de yumiko");
                             await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
                             await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
@@ -409,7 +403,6 @@ namespace Discord_Bot.Modulos
                     {
                         var msg = await ctx.RespondAsync($"Tiempo agotado esperando el número").ConfigureAwait(false);
                         await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
                         await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
                         await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
@@ -421,7 +414,6 @@ namespace Discord_Bot.Modulos
                     {
                         var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
                         await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
                     }
                 }
@@ -439,7 +431,6 @@ namespace Discord_Bot.Modulos
                         break;
                 }
                 await Task.Delay(3000);
-                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                 await msg.DeleteAsync("Auto borrado de yumiko");
             }
         }
@@ -599,7 +590,6 @@ namespace Discord_Bot.Modulos
                                 if (titulos.Length > 0)
                                     builder.AddField("Titulos alternativos", titulos, false);
                                 await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
-                                await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                             }
                             else
                             {
@@ -611,7 +601,6 @@ namespace Discord_Bot.Modulos
                                     Footer = funciones.GetFooter(ctx)
                                 });
                                 await Task.Delay(3000);
-                                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                                 await msg.DeleteAsync("Auto borrado de yumiko");
                             }
                         }
@@ -619,7 +608,6 @@ namespace Discord_Bot.Modulos
                         {
                             var msg = await ctx.RespondAsync($"Debes escribir un numero válido").ConfigureAwait(false);
                             await Task.Delay(3000);
-                            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                             await msg.DeleteAsync("Auto borrado de yumiko");
                             await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
                             await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
@@ -629,7 +617,6 @@ namespace Discord_Bot.Modulos
                     {
                         var msg = await ctx.RespondAsync($"Tiempo agotado esperando el número").ConfigureAwait(false);
                         await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
                         await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
                         await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
@@ -641,7 +628,6 @@ namespace Discord_Bot.Modulos
                     {
                         var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
                         await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
                     }
                 }
@@ -659,7 +645,6 @@ namespace Discord_Bot.Modulos
                         break;
                 }
                 await Task.Delay(3000);
-                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                 await msg.DeleteAsync("Auto borrado de yumiko");
             }
         }
@@ -776,13 +761,11 @@ namespace Discord_Bot.Modulos
                                 builder.AddField("Mangas", mangas, false);
                             }
                             await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
-                            await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
                         }
                         else
                         {
                             var msg = await ctx.RespondAsync($"Debes escribir un numero válido").ConfigureAwait(false);
                             await Task.Delay(3000);
-                            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                             await msg.DeleteAsync("Auto borrado de yumiko");
                             await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
                             await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
@@ -792,7 +775,6 @@ namespace Discord_Bot.Modulos
                     {
                         var msg = await ctx.RespondAsync($"Tiempo agotado esperando el número").ConfigureAwait(false);
                         await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
                         await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
                         await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
@@ -804,7 +786,6 @@ namespace Discord_Bot.Modulos
                     {
                         var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
                         await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
                     }
                 }
@@ -822,7 +803,6 @@ namespace Discord_Bot.Modulos
                         break;
                 }
                 await Task.Delay(5000);
-                await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                 await msg.DeleteAsync("Auto borrado de yumiko");
             }
         }
@@ -844,7 +824,6 @@ namespace Discord_Bot.Modulos
                         var request = new RestRequest(Method.GET);
                         request.AddHeader("content-type", "application/json");
                         var procesando = await ctx.RespondAsync("Procesando imagen..").ConfigureAwait(false);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         IRestResponse response = client.Execute(request);
                         await procesando.DeleteAsync("Auto borrado de yumiko");
                         switch (response.StatusCode)

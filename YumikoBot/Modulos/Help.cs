@@ -111,7 +111,6 @@ namespace Discord_Bot.Modulos
                     await msgError.DeleteAsync().ConfigureAwait(false);
                 }
             }
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
     }
 }

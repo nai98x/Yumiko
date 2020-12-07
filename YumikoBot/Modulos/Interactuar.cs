@@ -17,7 +17,6 @@ namespace Discord_Bot.Modulos
         [Command("say"), Aliases("s"), Description("Yumiko habla en el chat.")]
         public async Task Say(CommandContext ctx, [Description("Mensaje para replicar")][RemainingText]string mensaje)
         {
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
             await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
         }
 
@@ -47,7 +46,6 @@ namespace Discord_Bot.Modulos
                     }).ConfigureAwait(false);
                     break;
             }
-            await ctx.Message.DeleteAsync();
         }
 
         [Command("elegir"), Aliases("e"), Description("Elige entre varias opciones.")]
@@ -68,7 +66,6 @@ namespace Discord_Bot.Modulos
                 {
                     options += "\n   - " + msj;
                 }
-                await ctx.Message.DeleteAsync().ConfigureAwait(false);
                 await mensajeBot.DeleteAsync().ConfigureAwait(false);
                 await msg.Result.DeleteAsync().ConfigureAwait(false);
 
@@ -105,7 +102,6 @@ namespace Discord_Bot.Modulos
                 await Task.Delay(3000);
                 await msgError.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
             }
-            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
         }
 
         [Command("avatar"), Description("Muestra el avatar de un usuario."), RequireGuild]
@@ -122,7 +118,6 @@ namespace Discord_Bot.Modulos
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor()
             }).ConfigureAwait(false);
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
         }
     }
 }

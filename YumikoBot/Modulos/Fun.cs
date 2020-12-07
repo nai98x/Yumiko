@@ -77,7 +77,6 @@ namespace Discord_Bot.Modulos
                     ImageUrl = "https://i.imgur.com/Vk6JMJi.jpg"
                 }).ConfigureAwait(false);
             }
-            await ctx.Message.DeleteAsync();
         }
 
         [Command("husbando"), Description("Elijo a mi husbando del servidor."), RequireGuild]
@@ -106,7 +105,6 @@ namespace Discord_Bot.Modulos
                 Description = $"Mi husbando es: **{elegido.DisplayName} ({elegido.Username}#{elegido.Discriminator})** 💘",
                 ImageUrl = elegido.AvatarUrl
             }).ConfigureAwait(false);
-            await ctx.Message.DeleteAsync();
         }
 
         [Command("ship"), Description("Te digo con quien te shippearia."), RequireGuild]
@@ -142,7 +140,6 @@ namespace Discord_Bot.Modulos
                 Description = $"Shippeo a **{shipeoUsr}** con **{elegido.DisplayName}** 💘",
                 ImageUrl = funciones.GetImagenRandomShip()
             }).ConfigureAwait(false);
-            await ctx.Message.DeleteAsync();
         }
 
         [Command("shipr"), Description("Eligo un ship en el servidor."), RequireGuild]
@@ -173,7 +170,6 @@ namespace Discord_Bot.Modulos
                 Description = $"Shippeo a **{elegido.DisplayName}** con **{elegido2.DisplayName}** 💘",
                 ImageUrl = funciones.GetImagenRandomShip()
             }).ConfigureAwait(false);
-            await ctx.Message.DeleteAsync();
         }
 
         [Command("ooc"), Description("Imagen aleatoria de Out of Context."), RequireGuild, RequireNsfw]
@@ -229,7 +225,6 @@ namespace Discord_Bot.Modulos
                 Title = "Out of Context",
                 ImageUrl = meme.Url
             }).ConfigureAwait(false);
-            await ctx.Message.DeleteAsync();
         }
     }
 }

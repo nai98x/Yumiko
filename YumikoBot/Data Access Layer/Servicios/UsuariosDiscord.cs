@@ -38,14 +38,14 @@ namespace YumikoBot.Data_Access_Layer
             }
         }
 
-        public void CreateBirthday(CommandContext ctx, DateTime fecha, bool mostrarEdad)
+        public void SetBirthday(CommandContext ctx, DateTime fecha, bool mostrarEdad)
         {
             using (var context = new YumikoEntities())
             {
-                var usuarioVerif = context.UsuariosDiscord.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.Id == (long)ctx.Member.Id);
-                if(usuarioVerif == null)
+                var usuario = context.UsuariosDiscord.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.Id == (long)ctx.Member.Id);
+                if(usuario == null)
                 {
-                    var usuario = new UsuarioDiscord()
+                    usuario = new UsuarioDiscord()
                     {
                         Id = (long)ctx.Member.Id,
                         guild_id = (long)ctx.Guild.Id,
@@ -53,22 +53,13 @@ namespace YumikoBot.Data_Access_Layer
                         MostrarYear = mostrarEdad
                     };
                     context.UsuariosDiscord.Add(usuario);
-                    context.SaveChanges();
                 }
-            }
-        }
-
-        public void ModifyBirthday(CommandContext ctx, DateTime fecha, bool mostrarEdad)
-        {
-            using (var context = new YumikoEntities())
-            {
-                var usuario = context.UsuariosDiscord.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.Id == (long)ctx.Member.Id);
-                if (usuario != null)
+                else
                 {
                     usuario.Birthday = fecha;
                     usuario.MostrarYear = mostrarEdad;
-                    context.SaveChanges();
                 }
+                context.SaveChanges();
             }
         }
 

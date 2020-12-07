@@ -40,7 +40,6 @@ namespace Discord_Bot.Modulos
         public async Task Invite(CommandContext ctx)
         {
             await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
-            await ctx.Message.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
         }
 
         [Command("test"), RequireOwner]

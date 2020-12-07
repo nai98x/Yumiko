@@ -237,7 +237,6 @@ namespace Discord_Bot
                                             orden = "FAVOURITES_DESC";
                                             break;
                                     }
-                                    await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
                                     await msgCntRondas.DeleteAsync("Auto borrado de Yumiko");
                                     await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
                                     await msgDificultad.DeleteAsync("Auto borrado de Yumiko");

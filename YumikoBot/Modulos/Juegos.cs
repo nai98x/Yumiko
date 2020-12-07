@@ -96,7 +96,6 @@ namespace Discord_Bot.Modulos
                                 break;
                         }
                         await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
                         return;
                     }
@@ -270,7 +269,6 @@ namespace Discord_Bot.Modulos
                                 break;
                         }
                         await Task.Delay(3000);
-                        await ctx.Message.DeleteAsync("Auto borrado de yumiko");
                         await msg.DeleteAsync("Auto borrado de yumiko");
                         return;
                     }
@@ -379,8 +377,6 @@ namespace Discord_Bot.Modulos
             if (!String.IsNullOrEmpty(kusan))
                 builder.AddField("Dificultad Kusan", kusan);
             await ctx.RespondAsync(embed: builder);
-
-            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
         }
 
         [Command("statsA"), Aliases("estadisticasanimes"), Description("Estadisticas de adivina el anime."), RequireGuild]
@@ -409,8 +405,6 @@ namespace Discord_Bot.Modulos
             if (!String.IsNullOrEmpty(kusan))
                 builder.AddField("Dificultad Kusan", kusan);
             await ctx.RespondAsync(embed: builder);
-
-            await ctx.Message.DeleteAsync("Auto borrado de yumiko");
         }
     }
 }
