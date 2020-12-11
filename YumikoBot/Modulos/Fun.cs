@@ -175,13 +175,13 @@ namespace Discord_Bot.Modulos
         [Command("ooc"), Description("Imagen aleatoria de Out of Context."), RequireGuild, RequireNsfw]
         public async Task OOC(CommandContext ctx)
         {
-            DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(748315008131268693);
+            DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(787033852258418768);
             if (discordOOC == null)
             {
                 await ctx.RespondAsync("Error al obtener servidor **AniList ESP OOC**").ConfigureAwait(false);
                 return;
             }
-            DiscordChannel channel = discordOOC.GetChannel(748315008131268698);
+            DiscordChannel channel = discordOOC.GetChannel(787033979274264577);
             if (channel == null)
             {
                 await ctx.RespondAsync("Error al obtener canal **#capturas** del servidor **AniList ESP OOC**").ConfigureAwait(false);

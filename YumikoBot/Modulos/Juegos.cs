@@ -96,7 +96,7 @@ namespace Discord_Bot.Modulos
                                 break;
                         }
                         await Task.Delay(3000);
-                        await msg.DeleteAsync("Auto borrado de yumiko");
+                        await msg.DeleteAsync("Auto borrado de Yumiko");
                         return;
                     }
                 }
@@ -269,7 +269,7 @@ namespace Discord_Bot.Modulos
                                 break;
                         }
                         await Task.Delay(3000);
-                        await msg.DeleteAsync("Auto borrado de yumiko");
+                        await msg.DeleteAsync("Auto borrado de Yumiko");
                         return;
                     }
                 }

@@ -77,6 +77,7 @@ namespace Discord_Bot.Modulos
         public async Task SetBirthday(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
+            DiscordMessage msgError = null;
             var msgFecha = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "Escribe tu fecha de nacimiento",
@@ -86,8 +87,8 @@ namespace Discord_Bot.Modulos
             if (!msgFechaInter.TimedOut)
             {
                 bool result = DateTime.TryParse(msgFechaInter.Result.Content, out DateTime fecha);
-                await msgFechaInter.Result.DeleteAsync("Auto borrado de yumiko");
-                await msgFecha.DeleteAsync("Auto borrado de yumiko");
+                await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                await msgFecha.DeleteAsync("Auto borrado de Yumiko");
                 if (result)
                 {
                     var msgOcultar = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
@@ -101,41 +102,44 @@ namespace Discord_Bot.Modulos
                         bool result2 = int.TryParse(msgOcultarInter.Result.Content, out int mostrarEdadInt);
                         if (result2)
                         {
-                            await msgOcultarInter.Result.DeleteAsync("Auto borrado de yumiko");
-                            await msgOcultar.DeleteAsync("Auto borrado de yumiko");
-                            bool mostrarEdad;
+                            await msgOcultarInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                            await msgOcultar.DeleteAsync("Auto borrado de Yumiko");
                             switch (mostrarEdadInt)
                             {
                                 case 1:
-                                    mostrarEdad = true;
+                                    usuariosService.SetBirthday(ctx, fecha, true);
                                     break;
                                 case 2:
-                                    mostrarEdad = false;
+                                    usuariosService.SetBirthday(ctx, fecha, false);
                                     break;
                                 default:
-                                    await ctx.RespondAsync("Ingresa bien la respuesta, baka");
-                                    return;
+                                    msgError = await ctx.RespondAsync("Ingresa bien la respuesta, baka");
+                                    break;
                             }
-                            usuariosService.SetBirthday(ctx, fecha, mostrarEdad);
                         }
                         else
                         {
-                            await ctx.RespondAsync("Ingresa bien la respuesta, baka");
+                            msgError = await ctx.RespondAsync("Ingresa bien la respuesta, baka");
                         }
                     }
                     else
                     {
-                        await ctx.RespondAsync("Tiempo agotado esperando la respuesta");
+                        msgError = await ctx.RespondAsync("Tiempo agotado esperando la respuesta");
                     }
                 }
                 else
                 {
-                    await ctx.RespondAsync("Ingresa bien la fecha, baka");
+                    msgError = await ctx.RespondAsync("Ingresa bien la fecha, baka");
                 }
             }
             else
             {
-                await ctx.RespondAsync("Tiempo agotado esperando la fecha de nacimiento");
+                msgError = await ctx.RespondAsync("Tiempo agotado esperando la fecha de nacimiento");
+            }
+            if(msgError != null)
+            {
+                await Task.Delay(3000);
+                await msgError.DeleteAsync("Auto borrado de Yumiko");
             }
         }
 
@@ -143,7 +147,9 @@ namespace Discord_Bot.Modulos
         public async Task DeleteBirthday(CommandContext ctx)
         {
             usuariosService.DeleteBirthday(ctx);
-            await ctx.RespondAsync("Cumpleaños borrado correctamente");
+            var msg = await ctx.RespondAsync("Cumpleaños borrado correctamente");
+            await Task.Delay(3000);
+            await msg.DeleteAsync("Auto borrado de Yumiko");
         }
     }
 }

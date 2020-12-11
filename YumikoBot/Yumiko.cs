@@ -169,7 +169,7 @@ namespace Discord_Bot
                         mensajes.Add(msg);
                     }
                     await Task.Delay(3000);
-                    await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                    await e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
                     foreach (DiscordMessage mensaje in mensajes)
                     {
                         await mensaje.DeleteAsync("Auto borrado de Yumiko");
@@ -192,7 +192,7 @@ namespace Discord_Bot
                     });
                     await Task.Delay(3000);
                     if(e.Context.Message != null)
-                        await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                        await e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
                     await msg.DeleteAsync("Auto borrado de Yumiko");
                 }
             }
