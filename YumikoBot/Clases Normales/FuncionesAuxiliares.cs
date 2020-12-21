@@ -33,6 +33,34 @@ namespace Discord_Bot
             return 0;
         }
 
+        public string NormalizarField(string s)
+        {
+            if (s.Length > 1024)
+            {
+                string aux = s.Remove(1024);
+                int index = aux.LastIndexOf('[');
+                if (index != -1)
+                    return aux.Remove(aux.LastIndexOf('[')) + "...";
+                else
+                    return aux.Remove(aux.Length - 4) + " ...";
+            }
+            return s;
+        }
+
+        public string NormalizarDescription(string s)
+        {
+            if (s.Length > 2048)
+            {
+                string aux = s.Remove(2048);
+                int index = aux.LastIndexOf('[');
+                if(index != -1)
+                    return aux.Remove(aux.LastIndexOf('[')) + "...";
+                else
+                    return aux.Remove(aux.Length-4) + " ...";
+            }
+            return s;
+        }
+
         public string UppercaseFirst(string s)
         {
             if (string.IsNullOrEmpty(s))
@@ -107,6 +135,7 @@ namespace Discord_Bot
                 texto = texto.Replace("</I>", "*");
                 texto = texto.Replace("~!", "||");
                 texto = texto.Replace("!~", "||");
+                texto = texto.Replace("__", "**");
             }
             else
             {

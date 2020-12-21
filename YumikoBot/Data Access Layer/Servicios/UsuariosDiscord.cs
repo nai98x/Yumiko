@@ -8,9 +8,9 @@ namespace YumikoBot.Data_Access_Layer
 {
     public class UsuariosDiscord
     {
-        public List<UsuarioDiscord> GetBirthdays(CommandContext ctx, bool month)
+        public List<UserCumple> GetBirthdays(CommandContext ctx, bool month)
         {
-            List<UsuarioDiscord> lista = new List<UsuarioDiscord>();
+            List<UserCumple> lista = new List<UserCumple>();
             using (var context = new YumikoEntities())
             {
                 var list = context.UsuariosDiscord.ToList().Where(x => x.guild_id == (long)ctx.Guild.Id);
@@ -20,20 +20,38 @@ namespace YumikoBot.Data_Access_Layer
                     if (listaVerif.Find(u => u.Id == (ulong)x.Id) != null)
                     {
                         DateTime fchAux = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year:DateTime.Now.Year);
+                        DateTime nuevoCumple;
+                        if (DateTime.Now > new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year))
+                            nuevoCumple = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year + 1);
+                        else
+                            nuevoCumple = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year);
                         if (month)
                         {
                             if (fchAux >= DateTime.Now && fchAux <= DateTime.Now.AddMonths(1))
                             {
-                                lista.Add(x);
+                                lista.Add(new UserCumple {
+                                    Id = x.Id,
+                                    guild_id = x.guild_id,
+                                    Birthday = x.Birthday,
+                                    BirthdayActual = nuevoCumple,
+                                    MostrarYear = x.MostrarYear
+                                });
                             }
                         }
                         else
                         {
-                            lista.Add(x);
+                            lista.Add(new UserCumple
+                            {
+                                Id = x.Id,
+                                guild_id = x.guild_id,
+                                Birthday = x.Birthday,
+                                BirthdayActual = nuevoCumple,
+                                MostrarYear = x.MostrarYear
+                            });
                         }
                     }
                 });
-                lista.Sort((x, y) => y.Birthday.CompareTo(x.Birthday));
+                lista.Sort((x, y) => y.BirthdayActual.CompareTo(x.BirthdayActual));
                 return lista;
             }
         }

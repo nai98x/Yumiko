@@ -303,6 +303,7 @@ namespace Discord_Bot.Modulos
                     {
                         descAnimes += $"- [{anim.TitleRomaji}]({anim.SiteUrl})\n";
                     }
+                    descAnimes = funciones.NormalizarDescription(descAnimes);
                     if (!msg.TimedOut)
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
@@ -390,7 +391,7 @@ namespace Discord_Bot.Modulos
 
             var builder = new DiscordEmbedBuilder
             {
-                Title = "Estadisticas - Adivina el personaje",
+                Title = "Estadisticas - Adivina el anime del personaje",
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor()
             };

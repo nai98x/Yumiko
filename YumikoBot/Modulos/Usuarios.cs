@@ -23,9 +23,9 @@ namespace Discord_Bot.Modulos
         [Command("cumpleaños"), Aliases("birthday"), Description("Muestra los próximos cumpleaños del mes."), RequireGuild]
         public async Task Birthdays(CommandContext ctx, string flag = null)
         {
-            List<UsuarioDiscord> lista;
+            List<UserCumple> lista;
             string titulo;
-            if (!String.IsNullOrEmpty(flag) && flag == "-all")
+            if (!string.IsNullOrEmpty(flag) && flag == "-all")
             {
                 lista = usuariosService.GetBirthdays(ctx, false);
                 titulo = "Próximos cumpleaños";
@@ -42,24 +42,16 @@ namespace Discord_Bot.Modulos
             {
                 var miembro = await ctx.Guild.GetMemberAsync((ulong)user.Id);
                 int anios = DateTime.Now.Year - user.Birthday.Year;
-                DateTime nuevaFecha;
                 if (DateTime.Now > new DateTime(day: user.Birthday.Day, month: user.Birthday.Month, year: DateTime.Now.Year))
-                {
                     anios += 1;
-                    nuevaFecha = new DateTime(day: user.Birthday.Day, month: user.Birthday.Month, year: DateTime.Now.Year + 1);
-                }
-                else
-                {
-                    nuevaFecha = new DateTime(day: user.Birthday.Day, month: user.Birthday.Month, year: DateTime.Now.Year);
-                }   
-                string dia = nuevaFecha.ToString("dddd", CultureInfo.CreateSpecificCulture("es"));
-                string mes = nuevaFecha.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"));
+                string dia = user.BirthdayActual.ToString("dddd", CultureInfo.CreateSpecificCulture("es"));
+                string mes = user.BirthdayActual.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"));
                 if(user.MostrarYear ?? false)
-                    desc += $"- **{miembro.DisplayName}** ({miembro.Username}#{miembro.Discriminator}) - Cumple **{anios} años** el {dia} {user.Birthday.Day} de {mes}\n";
+                    desc += $"- **{miembro.DisplayName}** ({miembro.Username}#{miembro.Discriminator}) - Cumple **{anios} años** el {dia} {user.BirthdayActual.Day} de {mes} del {user.BirthdayActual.Year}\n";
                 else
-                    desc += $"- **{miembro.DisplayName}** ({miembro.Username}#{miembro.Discriminator}) - Cumple el {dia} {user.Birthday.Day} de {mes}\n";
+                    desc += $"- **{miembro.DisplayName}** ({miembro.Username}#{miembro.Discriminator}) - Cumple el {dia} {user.BirthdayActual.Day} de {mes} del {user.BirthdayActual.Year}\n";
             }
-            if (String.IsNullOrEmpty(desc))
+            if (string.IsNullOrEmpty(desc))
             {
                 desc = "(No hay ningún usuario registrado que cumpla años este mes)";
             }

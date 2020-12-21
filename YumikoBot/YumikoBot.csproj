@@ -249,6 +249,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clases Normales\UserCumple.cs" />
     <Compile Include="Clases Normales\StatsJuego.cs" />
     <Compile Include="Clases Normales\Anime.cs" />
     <Compile Include="Clases Normales\Character.cs" />

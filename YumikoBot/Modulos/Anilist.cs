@@ -277,7 +277,7 @@ namespace Discord_Bot.Modulos
                             if (datos.isAdult == "false")
                             {
                                 string descripcion = datos.description;
-                                descripcion = funciones.LimpiarTexto(descripcion);
+                                descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
                                 if (descripcion == "")
                                     descripcion = "(Sin descripción)";
                                 string estado = datos.status;
@@ -358,23 +358,23 @@ namespace Discord_Bot.Modulos
                                     Description = descripcion
                                 };
                                 if (formato.Length > 0)
-                                    builder.AddField("Formato", formato, true);
+                                    builder.AddField("Formato", funciones.NormalizarField(formato), true);
                                 if (estado.Length > 0)
-                                    builder.AddField("Estado", estado.ToLower().ToUpperFirst(), true);
+                                    builder.AddField("Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
                                 if (score.Length > 0)
-                                    builder.AddField("Puntuación", score, true);
+                                    builder.AddField("Puntuación", funciones.NormalizarField(score), true);
                                 if (fechas.Length > 0)
-                                    builder.AddField("Fecha emisión", fechas, false);
+                                    builder.AddField("Fecha emisión", funciones.NormalizarField(fechas), false);
                                 if (generos.Length > 0)
-                                    builder.AddField("Generos", generos, false);
+                                    builder.AddField("Generos", funciones.NormalizarField(generos), false);
                                 if (tags.Length > 0)
-                                    builder.AddField("Etiquetas", tags, false);
+                                    builder.AddField("Etiquetas", funciones.NormalizarField(tags), false);
                                 if (titulos.Length > 0)
-                                    builder.AddField("Titulos alternativos", titulos, false);
+                                    builder.AddField("Titulos alternativos", funciones.NormalizarField(titulos), false);
                                 if (estudios.Length > 0)
-                                    builder.AddField("Estudios", estudios, false);
+                                    builder.AddField("Estudios", funciones.NormalizarField(estudios), false);
                                 if (linksExternos.Length > 0)
-                                    builder.AddField("Links externos", linksExternos, false);
+                                    builder.AddField("Links externos", funciones.NormalizarField(linksExternos), false);
                                 await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
                             }
                             else
@@ -513,7 +513,7 @@ namespace Discord_Bot.Modulos
                             if (datos.isAdult == "false")
                             {
                                 string descripcion = datos.description;
-                                descripcion = funciones.LimpiarTexto(descripcion);
+                                descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
                                 if (descripcion == "")
                                     descripcion = "(Sin descripción)";
                                 string estado = datos.status;
@@ -576,19 +576,19 @@ namespace Discord_Bot.Modulos
                                     Description = descripcion
                                 };
                                 if (formato.Length > 0)
-                                    builder.AddField("Formato", formato, true);
+                                    builder.AddField("Formato", funciones.NormalizarField(formato), true);
                                 if (estado.Length > 0)
-                                    builder.AddField("Estado", estado.ToLower().ToUpperFirst(), true);
+                                    builder.AddField("Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
                                 if (score.Length > 0)
-                                    builder.AddField("Puntuación", score, true);
+                                    builder.AddField("Puntuación", funciones.NormalizarField(score), true);
                                 if (fechas.Length > 0)
-                                    builder.AddField("Fecha emisión", fechas, false);
+                                    builder.AddField("Fecha emisión", funciones.NormalizarField(fechas), false);
                                 if (generos.Length > 0)
-                                    builder.AddField("Generos", generos, false);
+                                    builder.AddField("Generos", funciones.NormalizarField(generos), false);
                                 if (tags.Length > 0)
-                                    builder.AddField("Etiquetas", tags, false);
+                                    builder.AddField("Etiquetas", funciones.NormalizarField(tags), false);
                                 if (titulos.Length > 0)
-                                    builder.AddField("Titulos alternativos", titulos, false);
+                                    builder.AddField("Titulos alternativos", funciones.NormalizarField(titulos), false);
                                 await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
                             }
                             else
@@ -720,7 +720,7 @@ namespace Discord_Bot.Modulos
                             await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
                             var datos = data.Data.Page.characters[elegido - 1];
                             string descripcion = datos.description;
-                            descripcion = funciones.LimpiarTexto(descripcion);
+                            descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
                             if (descripcion == "")
                                 descripcion = "(Sin descripción)";
                             string nombre = datos.name.full;
@@ -749,17 +749,9 @@ namespace Discord_Bot.Modulos
                                 Description = descripcion
                             };
                             if (animes.Length > 0)
-                            {
-                                if (animes.Length > 1024)
-                                    animes = animes.Remove(1024);
-                                builder.AddField("Animes", animes, false);
-                            }
+                                builder.AddField("Animes", funciones.NormalizarField(animes), false);
                             if (mangas.Length > 0)
-                            {
-                                if (mangas.Length > 1024)
-                                    mangas = mangas.Remove(1024);
-                                builder.AddField("Mangas", mangas, false);
-                            }
+                                builder.AddField("Mangas", funciones.NormalizarField(mangas), false);
                             await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
                         }
                         else
