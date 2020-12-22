@@ -94,7 +94,30 @@ namespace YumikoBot.Data_Access_Layer
             }
         }
 
-        public UsuarioDiscord GetBirthday(CommandContext ctx)
+        public void SetAnilist(CommandContext ctx,string anilist)
+        {
+            using (var context = new YumikoEntities())
+            {
+                var usuario = context.UsuariosDiscord.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.Id == (long)ctx.Member.Id);
+                if (usuario == null)
+                {
+                    usuario = new UsuarioDiscord()
+                    {
+                        Id = (long)ctx.Member.Id,
+                        guild_id = (long)ctx.Guild.Id,
+                        Anilist = anilist
+                    };
+                    context.UsuariosDiscord.Add(usuario);
+                }
+                else
+                {
+                    usuario.Anilist = anilist;
+                }
+                context.SaveChanges();
+            }
+        }
+
+        public UsuarioDiscord GetUsuario(CommandContext ctx)
         {
             using (var context = new YumikoEntities())
             {

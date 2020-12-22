@@ -24,5 +24,6 @@ namespace YumikoBot.Data_Access_Layer
         public long guild_id { get; set; }
         public System.DateTime Birthday { get; set; }
         public Nullable<bool> MostrarYear { get; set; }
+        public string Anilist { get; set; }
     }
 }

@@ -42,6 +42,7 @@
     <Property Name="guild_id" Type="bigint" Nullable="false" />
     <Property Name="Birthday" Type="datetime" Nullable="false" />
     <Property Name="MostrarYear" Type="bit" Nullable="true" DefaultValue="true" />
+    <Property Name="Anilist" Type="nvarchar(max)" Nullable="true" />
   </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -84,6 +85,7 @@
           <Property Name="guild_id" Type="Int64" Nullable="false" />
           <Property Name="Birthday" Type="DateTime" Nullable="false" />
           <Property Name="MostrarYear" Type="Boolean" DefaultValue="true" Nullable="true" />
+          <Property Name="Anilist" Type="String" Nullable="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -124,6 +126,7 @@
           <ScalarProperty Name="guild_id" ColumnName="guild_id" />
           <ScalarProperty Name="Birthday" ColumnName="Birthday" />
           <ScalarProperty Name="MostrarYear" ColumnName="MostrarYear" />
+          <ScalarProperty Name="Anilist" ColumnName="Anilist" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

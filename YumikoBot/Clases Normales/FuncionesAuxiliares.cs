@@ -189,7 +189,7 @@ namespace Discord_Bot
             resultados += $"\n**Total ({tot}/{rondas})**";
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
             {
-                Title = "Resultados",
+                Title = $"Resultados - Adivina el {juego}",
                 Description = resultados,
                 Color = GetColor()
             }).ConfigureAwait(false);

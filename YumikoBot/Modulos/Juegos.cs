@@ -20,11 +20,8 @@ namespace Discord_Bot.Modulos
         private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         [Command("quizC"), Aliases("adivinaelpersonaje"), Description("Empieza el juego de adivina el personaje."), RequireGuild]
-        public async Task QuizCharactersGlobal(CommandContext ctx, [Description("Para activar modo megu escribe -m o -megu")]string modoMegu = null)
+        public async Task QuizCharactersGlobal(CommandContext ctx)
         {
-            bool meguMode = false;
-            if (modoMegu == "-m" || modoMegu == "-megu")
-                meguMode = true;
             var interactivity = ctx.Client.GetInteractivity();
             SettingsJuego settings = await funciones.InicializarJuego(ctx, interactivity);
             if (settings.Ok)
@@ -36,7 +33,7 @@ namespace Discord_Bot.Modulos
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el personaje",
-                    Description = $"Sesión iniciada por {ctx.User.Mention}",
+                    Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
                 await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
@@ -50,6 +47,7 @@ namespace Discord_Bot.Modulos
                 query += settings.Orden;
                 query +="){" +
                         "           siteUrl," +
+                        "           favourites," +
                         "           name{" +
                         "               first," +
                         "               last," +
@@ -82,7 +80,8 @@ namespace Discord_Bot.Modulos
                                 NameFull = x.name.full,
                                 NameFirst = x.name.first,
                                 NameLast = x.name.last,
-                                SiteUrl = x.siteUrl
+                                SiteUrl = x.siteUrl,
+                                Favoritos = x.favourites
                             });
                         }
                     }
@@ -92,7 +91,7 @@ namespace Discord_Bot.Modulos
                         switch (ex.Message)
                         {
                             default:
-                                msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
+                                msg = await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false);
                                 break;
                         }
                         await Task.Delay(3000);
@@ -107,17 +106,17 @@ namespace Discord_Bot.Modulos
                     lastRonda = ronda;
                     int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
                     Character elegido = characterList[random];
-                    if (meguMode)
-                    {
-                        await ctx.RespondAsync("ATENTOOOOS");
-                        await Task.Delay(funciones.GetNumeroRandom(100, 3000));
-                    }
+                    DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
                         Color = DiscordColor.Gold,
                         Title = "Adivina el personaje",
                         Description = $"Ronda {ronda} de {rondas}",
-                        ImageUrl = elegido.Image
+                        ImageUrl = elegido.Image,
+                        Footer = new DiscordEmbedBuilder.EmbedFooter
+                        {
+                            Text = $"{elegido.Favoritos} {corazon}"
+                        }
                     }).ConfigureAwait(false);
                     var msg = await interactivity.WaitForMessageAsync
                         (xm => (xm.Channel == ctx.Channel) &&
@@ -172,11 +171,8 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("quizA"), Aliases("adivinaelanime"), Description("Empieza el juego de adivina el anime."), RequireGuild]
-        public async Task QuizAnimeGlobal(CommandContext ctx, [Description("Para activar modo megu escribe -m o -megu")]string modoMegu = null)
+        public async Task QuizAnimeGlobal(CommandContext ctx)
         {
-            bool meguMode = false;
-            if (modoMegu == "-m" || modoMegu == "-megu")
-                meguMode = true;
             var interactivity = ctx.Client.GetInteractivity();
             SettingsJuego settings = await funciones.InicializarJuego(ctx, interactivity);
             if (settings.Ok)
@@ -188,7 +184,7 @@ namespace Discord_Bot.Modulos
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el anime",
-                    Description = $"Sesión iniciada por {ctx.User.Mention}",
+                    Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
                 await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
@@ -208,6 +204,7 @@ namespace Discord_Bot.Modulos
                         "           image{" +
                         "               large" +
                         "           }," +
+                        "           favourites," +
                         "           media(type:ANIME){" +
                         "               nodes{" +
                         "                   title{" +
@@ -240,6 +237,7 @@ namespace Discord_Bot.Modulos
                                 Image = x.image.large,
                                 NameFull = x.name.full,
                                 SiteUrl = x.siteUrl,
+                                Favoritos = x.favourites,
                                 Animes = new List<Anime>()
                             };
                             foreach (var y in x.media.nodes)
@@ -265,7 +263,7 @@ namespace Discord_Bot.Modulos
                         switch (ex.Message)
                         {
                             default:
-                                msg = await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false);
+                                msg = await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false);
                                 break;
                         }
                         await Task.Delay(3000);
@@ -280,17 +278,17 @@ namespace Discord_Bot.Modulos
                     lastRonda = ronda;
                     int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
                     Character elegido = characterList[random];
-                    if (meguMode)
-                    {
-                        await ctx.RespondAsync("ATENTOOOOS");
-                        await Task.Delay(funciones.GetNumeroRandom(100, 3000));
-                    }
+                    DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
                         Color = DiscordColor.Gold,
                         Title = $"Adivina el anime del personaje",
                         Description = $"Ronda {ronda} de {rondas}",
-                        ImageUrl = elegido.Image
+                        ImageUrl = elegido.Image,
+                        Footer = new DiscordEmbedBuilder.EmbedFooter
+                        {
+                            Text = $"{elegido.Favoritos} {corazon}"
+                        }
                     }).ConfigureAwait(false);
                     var msg = await interactivity.WaitForMessageAsync
                         (xm => (xm.Channel == ctx.Channel) &&

@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 12/01/2020 20:13:27
+-- Date Created: 12/21/2020 18:46:35
 -- Generated from EDMX file: C:\Users\Mariano\source\repos\yumiko\YumikoBot\Data Access Layer\modelo.edmx
 -- --------------------------------------------------
 
@@ -65,7 +65,8 @@ CREATE TABLE [dbo].[UsuariosDiscord] (
     [Id] bigint  NOT NULL,
     [guild_id] bigint  NOT NULL,
     [Birthday] datetime  NOT NULL,
-    [MostrarYear] bit  NULL
+    [MostrarYear] bit  NULL,
+    [Anilist] nvarchar(max)  NULL
 );
 GO
 

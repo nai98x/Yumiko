@@ -14,6 +14,7 @@ namespace Discord_Bot.Modulos
         [Command("reiniciar"), Aliases("restart"), RequireOwner, Description("Se reinicia Yumiko.")]
         public async Task Reiniciar(CommandContext ctx)
         {
+            await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
             await ctx.RespondAsync("Reiniciando..");
             System.Diagnostics.Process.Start(AppDomain.CurrentDomain.FriendlyName);
             Environment.Exit(0);
@@ -22,6 +23,7 @@ namespace Discord_Bot.Modulos
         [Command("apagar"), RequireOwner, Description("Se apaga Yumiko.")]
         public async Task Stop(CommandContext ctx)
         {
+            await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
             await ctx.RespondAsync("Me voy onii-chan..");
             Environment.Exit(0);
         }
@@ -42,12 +44,5 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
         }
 
-        [Command("test"), RequireOwner]
-        public async Task Test(CommandContext ctx)
-        {
-            var guild = await ctx.Client.GetGuildAsync(713809173573271613);
-            var channel = guild.GetChannel(781679685838569502);
-            await channel.SendMessageAsync("prueba");
-        }
     }
 }

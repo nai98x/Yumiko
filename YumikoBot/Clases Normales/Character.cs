@@ -10,5 +10,6 @@ namespace Discord_Bot
         public string Image { get; set; }
         public string SiteUrl { get; set; }
         public List<Anime> Animes { get; set; }
+        public int Favoritos { get; set; }
     }
 }
