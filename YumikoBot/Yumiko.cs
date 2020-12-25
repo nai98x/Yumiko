@@ -61,13 +61,12 @@ namespace Discord_Bot
             Commands.RegisterCommands<Anilist>();
             Commands.RegisterCommands<Juegos>();
             Commands.RegisterCommands<Usuarios>();
+            Commands.RegisterCommands<Reacciones>();
             Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
 
-            await Client.ConnectAsync();
+            await Client.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = ConfigurationManager.AppSettings["Prefix"] + "help | yumiko.uwu.ai | Desarrollado con <3 por Nai" }, UserStatus.Online);
 
-            await Task.Delay(1000); // esperar a que autentifique
-            await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = ConfigurationManager.AppSettings["Prefix"]  + "help | yumiko.uwu.ai | Desarrollado con <3 por Nai" }, UserStatus.Online);
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             LogChannel = LogGuild.GetChannel(781679685838569502);
 

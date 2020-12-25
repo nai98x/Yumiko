@@ -257,12 +257,16 @@
     <Compile Include="Clases Normales\Imagen.cs" />
     <Compile Include="Clases Normales\SettingsJuego.cs" />
     <Compile Include="Clases Normales\UsuarioJuego.cs" />
+    <Compile Include="Data Access Layer\Imagen.cs">
+      <DependentUpon>modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Data Access Layer\LeaderboardAn.cs">
       <DependentUpon>modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data Access Layer\Servicios\Imagenes.cs" />
     <Compile Include="Data Access Layer\Servicios\UsuariosDiscord.cs" />
-    <Compile Include="Data Access Layer\Servicios\LeaderboardAnimes.cs" />
     <Compile Include="Data Access Layer\Servicios\LeaderboardPersonajes.cs" />
+    <Compile Include="Data Access Layer\Servicios\LeaderboardAnimes.cs" />
     <Compile Include="Data Access Layer\LeaderboardPj.cs">
       <DependentUpon>modelo.tt</DependentUpon>
     </Compile>
@@ -286,6 +290,7 @@
     </Compile>
     <Compile Include="Modulos\Anilist.cs" />
     <Compile Include="Modulos\Fun.cs" />
+    <Compile Include="Modulos\Reacciones.cs" />
     <Compile Include="Modulos\Help.cs" />
     <Compile Include="Modulos\Interactuar.cs" />
     <Compile Include="Modulos\Usuarios.cs" />

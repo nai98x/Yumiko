@@ -179,10 +179,10 @@ namespace Discord_Bot
                 switch (juego)
                 {
                     case "anime":
-                        leaderboardAns.AddRegistro(Int64.Parse(uj.Usuario.Id.ToString()), Int64.Parse(ctx.Guild.Id.ToString()), dificultad, uj.Puntaje, rondas);
+                        leaderboardAns.AddRegistro(ctx, Int64.Parse(uj.Usuario.Id.ToString()), dificultad, uj.Puntaje, rondas);
                         break;
                     case "personaje":
-                        leaderboardPjs.AddRegistro(Int64.Parse(uj.Usuario.Id.ToString()), Int64.Parse(ctx.Guild.Id.ToString()), dificultad, uj.Puntaje, rondas);
+                        leaderboardPjs.AddRegistro(ctx, Int64.Parse(uj.Usuario.Id.ToString()), dificultad, uj.Puntaje, rondas);
                         break;
                 }
             }
@@ -341,10 +341,10 @@ namespace Discord_Bot
             switch (tipoStats)
             {
                 case "personajes":
-                    res = leaderboardPjs.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), dificultad);
+                    res = leaderboardPjs.GetLeaderboard(ctx, dificultad);
                     break;
                 case "animes":
-                    res = leaderboardAns.GetLeaderboard(ctx, Int64.Parse(ctx.Guild.Id.ToString()), dificultad);
+                    res = leaderboardAns.GetLeaderboard(ctx, dificultad);
                     break;
                 default:
                     return "";
@@ -384,6 +384,55 @@ namespace Discord_Bot
                 }
             }
             return stats;
+        }
+
+        public string GetEstadisticasUsuario(CommandContext ctx, string tipoStats, DiscordUser usuario)
+        {
+            List<StatsJuego> res;
+            switch (tipoStats)
+            {
+                case "personajes":
+                    res = leaderboardPjs.GetStatsUser(ctx, (long)usuario.Id);
+                    break;
+                case "animes":
+                    res = leaderboardAns.GetStatsUser(ctx, (long)usuario.Id);
+                    break;
+                default:
+                    return "";
+            }
+
+            if(res.Count > 0)
+            {
+                int porcentajeAciertosGlobal, partidasTotalesGlobal = 0, rondasAcertadasTotal = 0, rondasTotalesGlobal = 0;
+                string stats = "";
+                foreach (var stat in res)
+                {
+                    stats +=
+                        $"Dificultad **{stat.Dificultad}**\n" +
+                        $"  - Porcentaje de aciertos: **{stat.PorcentajeAciertos}%**\n" +
+                        $"  - Partidas totales: **{stat.PartidasTotales}**\n" +
+                        $"  - Rondas acertadas: **{stat.RondasAcertadas}**\n" +
+                        $"  - Rondas totales: **{stat.RondasTotales}**\n\n";
+                    partidasTotalesGlobal += stat.PartidasTotales;
+                    rondasAcertadasTotal += stat.RondasAcertadas;
+                    rondasTotalesGlobal += stat.RondasTotales;
+                }
+
+                porcentajeAciertosGlobal = (rondasAcertadasTotal * 100) / rondasTotalesGlobal;
+
+                stats +=
+                    $"**Totales**\n" +
+                    $"  - Porcentaje de aciertos: **{porcentajeAciertosGlobal}%**\n" +
+                    $"  - Partidas totales: **{partidasTotalesGlobal}**\n" +
+                    $"  - Rondas acertadas: **{rondasAcertadasTotal}**\n" +
+                    $"  - Rondas totales: **{rondasTotalesGlobal}**\n\n";
+
+                return stats;
+            }
+            else
+            {
+                return "VACIO";
+            }
         }
     }
 }

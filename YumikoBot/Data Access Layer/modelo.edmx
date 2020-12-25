@@ -9,6 +9,7 @@
     <EntitySet Name="LeaderboardPersonajes" EntityType="YumikoModel.Store.LeaderboardPersonajes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="LeaderboardAnimes" EntityType="YumikoModel.Store.LeaderboardAnimes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="UsuariosDiscord" EntityType="YumikoModel.Store.UsuariosDiscord" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Imagenes" EntityType="YumikoModel.Store.Imagenes" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
   <EntityType Name="LeaderboardPersonajes">
     <Key>
@@ -44,6 +45,14 @@
     <Property Name="MostrarYear" Type="bit" Nullable="true" DefaultValue="true" />
     <Property Name="Anilist" Type="nvarchar(max)" Nullable="true" />
   </EntityType>
+  <EntityType Name="Imagenes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Comando" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -52,6 +61,7 @@
           <EntitySet Name="LeaderboardPersonajes" EntityType="YumikoModel.LeaderboardPj" />
           <EntitySet Name="LeaderboardAnimes" EntityType="YumikoModel.LeaderboardAn" />
           <EntitySet Name="UsuariosDiscord" EntityType="YumikoModel.UsuarioDiscord" />
+          <EntitySet Name="Imagenes" EntityType="YumikoModel.Imagen" />
         </EntityContainer>
         <EntityType Name="LeaderboardPj">
           <Key>
@@ -86,6 +96,14 @@
           <Property Name="Birthday" Type="DateTime" Nullable="false" />
           <Property Name="MostrarYear" Type="Boolean" DefaultValue="true" Nullable="true" />
           <Property Name="Anilist" Type="String" Nullable="true" />
+        </EntityType>
+        <EntityType Name="Imagen">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Url" Type="String" Nullable="false" />
+          <Property Name="Comando" Type="String" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -127,6 +145,15 @@
           <ScalarProperty Name="Birthday" ColumnName="Birthday" />
           <ScalarProperty Name="MostrarYear" ColumnName="MostrarYear" />
           <ScalarProperty Name="Anilist" ColumnName="Anilist" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Imagenes">
+      <EntityTypeMapping TypeName="IsTypeOf(YumikoModel.Imagen)">
+        <MappingFragment StoreEntitySet="Imagenes">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Url" ColumnName="Url" />
+          <ScalarProperty Name="Comando" ColumnName="Comando" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

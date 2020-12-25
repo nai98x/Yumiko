@@ -8,6 +8,7 @@
         <EntityTypeShape EntityType="YumikoModel.LeaderboardPj" Width="1.5" PointX="9.75" PointY="2.5" />
         <EntityTypeShape EntityType="YumikoModel.LeaderboardAn" Width="1.5" PointX="7.125" PointY="2.5" />
         <EntityTypeShape EntityType="YumikoModel.UsuarioDiscord" Width="1.5" PointX="4.5" PointY="2.875" />
+        <EntityTypeShape EntityType="YumikoModel.Imagen" Width="1.5" PointX="12.25" PointY="3.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

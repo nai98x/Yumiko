@@ -350,7 +350,7 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("statsC"), Aliases("estadisticaspersonajes"), Description("Estadisticas de adivina el personaje."), RequireGuild]
+        [Command("leaderboardC"), Aliases("estadisticaspersonajes"), Description("Estadisticas de adivina el personaje."), RequireGuild]
         public async Task EstadisticasAdivinaPersonaje(CommandContext ctx)
         {
             string facil = await funciones.GetEstadisticas(ctx, "personajes", "Fácil");
@@ -378,7 +378,7 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync(embed: builder);
         }
 
-        [Command("statsA"), Aliases("estadisticasanimes"), Description("Estadisticas de adivina el anime."), RequireGuild]
+        [Command("leaderboardA"), Aliases("estadisticasanimes"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaAnime(CommandContext ctx)
         {
             string facil = await funciones.GetEstadisticas(ctx, "animes", "Fácil");
@@ -404,6 +404,56 @@ namespace Discord_Bot.Modulos
             if (!String.IsNullOrEmpty(kusan))
                 builder.AddField("Dificultad Kusan", kusan);
             await ctx.RespondAsync(embed: builder);
+        }
+
+        [Command("statsC"), Description("Estadisticas de adivina el personaje por usuario."), RequireGuild]
+        public async Task EstadisticasAdivinaPersonajeUsuario(CommandContext ctx, DiscordUser usuario = null)
+        {
+            if (usuario == null)
+                usuario = ctx.User;
+
+            string desc = funciones.GetEstadisticasUsuario(ctx, "animes", usuario);
+            if (desc != "VACIO")
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = $"Estadisticas de **{usuario.Username}#{usuario.Discriminator}** - Adivina el personaje",
+                    Description = desc,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                });
+            }
+            else
+            {
+                var msg = await ctx.RespondAsync($"No se encontraron estadisticas para el usuario **{usuario.Username}#{usuario.Discriminator}**!");
+                await Task.Delay(3000);
+                await msg.DeleteAsync("Auto borrado de Yumiko");
+            }
+        }
+
+        [Command("statsA"), Description("Estadisticas de adivina el anime por usuario."), RequireGuild]
+        public async Task EstadisticasAdivinaAnimeUsuario(CommandContext ctx, DiscordUser usuario = null)
+        {
+            if (usuario == null)
+                usuario = ctx.User;
+
+            string desc = funciones.GetEstadisticasUsuario(ctx, "animes", usuario);
+            if(desc != "VACIO")
+            {
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = $"Estadisticas de **{usuario.Username}#{usuario.Discriminator}** - Adivina el anime",
+                    Description = desc,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                });
+            }
+            else
+            {
+                var msg = await ctx.RespondAsync($"No se encontraron estadisticas para el usuario **{usuario.Username}#{usuario.Discriminator}**!");
+                await Task.Delay(3000);
+                await msg.DeleteAsync("Auto borrado de Yumiko");
+            }
         }
     }
 }
