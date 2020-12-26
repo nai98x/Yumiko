@@ -349,3 +349,4 @@ App.config
 .Discord Bot/App.config
 .App.config
 *.config
+/YumikoBot/config.json
