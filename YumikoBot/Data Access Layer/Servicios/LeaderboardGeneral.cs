@@ -60,25 +60,25 @@ namespace YumikoBot.Data_Access_Layer
             }
         }
 
-        public List<StatsJuego> GetStatsUser(CommandContext ctx, long userId, string juego)
+        public StatsJuego GetStatsUser(CommandContext ctx, long userId, string juego, string dificultad)
         {
-            List<StatsJuego> lista = new List<StatsJuego>();
             using (var context = new YumikoEntities())
             {
-                var list = context.LeaderboardSet.ToList().Where(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == userId && x.juego == juego);
-                list.ToList().ForEach(x => {
-                    lista.Add(new StatsJuego()
+                Leaderboard registro = context.LeaderboardSet.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == userId && x.juego == juego && x.dificultad == dificultad);
+                if(registro != null)
+                {
+                    return new StatsJuego()
                     {
-                        UserId = x.user_id,
-                        PartidasTotales = x.partidasJugadas,
-                        RondasAcertadas = x.rondasAcertadas,
-                        RondasTotales = x.rondasTotales,
-                        PorcentajeAciertos = (x.rondasAcertadas * 100) / x.rondasTotales,
-                        Dificultad = x.dificultad
-                    });
-                });
+                        UserId = registro.user_id,
+                        PartidasTotales = registro.partidasJugadas,
+                        RondasAcertadas = registro.rondasAcertadas,
+                        RondasTotales = registro.rondasTotales,
+                        PorcentajeAciertos = (registro.rondasAcertadas * 100) / registro.rondasTotales,
+                        Dificultad = registro.dificultad
+                    };
+                }
+                return null;
             }
-            return lista;
         }
     }
 }

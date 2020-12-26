@@ -366,42 +366,26 @@ namespace Discord_Bot
             return stats;
         }
 
-        public string GetEstadisticasUsuario(CommandContext ctx, string tipoStats, DiscordUser usuario)
+        public string GetEstadisticasUsuario(CommandContext ctx, string tipoStats, DiscordUser usuario, string dificultad, out int partidasTotales, out int rondasAcertadas, out int rondasTotales)
         {
-            List<StatsJuego> res = leaderboard.GetStatsUser(ctx, (long)usuario.Id, tipoStats);
+            StatsJuego res = leaderboard.GetStatsUser(ctx, (long)usuario.Id, tipoStats, dificultad);
 
-            if(res.Count > 0)
+            if(res != null)
             {
-                int porcentajeAciertosGlobal, partidasTotalesGlobal = 0, rondasAcertadasTotal = 0, rondasTotalesGlobal = 0;
-                string stats = "";
-                foreach (var stat in res)
-                {
-                    stats +=
-                        $"Dificultad **{stat.Dificultad}**\n" +
-                        $"  - Porcentaje de aciertos: **{stat.PorcentajeAciertos}%**\n" +
-                        $"  - Partidas totales: **{stat.PartidasTotales}**\n" +
-                        $"  - Rondas acertadas: **{stat.RondasAcertadas}**\n" +
-                        $"  - Rondas totales: **{stat.RondasTotales}**\n\n";
-                    partidasTotalesGlobal += stat.PartidasTotales;
-                    rondasAcertadasTotal += stat.RondasAcertadas;
-                    rondasTotalesGlobal += stat.RondasTotales;
-                }
-
-                porcentajeAciertosGlobal = (rondasAcertadasTotal * 100) / rondasTotalesGlobal;
-
-                stats +=
-                    $"**Totales**\n" +
-                    $"  - Porcentaje de aciertos: **{porcentajeAciertosGlobal}%**\n" +
-                    $"  - Partidas totales: **{partidasTotalesGlobal}**\n" +
-                    $"  - Rondas acertadas: **{rondasAcertadasTotal}**\n" +
-                    $"  - Rondas totales: **{rondasTotalesGlobal}**\n\n";
-
-                return stats;
+               partidasTotales = res.PartidasTotales;
+               rondasAcertadas = res.RondasAcertadas;
+               rondasTotales = res.RondasTotales;
+               return
+                    $"  - Porcentaje de aciertos: **{res.PorcentajeAciertos}%**\n" +
+                    $"  - Partidas totales: **{partidasTotales}**\n" +
+                    $"  - Rondas acertadas: **{rondasAcertadas}**\n" +
+                    $"  - Rondas totales: **{rondasTotales}**\n\n";
             }
-            else
-            {
-                return "VACIO";
-            }
+
+            partidasTotales = 0;
+            rondasAcertadas = 0;
+            rondasTotales = 0;
+            return String.Empty;
         }
     }
 }
