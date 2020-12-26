@@ -13,13 +13,13 @@ Lo primero a realizar es descargar el visual studio community desde su página w
 - Desarrollo de la plataforma universal de Windows
 - Almacenamiento y procesamiento de datos
 
-### 2. SQL Server
+### 2. Clonar el repositorio y abrir la solución
+
+### 3. SQL Server
 - Instalar SQL Server
 - Instalar un manejador (recomiendo SQL Server Express)
 - Crear base de datos llamada: Yumiko
-- Correr el siguiente script: YumikoBot/Data Access Layer/modelo.edmx.sql
-
-### 3. Clonar el repositorio y abrir la solución
+- Correr el siguiente script: [modelo.edmx.sql](YumikoBot/Data Access Layer/modelo.edmx.sql)
 
 ### 4. Instalar paquetes NuGet
 - Ir a Administrar paquetes NuGet de la solución
@@ -27,8 +27,8 @@ Lo primero a realizar es descargar el visual studio community desde su página w
 - Instalar paquetes NuGet faltantes (los de DSharpPlus)
 
 ### 5. Configuraciones del bot
-- Ir al archivo YumikoBot/config_ejemplo.json y renombrarlo a config.json
+- Ir al archivo [config_ejemplo.json](YumikoBot/config_ejemplo.json) y renombrarlo a config.json
 - Reemplazar TOKEN_DISCORD_BOT por tu token de bot de Discord
-- Reemplazar el valor data source de la connection string en YumikoBot/App.config por la que tengas configurada
+- Reemplazar el valor data source de la connection string en [App.config](YumikoBot/App.config) por la que tengas configurada
 
 ### Listo!
