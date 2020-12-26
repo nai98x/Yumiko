@@ -12,10 +12,10 @@ namespace YumikoBot.Data_Access_Layer
     using System;
     using System.Collections.Generic;
     
-    public partial class LeaderboardAn
+    public partial class Leaderboard
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public LeaderboardAn()
+        public Leaderboard()
         {
             this.partidasJugadas = 0;
             this.rondasAcertadas = 0;
@@ -25,6 +25,7 @@ namespace YumikoBot.Data_Access_Layer
         public int Id { get; set; }
         public long user_id { get; set; }
         public long guild_id { get; set; }
+        public string juego { get; set; }
         public string dificultad { get; set; }
         public int partidasJugadas { get; set; }
         public int rondasAcertadas { get; set; }

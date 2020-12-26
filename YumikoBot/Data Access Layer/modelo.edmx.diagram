@@ -5,10 +5,9 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="ba9b131922f9408b8e21b9df3f969c24" Name="Diagram1" >
-        <EntityTypeShape EntityType="YumikoModel.LeaderboardPj" Width="1.5" PointX="9.75" PointY="2.5" />
-        <EntityTypeShape EntityType="YumikoModel.LeaderboardAn" Width="1.5" PointX="7.125" PointY="2.5" />
-        <EntityTypeShape EntityType="YumikoModel.UsuarioDiscord" Width="1.5" PointX="4.5" PointY="2.875" />
-        <EntityTypeShape EntityType="YumikoModel.Imagen" Width="1.5" PointX="12.25" PointY="3.25" />
+        <EntityTypeShape EntityType="YumikoModel.UsuarioDiscord" Width="1.5" PointX="4.875" PointY="2.75" />
+        <EntityTypeShape EntityType="YumikoModel.Imagen" Width="1.5" PointX="9.25" PointY="2.75" />
+        <EntityTypeShape EntityType="YumikoModel.Leaderboard" Width="1.5" PointX="7.125" PointY="2.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

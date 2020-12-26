@@ -16,8 +16,7 @@ namespace Discord_Bot
 {
     public class FuncionesAuxiliares
     {
-        private readonly LeaderboardPersonajes leaderboardPjs = new LeaderboardPersonajes();
-        private readonly LeaderboardAnimes leaderboardAns = new LeaderboardAnimes();
+        private readonly LeaderboardGeneral leaderboard = new LeaderboardGeneral();
 
         public int GetNumeroRandom(int min, int max)
         {
@@ -176,15 +175,7 @@ namespace Discord_Bot
                 }
                 lastScore = uj.Puntaje;
                 tot += uj.Puntaje;
-                switch (juego)
-                {
-                    case "anime":
-                        leaderboardAns.AddRegistro(ctx, Int64.Parse(uj.Usuario.Id.ToString()), dificultad, uj.Puntaje, rondas);
-                        break;
-                    case "personaje":
-                        leaderboardPjs.AddRegistro(ctx, Int64.Parse(uj.Usuario.Id.ToString()), dificultad, uj.Puntaje, rondas);
-                        break;
-                }
+                leaderboard.AddRegistro(ctx, long.Parse(uj.Usuario.Id.ToString()), dificultad, uj.Puntaje, rondas, juego);
             }
             resultados += $"\n**Total ({tot}/{rondas})**";
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
@@ -337,18 +328,7 @@ namespace Discord_Bot
 
         public async Task<string> GetEstadisticas(CommandContext ctx, string tipoStats, string dificultad)
         {
-            dynamic res;
-            switch (tipoStats)
-            {
-                case "personajes":
-                    res = leaderboardPjs.GetLeaderboard(ctx, dificultad);
-                    break;
-                case "animes":
-                    res = leaderboardAns.GetLeaderboard(ctx, dificultad);
-                    break;
-                default:
-                    return "";
-            } 
+            List<StatsJuego> res = leaderboard.GetLeaderboard(ctx, dificultad, tipoStats);
             string stats = "";
             int pos = 0;
             int lastScore = 0;
@@ -388,18 +368,7 @@ namespace Discord_Bot
 
         public string GetEstadisticasUsuario(CommandContext ctx, string tipoStats, DiscordUser usuario)
         {
-            List<StatsJuego> res;
-            switch (tipoStats)
-            {
-                case "personajes":
-                    res = leaderboardPjs.GetStatsUser(ctx, (long)usuario.Id);
-                    break;
-                case "animes":
-                    res = leaderboardAns.GetStatsUser(ctx, (long)usuario.Id);
-                    break;
-                default:
-                    return "";
-            }
+            List<StatsJuego> res = leaderboard.GetStatsUser(ctx, (long)usuario.Id, tipoStats);
 
             if(res.Count > 0)
             {

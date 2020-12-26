@@ -6,35 +6,10 @@
     <edmx:StorageModels>
     <Schema Namespace="YumikoModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityContainer Name="YumikoModelStoreContainer">
-    <EntitySet Name="LeaderboardPersonajes" EntityType="YumikoModel.Store.LeaderboardPersonajes" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="LeaderboardAnimes" EntityType="YumikoModel.Store.LeaderboardAnimes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="UsuariosDiscord" EntityType="YumikoModel.Store.UsuariosDiscord" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Imagenes" EntityType="YumikoModel.Store.Imagenes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="LeaderboardSet" EntityType="YumikoModel.Store.LeaderboardSet" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
-  <EntityType Name="LeaderboardPersonajes">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="user_id" Type="bigint" Nullable="false" />
-    <Property Name="guild_id" Type="bigint" Nullable="false" />
-    <Property Name="dificultad" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="partidasJugadas" Type="int" Nullable="false" DefaultValue="0" />
-    <Property Name="rondasAcertadas" Type="int" Nullable="false" DefaultValue="0" />
-    <Property Name="rondasTotales" Type="int" Nullable="false" DefaultValue="0" />
-  </EntityType>
-  <EntityType Name="LeaderboardAnimes">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="user_id" Type="bigint" Nullable="false" />
-    <Property Name="guild_id" Type="bigint" Nullable="false" />
-    <Property Name="dificultad" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="partidasJugadas" Type="int" Nullable="false" DefaultValue="0" />
-    <Property Name="rondasAcertadas" Type="int" Nullable="false" DefaultValue="0" />
-    <Property Name="rondasTotales" Type="int" Nullable="false" DefaultValue="0" />
-  </EntityType>
   <EntityType Name="UsuariosDiscord">
     <Key>
       <PropertyRef Name="Id" />
@@ -53,40 +28,28 @@
     <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Comando" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
+  <EntityType Name="LeaderboardSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="user_id" Type="bigint" Nullable="false" />
+    <Property Name="guild_id" Type="bigint" Nullable="false" />
+    <Property Name="juego" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="dificultad" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="partidasJugadas" Type="int" Nullable="false" DefaultValue="0" />
+    <Property Name="rondasAcertadas" Type="int" Nullable="false" DefaultValue="0" />
+    <Property Name="rondasTotales" Type="int" Nullable="false" DefaultValue="0" />
+  </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="YumikoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="YumikoEntities" annotation:LazyLoadingEnabled="true" >
-          <EntitySet Name="LeaderboardPersonajes" EntityType="YumikoModel.LeaderboardPj" />
-          <EntitySet Name="LeaderboardAnimes" EntityType="YumikoModel.LeaderboardAn" />
           <EntitySet Name="UsuariosDiscord" EntityType="YumikoModel.UsuarioDiscord" />
           <EntitySet Name="Imagenes" EntityType="YumikoModel.Imagen" />
+          <EntitySet Name="LeaderboardSet" EntityType="YumikoModel.Leaderboard" />
         </EntityContainer>
-        <EntityType Name="LeaderboardPj">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" />
-          <Property Name="user_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="None" />
-          <Property Name="guild_id" Type="Int64" Nullable="false" />
-          <Property Name="dificultad" Type="String" Nullable="false" />
-          <Property Name="partidasJugadas" Type="Int32" Nullable="false" DefaultValue="0" />
-          <Property Name="rondasAcertadas" Type="Int32" Nullable="false" DefaultValue="0" />
-          <Property Name="rondasTotales" Type="Int32" Nullable="false" DefaultValue="0" />
-        </EntityType>
-        <EntityType Name="LeaderboardAn">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="user_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="None" />
-          <Property Name="guild_id" Type="Int64" Nullable="false" />
-          <Property Name="dificultad" Type="String" Nullable="false" />
-          <Property Name="partidasJugadas" Type="Int32" Nullable="false" DefaultValue="0" />
-          <Property Name="rondasAcertadas" Type="Int32" Nullable="false" DefaultValue="0" />
-          <Property Name="rondasTotales" Type="Int32" Nullable="false" DefaultValue="0" />
-        </EntityType>
         <EntityType Name="UsuarioDiscord">
           <Key>
             <PropertyRef Name="Id" />
@@ -105,38 +68,25 @@
           <Property Name="Url" Type="String" Nullable="false" />
           <Property Name="Comando" Type="String" Nullable="false" />
         </EntityType>
+        <EntityType Name="Leaderboard">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="user_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="guild_id" Type="Int64" Nullable="false" />
+          <Property Name="juego" Type="String" Nullable="false" />
+          <Property Name="dificultad" Type="String" Nullable="false" />
+          <Property Name="partidasJugadas" Type="Int32" Nullable="false" DefaultValue="0" />
+          <Property Name="rondasAcertadas" Type="Int32" Nullable="false" DefaultValue="0" />
+          <Property Name="rondasTotales" Type="Int32" Nullable="false" DefaultValue="0" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
     <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="YumikoModelStoreContainer" CdmEntityContainer="YumikoEntities">
-    <EntitySetMapping Name="LeaderboardPersonajes">
-      <EntityTypeMapping TypeName="IsTypeOf(YumikoModel.LeaderboardPj)">
-        <MappingFragment StoreEntitySet="LeaderboardPersonajes">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="user_id" ColumnName="user_id" />
-          <ScalarProperty Name="guild_id" ColumnName="guild_id" />
-          <ScalarProperty Name="dificultad" ColumnName="dificultad" />
-          <ScalarProperty Name="partidasJugadas" ColumnName="partidasJugadas" />
-          <ScalarProperty Name="rondasAcertadas" ColumnName="rondasAcertadas" />
-          <ScalarProperty Name="rondasTotales" ColumnName="rondasTotales" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="LeaderboardAnimes">
-      <EntityTypeMapping TypeName="IsTypeOf(YumikoModel.LeaderboardAn)">
-        <MappingFragment StoreEntitySet="LeaderboardAnimes">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="user_id" ColumnName="user_id" />
-          <ScalarProperty Name="guild_id" ColumnName="guild_id" />
-          <ScalarProperty Name="dificultad" ColumnName="dificultad" />
-          <ScalarProperty Name="partidasJugadas" ColumnName="partidasJugadas" />
-          <ScalarProperty Name="rondasAcertadas" ColumnName="rondasAcertadas" />
-          <ScalarProperty Name="rondasTotales" ColumnName="rondasTotales" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="UsuariosDiscord">
       <EntityTypeMapping TypeName="IsTypeOf(YumikoModel.UsuarioDiscord)">
         <MappingFragment StoreEntitySet="UsuariosDiscord">
@@ -154,6 +104,20 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Url" ColumnName="Url" />
           <ScalarProperty Name="Comando" ColumnName="Comando" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LeaderboardSet">
+      <EntityTypeMapping TypeName="IsTypeOf(YumikoModel.Leaderboard)">
+        <MappingFragment StoreEntitySet="LeaderboardSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="guild_id" ColumnName="guild_id" />
+          <ScalarProperty Name="juego" ColumnName="juego" />
+          <ScalarProperty Name="dificultad" ColumnName="dificultad" />
+          <ScalarProperty Name="partidasJugadas" ColumnName="partidasJugadas" />
+          <ScalarProperty Name="rondasAcertadas" ColumnName="rondasAcertadas" />
+          <ScalarProperty Name="rondasTotales" ColumnName="rondasTotales" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

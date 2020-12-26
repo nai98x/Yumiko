@@ -5,25 +5,26 @@ using System.Linq;
 
 namespace YumikoBot.Data_Access_Layer
 {
-    public class LeaderboardAnimes
+    public class LeaderboardGeneral
     {
-        public void AddRegistro(CommandContext ctx, long userId, string dificultad, int rondasAcertadas, int rondasTotales)
+        public void AddRegistro(CommandContext ctx, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)
         {
             using (var context = new YumikoEntities())
             {
-                LeaderboardAn registro = context.LeaderboardAnimes.FirstOrDefault(x => x.user_id == userId && x.guild_id == (long)ctx.Guild.Id && x.dificultad == dificultad);
+                Leaderboard registro = context.LeaderboardSet.FirstOrDefault(x => x.user_id == userId && x.guild_id == (long)ctx.Guild.Id && x.dificultad == dificultad && x.juego == juego);
                 if(registro == null)
                 {
-                    LeaderboardAn nuevo = new LeaderboardAn()
+                    Leaderboard nuevo = new Leaderboard()
                     {
                         user_id = userId,
                         guild_id = (long)ctx.Guild.Id,
                         dificultad = dificultad,
                         partidasJugadas = 1,
                         rondasAcertadas = rondasAcertadas,
-                        rondasTotales = rondasTotales
+                        rondasTotales = rondasTotales,
+                        juego = juego
                     };
-                    context.LeaderboardAnimes.Add(nuevo);
+                    context.LeaderboardSet.Add(nuevo);
                 }
                 else
                 {
@@ -35,16 +36,16 @@ namespace YumikoBot.Data_Access_Layer
             }
         }
 
-        public List<StatsJuego> GetLeaderboard(CommandContext ctx, string dificultad)
+        public List<StatsJuego> GetLeaderboard(CommandContext ctx, string dificultad, string juego)
         {
             List<StatsJuego> lista = new List<StatsJuego>();
             using (var context = new YumikoEntities())
             {
-                var list = context.LeaderboardAnimes.ToList().Where(x => x.guild_id == (long)ctx.Guild.Id && x.dificultad == dificultad);
+                var list = context.LeaderboardSet.ToList().Where(x => x.guild_id == (long)ctx.Guild.Id && x.dificultad == dificultad && x.juego == juego);
                 var listaVerif = ctx.Guild.Members.Values.ToList();
                 list.ToList().ForEach(x =>
                 {
-                    if(listaVerif.Find(u => u.Id == (ulong)x.user_id) != null)
+                    if (listaVerif.Find(u => u.Id == (ulong)x.user_id) != null)
                     {
                         lista.Add(new StatsJuego()
                         {
@@ -59,12 +60,12 @@ namespace YumikoBot.Data_Access_Layer
             }
         }
 
-        public List<StatsJuego> GetStatsUser(CommandContext ctx, long userId)
+        public List<StatsJuego> GetStatsUser(CommandContext ctx, long userId, string juego)
         {
             List<StatsJuego> lista = new List<StatsJuego>();
             using (var context = new YumikoEntities())
             {
-                var list = context.LeaderboardAnimes.ToList().Where(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == userId);
+                var list = context.LeaderboardSet.ToList().Where(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == userId && x.juego == juego);
                 list.ToList().ForEach(x => {
                     lista.Add(new StatsJuego()
                     {

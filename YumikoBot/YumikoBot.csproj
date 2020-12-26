@@ -261,16 +261,12 @@
     <Compile Include="Data Access Layer\Imagen.cs">
       <DependentUpon>modelo.tt</DependentUpon>
     </Compile>
-    <Compile Include="Data Access Layer\LeaderboardAn.cs">
+    <Compile Include="Data Access Layer\Leaderboard.cs">
       <DependentUpon>modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Data Access Layer\Servicios\Imagenes.cs" />
     <Compile Include="Data Access Layer\Servicios\UsuariosDiscord.cs" />
-    <Compile Include="Data Access Layer\Servicios\LeaderboardPersonajes.cs" />
-    <Compile Include="Data Access Layer\Servicios\LeaderboardAnimes.cs" />
-    <Compile Include="Data Access Layer\LeaderboardPj.cs">
-      <DependentUpon>modelo.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Data Access Layer\Servicios\LeaderboardGeneral.cs" />
     <Compile Include="Data Access Layer\modelo.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

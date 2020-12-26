@@ -25,9 +25,8 @@ namespace YumikoBot.Data_Access_Layer
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<LeaderboardPj> LeaderboardPersonajes { get; set; }
-        public virtual DbSet<LeaderboardAn> LeaderboardAnimes { get; set; }
         public virtual DbSet<UsuarioDiscord> UsuariosDiscord { get; set; }
         public virtual DbSet<Imagen> Imagenes { get; set; }
+        public virtual DbSet<Leaderboard> LeaderboardSet { get; set; }
     }
 }

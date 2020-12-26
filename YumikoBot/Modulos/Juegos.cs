@@ -365,11 +365,11 @@ namespace Discord_Bot.Modulos
         [Command("leaderboardC"), Aliases("estadisticaspersonajes"), Description("Estadisticas de adivina el personaje."), RequireGuild]
         public async Task EstadisticasAdivinaPersonaje(CommandContext ctx)
         {
-            string facil = await funciones.GetEstadisticas(ctx, "personajes", "Fácil");
-            string media = await funciones.GetEstadisticas(ctx, "personajes", "Media");
-            string dificil = await funciones.GetEstadisticas(ctx, "personajes", "Dificil");
-            string extremo = await funciones.GetEstadisticas(ctx, "personajes", "Extremo");
-            string kusan = await funciones.GetEstadisticas(ctx, "personajes", "Kusan");
+            string facil = await funciones.GetEstadisticas(ctx, "personaje", "Fácil");
+            string media = await funciones.GetEstadisticas(ctx, "personaje", "Media");
+            string dificil = await funciones.GetEstadisticas(ctx, "personaje", "Dificil");
+            string extremo = await funciones.GetEstadisticas(ctx, "personaje", "Extremo");
+            string kusan = await funciones.GetEstadisticas(ctx, "personaje", "Kusan");
 
             var builder = new DiscordEmbedBuilder
             {
@@ -393,11 +393,11 @@ namespace Discord_Bot.Modulos
         [Command("leaderboardA"), Aliases("estadisticasanimes"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaAnime(CommandContext ctx)
         {
-            string facil = await funciones.GetEstadisticas(ctx, "animes", "Fácil");
-            string media = await funciones.GetEstadisticas(ctx, "animes", "Media");
-            string dificil = await funciones.GetEstadisticas(ctx, "animes", "Dificil");
-            string extremo = await funciones.GetEstadisticas(ctx, "animes", "Extremo");
-            string kusan = await funciones.GetEstadisticas(ctx, "animes", "Kusan");
+            string facil = await funciones.GetEstadisticas(ctx, "anime", "Fácil");
+            string media = await funciones.GetEstadisticas(ctx, "anime", "Media");
+            string dificil = await funciones.GetEstadisticas(ctx, "anime", "Dificil");
+            string extremo = await funciones.GetEstadisticas(ctx, "anime", "Extremo");
+            string kusan = await funciones.GetEstadisticas(ctx, "anime", "Kusan");
 
             var builder = new DiscordEmbedBuilder
             {
