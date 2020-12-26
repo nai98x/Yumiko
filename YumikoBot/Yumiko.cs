@@ -8,10 +8,14 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.VoiceNext;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
+using YumikoBot;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
@@ -25,9 +29,20 @@ namespace Discord_Bot
 
         public async Task RunAsync()
         {
+            var json = string.Empty;
+            using (var fs = File.OpenRead("config.json"))
+            {
+                using(var sr = new StreamReader(fs, new UTF8Encoding(false)))
+                {
+                    json = await sr.ReadToEndAsync().ConfigureAwait(false);
+                }
+            }
+
+            var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
+
             var Config = new DiscordConfiguration
             {
-                Token = ConfigurationManager.AppSettings["DiscordAPIKey"],
+                Token = configJson.Token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
                 ReconnectIndefinitely = true,
