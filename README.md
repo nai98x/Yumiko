@@ -1,5 +1,5 @@
 # Yumiko
-## Bot para Discord desarrollado en DSharpPlus (C#) 
+## Bot para Discord desarrollado en DSharpPlus - .NET Framework 
 [![CodeFactor](https://www.codefactor.io/repository/github/nai98x/yumiko/badge?s=92181f030fc6101fb54afa74167809713aa4d060)](https://www.codefactor.io/repository/github/nai98x/yumiko)
 
 Bot multi propósito con juegos, utilidades y memes. Visita su página: https://yumiko.uwu.ai/
@@ -10,7 +10,8 @@ Bot multi propósito con juegos, utilidades y memes. Visita su página: https://
 Lo primero a realizar es descargar el visual studio community desde su página web oficial, las opciones de instalación son las siguientes:
 - Desarrollo de ASP.NET y web
 - Desarrollo de escritorio de .NET
-- Desarrollo multiplataforma de .NET Core
+- Desarrollo de la plataforma universal de Windows
+- Almacenamiento y procesamiento de datos
 
 ### 2. SQL Server
 - Instalar SQL Server
