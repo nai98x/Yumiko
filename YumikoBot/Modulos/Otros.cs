@@ -26,7 +26,9 @@ namespace Discord_Bot.Modulos
         public async Task Stop(CommandContext ctx)
         {
             await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
-            await ctx.RespondAsync("Me voy onii-chan..");
+            var mensaje = await ctx.RespondAsync("Me voy onii-chan..");
+            await Task.Delay(3000);
+            await mensaje.DeleteAsync("Auto borrado de Yumiko");
             Environment.Exit(0);
         }
 

@@ -298,11 +298,16 @@
     <Compile Include="Yumiko.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <EntityDeploy Include="Data Access Layer\modelo.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>modelo.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="config_ejemplo.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
