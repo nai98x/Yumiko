@@ -307,9 +307,6 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>modelo.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Data Access Layer\modelo.edmx.diagram">
       <DependentUpon>modelo.edmx</DependentUpon>
     </None>
