@@ -1,6 +1,6 @@
 # Yumiko
 ## Bot para Discord desarrollado en DSharpPlus (C#) 
-[![CodeFactor](https://www.codefactor.io/repository/github/marianoburguete/yumiko/badge?s=379c49fc9e6691ef798d66a662affc4e0c6d3634)](https://www.codefactor.io/repository/github/marianoburguete/yumiko)
+[![CodeFactor](https://www.codefactor.io/repository/github/nai98x/yumiko/badge?s=92181f030fc6101fb54afa74167809713aa4d060)](https://www.codefactor.io/repository/github/nai98x/yumiko)
 
 Bot multi propósito con juegos, utilidades y memes. Visita su página: https://yumiko.uwu.ai/
 
