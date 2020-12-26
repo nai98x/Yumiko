@@ -396,22 +396,7 @@ namespace Discord_Bot
             string extremo = await GetEstadisticasDificultad(ctx, juego, "Extremo");
             string kusan = await GetEstadisticasDificultad(ctx, juego, "Kusan");
 
-            var builder = new DiscordEmbedBuilder
-            {
-                Title = "Estadisticas - Adivina el manga",
-                Footer = GetFooter(ctx),
-                Color = GetColor()
-            };
-            if (!String.IsNullOrEmpty(facil))
-                builder.AddField("Dificultad Fácil", facil);
-            if (!String.IsNullOrEmpty(media))
-                builder.AddField("Dificultad Media", media);
-            if (!String.IsNullOrEmpty(dificil))
-                builder.AddField("Dificultad Dificil", dificil);
-            if (!String.IsNullOrEmpty(extremo))
-                builder.AddField("Dificultad Extremo", extremo);
-            if (!String.IsNullOrEmpty(kusan))
-                builder.AddField("Dificultad Kusan", kusan);
+            var builder = CrearEmbedStats(ctx, $"Estadisticas - Adivina el {juego}", facil, media, dificil, extremo, kusan);
             return builder;
         }
 
@@ -455,9 +440,17 @@ namespace Discord_Bot
                 $"  - Rondas acertadas: **{rondasAcertadas}**\n" +
                 $"  - Rondas totales: **{rondasTotales}**\n\n";
 
+            var builder = CrearEmbedStats(ctx, $"Estadisticas de **{usuario.Username}#{usuario.Discriminator}** - Adivina el {juego}", facil, media, dificil, extremo, kusan);
+            builder.AddField("Totales", totales);
+
+            return builder;
+        }
+
+        public DiscordEmbedBuilder CrearEmbedStats(CommandContext ctx, string titulo, string facil, string media, string dificil, string extremo, string kusan)
+        {
             var builder = new DiscordEmbedBuilder
             {
-                Title = $"Estadisticas de **{usuario.Username}#{usuario.Discriminator}** - Adivina el anime",
+                Title = titulo,
                 Footer = GetFooter(ctx),
                 Color = GetColor()
             };
@@ -471,10 +464,8 @@ namespace Discord_Bot
                 builder.AddField("Dificultad Extremo", extremo);
             if (!String.IsNullOrEmpty(kusan))
                 builder.AddField("Dificultad Kusan", kusan);
-            builder.AddField("Totales", totales);
 
             return builder;
         }
-
     }
 }
