@@ -31,7 +31,7 @@ namespace YumikoBot.Data_Access_Layer
                             {
                                 lista.Add(new UserCumple {
                                     Id = x.Id,
-                                    guild_id = x.guild_id,
+                                    Guild_id = x.guild_id,
                                     Birthday = x.Birthday,
                                     BirthdayActual = nuevoCumple,
                                     MostrarYear = x.MostrarYear
@@ -43,7 +43,7 @@ namespace YumikoBot.Data_Access_Layer
                             lista.Add(new UserCumple
                             {
                                 Id = x.Id,
-                                guild_id = x.guild_id,
+                                Guild_id = x.guild_id,
                                 Birthday = x.Birthday,
                                 BirthdayActual = nuevoCumple,
                                 MostrarYear = x.MostrarYear

@@ -541,87 +541,24 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("leaderboardC"), Aliases("estadisticaspersonajes"), Description("Estadisticas de adivina el personaje."), RequireGuild]
+        [Command("leaderboardC"), Aliases("rankingc"), Description("Estadisticas de adivina el personaje."), RequireGuild]
         public async Task EstadisticasAdivinaPersonaje(CommandContext ctx)
         {
-            string facil = await funciones.GetEstadisticas(ctx, "personaje", "Fácil");
-            string media = await funciones.GetEstadisticas(ctx, "personaje", "Media");
-            string dificil = await funciones.GetEstadisticas(ctx, "personaje", "Dificil");
-            string extremo = await funciones.GetEstadisticas(ctx, "personaje", "Extremo");
-            string kusan = await funciones.GetEstadisticas(ctx, "personaje", "Kusan");
-
-            var builder = new DiscordEmbedBuilder
-            {
-                Title = "Estadisticas - Adivina el personaje",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            };
-            if (!String.IsNullOrEmpty(facil))
-                builder.AddField("Dificultad Fácil", facil);
-            if (!String.IsNullOrEmpty(media))
-                builder.AddField("Dificultad Media", media);
-            if (!String.IsNullOrEmpty(dificil))
-                builder.AddField("Dificultad Dificil", dificil);
-            if (!String.IsNullOrEmpty(extremo))
-                builder.AddField("Dificultad Extremo", extremo);
-            if (!String.IsNullOrEmpty(kusan))
-                builder.AddField("Dificultad Kusan", kusan);
+            var builder = await funciones.GetEstadisticas(ctx, "personaje");
             await ctx.RespondAsync(embed: builder);
         }
 
-        [Command("leaderboardA"), Aliases("estadisticasanimes"), Description("Estadisticas de adivina el anime."), RequireGuild]
+        [Command("leaderboardA"), Aliases("rankinga"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaAnime(CommandContext ctx)
         {
-            string facil = await funciones.GetEstadisticas(ctx, "anime", "Fácil");
-            string media = await funciones.GetEstadisticas(ctx, "anime", "Media");
-            string dificil = await funciones.GetEstadisticas(ctx, "anime", "Dificil");
-            string extremo = await funciones.GetEstadisticas(ctx, "anime", "Extremo");
-            string kusan = await funciones.GetEstadisticas(ctx, "anime", "Kusan");
-
-            var builder = new DiscordEmbedBuilder
-            {
-                Title = "Estadisticas - Adivina el anime del personaje",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            };
-            if (!String.IsNullOrEmpty(facil))
-                builder.AddField("Dificultad Fácil", facil);
-            if (!String.IsNullOrEmpty(media))
-                builder.AddField("Dificultad Media", media);
-            if (!String.IsNullOrEmpty(dificil))
-                builder.AddField("Dificultad Dificil", dificil);
-            if (!String.IsNullOrEmpty(extremo))
-                builder.AddField("Dificultad Extremo", extremo);
-            if (!String.IsNullOrEmpty(kusan))
-                builder.AddField("Dificultad Kusan", kusan);
+            var builder = await funciones.GetEstadisticas(ctx, "anime");
             await ctx.RespondAsync(embed: builder);
         }
 
-        [Command("leaderboardM"), Aliases("estadisticasmangas"), Description("Estadisticas de adivina el anime."), RequireGuild]
+        [Command("leaderboardM"), Aliases("rankingm"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaManga(CommandContext ctx)
         {
-            string facil = await funciones.GetEstadisticas(ctx, "manga", "Fácil");
-            string media = await funciones.GetEstadisticas(ctx, "manga", "Media");
-            string dificil = await funciones.GetEstadisticas(ctx, "manga", "Dificil");
-            string extremo = await funciones.GetEstadisticas(ctx, "manga", "Extremo");
-            string kusan = await funciones.GetEstadisticas(ctx, "manga", "Kusan");
-
-            var builder = new DiscordEmbedBuilder
-            {
-                Title = "Estadisticas - Adivina el manga",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            };
-            if (!String.IsNullOrEmpty(facil))
-                builder.AddField("Dificultad Fácil", facil);
-            if (!String.IsNullOrEmpty(media))
-                builder.AddField("Dificultad Media", media);
-            if (!String.IsNullOrEmpty(dificil))
-                builder.AddField("Dificultad Dificil", dificil);
-            if (!String.IsNullOrEmpty(extremo))
-                builder.AddField("Dificultad Extremo", extremo);
-            if (!String.IsNullOrEmpty(kusan))
-                builder.AddField("Dificultad Kusan", kusan);
+            var builder = await funciones.GetEstadisticas(ctx, "manga");
             await ctx.RespondAsync(embed: builder);
         }
 
@@ -631,62 +568,7 @@ namespace Discord_Bot.Modulos
             if (usuario == null)
                 usuario = ctx.User;
 
-            int partidasTotales = 0;
-            int rondasAcertadas = 0;
-            int rondasTotales = 0;
-
-            string facil = funciones.GetEstadisticasUsuario(ctx, "personaje", usuario, "Fácil", out int partidasTotalesF, out int rondasAcertadasF, out int rondasTotalesF);
-            partidasTotales += partidasTotalesF;
-            rondasAcertadas += rondasAcertadasF;
-            rondasTotales += rondasTotalesF;
-                
-            string media = funciones.GetEstadisticasUsuario(ctx, "personaje", usuario, "Media", out int partidasTotalesM, out int rondasAcertadasM, out int rondasTotalesM);
-            partidasTotales += partidasTotalesM;
-            rondasAcertadas += rondasAcertadasM;
-            rondasTotales += rondasTotalesM;
-
-            string dificil = funciones.GetEstadisticasUsuario(ctx, "personaje", usuario, "Dificil", out int partidasTotalesD, out int rondasAcertadasD, out int rondasTotalesD);
-            partidasTotales += partidasTotalesD;
-            rondasAcertadas += rondasAcertadasD;
-            rondasTotales += rondasTotalesD;
-
-            string extremo = funciones.GetEstadisticasUsuario(ctx, "personaje", usuario, "Extremo", out int partidasTotalesE, out int rondasAcertadasE, out int rondasTotalesE);
-            partidasTotales += partidasTotalesE;
-            rondasAcertadas += rondasAcertadasE;
-            rondasTotales += rondasTotalesE;
-
-            string kusan = funciones.GetEstadisticasUsuario(ctx, "personaje", usuario, "Kusan", out int partidasTotalesK, out int rondasAcertadasK, out int rondasTotalesK);
-            partidasTotales += partidasTotalesK;
-            rondasAcertadas += rondasAcertadasK;
-            rondasTotales += rondasTotalesK;
-
-            int porcentajeAciertos = 0;
-            if (rondasTotales > 0)
-                porcentajeAciertos = (rondasAcertadas * 100) / rondasTotales;
-            string totales =
-                $"  - Porcentaje de aciertos: **{porcentajeAciertos}%**\n" +
-                $"  - Partidas totales: **{partidasTotales}**\n" +
-                $"  - Rondas acertadas: **{rondasAcertadas}**\n" +
-                $"  - Rondas totales: **{rondasTotales}**\n\n";
-
-            var builder = new DiscordEmbedBuilder
-            {
-                Title = $"Estadisticas de **{usuario.Username}#{usuario.Discriminator}** - Adivina el personaje",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            };
-            if (!String.IsNullOrEmpty(facil))
-                builder.AddField("Dificultad Fácil", facil);
-            if (!String.IsNullOrEmpty(media))
-                builder.AddField("Dificultad Media", media);
-            if (!String.IsNullOrEmpty(dificil))
-                builder.AddField("Dificultad Dificil", dificil);
-            if (!String.IsNullOrEmpty(extremo))
-                builder.AddField("Dificultad Extremo", extremo);
-            if (!String.IsNullOrEmpty(kusan))
-                builder.AddField("Dificultad Kusan", kusan);
-            builder.AddField("Totales", totales);
-
+            var builder = funciones.GetEstadisticasUsuario(ctx, "personaje", usuario);
             await ctx.RespondAsync(embed: builder);
         }
 
@@ -696,62 +578,7 @@ namespace Discord_Bot.Modulos
             if (usuario == null)
                 usuario = ctx.User;
 
-            int partidasTotales = 0;
-            int rondasAcertadas = 0;
-            int rondasTotales = 0;
-
-            string facil = funciones.GetEstadisticasUsuario(ctx, "anime", usuario, "Fácil", out int partidasTotalesF, out int rondasAcertadasF, out int rondasTotalesF);
-            partidasTotales += partidasTotalesF;
-            rondasAcertadas += rondasAcertadasF;
-            rondasTotales += rondasTotalesF;
-
-            string media = funciones.GetEstadisticasUsuario(ctx, "anime", usuario, "Media", out int partidasTotalesM, out int rondasAcertadasM, out int rondasTotalesM);
-            partidasTotales += partidasTotalesM;
-            rondasAcertadas += rondasAcertadasM;
-            rondasTotales += rondasTotalesM;
-
-            string dificil = funciones.GetEstadisticasUsuario(ctx, "anime", usuario, "Dificil", out int partidasTotalesD, out int rondasAcertadasD, out int rondasTotalesD);
-            partidasTotales += partidasTotalesD;
-            rondasAcertadas += rondasAcertadasD;
-            rondasTotales += rondasTotalesD;
-
-            string extremo = funciones.GetEstadisticasUsuario(ctx, "anime", usuario, "Extremo", out int partidasTotalesE, out int rondasAcertadasE, out int rondasTotalesE);
-            partidasTotales += partidasTotalesE;
-            rondasAcertadas += rondasAcertadasE;
-            rondasTotales += rondasTotalesE;
-
-            string kusan = funciones.GetEstadisticasUsuario(ctx, "anime", usuario, "Kusan", out int partidasTotalesK, out int rondasAcertadasK, out int rondasTotalesK);
-            partidasTotales += partidasTotalesK;
-            rondasAcertadas += rondasAcertadasK;
-            rondasTotales += rondasTotalesK;
-
-            int porcentajeAciertos = 0;
-            if (rondasTotales > 0)
-                porcentajeAciertos = (rondasAcertadas * 100) / rondasTotales;
-            string totales =
-                $"  - Porcentaje de aciertos: **{porcentajeAciertos}%**\n" +
-                $"  - Partidas totales: **{partidasTotales}**\n" +
-                $"  - Rondas acertadas: **{rondasAcertadas}**\n" +
-                $"  - Rondas totales: **{rondasTotales}**\n\n";
-
-            var builder = new DiscordEmbedBuilder
-            {
-                Title = $"Estadisticas de **{usuario.Username}#{usuario.Discriminator}** - Adivina el anime",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            };
-            if (!String.IsNullOrEmpty(facil))
-                builder.AddField("Dificultad Fácil", facil);
-            if (!String.IsNullOrEmpty(media))
-                builder.AddField("Dificultad Media", media);
-            if (!String.IsNullOrEmpty(dificil))
-                builder.AddField("Dificultad Dificil", dificil);
-            if (!String.IsNullOrEmpty(extremo))
-                builder.AddField("Dificultad Extremo", extremo);
-            if (!String.IsNullOrEmpty(kusan))
-                builder.AddField("Dificultad Kusan", kusan);
-            builder.AddField("Totales", totales);
-
+            var builder = funciones.GetEstadisticasUsuario(ctx, "anime", usuario);
             await ctx.RespondAsync(embed: builder);
         }
 
@@ -761,62 +588,7 @@ namespace Discord_Bot.Modulos
             if (usuario == null)
                 usuario = ctx.User;
 
-            int partidasTotales = 0;
-            int rondasAcertadas = 0;
-            int rondasTotales = 0;
-
-            string facil = funciones.GetEstadisticasUsuario(ctx, "manga", usuario, "Fácil", out int partidasTotalesF, out int rondasAcertadasF, out int rondasTotalesF);
-            partidasTotales += partidasTotalesF;
-            rondasAcertadas += rondasAcertadasF;
-            rondasTotales += rondasTotalesF;
-
-            string media = funciones.GetEstadisticasUsuario(ctx, "manga", usuario, "Media", out int partidasTotalesM, out int rondasAcertadasM, out int rondasTotalesM);
-            partidasTotales += partidasTotalesM;
-            rondasAcertadas += rondasAcertadasM;
-            rondasTotales += rondasTotalesM;
-
-            string dificil = funciones.GetEstadisticasUsuario(ctx, "manga", usuario, "Dificil", out int partidasTotalesD, out int rondasAcertadasD, out int rondasTotalesD);
-            partidasTotales += partidasTotalesD;
-            rondasAcertadas += rondasAcertadasD;
-            rondasTotales += rondasTotalesD;
-
-            string extremo = funciones.GetEstadisticasUsuario(ctx, "manga", usuario, "Extremo", out int partidasTotalesE, out int rondasAcertadasE, out int rondasTotalesE);
-            partidasTotales += partidasTotalesE;
-            rondasAcertadas += rondasAcertadasE;
-            rondasTotales += rondasTotalesE;
-
-            string kusan = funciones.GetEstadisticasUsuario(ctx, "manga", usuario, "Kusan", out int partidasTotalesK, out int rondasAcertadasK, out int rondasTotalesK);
-            partidasTotales += partidasTotalesK;
-            rondasAcertadas += rondasAcertadasK;
-            rondasTotales += rondasTotalesK;
-
-            int porcentajeAciertos = 0;
-            if (rondasTotales > 0)
-                porcentajeAciertos = (rondasAcertadas * 100) / rondasTotales;
-            string totales =
-                $"  - Porcentaje de aciertos: **{porcentajeAciertos}%**\n" +
-                $"  - Partidas totales: **{partidasTotales}**\n" +
-                $"  - Rondas acertadas: **{rondasAcertadas}**\n" +
-                $"  - Rondas totales: **{rondasTotales}**\n\n";
-
-            var builder = new DiscordEmbedBuilder
-            {
-                Title = $"Estadisticas de **{usuario.Username}#{usuario.Discriminator}** - Adivina el manga",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            };
-            if (!String.IsNullOrEmpty(facil))
-                builder.AddField("Dificultad Fácil", facil);
-            if (!String.IsNullOrEmpty(media))
-                builder.AddField("Dificultad Media", media);
-            if (!String.IsNullOrEmpty(dificil))
-                builder.AddField("Dificultad Dificil", dificil);
-            if (!String.IsNullOrEmpty(extremo))
-                builder.AddField("Dificultad Extremo", extremo);
-            if (!String.IsNullOrEmpty(kusan))
-                builder.AddField("Dificultad Kusan", kusan);
-            builder.AddField("Totales", totales);
-
+            var builder = funciones.GetEstadisticasUsuario(ctx, "manga", usuario);
             await ctx.RespondAsync(embed: builder);
         }
     }
