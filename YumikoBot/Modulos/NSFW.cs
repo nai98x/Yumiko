@@ -42,11 +42,10 @@ namespace Discord_Bot.Modulos
                     if(lista.Count > 0)
                     {
                         var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.RespondAsync($"{ctx.User.Mention} se folló a {usuario.Mention}", embed: new DiscordEmbedBuilder
                         {
                             Footer = funciones.GetFooter(ctx),
                             Color = funciones.GetColor(),
-                            Description = $"{ctx.User.Mention} se folló a {usuario}",
                             ImageUrl = elegida.Url
                         });
                     }
@@ -54,13 +53,17 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("cum"), Description("Te vienes")]
-        public async Task Cum(CommandContext ctx, [Description("El usuario al que le quieres acabar")] DiscordUser usuario = null)
+        [Command("gcum"), Description("Te vienes (chica)")]
+        public async Task GCum(CommandContext ctx, [Description("El usuario al que le quieres acabar")] DiscordUser usuario = null)
         {
             if (usuario == null || (usuario != null && ctx.User.Id != usuario.Id))
             {
-                var lista = imagenes.GetImagenes("cum");
-                if(lista.Count > 0)
+                dynamic lista;
+                if(usuario == null)
+                    lista = imagenes.GetImagenes("gcum");
+                else
+                    lista = imagenes.GetImagenes("gcumc");
+                if (lista.Count > 0)
                 {
                     var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
                     string titulo;
@@ -68,11 +71,44 @@ namespace Discord_Bot.Modulos
                         titulo = $"{ctx.User.Mention} se ha venido";
                     else
                         titulo = $"{ctx.User.Mention} se vino en {usuario.Mention}";
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    await ctx.RespondAsync(titulo, embed: new DiscordEmbedBuilder
                     {
                         Footer = funciones.GetFooter(ctx),
                         Color = funciones.GetColor(),
-                        Description = titulo,
+                        ImageUrl = elegida.Url
+                    });
+                }
+            }
+            else
+            {
+                var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
+                await Task.Delay(3000);
+                await msg.DeleteAsync("Auto borrado de Yumiko");
+            }
+        }
+
+        [Command("bcum"), Description("Te vienes (chico)")]
+        public async Task BCum(CommandContext ctx, [Description("El usuario al que le quieres acabar")] DiscordUser usuario = null)
+        {
+            if (usuario == null || (usuario != null && ctx.User.Id != usuario.Id))
+            {
+                dynamic lista;
+                if (usuario == null)
+                    lista = imagenes.GetImagenes("bcum");
+                else
+                    lista = imagenes.GetImagenes("bcumc");
+                if (lista.Count > 0)
+                {
+                    var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
+                    string titulo;
+                    if (usuario == null)
+                        titulo = $"{ctx.User.Mention} se ha venido";
+                    else
+                        titulo = $"{ctx.User.Mention} se vino en {usuario.Mention}";
+                    await ctx.RespondAsync(titulo, embed: new DiscordEmbedBuilder
+                    {
+                        Footer = funciones.GetFooter(ctx),
+                        Color = funciones.GetColor(),
                         ImageUrl = elegida.Url
                     });
                 }
@@ -108,11 +144,10 @@ namespace Discord_Bot.Modulos
                     if(lista.Count > 0)
                     {
                         var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.RespondAsync($"{ctx.User.Mention} le hizo una rusa a {usuario.Mention}", embed: new DiscordEmbedBuilder
                         {
                             Footer = funciones.GetFooter(ctx),
                             Color = funciones.GetColor(),
-                            Description = $"{ctx.User.Mention} le hizo una rusa a {usuario.Mention}",
                             ImageUrl = elegida.Url
                         });
                     }
@@ -127,11 +162,10 @@ namespace Discord_Bot.Modulos
             if(lista.Count > 0)
             {
                 var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                await ctx.RespondAsync($"{ctx.User.Mention} se está tocando", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
-                    Description = $"{ctx.User.Mention} se está tocando",
                     ImageUrl = elegida.Url
                 });
             }
@@ -144,11 +178,10 @@ namespace Discord_Bot.Modulos
             if(lista.Count > 0)
             {
                 var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                await ctx.RespondAsync($"{ctx.User.Mention} se está tocando", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
-                    Description = $"{ctx.User.Mention} se está tocando",
                     ImageUrl = elegida.Url
                 });
             }
@@ -177,11 +210,10 @@ namespace Discord_Bot.Modulos
                     if (lista.Count > 0)
                     {
                         var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.RespondAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
                         {
                             Footer = funciones.GetFooter(ctx),
                             Color = funciones.GetColor(),
-                            Description = $"{ctx.User.Mention} se la chupó a {usuario}",
                             ImageUrl = elegida.Url
                         });
                     }
@@ -212,11 +244,10 @@ namespace Discord_Bot.Modulos
                     if (lista.Count > 0)
                     {
                         var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.RespondAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
                         {
                             Footer = funciones.GetFooter(ctx),
                             Color = funciones.GetColor(),
-                            Description = $"{ctx.User.Mention} se la chupó a {usuario}",
                             ImageUrl = elegida.Url
                         });
                     }
