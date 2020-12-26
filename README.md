@@ -19,7 +19,7 @@ Lo primero a realizar es descargar el visual studio community desde su página w
 - Instalar SQL Server
 - Instalar un manejador (recomiendo SQL Server Express)
 - Crear base de datos llamada: Yumiko
-- Correr el siguiente script: [modelo.edmx.sql](YumikoBot/Data Access Layer/modelo.edmx.sql)
+- Correr el siguiente script: [modelo.edmx.sql](YumikoBot/Data%20Access%20Layer/modelo.edmx.sql)
 
 ### 4. Instalar paquetes NuGet
 - Ir a Administrar paquetes NuGet de la solución
