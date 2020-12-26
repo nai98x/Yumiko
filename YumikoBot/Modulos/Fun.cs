@@ -188,7 +188,7 @@ namespace Discord_Bot.Modulos
                 return;
             }
             IReadOnlyList<DiscordMessage> mensajes = await channel.GetMessagesAsync();
-            List<DiscordMessage> msgs = mensajes.ToList<DiscordMessage>();
+            List<DiscordMessage> msgs = mensajes.ToList();
             int cntMensajes = msgs.Count();
             DiscordMessage last = msgs.LastOrDefault();
             while (cntMensajes == 100)

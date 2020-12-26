@@ -43,6 +43,8 @@ namespace Discord_Bot.Modulos
                         listaComandos.Add($"`{comando1.Name}`");
                     }
                     comandosDesc = string.Join(", ", listaComandos);
+                    if (nomGrupo == "NSFW" && !ctx.Channel.IsNSFW)
+                        comandosDesc = "`Para ver estos comandos ejecutalo en un canal NSFW`";
                     builder.AddField(nomGrupo, comandosDesc, false);
                 }
                 await ctx.RespondAsync(embed: builder).ConfigureAwait(false);

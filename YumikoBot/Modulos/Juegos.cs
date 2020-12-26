@@ -126,8 +126,14 @@ namespace Discord_Bot.Modulos
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
-                            await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
+                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            {
+                                Title = "¡Juego cancelado!",
+                                Description = $"El nombre era: [{elegido.NameFull}]({elegido.SiteUrl})",
+                                Color = DiscordColor.Red
+                            }).ConfigureAwait(false);
                             await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "personaje");
+                            await ctx.RespondAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -306,8 +312,14 @@ namespace Discord_Bot.Modulos
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
-                            await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
+                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            {
+                                Title = "¡Juego cancelado!",
+                                Description = descAnimes,
+                                Color = DiscordColor.Red
+                            }).ConfigureAwait(false);
                             await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "anime");
+                            await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);

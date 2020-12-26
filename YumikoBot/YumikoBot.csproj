@@ -290,7 +290,7 @@
     </Compile>
     <Compile Include="Modulos\Anilist.cs" />
     <Compile Include="Modulos\Fun.cs" />
-    <Compile Include="Modulos\Reacciones.cs" />
+    <Compile Include="Modulos\NSFW.cs" />
     <Compile Include="Modulos\Help.cs" />
     <Compile Include="Modulos\Interactuar.cs" />
     <Compile Include="Modulos\Usuarios.cs" />
