@@ -145,7 +145,11 @@ namespace Discord_Bot
 
         public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas, string dificultad, string juego)
         {
-            string resultados = $"Dificultad: **{dificultad}**\n\n";
+            string resultados;
+            if (juego == "tag")
+                resultados = $"Tag: **{dificultad}**\n\n";
+            else
+                resultados = $"Dificultad: **{dificultad}**\n\n";
             participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
             int tot = 0;
             int pos = 0;
@@ -338,32 +342,35 @@ namespace Discord_Bot
             DiscordEmoji emoji;
             foreach (var jugador in res)
             {
-                long x = jugador.UserId;
-                ulong id = (ulong)x;
-                DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                if (miembro != null)
+                if ((jugador.RondasTotales/jugador.PartidasTotales) >= 2)
                 {
-                    if (lastScore != jugador.PorcentajeAciertos)
-                        pos++;
-                    switch (pos)
+                    long x = jugador.UserId;
+                    ulong id = (ulong)x;
+                    DiscordUser miembro = await ctx.Client.GetUserAsync(id);
+                    if (miembro != null)
                     {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
-                        default:
-                            stats += $"**#{pos}** - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
-                            break;
+                        if (lastScore != jugador.PorcentajeAciertos)
+                            pos++;
+                        switch (pos)
+                        {
+                            case 1:
+                                emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
+                                stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
+                                break;
+                            case 2:
+                                emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
+                                stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
+                                break;
+                            case 3:
+                                emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
+                                stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
+                                break;
+                            default:
+                                stats += $"**#{pos}** - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
+                                break;
+                        }
+                        lastScore = jugador.PorcentajeAciertos;
                     }
-                    lastScore = jugador.PorcentajeAciertos;
                 }
             }
             return stats;

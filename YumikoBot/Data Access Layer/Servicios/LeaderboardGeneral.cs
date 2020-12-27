@@ -51,6 +51,8 @@ namespace YumikoBot.Data_Access_Layer
                         {
                             UserId = x.user_id,
                             PartidasTotales = x.partidasJugadas,
+                            RondasTotales = x.rondasTotales,
+                            RondasAcertadas = x.rondasAcertadas,
                             PorcentajeAciertos = (x.rondasAcertadas * 100) / x.rondasTotales
                         });
                     }
