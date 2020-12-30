@@ -59,7 +59,11 @@ namespace Discord_Bot.Modulos
                         "       }" +
                         "   }" +
                         "}";
-                int popularidad = 1;
+                int popularidad;
+                if (iterIni == 1)
+                    popularidad = 1;
+                else
+                    popularidad = iterIni * 50;
                 for (int i = iterIni; i <= iterFin; i++)
                 {
                     var request = new GraphQLRequest
@@ -227,7 +231,11 @@ namespace Discord_Bot.Modulos
                         "       }" +
                         "   }" +
                         "}";
-                int popularidad = 1;
+                int popularidad;
+                if(iterIni == 1)
+                    popularidad = 1;
+                else
+                    popularidad = iterIni * 50;
                 for (int i = iterIni; i <= iterFin; i++)
                 {
                     var request = new GraphQLRequest
@@ -419,7 +427,11 @@ namespace Discord_Bot.Modulos
                         "       }" +
                         "   }" +
                         "}";
-                int popularidad = 1;
+                int popularidad;
+                if (iterIni == 1)
+                    popularidad = 1;
+                else
+                    popularidad = iterIni * 50;
                 for (int i = iterIni; i <= iterFin; i++)
                 {
                     var request = new GraphQLRequest
