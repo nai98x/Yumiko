@@ -209,7 +209,7 @@ namespace Discord_Bot
                         var msgDificultad = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "Elije la dificultad",
-                            Description = $"0- Aleatorio {emojiDado}\n1- Fácil\n2- Media\n3- Dificil\n4- Extremo\n 5- Kusan"
+                            Description = $"0- Aleatorio {emojiDado}\n1- Fácil\n2- Media\n3- Dificil\n4- Extremo"
                         });
                         var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
                         if (!msgDificultadInter.TimedOut)
@@ -218,10 +218,10 @@ namespace Discord_Bot
                             if (result)
                             {
                                 string dificultadStr;
-                                if (dificultad >= 0 && dificultad <= 5)
+                                if (dificultad >= 0 && dificultad <= 4)
                                 {
                                     if(dificultad == 0)
-                                        dificultad = GetNumeroRandom(1, 5);
+                                        dificultad = GetNumeroRandom(1, 4);
                                     int iterIni;
                                     int iterFin;
                                     string orden;
@@ -251,12 +251,6 @@ namespace Discord_Bot
                                             dificultadStr = "Extremo";
                                             orden = "FAVOURITES_DESC";
                                             break;
-                                        case 5:
-                                            iterIni = 1;
-                                            iterFin = 40;
-                                            dificultadStr = "Kusan";
-                                            orden = "FAVOURITES";
-                                            break;
                                         default:
                                             iterIni = 6;
                                             iterFin = 20;
@@ -283,7 +277,7 @@ namespace Discord_Bot
                                     return new SettingsJuego()
                                     {
                                         Ok = false,
-                                        MsgError = "La dificultad debe ser 0, 1, 2, 3, 4 o 5"
+                                        MsgError = "La dificultad debe ser 0, 1, 2, 3 o 4"
                                     };
                                 }
                             }
@@ -292,7 +286,7 @@ namespace Discord_Bot
                                 return new SettingsJuego()
                                 {
                                     Ok = false,
-                                    MsgError = "La dificultad debe ser un número (1, 2, 3 o 4)"
+                                    MsgError = "La dificultad debe ser un número (0, 1, 2, 3 o 4)"
                                 };
                             }
                         }
@@ -404,9 +398,8 @@ namespace Discord_Bot
             string media = await GetEstadisticasDificultad(ctx, juego, "Media");
             string dificil = await GetEstadisticasDificultad(ctx, juego, "Dificil");
             string extremo = await GetEstadisticasDificultad(ctx, juego, "Extremo");
-            string kusan = await GetEstadisticasDificultad(ctx, juego, "Kusan");
 
-            var builder = CrearEmbedStats(ctx, $"Estadisticas - Adivina el {juego}", facil, media, dificil, extremo, kusan);
+            var builder = CrearEmbedStats(ctx, $"Estadisticas - Adivina el {juego}", facil, media, dificil, extremo);
             return builder;
         }
 
@@ -436,11 +429,6 @@ namespace Discord_Bot
             rondasAcertadas += rondasAcertadasE;
             rondasTotales += rondasTotalesE;
 
-            string kusan = GetEstadisticasUsuarioDificultad(ctx, juego, usuario, "Kusan", out int partidasTotalesK, out int rondasAcertadasK, out int rondasTotalesK);
-            partidasTotales += partidasTotalesK;
-            rondasAcertadas += rondasAcertadasK;
-            rondasTotales += rondasTotalesK;
-
             int porcentajeAciertos = 0;
             if (rondasTotales > 0)
                 porcentajeAciertos = (rondasAcertadas * 100) / rondasTotales;
@@ -450,13 +438,13 @@ namespace Discord_Bot
                 $"  - Rondas acertadas: **{rondasAcertadas}**\n" +
                 $"  - Rondas totales: **{rondasTotales}**\n\n";
 
-            var builder = CrearEmbedStats(ctx, $"Estadisticas de **{usuario.Username}#{usuario.Discriminator}** - Adivina el {juego}", facil, media, dificil, extremo, kusan);
+            var builder = CrearEmbedStats(ctx, $"Estadisticas de **{usuario.Username}#{usuario.Discriminator}** - Adivina el {juego}", facil, media, dificil, extremo);
             builder.AddField("Totales", totales);
 
             return builder;
         }
 
-        public DiscordEmbedBuilder CrearEmbedStats(CommandContext ctx, string titulo, string facil, string media, string dificil, string extremo, string kusan)
+        public DiscordEmbedBuilder CrearEmbedStats(CommandContext ctx, string titulo, string facil, string media, string dificil, string extremo)
         {
             var builder = new DiscordEmbedBuilder
             {
@@ -472,8 +460,6 @@ namespace Discord_Bot
                 builder.AddField("Dificultad Dificil", dificil);
             if (!String.IsNullOrEmpty(extremo))
                 builder.AddField("Dificultad Extremo", extremo);
-            if (!String.IsNullOrEmpty(kusan))
-                builder.AddField("Dificultad Kusan", kusan);
 
             return builder;
         }
