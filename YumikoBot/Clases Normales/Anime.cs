@@ -10,5 +10,6 @@ namespace Discord_Bot
         public string SiteUrl { get; set; }
         public int Favoritos { get; set; }
         public List<string> Sinonimos { get; set; }
+        public int Popularidad { get; set; }
     }
 }

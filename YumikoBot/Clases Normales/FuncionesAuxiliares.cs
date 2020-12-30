@@ -229,18 +229,18 @@ namespace Discord_Bot
                                     {
                                         case 1:
                                             iterIni = 1;
-                                            iterFin = 6;
+                                            iterFin = 10;
                                             dificultadStr = "Fácil";
                                             orden = "FAVOURITES_DESC";
                                             break;
                                         case 2:
-                                            iterIni = 6;
-                                            iterFin = 20;
+                                            iterIni = 10;
+                                            iterFin = 30;
                                             dificultadStr = "Media";
                                             orden = "FAVOURITES_DESC";
                                             break;
                                         case 3:
-                                            iterIni = 20;
+                                            iterIni = 30;
                                             iterFin = 60;
                                             dificultadStr = "Dificil";
                                             orden = "FAVOURITES_DESC";

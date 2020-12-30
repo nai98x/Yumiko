@@ -59,6 +59,7 @@ namespace Discord_Bot.Modulos
                         "       }" +
                         "   }" +
                         "}";
+                int popularidad = 1;
                 for (int i = iterIni; i <= iterFin; i++)
                 {
                     var request = new GraphQLRequest
@@ -81,8 +82,10 @@ namespace Discord_Bot.Modulos
                                 NameFirst = x.name.first,
                                 NameLast = x.name.last,
                                 SiteUrl = x.siteUrl,
-                                Favoritos = x.favourites
+                                Favoritos = x.favourites,
+                                Popularidad = popularidad,
                             });
+                            popularidad++;
                         }
                     }
                     catch (Exception ex)
@@ -115,7 +118,7 @@ namespace Discord_Bot.Modulos
                         ImageUrl = elegido.Image,
                         Footer = new DiscordEmbedBuilder.EmbedFooter
                         {
-                            Text = $"{elegido.Favoritos} {corazon}"
+                            Text = $"{elegido.Favoritos} {corazon} (nº {elegido.Popularidad} en popularidad)"
                         }
                     }).ConfigureAwait(false);
                     var msg = await interactivity.WaitForMessageAsync
@@ -224,6 +227,7 @@ namespace Discord_Bot.Modulos
                         "       }" +
                         "   }" +
                         "}";
+                int popularidad = 1;
                 for (int i = iterIni; i <= iterFin; i++)
                 {
                     var request = new GraphQLRequest
@@ -245,8 +249,10 @@ namespace Discord_Bot.Modulos
                                 NameFull = x.name.full,
                                 SiteUrl = x.siteUrl,
                                 Favoritos = x.favourites,
-                                Animes = new List<Anime>()
+                                Animes = new List<Anime>(),
+                                Popularidad = popularidad
                             };
+                            popularidad++;
                             foreach (var y in x.media.nodes)
                             {
                                 string titleEnglish = y.title.english;
@@ -413,6 +419,7 @@ namespace Discord_Bot.Modulos
                         "       }" +
                         "   }" +
                         "}";
+                int popularidad = 1;
                 for (int i = iterIni; i <= iterFin; i++)
                 {
                     var request = new GraphQLRequest
@@ -437,8 +444,10 @@ namespace Discord_Bot.Modulos
                                 TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
                                 SiteUrl = x.siteUrl,
                                 Favoritos = x.favourites,
-                                Sinonimos = new List<string>()
+                                Sinonimos = new List<string>(),
+                                Popularidad = popularidad
                             };
+                            popularidad++;
                             foreach (var syn in x.synonyms)
                             {
                                 string value = syn.Value;
@@ -478,7 +487,7 @@ namespace Discord_Bot.Modulos
                         ImageUrl = elegido.Image,
                         Footer = new DiscordEmbedBuilder.EmbedFooter
                         {
-                            Text = $"{elegido.Favoritos} {corazon}"
+                            Text = $"{elegido.Favoritos} {corazon} (nº {elegido.Popularidad} en popularidad)"
                         }
                     }).ConfigureAwait(false);
                     var msg = await interactivity.WaitForMessageAsync
@@ -541,7 +550,7 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("quizT"), Aliases("adivinaeltag"), Description("Empieza el juego de adivina el anime de cierto tag."), RequireGuild, RequireOwner]
+        [Command("quizT"), Aliases("adivinaeltag"), Description("Empieza el juego de adivina el anime de cierto tag."), RequireGuild]
         public async Task QuizAnimeTagGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
@@ -627,7 +636,8 @@ namespace Discord_Bot.Modulos
                                                     "           coverImage{" +
                                                     "               large" +
                                                     "           }," +
-                                                    "           synonyms" +
+                                                    "           synonyms," +
+                                                    "           isAdult" +
                                                     "       }," +
                                                     "       pageInfo{" +
                                                     "           hasNextPage" +
@@ -635,6 +645,7 @@ namespace Discord_Bot.Modulos
                                                     "   }" +
                                                     "}";
                                             int cont = 1;
+                                            int popularidad = 1;
                                             bool seguir = true;
                                             do
                                             {
@@ -656,24 +667,29 @@ namespace Discord_Bot.Modulos
                                                     }
                                                     foreach (var x in data1.Data.Page.media)
                                                     {
-                                                        string titleEnglish = x.title.english;
-                                                        string titleRomaji = x.title.romaji;
-                                                        Anime anim = new Anime()
+                                                        if(x.isAdult == "False")
                                                         {
-                                                            Image = x.coverImage.large,
-                                                            TitleEnglish = funciones.QuitarCaracteresEspeciales(titleEnglish),
-                                                            TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
-                                                            SiteUrl = x.siteUrl,
-                                                            Favoritos = x.favourites,
-                                                            Sinonimos = new List<string>()
-                                                        };
-                                                        foreach (var syn in x.synonyms)
-                                                        {
-                                                            string value = syn.Value;
-                                                            string bien = funciones.QuitarCaracteresEspeciales(value);
-                                                            anim.Sinonimos.Add(bien);
+                                                            string titleEnglish = x.title.english;
+                                                            string titleRomaji = x.title.romaji;
+                                                            Anime anim = new Anime()
+                                                            {
+                                                                Image = x.coverImage.large,
+                                                                TitleEnglish = funciones.QuitarCaracteresEspeciales(titleEnglish),
+                                                                TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
+                                                                SiteUrl = x.siteUrl,
+                                                                Favoritos = x.favourites,
+                                                                Sinonimos = new List<string>(),
+                                                                Popularidad = popularidad
+                                                            };
+                                                            popularidad++;
+                                                            foreach (var syn in x.synonyms)
+                                                            {
+                                                                string value = syn.Value;
+                                                                string bien = funciones.QuitarCaracteresEspeciales(value);
+                                                                anim.Sinonimos.Add(bien);
+                                                            }
+                                                            animeList.Add(anim);
                                                         }
-                                                        animeList.Add(anim);
                                                     }
                                                     cont++;
                                                 }
@@ -702,12 +718,12 @@ namespace Discord_Bot.Modulos
                                                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                                                 {
                                                     Color = DiscordColor.Gold,
-                                                    Title = "Adivina el manga",
+                                                    Title = $"Adivina el {elegido}",
                                                     Description = $"Ronda {ronda} de {rondas}",
                                                     ImageUrl = elegido1.Image,
                                                     Footer = new DiscordEmbedBuilder.EmbedFooter
                                                     {
-                                                        Text = $"{elegido1.Favoritos} {corazon}"
+                                                        Text = $"{elegido1.Favoritos} {corazon} (nº {elegido1.Popularidad} en popularidad)"
                                                     }
                                                 }).ConfigureAwait(false);
                                                 var msg = await interactivity.WaitForMessageAsync
