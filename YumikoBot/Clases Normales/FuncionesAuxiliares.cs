@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Extensions;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -401,6 +402,70 @@ namespace Discord_Bot
 
             var builder = CrearEmbedStats(ctx, $"Estadisticas - Adivina el {juego}", facil, media, dificil, extremo);
             return builder;
+        }
+
+        public async Task<DiscordEmbedBuilder> GetEstadisticasTag(CommandContext ctx)
+        {
+            string msgError = "";
+            var interactivity = ctx.Client.GetInteractivity();
+            List<string> tagsList = leaderboard.GetTags();
+            string tags = "";
+            int cont = 1;
+            foreach(string s in tagsList)
+            {
+                tags += $"{cont} - {s}\n";
+                cont++;
+            }
+            var msgOpciones = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Footer = GetFooter(ctx),
+                Color = GetColor(),
+                Title = "Elije el tag escribiendo su número",
+                Description = tags
+            });
+            var msgElegirTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+            if (!msgElegirTagInter.TimedOut)
+            {
+                bool result = int.TryParse(msgElegirTagInter.Result.Content, out int numTagElegir);
+                if (result)
+                {
+                    if (numTagElegir > 0 && (numTagElegir <= tagsList.Count))
+                    {
+                        await msgOpciones.DeleteAsync("Auto borrado de Yumiko");
+                        await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                        List<Anime> animeList = new List<Anime>();
+                        string elegido = tagsList[numTagElegir - 1];
+                        string stats = await GetEstadisticasDificultad(ctx, "tag", elegido);
+                        return  new DiscordEmbedBuilder
+                        {
+                            Title = $"Estadisticas - Adivina el {elegido}",
+                            Footer = GetFooter(ctx),
+                            Color = GetColor(),
+                            Description = stats
+                        };
+                    }
+                    else
+                    {
+                        msgError = "El numero que indica el tag debe ser valido";
+                    }
+                }
+                else
+                {
+                    msgError = "Debes indicar un numero para elegir el tag";
+                }
+            }
+            else
+            {
+                msgError = "Tiempo agotado esperando el tag";
+            }
+            await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
+            return new DiscordEmbedBuilder
+            {
+                Title = $"Error!",
+                Footer = GetFooter(ctx),
+                Color = GetColor(),
+                Description = msgError
+            };
         }
 
         public DiscordEmbedBuilder GetEstadisticasUsuario(CommandContext ctx, string juego, DiscordUser usuario)

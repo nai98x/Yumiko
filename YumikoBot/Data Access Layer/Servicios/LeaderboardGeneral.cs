@@ -82,5 +82,19 @@ namespace YumikoBot.Data_Access_Layer
                 return null;
             }
         }
+
+        public List<string> GetTags()
+        {
+            using (var context = new YumikoEntities())
+            {
+                var list = context.LeaderboardSet.ToList().Where(x => x.juego == "tag").ToList();
+                var distinctTags = list
+                  .GroupBy(p => p.dificultad)
+                  .Select(g => g.First().dificultad)
+                  .ToList();
+                distinctTags.Sort((x, y) => x.CompareTo(y));
+                return distinctTags;
+            }
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace Discord_Bot.Modulos
         {
             await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
             var mensaje = await ctx.RespondAsync("Me voy onii-chan..");
-            await Task.Delay(3000);
+            await Task.Delay(1000);
             await mensaje.DeleteAsync("Auto borrado de Yumiko");
             Environment.Exit(0);
         }

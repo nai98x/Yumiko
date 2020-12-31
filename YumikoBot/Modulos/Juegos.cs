@@ -855,54 +855,31 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("leaderboardC"), Aliases("rankingc"), Description("Estadisticas de adivina el personaje."), RequireGuild]
+        [Command("rankingC"), Aliases("statsC", "leaderboardC"), Description("Estadisticas de adivina el personaje."), RequireGuild]
         public async Task EstadisticasAdivinaPersonaje(CommandContext ctx)
         {
             var builder = await funciones.GetEstadisticas(ctx, "personaje");
             await ctx.RespondAsync(embed: builder);
         }
 
-        [Command("leaderboardA"), Aliases("rankinga"), Description("Estadisticas de adivina el anime."), RequireGuild]
+        [Command("rankingA"), Aliases("statsA", "leaderboardA"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaAnime(CommandContext ctx)
         {
             var builder = await funciones.GetEstadisticas(ctx, "anime");
             await ctx.RespondAsync(embed: builder);
         }
 
-        [Command("leaderboardM"), Aliases("rankingm"), Description("Estadisticas de adivina el anime."), RequireGuild]
+        [Command("rankingM"), Aliases("statsM", "leaderboardM"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaManga(CommandContext ctx)
         {
             var builder = await funciones.GetEstadisticas(ctx, "manga");
             await ctx.RespondAsync(embed: builder);
         }
 
-        [Command("statsC"), Description("Estadisticas de adivina el personaje por usuario."), RequireGuild]
-        public async Task EstadisticasAdivinaPersonajeUsuario(CommandContext ctx, DiscordUser usuario = null)
+        [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el anime."), RequireGuild]
+        public async Task EstadisticasAdivinaTag(CommandContext ctx)
         {
-            if (usuario == null)
-                usuario = ctx.User;
-
-            var builder = funciones.GetEstadisticasUsuario(ctx, "personaje", usuario);
-            await ctx.RespondAsync(embed: builder);
-        }
-
-        [Command("statsA"), Description("Estadisticas de adivina el anime por usuario."), RequireGuild]
-        public async Task EstadisticasAdivinaAnimeUsuario(CommandContext ctx, DiscordUser usuario = null)
-        {
-            if (usuario == null)
-                usuario = ctx.User;
-
-            var builder = funciones.GetEstadisticasUsuario(ctx, "anime", usuario);
-            await ctx.RespondAsync(embed: builder);
-        }
-
-        [Command("statsM"), Description("Estadisticas de adivina el manga por usuario."), RequireGuild]
-        public async Task EstadisticasAdivinaMangaUsuario(CommandContext ctx, DiscordUser usuario = null)
-        {
-            if (usuario == null)
-                usuario = ctx.User;
-
-            var builder = funciones.GetEstadisticasUsuario(ctx, "manga", usuario);
+            var builder = await funciones.GetEstadisticasTag(ctx);
             await ctx.RespondAsync(embed: builder);
         }
     }
