@@ -581,6 +581,8 @@ namespace Discord_Bot.Modulos
                 {
                     if (rondas > 0 && rondas <= 100)
                     {
+                        await msgCntRondas.DeleteAsync("Auto borrado de Yumiko");
+                        await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
                         string query =
                 "query{" +
                 "   MediaTagCollection{" +
@@ -631,6 +633,10 @@ namespace Discord_Bot.Modulos
                                     {
                                         if (numTagElegir > 0 && (numTagElegir <= tagsFiltrados.Count))
                                         {
+                                            await preguntaTag.DeleteAsync("Auto borrado de Yumiko");
+                                            await msgTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                            await msgOpciones.DeleteAsync("Auto borrado de Yumiko");
+                                            await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
                                             List<Anime> animeList = new List<Anime>();
                                             Random rnd = new Random();
                                             List<UsuarioJuego> participantes = new List<UsuarioJuego>();

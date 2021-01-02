@@ -7,7 +7,9 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using YumikoBot.Data_Access_Layer;
@@ -527,6 +529,37 @@ namespace Discord_Bot
                 builder.AddField("Dificultad Extremo", extremo);
 
             return builder;
+        }
+
+        public Stream CrearArchivo(AnimeLinks links)
+        {
+            string path = $@"c:\temp\descargaLinks.txt";
+
+            try
+            {
+                using (FileStream fs = File.Create(path))
+                {
+                    string linksList = $"Links de descarga para {links.name}\n\n";
+                    var hosts = links.hosts;
+                    foreach(var host in hosts)
+                    {
+                        linksList += $"Servidor: {host.name}\n";
+                        var linkList = host.links;
+                        foreach(var l in linkList)
+                        {
+                            linksList += $"{l.number} - {l.href}\n";
+                        }
+                        linksList += "\n";
+                    }
+                    byte[] info = new UTF8Encoding(true).GetBytes(linksList);
+                    fs.Write(info, 0, info.Length);
+                }
+                return File.OpenRead(path);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }
