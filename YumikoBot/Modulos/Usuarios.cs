@@ -30,13 +30,11 @@ namespace Discord_Bot.Modulos
                 lista = usuariosService.GetBirthdays(ctx, false);
                 titulo = "Próximos cumpleaños";
             }
-
             else
             {
                 lista = usuariosService.GetBirthdays(ctx, true);
                 titulo = "Próximos cumpleaños en este mes";
             }
-                
             string desc = "";
             foreach (var user in lista)
             {

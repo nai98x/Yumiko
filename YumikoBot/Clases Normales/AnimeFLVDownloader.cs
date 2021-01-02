@@ -10,7 +10,6 @@ namespace Discord_Bot
 {
     public class AnimeFLVDownloader
     {
-
         const string baseUrl = "https://www3.animeflv.net";
 
         public async Task<List<SearchResults>> Search(string searchText)
