@@ -117,6 +117,7 @@ namespace Discord_Bot.Modulos
         {
             AnimeFLVDownloader animeflv = new AnimeFLVDownloader();
             var interactivity = ctx.Client.GetInteractivity();
+            var msgBusqueda = await ctx.RespondAsync("Buscando animes...");
             var resBusqueda = await animeflv.Search(buscar);
             if(resBusqueda.Count > 0)
             {
@@ -127,6 +128,7 @@ namespace Discord_Bot.Modulos
                     resultados += $"{cont} - **{res.name}** ({res.type})\n";
                     cont++;
                 }
+                await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
                 var elegirRes = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
                     Title = "Elije con un número el anime deseado",
                     Description = resultados,
@@ -143,8 +145,10 @@ namespace Discord_Bot.Modulos
                         {
                             await elegirRes.DeleteAsync("Auto borrado de Yumiko");
                             await msgElegirInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                            var mensajeLinks = await ctx.RespondAsync("Procesando links...");
                             var elegido = resBusqueda[numElegir - 1];
                             var links = await animeflv.GetLinks(elegido.href, elegido.name);
+                            await mensajeLinks.DeleteAsync("Auto borrado de Yumiko");
                             await ctx.RespondWithFileAsync(fileData: (FileStream)funciones.CrearArchivo(links));
                         }
                         else
