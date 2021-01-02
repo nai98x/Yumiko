@@ -149,7 +149,7 @@ namespace Discord_Bot.Modulos
                             var elegido = resBusqueda[numElegir - 1];
                             var links = await animeflv.GetLinks(elegido.href, elegido.name);
                             await mensajeLinks.DeleteAsync("Auto borrado de Yumiko");
-                            await ctx.RespondWithFileAsync(fileData: (FileStream)funciones.CrearArchivo(links));
+                            await ctx.RespondWithFileAsync(content:$"Aquí tienes los links para descargar **{elegido.name}** {ctx.User.Mention}" ,fileData: (FileStream)funciones.CrearArchivo(links));
                         }
                         else
                         {

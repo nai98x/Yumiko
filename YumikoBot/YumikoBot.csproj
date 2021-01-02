@@ -252,19 +252,20 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clases Normales\AnimeLinks.cs" />
+    <Compile Include="Clases Normales\Datatypes\AnimeLinks.cs" />
     <Compile Include="Clases Normales\AnimeFLVDownloader.cs" />
-    <Compile Include="Clases Normales\Host.cs" />
-    <Compile Include="Clases Normales\Link.cs" />
-    <Compile Include="Clases Normales\SearchResults.cs" />
-    <Compile Include="Clases Normales\UserCumple.cs" />
-    <Compile Include="Clases Normales\StatsJuego.cs" />
-    <Compile Include="Clases Normales\Anime.cs" />
-    <Compile Include="Clases Normales\Character.cs" />
+    <Compile Include="Clases Normales\FuncionesJuegos.cs" />
+    <Compile Include="Clases Normales\Datatypes\Host.cs" />
+    <Compile Include="Clases Normales\Datatypes\Link.cs" />
+    <Compile Include="Clases Normales\Datatypes\SearchResults.cs" />
+    <Compile Include="Clases Normales\Datatypes\UserCumple.cs" />
+    <Compile Include="Clases Normales\Datatypes\StatsJuego.cs" />
+    <Compile Include="Clases Normales\Datatypes\Anime.cs" />
+    <Compile Include="Clases Normales\Datatypes\Character.cs" />
     <Compile Include="Clases Normales\FuncionesAuxiliares.cs" />
-    <Compile Include="Clases Normales\Imagen.cs" />
-    <Compile Include="Clases Normales\SettingsJuego.cs" />
-    <Compile Include="Clases Normales\UsuarioJuego.cs" />
+    <Compile Include="Clases Normales\Datatypes\Imagen.cs" />
+    <Compile Include="Clases Normales\Datatypes\SettingsJuego.cs" />
+    <Compile Include="Clases Normales\Datatypes\UsuarioJuego.cs" />
     <Compile Include="ConfigJson.cs" />
     <Compile Include="Data Access Layer\Imagen.cs">
       <DependentUpon>modelo.tt</DependentUpon>

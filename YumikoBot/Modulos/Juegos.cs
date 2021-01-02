@@ -17,13 +17,14 @@ namespace Discord_Bot.Modulos
     public class Juegos : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly FuncionesJuegos funcionesJuegos = new FuncionesJuegos();
         private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         [Command("quizC"), Aliases("adivinaelpersonaje"), Description("Empieza el juego de adivina el personaje."), RequireGuild]
         public async Task QuizCharactersGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await funciones.InicializarJuego(ctx, interactivity);
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity);
             if (settings.Ok)
             {
                 int rondas = settings.Rondas;
@@ -139,7 +140,7 @@ namespace Discord_Bot.Modulos
                                 Description = $"El nombre era: [{elegido.NameFull}]({elegido.SiteUrl})",
                                 Color = DiscordColor.Red
                             }).ConfigureAwait(false);
-                            await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "personaje");
+                            await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "personaje");
                             await ctx.RespondAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                             return;
                         }
@@ -175,7 +176,7 @@ namespace Discord_Bot.Modulos
                     }
                     characterList.Remove(characterList[random]);
                 }
-                await funciones.GetResultados(ctx, participantes, rondas, settings.Dificultad, "personaje");
+                await funcionesJuegos.GetResultados(ctx, participantes, rondas, settings.Dificultad, "personaje");
             }
             else
             {
@@ -187,7 +188,7 @@ namespace Discord_Bot.Modulos
         public async Task QuizAnimeGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await funciones.InicializarJuego(ctx, interactivity);
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity);
             if (settings.Ok)
             {
                 int rondas = settings.Rondas;
@@ -343,7 +344,7 @@ namespace Discord_Bot.Modulos
                                 Description = descAnimes,
                                 Color = DiscordColor.Red
                             }).ConfigureAwait(false);
-                            await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "anime");
+                            await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "anime");
                             await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                             return;
                         }
@@ -379,7 +380,7 @@ namespace Discord_Bot.Modulos
                     }
                     characterList.Remove(characterList[random]);
                 }
-                await funciones.GetResultados(ctx, participantes, rondas, settings.Dificultad, "anime");
+                await funcionesJuegos.GetResultados(ctx, participantes, rondas, settings.Dificultad, "anime");
             }
             else
             {
@@ -391,7 +392,7 @@ namespace Discord_Bot.Modulos
         public async Task QuizMangaGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await funciones.InicializarJuego(ctx, interactivity);
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity);
             if (settings.Ok)
             {
                 int rondas = settings.Rondas;
@@ -518,7 +519,7 @@ namespace Discord_Bot.Modulos
                                 Description = $"El nombre era: [{elegido.TitleRomaji}]({elegido.SiteUrl})",
                                 Color = DiscordColor.Red
                             }).ConfigureAwait(false);
-                            await funciones.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "manga");
+                            await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "manga");
                             await ctx.RespondAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                             return;
                         }
@@ -554,7 +555,7 @@ namespace Discord_Bot.Modulos
                     }
                     animeList.Remove(animeList[random]);
                 }
-                await funciones.GetResultados(ctx, participantes, rondas, settings.Dificultad, "manga");
+                await funcionesJuegos.GetResultados(ctx, participantes, rondas, settings.Dificultad, "manga");
             }
             else
             {
@@ -760,7 +761,7 @@ namespace Discord_Bot.Modulos
                                                             Description = $"El nombre era: [{elegido1.TitleRomaji}]({elegido1.SiteUrl})",
                                                             Color = DiscordColor.Red
                                                         }).ConfigureAwait(false);
-                                                        await funciones.GetResultados(ctx, participantes, lastRonda, elegido, "tag");
+                                                        await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, elegido, "tag");
                                                         await ctx.RespondAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                                                         return;
                                                     }
@@ -796,7 +797,7 @@ namespace Discord_Bot.Modulos
                                                 }
                                                 animeList.Remove(animeList[random]);
                                             }
-                                            await funciones.GetResultados(ctx, participantes, rondas, elegido, "tag");
+                                            await funcionesJuegos.GetResultados(ctx, participantes, rondas, elegido, "tag");
                                         }
                                         else
                                         {
@@ -864,28 +865,28 @@ namespace Discord_Bot.Modulos
         [Command("rankingC"), Aliases("statsC", "leaderboardC"), Description("Estadisticas de adivina el personaje."), RequireGuild]
         public async Task EstadisticasAdivinaPersonaje(CommandContext ctx)
         {
-            var builder = await funciones.GetEstadisticas(ctx, "personaje");
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "personaje");
             await ctx.RespondAsync(embed: builder);
         }
 
         [Command("rankingA"), Aliases("statsA", "leaderboardA"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaAnime(CommandContext ctx)
         {
-            var builder = await funciones.GetEstadisticas(ctx, "anime");
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "anime");
             await ctx.RespondAsync(embed: builder);
         }
 
         [Command("rankingM"), Aliases("statsM", "leaderboardM"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaManga(CommandContext ctx)
         {
-            var builder = await funciones.GetEstadisticas(ctx, "manga");
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "manga");
             await ctx.RespondAsync(embed: builder);
         }
 
         [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaTag(CommandContext ctx)
         {
-            var builder = await funciones.GetEstadisticasTag(ctx);
+            var builder = await funcionesJuegos.GetEstadisticasTag(ctx);
             await ctx.RespondAsync(embed: builder);
         }
     }
