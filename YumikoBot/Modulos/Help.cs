@@ -99,8 +99,7 @@ namespace Discord_Bot.Modulos
                                     parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **No**\n";
                                 else
                                     parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **Si**\n";
-                            }
-                                
+                            }  
                         }
                         builder.AddField("Parametros", parametros, false);
                     }

@@ -105,11 +105,11 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("avatar"), Description("Muestra el avatar de un usuario."), RequireGuild]
-        public async Task Avatar(CommandContext ctx, DiscordUser usuario = null)
+        public async Task Avatar(CommandContext ctx, DiscordMember usuario = null)
         {
             if (usuario == null)
             {
-                usuario = ctx.User;
+                usuario = await ctx.Guild.GetMemberAsync(ctx.User.Id);
             }
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {

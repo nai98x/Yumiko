@@ -254,6 +254,5 @@ namespace Discord_Bot.Modulos
                 }
             }
         }
-
     }
 }

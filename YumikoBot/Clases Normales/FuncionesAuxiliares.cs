@@ -127,10 +127,10 @@ namespace Discord_Bot
         {
             if (texto != null)
             {
-                texto = texto.Replace("<br>", "\n");
-                texto = texto.Replace("<Br>", "\n");
-                texto = texto.Replace("<bR>", "\n");
-                texto = texto.Replace("<BR>", "\n");
+                texto = texto.Replace("<br>", "");
+                texto = texto.Replace("<Br>", "");
+                texto = texto.Replace("<bR>", "");
+                texto = texto.Replace("<BR>", "");
                 texto = texto.Replace("<i>", "*");
                 texto = texto.Replace("<I>", "*");
                 texto = texto.Replace("</i>", "*");

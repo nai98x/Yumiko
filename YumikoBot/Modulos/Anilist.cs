@@ -152,15 +152,15 @@ namespace Discord_Bot.Modulos
                     builder.AddField("Estadisticas - Manga", mangaStats, true);
                     builder.AddField("Opciones", options, true);
                     if (favoriteAnime != "")
-                        builder.AddField("Animes favoritos", favoriteAnime, true);
+                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes favoritos", favoriteAnime, true);
                     if (favoriteManga != "")
-                        builder.AddField("Mangas favoritos", favoriteManga, true);
+                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas favoritos", favoriteManga, true);
                     if (favoriteCharacters != "")
-                        builder.AddField("Personajes favoritos", favoriteCharacters, true);
+                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":bust_in_silhouette:")} Personajes favoritos", favoriteCharacters, true);
                     if (favoriteStaff != "")
-                        builder.AddField("Staff favoritos", favoriteStaff, true);
+                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":man_artist:")} Staff favoritos", favoriteStaff, true);
                     if (favoriteStudios != "")
-                        builder.AddField("Estudios favoritos", favoriteStudios, true);
+                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios favoritos", favoriteStudios, true);
                     await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
                 }
                 else
@@ -358,23 +358,23 @@ namespace Discord_Bot.Modulos
                                     Description = descripcion
                                 };
                                 if (formato.Length > 0)
-                                    builder.AddField("Formato", funciones.NormalizarField(formato), true);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(formato), true);
                                 if (estado.Length > 0)
-                                    builder.AddField("Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
                                 if (score.Length > 0)
-                                    builder.AddField("Puntuación", funciones.NormalizarField(score), true);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), true);
                                 if (fechas.Length > 0)
-                                    builder.AddField("Fecha emisión", funciones.NormalizarField(fechas), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha emisión", funciones.NormalizarField(fechas), false);
                                 if (generos.Length > 0)
-                                    builder.AddField("Generos", funciones.NormalizarField(generos), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(generos), false);
                                 if (tags.Length > 0)
-                                    builder.AddField("Etiquetas", funciones.NormalizarField(tags), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(tags), false);
                                 if (titulos.Length > 0)
-                                    builder.AddField("Titulos alternativos", funciones.NormalizarField(titulos), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(titulos), false);
                                 if (estudios.Length > 0)
-                                    builder.AddField("Estudios", funciones.NormalizarField(estudios), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios", funciones.NormalizarField(estudios), false);
                                 if (linksExternos.Length > 0)
-                                    builder.AddField("Links externos", funciones.NormalizarField(linksExternos), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} Links externos", funciones.NormalizarField(linksExternos), false);
                                 await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
                             }
                             else
@@ -576,19 +576,19 @@ namespace Discord_Bot.Modulos
                                     Description = descripcion
                                 };
                                 if (formato.Length > 0)
-                                    builder.AddField("Formato", funciones.NormalizarField(formato), true);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(formato), true);
                                 if (estado.Length > 0)
-                                    builder.AddField("Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
                                 if (score.Length > 0)
-                                    builder.AddField("Puntuación", funciones.NormalizarField(score), true);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), true);
                                 if (fechas.Length > 0)
-                                    builder.AddField("Fecha emisión", funciones.NormalizarField(fechas), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha emisión", funciones.NormalizarField(fechas), false);
                                 if (generos.Length > 0)
-                                    builder.AddField("Generos", funciones.NormalizarField(generos), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(generos), false);
                                 if (tags.Length > 0)
-                                    builder.AddField("Etiquetas", funciones.NormalizarField(tags), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(tags), false);
                                 if (titulos.Length > 0)
-                                    builder.AddField("Titulos alternativos", funciones.NormalizarField(titulos), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(titulos), false);
                                 await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
                             }
                             else
@@ -749,9 +749,9 @@ namespace Discord_Bot.Modulos
                                 Description = descripcion
                             };
                             if (animes.Length > 0)
-                                builder.AddField("Animes", funciones.NormalizarField(animes), false);
+                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes", funciones.NormalizarField(animes), false);
                             if (mangas.Length > 0)
-                                builder.AddField("Mangas", funciones.NormalizarField(mangas), false);
+                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas", funciones.NormalizarField(mangas), false);
                             await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
                         }
                         else
