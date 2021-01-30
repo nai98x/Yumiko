@@ -13,9 +13,11 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YumikoBot;
+using YumikoBot.Data_Access_Layer;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
@@ -26,6 +28,8 @@ namespace Discord_Bot
         public CommandsNextExtension Commands { get; private set; }
 
         private DiscordChannel LogChannel;
+
+        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         public async Task RunAsync()
         {
@@ -84,8 +88,31 @@ namespace Discord_Bot
 
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             LogChannel = LogGuild.GetChannel(781679685838569502);
+            await ScheduleBirthdays();
 
             await Task.Delay(-1);
+        }
+
+        private async Task ScheduleBirthdays()
+        {
+            CanalesAnuncios canalesService = new CanalesAnuncios();
+            UsuariosDiscord usuariosService = new UsuariosDiscord();
+            var lista = canalesService.GetCanales();
+            foreach(CanalAnuncios canal in lista)
+            {
+                var cumples = usuariosService.GetBirthdaysGuild(canal.guild_id, false);
+                var guild = await Client.GetGuildAsync((ulong)canal.guild_id);
+                var channel = guild.GetChannel((ulong)canal.channel_id);
+                foreach(var usr in cumples)
+                {
+                    var listaVerif = guild.Members.Values.ToList();
+                    if (listaVerif.Find(u => u.Id == (ulong)usr.Id) != null)
+                    {
+                        DiscordMember miembro = await guild.GetMemberAsync((ulong)usr.Id);
+                        funciones.ScheduleAction(channel, miembro, usr.BirthdayActual);
+                    }
+                }
+            }
         }
 
         private Task OnClientReady(DiscordClient c, ReadyEventArgs e)

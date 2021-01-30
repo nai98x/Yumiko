@@ -116,6 +116,17 @@ namespace Discord_Bot
             return new DiscordColor(78, 63, 96);
         }
 
+        public async void ScheduleAction(DiscordChannel canal, DiscordMember miembro, DateTime ExecutionTime)
+        {
+            await Task.Delay((int)ExecutionTime.Subtract(DateTime.Now).TotalMilliseconds);
+            await canal.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = $"Feliz cumpleaños {miembro.DisplayName}!",
+                Description = $"Todos denle un gran saludo a {miembro.Mention}",
+                ImageUrl = "https://data.whicdn.com/images/299405277/original.gif"
+            });
+        }
+
         public string QuitarCaracteresEspeciales(string str)
         {
             if(str != null)

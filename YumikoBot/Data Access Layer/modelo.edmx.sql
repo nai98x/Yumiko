@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 12/25/2020 23:24:57
--- Generated from EDMX file: C:\Users\Mariano\source\repos\yumiko\YumikoBot\Data Access Layer\modelo.edmx
+-- Date Created: 01/30/2021 02:03:14
+-- Generated from EDMX file: C:\Users\corsa\source\repos\nai98x\yumiko\YumikoBot\Data Access Layer\modelo.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -67,6 +67,13 @@ CREATE TABLE [dbo].[LeaderboardSet] (
 );
 GO
 
+-- Creating table 'CanalAnunciosSet'
+CREATE TABLE [dbo].[CanalAnunciosSet] (
+    [guild_id] bigint  NOT NULL,
+    [channel_id] bigint  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -87,6 +94,12 @@ GO
 ALTER TABLE [dbo].[LeaderboardSet]
 ADD CONSTRAINT [PK_LeaderboardSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [guild_id] in table 'CanalAnunciosSet'
+ALTER TABLE [dbo].[CanalAnunciosSet]
+ADD CONSTRAINT [PK_CanalAnunciosSet]
+    PRIMARY KEY CLUSTERED ([guild_id] ASC);
 GO
 
 -- --------------------------------------------------

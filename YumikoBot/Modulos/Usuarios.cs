@@ -12,6 +12,7 @@ using System.Configuration;
 using DSharpPlus.Interactivity.Extensions;
 using YumikoBot.Data_Access_Layer;
 using System.Globalization;
+using DSharpPlus;
 
 namespace Discord_Bot.Modulos
 {
@@ -19,6 +20,7 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
         private readonly UsuariosDiscord usuariosService = new UsuariosDiscord();
+        private readonly CanalesAnuncios anunciosService = new CanalesAnuncios();
 
         [Command("cumpleaños"), Aliases("birthday"), Description("Muestra los próximos cumpleaños del mes."), RequireGuild]
         public async Task Birthdays(CommandContext ctx, string flag = null)
@@ -138,6 +140,15 @@ namespace Discord_Bot.Modulos
         {
             usuariosService.DeleteBirthday(ctx);
             var msg = await ctx.RespondAsync("Cumpleaños borrado correctamente");
+            await Task.Delay(3000);
+            await msg.DeleteAsync("Auto borrado de Yumiko");
+        }
+
+        [Command("setcanalanuncios"), Aliases("setcanal", "setanuncios"), Description("Asigna un canal del servidor para los anuncios."), RequireGuild, RequirePermissions(Permissions.ManageGuild)]
+        public async Task SetCanalAnuncios(CommandContext ctx, [Description("Canal para anuncios")]DiscordChannel canal)
+        {
+            anunciosService.SetCanal(ctx, (long)canal.Id);
+            var msg = await ctx.RespondAsync("Canal para anuncios asignado correctamente");
             await Task.Delay(3000);
             await msg.DeleteAsync("Auto borrado de Yumiko");
         }

@@ -51,7 +51,52 @@ namespace YumikoBot.Data_Access_Layer
                         }
                     }
                 });
-                lista.Sort((x, y) => y.BirthdayActual.CompareTo(x.BirthdayActual));
+                lista.Sort((x, y) => x.BirthdayActual.CompareTo(y.BirthdayActual));
+                return lista;
+            }
+        }
+
+        public List<UserCumple> GetBirthdaysGuild(long guildId, bool month)
+        {
+            List<UserCumple> lista = new List<UserCumple>();
+            using (var context = new YumikoEntities())
+            {
+                var list = context.UsuariosDiscord.ToList().Where(x => x.guild_id == guildId);
+                list.ToList().ForEach(x =>
+                {
+                    DateTime fchAux = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year);
+                    DateTime nuevoCumple;
+                    if (DateTime.Now > new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year))
+                        nuevoCumple = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year + 1);
+                    else
+                        nuevoCumple = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year);
+                    if (month)
+                    {
+                        if (fchAux >= DateTime.Now && fchAux <= DateTime.Now.AddMonths(1))
+                        {
+                            lista.Add(new UserCumple
+                            {
+                                Id = x.Id,
+                                Guild_id = x.guild_id,
+                                Birthday = x.Birthday,
+                                BirthdayActual = nuevoCumple,
+                                MostrarYear = x.MostrarYear
+                            });
+                        }
+                    }
+                    else
+                    {
+                        lista.Add(new UserCumple
+                        {
+                            Id = x.Id,
+                            Guild_id = x.guild_id,
+                            Birthday = x.Birthday,
+                            BirthdayActual = nuevoCumple,
+                            MostrarYear = x.MostrarYear
+                        });
+                    }
+                });
+                lista.Sort((x, y) => x.BirthdayActual.CompareTo(y.BirthdayActual));
                 return lista;
             }
         }

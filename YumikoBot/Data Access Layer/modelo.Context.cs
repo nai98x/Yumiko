@@ -28,5 +28,6 @@ namespace YumikoBot.Data_Access_Layer
         public virtual DbSet<UsuarioDiscord> UsuariosDiscord { get; set; }
         public virtual DbSet<Imagen> Imagenes { get; set; }
         public virtual DbSet<Leaderboard> LeaderboardSet { get; set; }
+        public virtual DbSet<CanalAnuncios> CanalAnunciosSet { get; set; }
     }
 }

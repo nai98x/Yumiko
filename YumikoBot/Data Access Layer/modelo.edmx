@@ -9,6 +9,7 @@
     <EntitySet Name="UsuariosDiscord" EntityType="YumikoModel.Store.UsuariosDiscord" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Imagenes" EntityType="YumikoModel.Store.Imagenes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="LeaderboardSet" EntityType="YumikoModel.Store.LeaderboardSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="CanalAnunciosSet" EntityType="YumikoModel.Store.CanalAnunciosSet" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
   <EntityType Name="UsuariosDiscord">
     <Key>
@@ -41,6 +42,13 @@
     <Property Name="rondasAcertadas" Type="int" Nullable="false" DefaultValue="0" />
     <Property Name="rondasTotales" Type="int" Nullable="false" DefaultValue="0" />
   </EntityType>
+  <EntityType Name="CanalAnunciosSet">
+    <Key>
+      <PropertyRef Name="guild_id" />
+    </Key>
+    <Property Name="guild_id" Type="bigint" Nullable="false" />
+    <Property Name="channel_id" Type="bigint" Nullable="false" />
+  </EntityType>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -49,6 +57,7 @@
           <EntitySet Name="UsuariosDiscord" EntityType="YumikoModel.UsuarioDiscord" />
           <EntitySet Name="Imagenes" EntityType="YumikoModel.Imagen" />
           <EntitySet Name="LeaderboardSet" EntityType="YumikoModel.Leaderboard" />
+          <EntitySet Name="CanalAnunciosSet" EntityType="YumikoModel.CanalAnuncios" />
         </EntityContainer>
         <EntityType Name="UsuarioDiscord">
           <Key>
@@ -80,6 +89,13 @@
           <Property Name="partidasJugadas" Type="Int32" Nullable="false" DefaultValue="0" />
           <Property Name="rondasAcertadas" Type="Int32" Nullable="false" DefaultValue="0" />
           <Property Name="rondasTotales" Type="Int32" Nullable="false" DefaultValue="0" />
+        </EntityType>
+        <EntityType Name="CanalAnuncios">
+          <Key>
+            <PropertyRef Name="guild_id" />
+          </Key>
+          <Property Name="guild_id" Nullable="false" Type="Int64" />
+          <Property Name="channel_id" Nullable="false" Type="Int64" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -118,6 +134,14 @@
           <ScalarProperty Name="partidasJugadas" ColumnName="partidasJugadas" />
           <ScalarProperty Name="rondasAcertadas" ColumnName="rondasAcertadas" />
           <ScalarProperty Name="rondasTotales" ColumnName="rondasTotales" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CanalAnunciosSet">
+      <EntityTypeMapping TypeName="IsTypeOf(YumikoModel.CanalAnuncios)">
+        <MappingFragment StoreEntitySet="CanalAnunciosSet">
+          <ScalarProperty Name="guild_id" ColumnName="guild_id" />
+          <ScalarProperty Name="channel_id" ColumnName="channel_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
