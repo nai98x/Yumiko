@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 01/30/2021 02:03:14
+-- Date Created: 01/30/2021 15:42:09
 -- Generated from EDMX file: C:\Users\corsa\source\repos\nai98x\yumiko\YumikoBot\Data Access Layer\modelo.edmx
 -- --------------------------------------------------
 
@@ -30,6 +30,9 @@ IF OBJECT_ID(N'[dbo].[Imagenes]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[LeaderboardSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[LeaderboardSet];
+GO
+IF OBJECT_ID(N'[dbo].[CanalAnunciosSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[CanalAnunciosSet];
 GO
 
 -- --------------------------------------------------
@@ -78,10 +81,10 @@ GO
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
 
--- Creating primary key on [Id] in table 'UsuariosDiscord'
+-- Creating primary key on [Id], [guild_id] in table 'UsuariosDiscord'
 ALTER TABLE [dbo].[UsuariosDiscord]
 ADD CONSTRAINT [PK_UsuariosDiscord]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
+    PRIMARY KEY CLUSTERED ([Id], [guild_id] ASC);
 GO
 
 -- Creating primary key on [Id] in table 'Imagenes'

@@ -281,6 +281,7 @@ namespace Discord_Bot.Modulos
                                 if (descripcion == "")
                                     descripcion = "(Sin descripción)";
                                 string estado = datos.status;
+                                string episodios = datos.episodes;
                                 string formato = datos.format;
                                 string score = $"{datos.meanScore}/100";
                                 string fechas;
@@ -357,12 +358,14 @@ namespace Discord_Bot.Modulos
                                     Color = funciones.GetColor(),
                                     Description = descripcion
                                 };
+                                if (episodios.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} Episodios", funciones.NormalizarField(episodios), true);
                                 if (formato.Length > 0)
                                     builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(formato), true);
                                 if (estado.Length > 0)
                                     builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
                                 if (score.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), true);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), false);
                                 if (fechas.Length > 0)
                                     builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha emisión", funciones.NormalizarField(fechas), false);
                                 if (generos.Length > 0)

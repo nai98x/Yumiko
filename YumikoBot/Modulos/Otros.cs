@@ -14,6 +14,13 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
+        [Command("test"), RequireOwner, Hidden]
+        public async Task Test(CommandContext ctx)
+        {
+            string texto = funciones.TraducirTexto("Hello world I'm Yumiko");
+            await ctx.RespondAsync(texto);
+        }
+
         [Command("reiniciar"), Aliases("restart"), RequireOwner, Description("Se reinicia Yumiko.")]
         public async Task Reiniciar(CommandContext ctx)
         {

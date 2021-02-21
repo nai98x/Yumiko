@@ -12,14 +12,24 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Timers;
 using YumikoBot.Data_Access_Layer;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
+using Google.Cloud.Translation.V2;
 
 namespace Discord_Bot
 {
     public class FuncionesAuxiliares
     {
         private readonly LeaderboardGeneral leaderboard = new LeaderboardGeneral();
+        static Timer timer;
+
+        public string TraducirTexto(string texto)
+        {
+            var client = TranslationClient.Create();
+            var response = client.TranslateText(texto, LanguageCodes.Spanish, LanguageCodes.English);
+            return response.TranslatedText;
+        }
 
         public int GetNumeroRandom(int min, int max)
         {
@@ -116,15 +126,26 @@ namespace Discord_Bot
             return new DiscordColor(78, 63, 96);
         }
 
-        public async void ScheduleAction(DiscordChannel canal, DiscordMember miembro, DateTime ExecutionTime)
+        public void ScheduleAction(DiscordChannel canal, DiscordMember miembro, DateTime scheduledTime)
         {
-            await Task.Delay((int)ExecutionTime.Subtract(DateTime.Now).TotalMilliseconds);
+            DateTime nowTime = DateTime.Now;
+            if (nowTime > scheduledTime)
+                return;
+            double tickTime = (double)(scheduledTime - DateTime.Now).TotalMilliseconds;
+            timer = new Timer(tickTime);
+            timer.Elapsed += async (sender, e) => await Timer_Elapsed(e, canal, miembro);
+            timer.Start();
+        }
+
+        static async Task Timer_Elapsed(ElapsedEventArgs e, DiscordChannel canal, DiscordMember miembro)
+        {
             await canal.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Title = $"Feliz cumpleaños {miembro.DisplayName}!",
                 Description = $"Todos denle un gran saludo a {miembro.Mention}",
                 ImageUrl = "https://data.whicdn.com/images/299405277/original.gif"
             });
+            timer.Stop();
         }
 
         public string QuitarCaracteresEspeciales(string str)

@@ -14,6 +14,7 @@
   <EntityType Name="UsuariosDiscord">
     <Key>
       <PropertyRef Name="Id" />
+      <PropertyRef Name="guild_id" />
     </Key>
     <Property Name="Id" Type="bigint" Nullable="false" />
     <Property Name="guild_id" Type="bigint" Nullable="false" />
@@ -62,6 +63,7 @@
         <EntityType Name="UsuarioDiscord">
           <Key>
             <PropertyRef Name="Id" />
+            <PropertyRef Name="guild_id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="guild_id" Type="Int64" Nullable="false" />

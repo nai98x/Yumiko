@@ -80,7 +80,7 @@ namespace Discord_Bot
             Commands.RegisterCommands<Anilist>();
             Commands.RegisterCommands<Juegos>();
             Commands.RegisterCommands<Usuarios>();
-            Commands.RegisterCommands<NSFW>();
+            //Commands.RegisterCommands<NSFW>();
             Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
 
@@ -100,7 +100,7 @@ namespace Discord_Bot
             var lista = canalesService.GetCanales();
             foreach(CanalAnuncios canal in lista)
             {
-                var cumples = usuariosService.GetBirthdaysGuild(canal.guild_id, false);
+                var cumples = usuariosService.GetBirthdaysGuild(canal.guild_id, true);
                 var guild = await Client.GetGuildAsync((ulong)canal.guild_id);
                 var channel = guild.GetChannel((ulong)canal.channel_id);
                 foreach(var usr in cumples)
@@ -178,6 +178,7 @@ namespace Discord_Bot
                                 descripcion = "Debes esperar para volver a ejecutar este comando.";
                                 break;
                             case "DSharpPlus.CommandsNext.Attributes.RequirePermissions":
+                            case "DSharpPlus.CommandsNext.Attributes.RequirePermissionsAttribute":
                                 titulo = "Acceso denegado";
                                 descripcion = "No tienes los suficientes permisos para ejecutar este comando.";
                                 break;
