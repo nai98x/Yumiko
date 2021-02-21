@@ -274,7 +274,7 @@ namespace Discord_Bot.Modulos
                             await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
                             await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
                             var datos = data.Data.Page.media[elegido - 1];
-                            if (datos.isAdult == "false")
+                            if ((datos.isAdult == "false") || (datos.isAdult == true && ctx.Channel.IsNSFW))
                             {
                                 string descripcion = datos.description;
                                 descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
@@ -513,7 +513,7 @@ namespace Discord_Bot.Modulos
                             await elegirMsg.DeleteAsync("Auto borrado de Yumiko");
                             await msgElegir.Result.DeleteAsync("Auto borrado de Yumiko");
                             var datos = data.Data.Page.media[elegido - 1];
-                            if (datos.isAdult == "false")
+                            if ((datos.isAdult == "false") || (datos.isAdult == true && ctx.Channel.IsNSFW))
                             {
                                 string descripcion = datos.description;
                                 descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));

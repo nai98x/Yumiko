@@ -601,7 +601,7 @@ namespace Discord_Bot.Modulos
                             List<string> tags = new List<string>();
                             foreach (var x in data.Data.MediaTagCollection)
                             {
-                                if (x.isAdult == "false")
+                                if ((x.isAdult == "false") || (x.isAdult == true && ctx.Channel.IsNSFW))
                                 {
                                     string nombre = x.name;
                                     tags.Add(nombre);

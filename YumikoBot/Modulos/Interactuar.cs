@@ -116,7 +116,8 @@ namespace Discord_Bot.Modulos
                 Title = $"Avatar de {usuario.Username}#{usuario.Discriminator}",
                 ImageUrl = usuario.AvatarUrl,
                 Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
+                Color = funciones.GetColor(),
+                Url = usuario.AvatarUrl
             }).ConfigureAwait(false);
         }
     }
