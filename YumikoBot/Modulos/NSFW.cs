@@ -17,67 +17,48 @@ namespace Discord_Bot.Modulos
     public class NSFW : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-        private readonly Imagenes imagenes = new Imagenes();
 
         [Command("fuck"), Description("Tienes sexo con alguien")]
         public async Task Fuck(CommandContext ctx, [Description("El usuario que te quieres follar")] DiscordUser usuario = null)
         {
-            if (usuario == null)
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130213346934834);
+            if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                var msg = await ctx.RespondAsync("Debes mencionar a alguien");
-                await Task.Delay(3000);
-                await msg.DeleteAsync("Auto borrado de Yumiko");
+                await ctx.RespondAsync($"{ctx.User.Mention} quiere que se lo follen", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
             }
             else
             {
-                if (ctx.User.Id == usuario.Id)
+                await ctx.RespondAsync($"{ctx.User.Mention} se folló a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
-                    var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
-                    await Task.Delay(3000);
-                    await msg.DeleteAsync("Auto borrado de Yumiko");
-                }
-                else
-                {
-                    var lista = imagenes.GetImagenes("fuck");
-                    if(lista.Count > 0)
-                    {
-                        var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                        await ctx.RespondAsync($"{ctx.User.Mention} se folló a {usuario.Mention}", embed: new DiscordEmbedBuilder
-                        {
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            ImageUrl = elegida.Url
-                        });
-                    }
-                }
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
             }
         }
 
-        [Command("gcum"), Description("Te vienes (chica)")]
+        [Command("gcum"), Description("Te vienes (vagina)")]
         public async Task GCum(CommandContext ctx, [Description("El usuario al que le quieres acabar")] DiscordUser usuario = null)
         {
             if (usuario == null || (usuario != null && ctx.User.Id != usuario.Id))
             {
-                dynamic lista;
-                if(usuario == null)
-                    lista = imagenes.GetImagenes("gcum");
+                Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130231152803882);
+                string titulo;
+                if (usuario == null)
+                    titulo = $"{ctx.User.Mention} se ha venido";
                 else
-                    lista = imagenes.GetImagenes("gcumc");
-                if (lista.Count > 0)
+                    titulo = $"{ctx.User.Mention} se vino en {usuario.Mention}";
+                await ctx.RespondAsync(titulo, embed: new DiscordEmbedBuilder
                 {
-                    var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                    string titulo;
-                    if (usuario == null)
-                        titulo = $"{ctx.User.Mention} se ha venido";
-                    else
-                        titulo = $"{ctx.User.Mention} se vino en {usuario.Mention}";
-                    await ctx.RespondAsync(titulo, embed: new DiscordEmbedBuilder
-                    {
-                        Footer = funciones.GetFooter(ctx),
-                        Color = funciones.GetColor(),
-                        ImageUrl = elegida.Url
-                    });
-                }
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
             }
             else
             {
@@ -87,31 +68,23 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("bcum"), Description("Te vienes (chico)")]
+        [Command("bcum"), Description("Te vienes (pene)")]
         public async Task BCum(CommandContext ctx, [Description("El usuario al que le quieres acabar")] DiscordUser usuario = null)
         {
             if (usuario == null || (usuario != null && ctx.User.Id != usuario.Id))
             {
-                dynamic lista;
+                Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130246767280180);
+                string titulo;
                 if (usuario == null)
-                    lista = imagenes.GetImagenes("bcum");
+                    titulo = $"{ctx.User.Mention} se ha venido";
                 else
-                    lista = imagenes.GetImagenes("bcumc");
-                if (lista.Count > 0)
+                    titulo = $"{ctx.User.Mention} se vino en {usuario.Mention}";
+                await ctx.RespondAsync(titulo, embed: new DiscordEmbedBuilder
                 {
-                    var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                    string titulo;
-                    if (usuario == null)
-                        titulo = $"{ctx.User.Mention} se ha venido";
-                    else
-                        titulo = $"{ctx.User.Mention} se vino en {usuario.Mention}";
-                    await ctx.RespondAsync(titulo, embed: new DiscordEmbedBuilder
-                    {
-                        Footer = funciones.GetFooter(ctx),
-                        Color = funciones.GetColor(),
-                        ImageUrl = elegida.Url
-                    });
-                }
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
             }
             else
             {
@@ -124,61 +97,67 @@ namespace Discord_Bot.Modulos
         [Command("boobjob"), Description("Le haces una rusa a alguien")]
         public async Task Boobjob(CommandContext ctx, [Description("El usuario que le quieres hacer una rusa")] DiscordUser usuario = null)
         {
-            if (usuario == null)
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130262567485483);
+            if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                var msg = await ctx.RespondAsync("Debes mencionar a alguien");
-                await Task.Delay(3000);
-                await msg.DeleteAsync("Auto borrado de Yumiko");
+                await ctx.RespondAsync($"{ctx.User.Mention} quiere que le hagan una rusa", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
             }
             else
             {
-                if (ctx.User.Id == usuario.Id)
+                await ctx.RespondAsync($"{ctx.User.Mention} le hizo una rusa a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
-                    var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
-                    await Task.Delay(3000);
-                    await msg.DeleteAsync("Auto borrado de Yumiko");
-                }
-                else
-                {
-                    var lista = imagenes.GetImagenes("boobjob");
-                    if(lista.Count > 0)
-                    {
-                        var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                        await ctx.RespondAsync($"{ctx.User.Mention} le hizo una rusa a {usuario.Mention}", embed: new DiscordEmbedBuilder
-                        {
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            ImageUrl = elegida.Url
-                        });
-                    }
-                }
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
             }
         }
 
-        [Command("gmasturbate"), Description("Te masturbas (chica)")]
+        [Command("gmasturbate"), Description("Te masturbas (vagina)")]
         public async Task GMasturbate(CommandContext ctx)
         {
-            var lista = imagenes.GetImagenes("gmasturbate");
-            if(lista.Count > 0)
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130300458565672);
+            await ctx.RespondAsync($"...", embed: new DiscordEmbedBuilder
             {
-                var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                await ctx.RespondAsync($"{ctx.User.Mention} se está tocando", embed: new DiscordEmbedBuilder
-                {
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor(),
-                    ImageUrl = elegida.Url
-                });
-            }
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor(),
+                ImageUrl = elegida.Url
+            });
         }
 
-        [Command("bmasturbate"), Description("Te masturbas (chico)")]
+        [Command("bmasturbate"), Description("Te masturbas (pene)")]
         public async Task BMasturbate(CommandContext ctx)
         {
-            var lista = imagenes.GetImagenes("bmasturbate");
-            if(lista.Count > 0)
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130322554945567);
+            await ctx.RespondAsync($"...", embed: new DiscordEmbedBuilder
             {
-                var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                await ctx.RespondAsync($"{ctx.User.Mention} se está tocando", embed: new DiscordEmbedBuilder
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor(),
+                ImageUrl = elegida.Url
+            });
+        }
+
+        [Command("gsuck"), Description("Se la chupas a alguien (con vagina)")]
+        public async Task GSuck(CommandContext ctx, [Description("El usuario que se la quieres chupar")] DiscordUser usuario = null)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130366343348234);
+            if (usuario == null || ctx.User.Id == usuario.Id)
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} quiere que se la chupen", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -187,18 +166,186 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("gsuck"), Description("Se la chupas a alguien (chica)")]
-        public async Task GSuck(CommandContext ctx, [Description("El usuario que se la quieres chupar")] DiscordUser usuario = null)
+        [Command("bsuck"), Description("Se la chupas a alguien (con pene)")]
+        public async Task BSuck(CommandContext ctx, [Description("El usuario que se la quieres chupar")] DiscordUser usuario = null)
         {
-            if (usuario == null)
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130449679319041);
+            if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                var msg = await ctx.RespondAsync("Debes mencionar a alguien");
+                await ctx.RespondAsync($"{ctx.User.Mention} quiere que se la chupen", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+        }
+
+        [Command("yaoi"), Description("Sexo entre hombres")]
+        public async Task Yaoi(CommandContext ctx, [Description("Tu compañero")] DiscordUser usuario = null)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152519256178750);
+            if (usuario == null || ctx.User.Id == usuario.Id)
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} está teniendo pensamientos yaoi", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} tiene una fantasía yaoi con {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+        }
+
+        [Command("yuri"), Description("Sexo entre mujeres")]
+        public async Task Yuri(CommandContext ctx, [Description("Tu compañera")] DiscordUser usuario = null)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152538906230795);
+            if (usuario == null || ctx.User.Id == usuario.Id)
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} está teniendo pensamientos yuri", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} tiene una fantasía yuri con {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+        }
+
+        [Command("futa"), Description("Sexo entre futanaris")]
+        public async Task Futa(CommandContext ctx, [Description("Tu compañer@")] DiscordUser usuario = null)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152813917962281);
+            if (usuario == null || ctx.User.Id == usuario.Id)
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} está teniendo pensamientos futas", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} tiene una fantasía futa con {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+        }
+
+        [Command("bdsm"), Description("Sexo con alguien mediante ataduras")]
+        public async Task Bdsm(CommandContext ctx, [Description("Tu compañero")] DiscordUser usuario = null)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152852023476224);
+            if (usuario == null || ctx.User.Id == usuario.Id)
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} está teniendo pensamientos BDSM", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} tiene una fantasía BDSM con {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+        }
+
+        [Command("azotes"), Description("Sexo con alguien mediante el uso de latigos")]
+        public async Task Azotes(CommandContext ctx, [Description("Tu compañero")] DiscordUser usuario = null)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152880862986260);
+            if (usuario == null || ctx.User.Id == usuario.Id)
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} quiere que lo azoten", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} está azotando a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+        }
+
+        [Command("pisar"), Description("Pisas a otro")]
+        public async Task Pisotones(CommandContext ctx, [Description("Tu compañer@")] DiscordUser usuario = null)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152907690672188);
+            if (usuario == null || ctx.User.Id == usuario.Id)
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} quiere que lo pisen", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} está pisando a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+        }
+
+        [Command("trio"), Description("Tienes un trio con otros dos usuarios")]
+        public async Task Trio(CommandContext ctx, [Description("Tu compañero")] DiscordUser usuario1 = null, [Description("Tu compañero")] DiscordUser usuario2 = null)
+        {
+            if (usuario1 == null || usuario2 == null)
+            {
+                var msg = await ctx.RespondAsync("Debes mencionar a dos personas");
                 await Task.Delay(3000);
                 await msg.DeleteAsync("Auto borrado de Yumiko");
             }
             else
             {
-                if (ctx.User.Id == usuario.Id)
+                if (ctx.User.Id == usuario1.Id || ctx.User.Id == usuario2.Id)
                 {
                     var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
                     await Task.Delay(3000);
@@ -206,53 +353,111 @@ namespace Discord_Bot.Modulos
                 }
                 else
                 {
-                    var lista = imagenes.GetImagenes("gsuck");
-                    if (lista.Count > 0)
+                    Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152926535417906);
+                    await ctx.RespondAsync($"{ctx.User.Mention} tiene un trio con {usuario1.Mention} y {usuario2.Mention}", embed: new DiscordEmbedBuilder
                     {
-                        var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                        await ctx.RespondAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
-                        {
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            ImageUrl = elegida.Url
-                        });
-                    }
+                        Footer = funciones.GetFooter(ctx),
+                        Color = funciones.GetColor(),
+                        ImageUrl = elegida.Url
+                    });
                 }
             }
         }
 
-        [Command("bsuck"), Description("Se la chupas a alguien (chico)")]
-        public async Task BSuck(CommandContext ctx, [Description("El usuario que se la quieres chupar")] DiscordUser usuario = null)
+        [Command("orgia"), Description("Provocas una orgia")]
+        public async Task Orgia(CommandContext ctx)
         {
-            if (usuario == null)
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154197790687263);
+            await ctx.RespondAsync($"{ctx.User.Mention} ha iniciado una orgia en el servidor", embed: new DiscordEmbedBuilder
             {
-                var msg = await ctx.RespondAsync("Debes mencionar a alguien");
-                await Task.Delay(3000);
-                await msg.DeleteAsync("Auto borrado de Yumiko");
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor(),
+                ImageUrl = elegida.Url
+            });
+        }
+
+        [Command("gangbang"), Description("Te hacen un gangbang")]
+        public async Task Gangbang(CommandContext ctx)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154217864888340);
+            await ctx.RespondAsync($"Le están haciendo un ganbang a {ctx.User.Mention}", embed: new DiscordEmbedBuilder
+            {
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor(),
+                ImageUrl = elegida.Url
+            });
+        }
+
+        [Command("footjob"), Description("Masturbas a otro con los pies")]
+        public async Task Footjob(CommandContext ctx, [Description("Tu compañer@")] DiscordUser usuario = null)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154242997551104);
+            if (usuario == null || ctx.User.Id == usuario.Id)
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} quiere que le hagan footjob", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
             }
             else
             {
-                if (ctx.User.Id == usuario.Id)
+                await ctx.RespondAsync($"{ctx.User.Mention} masturba con su pie a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
-                    var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
-                    await Task.Delay(3000);
-                    await msg.DeleteAsync("Auto borrado de Yumiko");
-                }
-                else
-                {
-                    var lista = imagenes.GetImagenes("bsuck");
-                    if (lista.Count > 0)
-                    {
-                        var elegida = lista[funciones.GetNumeroRandom(0, lista.Count - 1)];
-                        await ctx.RespondAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
-                        {
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            ImageUrl = elegida.Url
-                        });
-                    }
-                }
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
             }
+        }
+
+        [Command("erection"), Description("Tienes una ereccion")]
+        public async Task Erection(CommandContext ctx, [Description("Tu compañer@")] DiscordUser usuario = null)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154258503630918);
+            if (usuario == null || ctx.User.Id == usuario.Id)
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} ha tenido una erección", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                await ctx.RespondAsync($"{usuario.Mention} le ha provocado una erección a {ctx.User.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            } 
+        }
+
+        [Command("cosplay"), Description("Haces cosplay")]
+        public async Task Cosplay(CommandContext ctx, [Description("Tu compañer@")] DiscordUser usuario = null)
+        {
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154286551597086);
+            if (usuario == null || ctx.User.Id == usuario.Id)
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} está haciendo cosplay para hacer cosas impuras", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} está haciendo cosplay para hacer cosas impuras con {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            } 
         }
     }
 }

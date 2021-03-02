@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 01/30/2021 15:42:09
+-- Date Created: 03/02/2021 00:31:10
 -- Generated from EDMX file: C:\Users\corsa\source\repos\nai98x\yumiko\YumikoBot\Data Access Layer\modelo.edmx
 -- --------------------------------------------------
 
@@ -25,9 +25,6 @@ GO
 IF OBJECT_ID(N'[dbo].[UsuariosDiscord]', 'U') IS NOT NULL
     DROP TABLE [dbo].[UsuariosDiscord];
 GO
-IF OBJECT_ID(N'[dbo].[Imagenes]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Imagenes];
-GO
 IF OBJECT_ID(N'[dbo].[LeaderboardSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[LeaderboardSet];
 GO
@@ -46,14 +43,6 @@ CREATE TABLE [dbo].[UsuariosDiscord] (
     [Birthday] datetime  NOT NULL,
     [MostrarYear] bit  NULL,
     [Anilist] nvarchar(max)  NULL
-);
-GO
-
--- Creating table 'Imagenes'
-CREATE TABLE [dbo].[Imagenes] (
-    [Id] int IDENTITY(1,1) NOT NULL,
-    [Url] nvarchar(max)  NOT NULL,
-    [Comando] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -85,12 +74,6 @@ GO
 ALTER TABLE [dbo].[UsuariosDiscord]
 ADD CONSTRAINT [PK_UsuariosDiscord]
     PRIMARY KEY CLUSTERED ([Id], [guild_id] ASC);
-GO
-
--- Creating primary key on [Id] in table 'Imagenes'
-ALTER TABLE [dbo].[Imagenes]
-ADD CONSTRAINT [PK_Imagenes]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
 -- Creating primary key on [Id] in table 'LeaderboardSet'

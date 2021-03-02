@@ -67,7 +67,8 @@ namespace Discord_Bot
                 EnableMentionPrefix = true,
                 EnableDms = false,
                 DmHelp = false,
-                EnableDefaultHelp = false
+                EnableDefaultHelp = false,
+                IgnoreExtraArguments = true
             };
 
             Commands = Client.UseCommandsNext(commandsConfig);
@@ -80,7 +81,7 @@ namespace Discord_Bot
             Commands.RegisterCommands<Anilist>();
             Commands.RegisterCommands<Juegos>();
             Commands.RegisterCommands<Usuarios>();
-            //Commands.RegisterCommands<NSFW>();
+            Commands.RegisterCommands<NSFW>();
             Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
 

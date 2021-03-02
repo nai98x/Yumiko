@@ -56,32 +56,6 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
         }
 
-        [Command("addReaccion"), Aliases("addReaction"), Description("Agrega una reaccion"), RequireOwner]
-        public async Task AddReaccion(CommandContext ctx, [Description("Imagen de la reaccion")] string url)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            Imagenes imagenes = new Imagenes();
-            var msgImagen = await ctx.RespondAsync("Indica el comando para la reaccion");
-            var interact = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-            if (!interact.TimedOut)
-            {
-                string comando = interact.Result.Content;
-                imagenes.AddImagen(url, comando);
-                var msg = await ctx.RespondAsync("Reaccion añadida");
-                await Task.Delay(3000);
-                await msg.DeleteAsync("Auto borrado de Yumiko");
-                await interact.Result.DeleteAsync("Auto borrado de Yumiko");
-                await msgImagen.DeleteAsync("Auto borrado de Yumiko");
-            }
-            else
-            {
-                var msg = await ctx.RespondAsync("Tiempo agotado esperando el comando");
-                await Task.Delay(3000);
-                await msg.DeleteAsync("Auto borrado de Yumiko");
-                await msgImagen.DeleteAsync("Auto borrado de Yumiko");
-            }
-        }
-
         [Command("servers"), RequireOwner]
         public async Task Servers(CommandContext ctx)
         {

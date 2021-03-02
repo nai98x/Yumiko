@@ -16,6 +16,7 @@ using System.Timers;
 using YumikoBot.Data_Access_Layer;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using Google.Cloud.Translation.V2;
+using System.Linq;
 
 namespace Discord_Bot
 {
@@ -23,6 +24,54 @@ namespace Discord_Bot
     {
         private readonly LeaderboardGeneral leaderboard = new LeaderboardGeneral();
         static Timer timer;
+
+        public async Task<Imagen> GetImagenDiscordYumiko(CommandContext ctx, ulong idChannel)
+        {
+            List<Imagen> lista = new List<Imagen>();
+            DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(713809173573271613);
+            if (discordOOC == null)
+            {
+                await ctx.RespondAsync("Error al obtener servidor").ConfigureAwait(false);
+                return null;
+            }
+            DiscordChannel channel = discordOOC.GetChannel(idChannel);
+            if (channel == null)
+            {
+                await ctx.RespondAsync("Error al obtener canal del servidor").ConfigureAwait(false);
+                return null;
+            }
+            IReadOnlyList<DiscordMessage> mensajes = await channel.GetMessagesAsync();
+            List<DiscordMessage> msgs = mensajes.ToList();
+            int cntMensajes = msgs.Count();
+            DiscordMessage last = msgs.LastOrDefault();
+            while (cntMensajes == 100)
+            {
+                var mensajesAux = await channel.GetMessagesBeforeAsync(last.Id);
+
+                cntMensajes = mensajesAux.Count();
+                last = mensajesAux.LastOrDefault();
+
+                foreach (DiscordMessage mensaje in mensajesAux)
+                {
+                    msgs.Add(mensaje);
+                }
+            }
+            List<Imagen> opciones = new List<Imagen>();
+            foreach (DiscordMessage msg in msgs)
+            {
+                var att = msg.Attachments.FirstOrDefault();
+                if (att != null && att.Url != null)
+                {
+                    opciones.Add(new Imagen
+                    {
+                        Url = att.Url,
+                        Autor = msg.Author
+                    });
+                }
+            }
+            Random rnd = new Random();
+            return opciones[rnd.Next(opciones.Count)];
+        }
 
         public string TraducirTexto(string texto)
         {

@@ -7,7 +7,6 @@
     <Schema Namespace="YumikoModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityContainer Name="YumikoModelStoreContainer">
     <EntitySet Name="UsuariosDiscord" EntityType="YumikoModel.Store.UsuariosDiscord" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Imagenes" EntityType="YumikoModel.Store.Imagenes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="LeaderboardSet" EntityType="YumikoModel.Store.LeaderboardSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="CanalAnunciosSet" EntityType="YumikoModel.Store.CanalAnunciosSet" store:Type="Tables" Schema="dbo" />
   </EntityContainer>
@@ -21,14 +20,6 @@
     <Property Name="Birthday" Type="datetime" Nullable="false" />
     <Property Name="MostrarYear" Type="bit" Nullable="true" DefaultValue="true" />
     <Property Name="Anilist" Type="nvarchar(max)" Nullable="true" />
-  </EntityType>
-  <EntityType Name="Imagenes">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="Comando" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="LeaderboardSet">
     <Key>
@@ -56,7 +47,6 @@
       <Schema Namespace="YumikoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="YumikoEntities" annotation:LazyLoadingEnabled="true" >
           <EntitySet Name="UsuariosDiscord" EntityType="YumikoModel.UsuarioDiscord" />
-          <EntitySet Name="Imagenes" EntityType="YumikoModel.Imagen" />
           <EntitySet Name="LeaderboardSet" EntityType="YumikoModel.Leaderboard" />
           <EntitySet Name="CanalAnunciosSet" EntityType="YumikoModel.CanalAnuncios" />
         </EntityContainer>
@@ -70,14 +60,6 @@
           <Property Name="Birthday" Type="DateTime" Nullable="false" />
           <Property Name="MostrarYear" Type="Boolean" DefaultValue="true" Nullable="true" />
           <Property Name="Anilist" Type="String" Nullable="true" />
-        </EntityType>
-        <EntityType Name="Imagen">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Url" Type="String" Nullable="false" />
-          <Property Name="Comando" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="Leaderboard">
           <Key>
@@ -113,15 +95,6 @@
           <ScalarProperty Name="Birthday" ColumnName="Birthday" />
           <ScalarProperty Name="MostrarYear" ColumnName="MostrarYear" />
           <ScalarProperty Name="Anilist" ColumnName="Anilist" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Imagenes">
-      <EntityTypeMapping TypeName="IsTypeOf(YumikoModel.Imagen)">
-        <MappingFragment StoreEntitySet="Imagenes">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Url" ColumnName="Url" />
-          <ScalarProperty Name="Comando" ColumnName="Comando" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

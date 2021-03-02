@@ -315,14 +315,10 @@
     <Compile Include="Data Access Layer\CanalAnuncios.cs">
       <DependentUpon>modelo.tt</DependentUpon>
     </Compile>
-    <Compile Include="Data Access Layer\Imagen.cs">
-      <DependentUpon>modelo.tt</DependentUpon>
-    </Compile>
     <Compile Include="Data Access Layer\Leaderboard.cs">
       <DependentUpon>modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Data Access Layer\Servicios\CanalAnuncios.cs" />
-    <Compile Include="Data Access Layer\Servicios\Imagenes.cs" />
     <Compile Include="Data Access Layer\Servicios\UsuariosDiscord.cs" />
     <Compile Include="Data Access Layer\Servicios\LeaderboardGeneral.cs" />
     <Compile Include="Data Access Layer\modelo.Context.cs">
