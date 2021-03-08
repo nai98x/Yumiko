@@ -130,24 +130,6 @@ namespace Discord_Bot
             return new string(a);
         }
 
-        public string GetImagenRandomShip()
-        {
-            string[] opciones = new string[]
-            {
-                "https://i.imgur.com/nmXB1j3.gif",
-                "https://i.imgur.com/apvPrPH.gif",
-                "https://i.imgur.com/x3L3O3l.gif",
-                "https://i.imgur.com/AgsLqLO.gif",
-                "https://i.imgur.com/G4YLOal.gif",
-                "https://i.imgur.com/gp3bj3R.gif",
-                "https://i.imgur.com/EgmqF5t.gif",
-                "https://i.imgur.com/aLSqypv.gif",
-                "https://i.imgur.com/EI09P4S.gif"
-            };
-            Random rnd = new Random();
-            return opciones[rnd.Next(opciones.Length -1)];
-        }
-
         public EmbedFooter GetFooter(CommandContext ctx)
         {
             return  new EmbedFooter()

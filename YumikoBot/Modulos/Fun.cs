@@ -131,14 +131,15 @@ namespace Discord_Bot.Modulos
             }
             string shipeoUsr;
             DiscordMember ctxMiembro = await ctx.Guild.GetMemberAsync(usuario.Id);
-            shipeoUsr = ctxMiembro.DisplayName;
+            shipeoUsr = ctxMiembro.Mention;
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 818293607709933602);
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor(),
                 Title = "Shippeo",
-                Description = $"Shippeo a **{shipeoUsr}** con **{elegido.DisplayName}** 💘",
-                ImageUrl = funciones.GetImagenRandomShip()
+                Description = $"Shippeo a {shipeoUsr} con {elegido.Mention} 💘",
+                ImageUrl = elegida.Url
             }).ConfigureAwait(false);
         }
 
@@ -162,13 +163,14 @@ namespace Discord_Bot.Modulos
                 elegido = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
                 elegido2 = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
             }
+            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 818293607709933602);
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor(),
                 Title = "Shippeo random",
-                Description = $"Shippeo a **{elegido.DisplayName}** con **{elegido2.DisplayName}** 💘",
-                ImageUrl = funciones.GetImagenRandomShip()
+                Description = $"Shippeo a {elegido.Mention} con {elegido2.Mention} 💘",
+                ImageUrl = elegida.Url
             }).ConfigureAwait(false);
         }
 
