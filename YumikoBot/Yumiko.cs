@@ -68,10 +68,12 @@ namespace Discord_Bot
                 EnableDms = false,
                 DmHelp = false,
                 EnableDefaultHelp = false,
+                CaseSensitive = false,
                 IgnoreExtraArguments = true
             };
 
             Commands = Client.UseCommandsNext(commandsConfig);
+            Commands.SetHelpFormatter<CustomHelpFormatter>();
 
             Commands.CommandExecuted += Commands_CommandExecuted;
             Commands.CommandErrored += Commands_CommandErrored;
@@ -131,15 +133,42 @@ namespace Discord_Bot
         private Task Client_ClientError(DiscordClient c, ClientErrorEventArgs e)
         {
             c.Logger.LogError($"Ha ocurrido una excepcion: {e.Exception.GetType()}: {e.Exception.Message}", DateTime.Now);
-            LogChannel.SendMessageAsync($"Ha ocurrido una excepcion: {e.Exception.Message}");
+            LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            {
+                Title = "Ha ocurrido una excepcion",
+                Footer = new EmbedFooter()
+                {
+                    Text = $"{DateTimeOffset.Now}"
+                },
+                Color = DiscordColor.Red
+            }.AddField("Tipo", $"{e.Exception.GetType()}", false)
+            .AddField("Mensaje", $"{e.Exception.Message}", false)
+            );
+            
             return Task.CompletedTask;
         }
 
         private Task Commands_CommandExecuted(CommandsNextExtension cm, CommandExecutionEventArgs e)
         {
             e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} ejecuto el comando '{e.Command.QualifiedName}'", DateTime.Now);
-            LogChannel.SendMessageAsync($"{e.Context.User.Username}#{e.Context.User.Discriminator} ejecuto el comando '{e.Command.QualifiedName}' | Servidor: {e.Context.Guild.Name} | Canal: {e.Context.Channel.Name}");
-            if(e.Context.Message != null)
+            LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            {
+                Title = "Comando ejecutado",
+                Footer = new EmbedFooter()
+                {
+                    Text = $"{e.Context.Message.Timestamp}"
+                },
+                Author = new EmbedAuthor()
+                {
+                    IconUrl = e.Context.User.AvatarUrl,
+                    Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                },
+                Color = DiscordColor.Green
+            }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+            .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+            .AddField("Mensaje", $"{e.Context.Message.Content}", false)
+            );
+            if (e.Context.Message != null)
                 e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
             return Task.CompletedTask;
         }
@@ -148,7 +177,24 @@ namespace Discord_Bot
         {
             if (e.Exception.Message == "Specified command was not found." || e.Exception.Message == "Could not find a suitable overload for the command.")
             {
-                await LogChannel.SendMessageAsync($"{e.Context.User.Username}#{e.Context.User.Discriminator} trato de ejecutar un comando que no existe").ConfigureAwait(false);
+                await LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                {
+                    Title = "Comando no encontrado",
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{e.Context.Message.Timestamp}"
+                    },
+                    Author = new EmbedAuthor()
+                    {
+                        IconUrl = e.Context.User.AvatarUrl,
+                        Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                    },
+                    Color = DiscordColor.Yellow
+                }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                .AddField("Mensaje", $"{e.Context.Message.Content}", false)
+                );
+
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
                 var embed = new DiscordEmbedBuilder
                 {
@@ -156,15 +202,18 @@ namespace Discord_Bot
                     Description = $"{emoji} Pone el comando bien, " + e.Context.User.Username + " baka.",
                     Color = new DiscordColor(0xFF0000)
                 };
-                var mensajeErr = await e.Context.RespondAsync("", embed: embed);
+                var mensajeErr = e.Context.RespondAsync("", embed: embed);
                 await Task.Delay(3000);
                 await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
-                await mensajeErr.DeleteAsync("Auto borrado de yumiko");
+                await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
             }
             else
             {
-                e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} trato de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}", DateTime.Now);
-                await LogChannel.SendMessageAsync($"{e.Context.User.Username} trato de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}");
+                if(e.Exception.Message != "One or more pre-execution checks failed.")
+                {
+                    e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} trato de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}", DateTime.Now);
+                    await LogChannel.SendMessageAsync($"**{e.Context.User.Username}** trato de ejecutar **{e.Command?.QualifiedName ?? "<comando desconocido>"}** pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}");
+                }
                 if (e.Exception is ChecksFailedException ex)
                 {
                     List<DiscordMessage> mensajes = new List<DiscordMessage>();
@@ -202,14 +251,30 @@ namespace Discord_Bot
                             Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
                             IconUrl = miembro.AvatarUrl
                         };
-                        DiscordMessage msg = await e.Context.RespondAsync("", embed: new DiscordEmbedBuilder
+                        var msg = e.Context.RespondAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = titulo,
                             Description = descripcion,
                             Color = new DiscordColor(0xFF0000),
                             Footer = footer
                         });
-                        mensajes.Add(msg);
+                        mensajes.Add(msg.Result);
+                        await LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder {
+                            Title = titulo,
+                            Description = descripcion,
+                            Footer = new EmbedFooter()
+                            {
+                                Text = $"{e.Context.Message.Timestamp}"
+                            },
+                            Author = new EmbedAuthor()
+                            {
+                                IconUrl = e.Context.User.AvatarUrl,
+                                Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                            },
+                            Color = DiscordColor.Yellow
+                        }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                        .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                        .AddField("Mensaje", $"{e.Context.Message.Content}", false));
                     }
                     await Task.Delay(3000);
                     await e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
@@ -226,7 +291,7 @@ namespace Discord_Bot
                         Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
                         IconUrl = miembro.AvatarUrl
                     };
-                    DiscordMessage msg = await e.Context.RespondAsync("", embed: new DiscordEmbedBuilder
+                    var msg = e.Context.RespondAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Error desconocido",
                         Description = "Ha ocurrido un error que no puedo manejar",
@@ -236,7 +301,7 @@ namespace Discord_Bot
                     await Task.Delay(3000);
                     if(e.Context.Message != null)
                         await e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
-                    await msg.DeleteAsync("Auto borrado de Yumiko");
+                    await msg.Result.DeleteAsync("Auto borrado de Yumiko");
                 }
             }
         }

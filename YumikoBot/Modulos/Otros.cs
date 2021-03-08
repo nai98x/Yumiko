@@ -14,14 +14,14 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        [Command("test"), RequireOwner, Hidden]
+        [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
             string texto = funciones.TraducirTexto("Hello world I'm Yumiko");
             await ctx.RespondAsync(texto);
         }
 
-        [Command("reiniciar"), Aliases("restart"), RequireOwner, Description("Se reinicia Yumiko.")]
+        [Command("reiniciar"), Aliases("restart"), Description("Se reinicia Yumiko."), RequireOwner]
         public async Task Reiniciar(CommandContext ctx)
         {
             await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
@@ -30,7 +30,7 @@ namespace Discord_Bot.Modulos
             Environment.Exit(0);
         }
 
-        [Command("apagar"), RequireOwner, Description("Se apaga Yumiko.")]
+        [Command("apagar"), Description("Se apaga Yumiko."), RequireOwner]
         public async Task Stop(CommandContext ctx)
         {
             await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
@@ -56,7 +56,7 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
         }
 
-        [Command("servers"), RequireOwner]
+        [Command("servers"), Description("Muestra los servidores en los que esta Yumiko."), RequireOwner]
         public async Task Servers(CommandContext ctx)
         {
             string servers = "";
@@ -77,7 +77,7 @@ namespace Discord_Bot.Modulos
             });
         }
 
-        [Command("eliminarmensaje"), RequireOwner]
+        [Command("eliminarmensaje"), Description("Elimina un mensaje de Yumiko."), RequireOwner]
         public async Task BorrarMensajePropio(CommandContext ctx, ulong id)
         {
             var msg = await ctx.Channel.GetMessageAsync(id);
@@ -93,7 +93,7 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("descargar")]
+        [Command("descargar"), Description("Descarga los capitulos de un anime.")]
         public async Task DescargarAnime(CommandContext ctx, [RemainingText]string buscar)
         {
             AnimeFLVDownloader animeflv = new AnimeFLVDownloader();

@@ -311,6 +311,7 @@
     <Compile Include="Clases Normales\Datatypes\Imagen.cs" />
     <Compile Include="Clases Normales\Datatypes\SettingsJuego.cs" />
     <Compile Include="Clases Normales\Datatypes\UsuarioJuego.cs" />
+    <Compile Include="Clases Normales\CustomHelpFormatter.cs" />
     <Compile Include="ConfigJson.cs" />
     <Compile Include="Data Access Layer\CanalAnuncios.cs">
       <DependentUpon>modelo.tt</DependentUpon>

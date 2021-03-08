@@ -1,12 +1,9 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
-using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.Extensions;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -69,8 +66,8 @@ namespace Discord_Bot
                     });
                 }
             }
-            Random rnd = new Random();
-            return opciones[rnd.Next(opciones.Count)];
+            int rnd = GetNumeroRandom(0, opciones.Count - 1);
+            return opciones[rnd];
         }
 
         public string TraducirTexto(string texto)
