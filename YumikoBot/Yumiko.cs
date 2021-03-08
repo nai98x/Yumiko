@@ -133,18 +133,20 @@ namespace Discord_Bot
         private Task Client_ClientError(DiscordClient c, ClientErrorEventArgs e)
         {
             c.Logger.LogError($"Ha ocurrido una excepcion: {e.Exception.GetType()}: {e.Exception.Message}", DateTime.Now);
-            LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            if(e.Exception.Message != "An event handler caused the invocation of an asynchronous event to time out.")
             {
-                Title = "Ha ocurrido una excepcion",
-                Footer = new EmbedFooter()
+                LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
-                    Text = $"{DateTimeOffset.Now}"
-                },
-                Color = DiscordColor.Red
-            }.AddField("Tipo", $"{e.Exception.GetType()}", false)
-            .AddField("Mensaje", $"{e.Exception.Message}", false)
-            );
-            
+                    Title = "Ha ocurrido una excepcion",
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{DateTimeOffset.Now}"
+                    },
+                    Color = DiscordColor.Red
+                }.AddField("Tipo", $"{e.Exception.GetType()}", false)
+                .AddField("Mensaje", $"{e.Exception.Message}", false)
+                );
+            }
             return Task.CompletedTask;
         }
 
