@@ -6,14 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
-using YumikoBot.Data_Access_Layer;
+using YumikoBot.DAL;
 
 namespace Discord_Bot
 {
     public class FuncionesJuegos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-        private readonly LeaderboardGeneral leaderboard = new LeaderboardGeneral();
+        private readonly LeaderboardoGeneral leaderboard = new LeaderboardoGeneral();
 
         public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas, string dificultad, string juego)
         {
@@ -51,7 +51,7 @@ namespace Discord_Bot
                 }
                 lastScore = uj.Puntaje;
                 tot += uj.Puntaje;
-                leaderboard.AddRegistro(ctx, long.Parse(uj.Usuario.Id.ToString()), dificultad, uj.Puntaje, rondas, juego);
+                await leaderboard.AddRegistro(ctx, long.Parse(uj.Usuario.Id.ToString()), dificultad, uj.Puntaje, rondas, juego);
             }
             resultados += $"\n**Total ({tot}/{rondas})**";
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
@@ -201,7 +201,7 @@ namespace Discord_Bot
 
         public async Task<string> GetEstadisticasDificultad(CommandContext ctx, string tipoStats, string dificultad)
         {
-            List<StatsJuego> res = leaderboard.GetLeaderboard(ctx, dificultad, tipoStats);
+            List<StatsJuego> res = await leaderboard.GetLeaderboard(ctx, dificultad, tipoStats);
             string stats = "";
             int pos = 0;
             int lastScore = 0;
@@ -242,28 +242,6 @@ namespace Discord_Bot
             return stats;
         }
 
-        public string GetEstadisticasUsuarioDificultad(CommandContext ctx, string tipoStats, DiscordUser usuario, string dificultad, out int partidasTotales, out int rondasAcertadas, out int rondasTotales)
-        {
-            StatsJuego res = leaderboard.GetStatsUser(ctx, (long)usuario.Id, tipoStats, dificultad);
-
-            if(res != null)
-            {
-               partidasTotales = res.PartidasTotales;
-               rondasAcertadas = res.RondasAcertadas;
-               rondasTotales = res.RondasTotales;
-               return
-                    $"  - Porcentaje de aciertos: **{res.PorcentajeAciertos}%**\n" +
-                    $"  - Partidas totales: **{partidasTotales}**\n" +
-                    $"  - Rondas acertadas: **{rondasAcertadas}**\n" +
-                    $"  - Rondas totales: **{rondasTotales}**\n\n";
-            }
-
-            partidasTotales = 0;
-            rondasAcertadas = 0;
-            rondasTotales = 0;
-            return String.Empty;
-        }
-
         public async Task<DiscordEmbedBuilder> GetEstadisticas(CommandContext ctx, string juego)
         {
             string facil = await GetEstadisticasDificultad(ctx, juego, "Fácil");
@@ -279,7 +257,7 @@ namespace Discord_Bot
         {
             string msgError = "";
             var interactivity = ctx.Client.GetInteractivity();
-            List<string> tagsList = leaderboard.GetTags();
+            List<string> tagsList = await leaderboard.GetTags();
             string tags = "";
             int cont = 1;
             foreach(string s in tagsList)
@@ -337,47 +315,6 @@ namespace Discord_Bot
                 Color = funciones.GetColor(),
                 Description = msgError
             };
-        }
-
-        public DiscordEmbedBuilder GetEstadisticasUsuario(CommandContext ctx, string juego, DiscordUser usuario)
-        {
-            int partidasTotales = 0;
-            int rondasAcertadas = 0;
-            int rondasTotales = 0;
-
-            string facil = GetEstadisticasUsuarioDificultad(ctx, juego, usuario, "Fácil", out int partidasTotalesF, out int rondasAcertadasF, out int rondasTotalesF);
-            partidasTotales += partidasTotalesF;
-            rondasAcertadas += rondasAcertadasF;
-            rondasTotales += rondasTotalesF;
-
-            string media = GetEstadisticasUsuarioDificultad(ctx, juego, usuario, "Media", out int partidasTotalesM, out int rondasAcertadasM, out int rondasTotalesM);
-            partidasTotales += partidasTotalesM;
-            rondasAcertadas += rondasAcertadasM;
-            rondasTotales += rondasTotalesM;
-
-            string dificil = GetEstadisticasUsuarioDificultad(ctx, juego, usuario, "Dificil", out int partidasTotalesD, out int rondasAcertadasD, out int rondasTotalesD);
-            partidasTotales += partidasTotalesD;
-            rondasAcertadas += rondasAcertadasD;
-            rondasTotales += rondasTotalesD;
-
-            string extremo = GetEstadisticasUsuarioDificultad(ctx, juego, usuario, "Extremo", out int partidasTotalesE, out int rondasAcertadasE, out int rondasTotalesE);
-            partidasTotales += partidasTotalesE;
-            rondasAcertadas += rondasAcertadasE;
-            rondasTotales += rondasTotalesE;
-
-            int porcentajeAciertos = 0;
-            if (rondasTotales > 0)
-                porcentajeAciertos = (rondasAcertadas * 100) / rondasTotales;
-            string totales =
-                $"  - Porcentaje de aciertos: **{porcentajeAciertos}%**\n" +
-                $"  - Partidas totales: **{partidasTotales}**\n" +
-                $"  - Rondas acertadas: **{rondasAcertadas}**\n" +
-                $"  - Rondas totales: **{rondasTotales}**\n\n";
-
-            var builder = CrearEmbedStats(ctx, $"Estadisticas de **{usuario.Username}#{usuario.Discriminator}** - Adivina el {juego}", facil, media, dificil, extremo);
-            builder.AddField("Totales", totales);
-
-            return builder;
         }
 
         public DiscordEmbedBuilder CrearEmbedStats(CommandContext ctx, string titulo, string facil, string media, string dificil, string extremo)

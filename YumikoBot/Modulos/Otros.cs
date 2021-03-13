@@ -36,19 +36,21 @@ namespace Discord_Bot.Modulos
             */
 
             
-            var usurs = new YumikoBot.Data_Access_Layer.UsuariosDiscord();
+            var usurs = new YumikoBot.Data_Access_Layer.LeaderboardGeneral();
             var client = funciones.getClienteFirebase();
-            var usuarios = usurs.GetBirthdaysTODO();
+            var usuarios = usurs.GetLeaderboardTODO();
             int id = 1;
             foreach(var u in usuarios)
             {
-                await client.SetTaskAsync("UsuariosDiscord/" + id, new UsuarioDiscordAux
-                {
+                await client.SetTaskAsync("Leaderboard/" + id, new YumikoBot.DAL.Leaderboardo { 
                     Id = id,
-                    Birthday = u.Birthday,
+                    dificultad = u.dificultad,
                     guild_id = u.guild_id,
-                    MostrarYear = u.MostrarYear ?? true,
-                    user_id = u.Id
+                    juego = u.juego,
+                    partidasJugadas = u.partidasJugadas,
+                    rondasAcertadas = u.rondasAcertadas,
+                    rondasTotales = u.rondasTotales,
+                    user_id = u.user_id
                 });
                 id++;
             }
