@@ -14,14 +14,13 @@ using FireSharp.Response;
 
 namespace Discord_Bot.Modulos
 {
-    public partial class UsuarioDiscordAux
+    public class UsuarioDiscordAux
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public long user_id { get; set; }
         public long guild_id { get; set; }
-        public System.DateTime Birthday { get; set; }
-        public Nullable<bool> MostrarYear { get; set; }
-        public string Anilist { get; set; }
+        public DateTime Birthday { get; set; }
+        public bool MostrarYear { get; set; }
     }
 
     public class Otros : BaseCommandModule
@@ -31,8 +30,28 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
-            var testo = new YumikoBot.DAL.CanalesAnuncioss();
-            await testo.GetCanal(701813281718927441);
+            /*
+            var testo = new YumikoBot.DAL.UsuariosDiscordo();
+            var cumples = await testo.GetBirthdays(ctx, false);
+            */
+
+            
+            var usurs = new YumikoBot.Data_Access_Layer.UsuariosDiscord();
+            var client = funciones.getClienteFirebase();
+            var usuarios = usurs.GetBirthdaysTODO();
+            int id = 1;
+            foreach(var u in usuarios)
+            {
+                await client.SetTaskAsync("UsuariosDiscord/" + id, new UsuarioDiscordAux
+                {
+                    Id = id,
+                    Birthday = u.Birthday,
+                    guild_id = u.guild_id,
+                    MostrarYear = u.MostrarYear ?? true,
+                    user_id = u.Id
+                });
+                id++;
+            }
 
             await ctx.RespondAsync("uwu!");
         }

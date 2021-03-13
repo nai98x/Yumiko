@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YumikoBot;
+using YumikoBot.DAL;
 using YumikoBot.Data_Access_Layer;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
@@ -91,7 +92,7 @@ namespace Discord_Bot
 
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             LogChannel = LogGuild.GetChannel(781679685838569502);
-            await ScheduleBirthdays();
+            //await ScheduleBirthdays();
 
             await Task.Delay(-1);
         }
@@ -99,11 +100,11 @@ namespace Discord_Bot
         private async Task ScheduleBirthdays()
         {
             CanalesAnuncios canalesService = new CanalesAnuncios();
-            UsuariosDiscord usuariosService = new UsuariosDiscord();
+            UsuariosDiscordo usuariosService = new UsuariosDiscordo();
             var lista = canalesService.GetCanales();
             foreach(CanalAnuncios canal in lista)
             {
-                var cumples = usuariosService.GetBirthdaysGuild(canal.guild_id, true);
+                var cumples = await usuariosService.GetBirthdaysGuild(canal.guild_id, true);
                 var guild = await Client.GetGuildAsync((ulong)canal.guild_id);
                 var channel = guild.GetChannel((ulong)canal.channel_id);
                 foreach(var usr in cumples)

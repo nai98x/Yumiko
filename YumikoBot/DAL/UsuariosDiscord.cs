@@ -1,69 +1,49 @@
 ﻿using Discord_Bot;
 using DSharpPlus.CommandsNext;
+using FireSharp.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace YumikoBot.DAL
 {
-    /*
-    public class UsuariosDiscord
+    public class UsuarioDiscordo
     {
-        public List<UserCumple> GetBirthdays(CommandContext ctx, bool month)
+        public int Id { get; set; }
+        public long user_id { get; set; }
+        public long guild_id { get; set; }
+        public DateTime Birthday { get; set; }
+        public bool MostrarYear { get; set; }
+    }
+
+    public class UsuariosDiscordo
+    {
+        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+
+        public async Task<List<UsuarioDiscordo>> GetListaUsuarios()
         {
-            List<UserCumple> lista = new List<UserCumple>();
-            using (var context = new YumikoEntities())
-            {
-                var list = context.UsuariosDiscord.ToList().Where(x => x.guild_id == (long)ctx.Guild.Id);
-                var listaVerif = ctx.Guild.Members.Values.ToList();
-                list.ToList().ForEach(x =>
-                {
-                    if (listaVerif.Find(u => u.Id == (ulong)x.Id) != null)
-                    {
-                        DateTime fchAux = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year:DateTime.Now.Year);
-                        DateTime nuevoCumple;
-                        if (DateTime.Now > new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year))
-                            nuevoCumple = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year + 1);
-                        else
-                            nuevoCumple = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year);
-                        if (month)
-                        {
-                            if (fchAux >= DateTime.Now && fchAux <= DateTime.Now.AddMonths(1))
-                            {
-                                lista.Add(new UserCumple {
-                                    Id = x.Id,
-                                    Guild_id = x.guild_id,
-                                    Birthday = x.Birthday,
-                                    BirthdayActual = nuevoCumple,
-                                    MostrarYear = x.MostrarYear
-                                });
-                            }
-                        }
-                        else
-                        {
-                            lista.Add(new UserCumple
-                            {
-                                Id = x.Id,
-                                Guild_id = x.guild_id,
-                                Birthday = x.Birthday,
-                                BirthdayActual = nuevoCumple,
-                                MostrarYear = x.MostrarYear
-                            });
-                        }
-                    }
-                });
-                lista.Sort((x, y) => x.BirthdayActual.CompareTo(y.BirthdayActual));
-                return lista;
-            }
+            var client = funciones.getClienteFirebase();
+            FirebaseResponse response = await client.GetTaskAsync("UsuariosDiscord/");
+            var listaFirebase = response.ResultAs<List<UsuarioDiscordo>>();
+            return listaFirebase.Where(x => x != null).ToList();
         }
 
-        public List<UserCumple> GetBirthdaysGuild(long guildId, bool month)
+        public async Task<int> GetLastId()
+        {
+            var lista = await GetListaUsuarios();
+            return lista.Last().Id;
+        }
+
+        public async Task<List<UserCumple>> GetBirthdays(CommandContext ctx, bool month)
         {
             List<UserCumple> lista = new List<UserCumple>();
-            using (var context = new YumikoEntities())
+            var listaFirebase = await GetListaUsuarios();
+            var list = listaFirebase.Where(x => x.guild_id == (long)ctx.Guild.Id).ToList();
+            var listaVerif = ctx.Guild.Members.Values.ToList();
+            list.ToList().ForEach(x =>
             {
-                var list = context.UsuariosDiscord.ToList().Where(x => x.guild_id == guildId);
-                list.ToList().ForEach(x =>
+                if (listaVerif.Find(u => u.Id == (ulong)x.user_id) != null)
                 {
                     DateTime fchAux = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year);
                     DateTime nuevoCumple;
@@ -77,7 +57,7 @@ namespace YumikoBot.DAL
                         {
                             lista.Add(new UserCumple
                             {
-                                Id = x.Id,
+                                Id = x.user_id,
                                 Guild_id = x.guild_id,
                                 Birthday = x.Birthday,
                                 BirthdayActual = nuevoCumple,
@@ -89,96 +69,100 @@ namespace YumikoBot.DAL
                     {
                         lista.Add(new UserCumple
                         {
-                            Id = x.Id,
+                            Id = x.user_id,
                             Guild_id = x.guild_id,
                             Birthday = x.Birthday,
                             BirthdayActual = nuevoCumple,
                             MostrarYear = x.MostrarYear
                         });
                     }
+                }
+            });
+            lista.Sort((x, y) => x.BirthdayActual.CompareTo(y.BirthdayActual));
+            return lista;
+        }
+        
+        public async Task<List<UserCumple>> GetBirthdaysGuild(long guildId, bool month)
+        {
+            List<UserCumple> lista = new List<UserCumple>();
+            var listaFirebase = await GetListaUsuarios();
+            var list = listaFirebase.Where(x => x != null && x.guild_id == guildId).ToList();
+            list.ToList().ForEach(x =>
+            {
+                DateTime fchAux = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year);
+                DateTime nuevoCumple;
+                if (DateTime.Now > new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year))
+                    nuevoCumple = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year + 1);
+                else
+                    nuevoCumple = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year);
+                if (month)
+                {
+                    if (fchAux >= DateTime.Now && fchAux <= DateTime.Now.AddMonths(1))
+                    {
+                        lista.Add(new UserCumple
+                        {
+                            Id = x.user_id,
+                            Guild_id = x.guild_id,
+                            Birthday = x.Birthday,
+                            BirthdayActual = nuevoCumple,
+                            MostrarYear = x.MostrarYear
+                        });
+                    }
+                }
+                else
+                {
+                    lista.Add(new UserCumple
+                    {
+                        Id = x.user_id,
+                        Guild_id = x.guild_id,
+                        Birthday = x.Birthday,
+                        BirthdayActual = nuevoCumple,
+                        MostrarYear = x.MostrarYear
+                    });
+                }
+            });
+            lista.Sort((x, y) => x.BirthdayActual.CompareTo(y.BirthdayActual));
+            return lista;
+        }
+        
+        public async Task SetBirthday(CommandContext ctx, DateTime fecha, bool mostrarEdad)
+        {
+            var client = funciones.getClienteFirebase();
+            var listaFirebase = await GetListaUsuarios();
+            var usuario = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == (long)ctx.Member.Id);
+            if (usuario == null)
+            {
+                int nuevoId = await GetLastId() + 1;
+                await client.SetTaskAsync("UsuariosDiscord/" + nuevoId, new UsuarioDiscordo { 
+                    Id = nuevoId,
+                    user_id = (long)ctx.Member.Id,
+                    guild_id = (long)ctx.Guild.Id,
+                    Birthday = fecha,
+                    MostrarYear = mostrarEdad
                 });
-                lista.Sort((x, y) => x.BirthdayActual.CompareTo(y.BirthdayActual));
-                return lista;
+            }
+            else
+            {
+                await client.UpdateTaskAsync("UsuariosDiscord/" + usuario.Id, new UsuarioDiscordo
+                {
+                    Id = usuario.Id,
+                    user_id = (long)ctx.Member.Id,
+                    guild_id = (long)ctx.Guild.Id,
+                    Birthday = fecha,
+                    MostrarYear = mostrarEdad
+                });
             }
         }
-
-        public void SetBirthday(CommandContext ctx, DateTime fecha, bool mostrarEdad)
+        
+        public async Task DeleteBirthday(CommandContext ctx)
         {
-            using (var context = new YumikoEntities())
+            var client = funciones.getClienteFirebase();
+            var listaFirebase = await GetListaUsuarios();
+            var usuario = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == (long)ctx.Member.Id);
+            if(usuario != null)
             {
-                var usuario = context.UsuariosDiscord.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.Id == (long)ctx.Member.Id);
-                if(usuario == null)
-                {
-                    usuario = new UsuarioDiscord()
-                    {
-                        Id = (long)ctx.Member.Id,
-                        guild_id = (long)ctx.Guild.Id,
-                        Birthday = fecha,
-                        MostrarYear = mostrarEdad
-                    };
-                    context.UsuariosDiscord.Add(usuario);
-                }
-                else
-                {
-                    usuario.Birthday = fecha;
-                    usuario.MostrarYear = mostrarEdad;
-                }
-                context.SaveChanges();
-            }
-        }
-
-        public void DeleteBirthday(CommandContext ctx)
-        {
-            using (var context = new YumikoEntities())
-            {
-                var usuario = context.UsuariosDiscord.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.Id == (long)ctx.Member.Id);
-                if (usuario != null)
-                {
-                    context.UsuariosDiscord.Remove(usuario);
-                    context.SaveChanges();
-                }
-            }
-        }
-
-        public void SetAnilist(CommandContext ctx,string anilist)
-        {
-            using (var context = new YumikoEntities())
-            {
-                var usuario = context.UsuariosDiscord.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.Id == (long)ctx.Member.Id);
-                if (usuario == null)
-                {
-                    usuario = new UsuarioDiscord()
-                    {
-                        Id = (long)ctx.Member.Id,
-                        guild_id = (long)ctx.Guild.Id,
-                        Anilist = anilist
-                    };
-                    context.UsuariosDiscord.Add(usuario);
-                }
-                else
-                {
-                    usuario.Anilist = anilist;
-                }
-                context.SaveChanges();
-            }
-        }
-
-        public UsuarioDiscord GetUsuario(CommandContext ctx)
-        {
-            using (var context = new YumikoEntities())
-            {
-                return context.UsuariosDiscord.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.Id == (long)ctx.Member.Id);
-            }
-        }
-
-        public List<UsuarioDiscord> GetBirthdaysTODO()
-        {
-            using (var context = new YumikoEntities())
-            {
-                return context.UsuariosDiscord.ToList();
+                await client.DeleteTaskAsync("UsuariosDiscord/" + usuario.Id);
             }
         }
     }
-
-*/
 }

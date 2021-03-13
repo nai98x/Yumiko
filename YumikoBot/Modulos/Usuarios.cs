@@ -13,13 +13,14 @@ using DSharpPlus.Interactivity.Extensions;
 using YumikoBot.Data_Access_Layer;
 using System.Globalization;
 using DSharpPlus;
+using YumikoBot.DAL;
 
 namespace Discord_Bot.Modulos
 {
     public class Usuarios : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-        private readonly UsuariosDiscord usuariosService = new UsuariosDiscord();
+        private readonly UsuariosDiscordo usuariosService = new UsuariosDiscordo();
         private readonly CanalesAnuncios anunciosService = new CanalesAnuncios();
 
         [Command("cumpleaños"), Aliases("birthday"), Description("Muestra los próximos cumpleaños del mes."), RequireGuild]
@@ -29,12 +30,12 @@ namespace Discord_Bot.Modulos
             string titulo;
             if (!string.IsNullOrEmpty(flag) && flag == "-all")
             {
-                lista = usuariosService.GetBirthdays(ctx, false);
+                lista = await usuariosService.GetBirthdays(ctx, false);
                 titulo = "Próximos cumpleaños";
             }
             else
             {
-                lista = usuariosService.GetBirthdays(ctx, true);
+                lista = await usuariosService.GetBirthdays(ctx, true);
                 titulo = "Próximos cumpleaños en este mes";
             }
             string desc = "";
@@ -99,10 +100,10 @@ namespace Discord_Bot.Modulos
                             switch (mostrarEdadInt)
                             {
                                 case 1:
-                                    usuariosService.SetBirthday(ctx, fecha, true);
+                                    await usuariosService.SetBirthday(ctx, fecha, true);
                                     break;
                                 case 2:
-                                    usuariosService.SetBirthday(ctx, fecha, false);
+                                    await usuariosService.SetBirthday(ctx, fecha, false);
                                     break;
                                 default:
                                     msgError = await ctx.RespondAsync("Ingresa bien la respuesta, baka");
@@ -138,7 +139,7 @@ namespace Discord_Bot.Modulos
         [Command("borrarcumpleaños"), Aliases("deletebirthday", "deletecumpleaños"), Description("Borra el cumpleaños del usuario."), RequireGuild]
         public async Task DeleteBirthday(CommandContext ctx)
         {
-            usuariosService.DeleteBirthday(ctx);
+            await usuariosService.DeleteBirthday(ctx);
             var msg = await ctx.RespondAsync("Cumpleaños borrado correctamente");
             await Task.Delay(3000);
             await msg.DeleteAsync("Auto borrado de Yumiko");
