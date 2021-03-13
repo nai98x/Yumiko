@@ -6,11 +6,6 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
-using YumikoBot.Data_Access_Layer;
-
-using FireSharp.Config;
-using FireSharp.Interfaces;
-using FireSharp.Response;
 
 namespace Discord_Bot.Modulos
 {
@@ -30,31 +25,6 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
-            /*
-            var testo = new YumikoBot.DAL.UsuariosDiscordo();
-            var cumples = await testo.GetBirthdays(ctx, false);
-            */
-
-            
-            var usurs = new YumikoBot.Data_Access_Layer.LeaderboardGeneral();
-            var client = funciones.getClienteFirebase();
-            var usuarios = usurs.GetLeaderboardTODO();
-            int id = 1;
-            foreach(var u in usuarios)
-            {
-                await client.SetTaskAsync("Leaderboard/" + id, new YumikoBot.DAL.Leaderboardo { 
-                    Id = id,
-                    dificultad = u.dificultad,
-                    guild_id = u.guild_id,
-                    juego = u.juego,
-                    partidasJugadas = u.partidasJugadas,
-                    rondasAcertadas = u.rondasAcertadas,
-                    rondasTotales = u.rondasTotales,
-                    user_id = u.user_id
-                });
-                id++;
-            }
-
             await ctx.RespondAsync("uwu!");
         }
 

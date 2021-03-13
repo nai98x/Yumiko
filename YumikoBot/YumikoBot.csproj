@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -95,12 +94,6 @@
     </Reference>
     <Reference Include="Emzi0767.Common, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Emzi0767.Common.2.2.2\lib\net45\Emzi0767.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="FireSharp, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FireSharp.1.1.0\lib\net45\FireSharp.dll</HintPath>
@@ -316,33 +309,6 @@
     <Compile Include="DAL\CanalAnuncios.cs" />
     <Compile Include="DAL\LeaderboardGeneral.cs" />
     <Compile Include="DAL\UsuariosDiscord.cs" />
-    <Compile Include="Data Access Layer\CanalAnuncios.cs">
-      <DependentUpon>modelo.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data Access Layer\Leaderboard.cs">
-      <DependentUpon>modelo.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data Access Layer\Servicios\CanalAnuncios.cs" />
-    <Compile Include="Data Access Layer\Servicios\UsuariosDiscord.cs" />
-    <Compile Include="Data Access Layer\Servicios\LeaderboardGeneral.cs" />
-    <Compile Include="Data Access Layer\modelo.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>modelo.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data Access Layer\modelo.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>modelo.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Data Access Layer\modelo.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>modelo.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Data Access Layer\UsuarioDiscord.cs">
-      <DependentUpon>modelo.tt</DependentUpon>
-    </Compile>
     <Compile Include="Modulos\Anilist.cs" />
     <Compile Include="Modulos\Fun.cs" />
     <Compile Include="Modulos\NSFW.cs" />
@@ -359,18 +325,11 @@
     <None Include="App.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <EntityDeploy Include="Data Access Layer\modelo.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>modelo.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <None Include="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="config_ejemplo.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data Access Layer\modelo.edmx.diagram">
-      <DependentUpon>modelo.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -387,17 +346,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Data Access Layer\modelo.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>modelo.edmx</DependentUpon>
-      <LastGenOutput>modelo.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Data Access Layer\modelo.edmx.sql" />
-    <Content Include="Data Access Layer\modelo.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>modelo.edmx</DependentUpon>
-      <LastGenOutput>modelo.cs</LastGenOutput>
-    </Content>
     <Content Include="yumiko.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -405,14 +353,6 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
-  </Target>
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

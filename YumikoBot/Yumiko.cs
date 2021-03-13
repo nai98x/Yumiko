@@ -18,7 +18,6 @@ using System.Text;
 using System.Threading.Tasks;
 using YumikoBot;
 using YumikoBot.DAL;
-using YumikoBot.Data_Access_Layer;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot

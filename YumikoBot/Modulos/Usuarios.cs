@@ -10,7 +10,6 @@ using GraphQL.Client.Serializer.Newtonsoft;
 using System.Linq;
 using System.Configuration;
 using DSharpPlus.Interactivity.Extensions;
-using YumikoBot.Data_Access_Layer;
 using System.Globalization;
 using DSharpPlus;
 using YumikoBot.DAL;

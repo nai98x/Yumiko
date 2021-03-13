@@ -10,7 +10,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
-using YumikoBot.Data_Access_Layer;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using System.Linq;
 using FireSharp.Interfaces;
@@ -20,7 +19,6 @@ namespace Discord_Bot
 {
     public class FuncionesAuxiliares
     {
-        private readonly LeaderboardGeneral leaderboard = new LeaderboardGeneral();
         static Timer timer;
 
         public IFirebaseClient getClienteFirebase()
