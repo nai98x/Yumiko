@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
@@ -158,7 +159,13 @@ namespace Discord_Bot.Modulos
                             });
                             var links = await animeflv.GetLinks(elegido.href, elegido.name);
                             await mensajeLinks.DeleteAsync("Auto borrado de Yumiko");
-                            await ctx.RespondWithFileAsync(content:$"Aquí tienes los links para descargar **{elegido.name}** {ctx.User.Mention}" ,fileData: (FileStream)funciones.CrearArchivo(links));
+                            Dictionary<string, Stream> dic = new Dictionary<string, Stream>
+                            {
+                                {"descargaLinks.txt",  (FileStream)funciones.CrearArchivo(links)}
+                            };
+                            await ctx.RespondAsync(new DiscordMessageBuilder { 
+                                Content = $"{ctx.User.Mention}, aquí tienes los links para descargar **{elegido.name}**",
+                            }.WithFiles(dic));
                         }
                         else
                         {

@@ -50,7 +50,8 @@ namespace Discord_Bot
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
                 ReconnectIndefinitely = true,
-                MinimumLogLevel = LogLevel.Information
+                MinimumLogLevel = LogLevel.Information,
+                Intents = DiscordIntents.All
             };
             Client = new DiscordClient(Config);
 
