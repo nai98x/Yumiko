@@ -11,5 +11,11 @@ namespace YumikoBot
     {
         [JsonProperty("token")]
         public string Token { get; private set; }
+
+        [JsonProperty("firestore_url")]
+        public string Firestore_url { get; private set; }
+
+        [JsonProperty("firestore_secret")]
+        public string Firestore_secret { get; private set; }
     }
 }

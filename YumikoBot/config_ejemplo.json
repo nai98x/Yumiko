@@ -1,6 +1,8 @@
 {
-  "token": "TOKEN_DISCORD_BOT"
+  "token": "TOKEN_DISCORD_BOT",
+  "firestore_url": "URL_FIRESTORE_DATABASE",
+  "firestore_secret":  "SECRET_FIRESTORE_DATABASE"
 }
 
 //                             IMPORTANTE
-// Cambiarle el nombre a: config.json y poner el token correspondiente
+// Cambiarle el nombre a: config.json y poner la info correspondiente

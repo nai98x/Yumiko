@@ -25,7 +25,7 @@ namespace YumikoBot.DAL
 
         public async Task<List<Leaderboardo>> GetLeaderboardFirebase()
         {
-            var client = funciones.getClienteFirebase();
+            var client = await funciones.getClienteFirebase();
             FirebaseResponse response = await client.GetTaskAsync("Leaderboard/");
             var listaFirebase = response.ResultAs<List<Leaderboardo>>();
             return listaFirebase.Where(x => x != null).ToList();
@@ -39,7 +39,7 @@ namespace YumikoBot.DAL
 
         public async Task AddRegistro(CommandContext ctx, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)
         {
-            var clientFirebase = funciones.getClienteFirebase();
+            var clientFirebase = await funciones.getClienteFirebase();
             var listaFirebase = await GetLeaderboardFirebase();
             var registro = listaFirebase.FirstOrDefault(x => x.user_id == userId && x.guild_id == (long)ctx.Guild.Id && x.dificultad == dificultad && x.juego == juego);
             if (registro == null)

@@ -14,6 +14,7 @@ using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using System.Linq;
 using FireSharp.Interfaces;
 using FireSharp.Config;
+using YumikoBot;
 
 namespace Discord_Bot
 {
@@ -21,12 +22,21 @@ namespace Discord_Bot
     {
         static Timer timer;
 
-        public IFirebaseClient getClienteFirebase()
+        public async Task<IFirebaseClient> getClienteFirebase()
         {
+            var json = string.Empty;
+            using (var fs = File.OpenRead("config.json"))
+            {
+                using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
+                {
+                    json = await sr.ReadToEndAsync().ConfigureAwait(false);
+                }
+            }
+            var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
             IFirebaseConfig config = new FirebaseConfig
             {
-                AuthSecret = "xLzKqsacO2Rf8jEJTvlHBCyvJ7YtHTq7RZFzv05H",
-                BasePath = "https://yumiko-1590195019393-default-rtdb.firebaseio.com/",
+                AuthSecret = configJson.Firestore_secret,
+                BasePath = configJson.Firestore_url,
             };
             return new FireSharp.FirebaseClient(config);
         }
