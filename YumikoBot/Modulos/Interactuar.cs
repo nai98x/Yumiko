@@ -17,7 +17,7 @@ namespace Discord_Bot.Modulos
         [Command("say"), Aliases("s"), Description("Yumiko habla en el chat.")]
         public async Task Say(CommandContext ctx, [Description("Mensaje para replicar")][RemainingText]string mensaje)
         {
-            await ctx.Channel.SendMessageAsync(mensaje).ConfigureAwait(false);
+            await ctx.RespondAsync(mensaje);
         }
 
         [Command("pregunta"), Aliases("p", "question", "sisonon"), Description("Responde con SIS O NON.")]

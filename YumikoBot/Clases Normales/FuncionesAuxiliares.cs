@@ -12,8 +12,9 @@ using System.Threading.Tasks;
 using System.Timers;
 using YumikoBot.Data_Access_Layer;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
-using Google.Cloud.Translation.V2;
 using System.Linq;
+using FireSharp.Interfaces;
+using FireSharp.Config;
 
 namespace Discord_Bot
 {
@@ -21,6 +22,16 @@ namespace Discord_Bot
     {
         private readonly LeaderboardGeneral leaderboard = new LeaderboardGeneral();
         static Timer timer;
+
+        public IFirebaseClient getClienteFirebase()
+        {
+            IFirebaseConfig config = new FirebaseConfig
+            {
+                AuthSecret = "xLzKqsacO2Rf8jEJTvlHBCyvJ7YtHTq7RZFzv05H",
+                BasePath = "https://yumiko-1590195019393-default-rtdb.firebaseio.com/",
+            };
+            return new FireSharp.FirebaseClient(config);
+        }
 
         public async Task<Imagen> GetImagenDiscordYumiko(CommandContext ctx, ulong idChannel)
         {
@@ -68,13 +79,6 @@ namespace Discord_Bot
             }
             int rnd = GetNumeroRandom(0, opciones.Count - 1);
             return opciones[rnd];
-        }
-
-        public string TraducirTexto(string texto)
-        {
-            var client = TranslationClient.Create();
-            var response = client.TranslateText(texto, LanguageCodes.Spanish, LanguageCodes.English);
-            return response.TranslatedText;
         }
 
         public int GetNumeroRandom(int min, int max)

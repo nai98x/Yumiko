@@ -4,8 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace YumikoBot.Data_Access_Layer
+namespace YumikoBot.DAL
 {
+    /*
     public class UsuariosDiscord
     {
         public List<UserCumple> GetBirthdays(CommandContext ctx, bool month)
@@ -178,4 +179,6 @@ namespace YumikoBot.Data_Access_Layer
             }
         }
     }
+
+*/
 }

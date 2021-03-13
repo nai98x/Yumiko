@@ -3,8 +3,9 @@ using DSharpPlus.CommandsNext;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace YumikoBot.Data_Access_Layer
+namespace YumikoBot.DAL
 {
+    /*
     public class LeaderboardGeneral
     {
         public void AddRegistro(CommandContext ctx, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)
@@ -106,4 +107,5 @@ namespace YumikoBot.Data_Access_Layer
             }
         }
     }
+*/
 }

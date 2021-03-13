@@ -8,8 +8,22 @@ using System.IO;
 using System.Threading.Tasks;
 using YumikoBot.Data_Access_Layer;
 
+using FireSharp.Config;
+using FireSharp.Interfaces;
+using FireSharp.Response;
+
 namespace Discord_Bot.Modulos
 {
+    public partial class UsuarioDiscordAux
+    {
+        public long Id { get; set; }
+        public long user_id { get; set; }
+        public long guild_id { get; set; }
+        public System.DateTime Birthday { get; set; }
+        public Nullable<bool> MostrarYear { get; set; }
+        public string Anilist { get; set; }
+    }
+
     public class Otros : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
@@ -17,15 +31,24 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
-            string texto = funciones.TraducirTexto("Hello world I'm Yumiko");
-            await ctx.RespondAsync(texto);
+            var testo = new YumikoBot.DAL.CanalesAnuncioss();
+            await testo.GetCanal(701813281718927441);
+
+            await ctx.RespondAsync("uwu!");
         }
 
         [Command("reiniciar"), Aliases("restart"), Description("Se reinicia Yumiko."), RequireOwner]
         public async Task Reiniciar(CommandContext ctx)
         {
             await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
-            await ctx.RespondAsync("Reiniciando..");
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Ya vuelvo",
+                Description = "Mi dueño está reiniciandome onii-chan",
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor()
+            });
+            await Task.Delay(3000);
             System.Diagnostics.Process.Start(AppDomain.CurrentDomain.FriendlyName);
             Environment.Exit(0);
         }
@@ -34,8 +57,13 @@ namespace Discord_Bot.Modulos
         public async Task Stop(CommandContext ctx)
         {
             await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
-            var mensaje = await ctx.RespondAsync("Me voy onii-chan..");
-            await Task.Delay(1000);
+            var mensaje = await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+                Title = "Sayonara",
+                Description = "Me voy onii-chan, mi dueño ha decidido apagarme " + DiscordEmoji.FromName(ctx.Client, ":sob:"),
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor()
+            });
+            await Task.Delay(3000);
             await mensaje.DeleteAsync("Auto borrado de Yumiko");
             Environment.Exit(0);
         }
@@ -98,7 +126,11 @@ namespace Discord_Bot.Modulos
         {
             AnimeFLVDownloader animeflv = new AnimeFLVDownloader();
             var interactivity = ctx.Client.GetInteractivity();
-            var msgBusqueda = await ctx.RespondAsync("Buscando animes...");
+            var msgBusqueda = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                Title = "Buscando animes...",
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor()
+            });
             var resBusqueda = await animeflv.Search(buscar);
             if(resBusqueda.Count > 0)
             {
@@ -126,8 +158,13 @@ namespace Discord_Bot.Modulos
                         {
                             await elegirRes.DeleteAsync("Auto borrado de Yumiko");
                             await msgElegirInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                            var mensajeLinks = await ctx.RespondAsync("Procesando links...");
                             var elegido = resBusqueda[numElegir - 1];
+                            var mensajeLinks = await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+                                Title = "Descargar anime",
+                                Description = $"Procesando links para **{elegido.name}**",
+                                Footer = funciones.GetFooter(ctx),
+                                Color = funciones.GetColor()
+                            });
                             var links = await animeflv.GetLinks(elegido.href, elegido.name);
                             await mensajeLinks.DeleteAsync("Auto borrado de Yumiko");
                             await ctx.RespondWithFileAsync(content:$"Aquí tienes los links para descargar **{elegido.name}** {ctx.User.Mention}" ,fileData: (FileStream)funciones.CrearArchivo(links));
@@ -158,6 +195,7 @@ namespace Discord_Bot.Modulos
                 var msg = await ctx.RespondAsync($"No se encontraron resultados para {buscar}");
                 await Task.Delay(3000);
                 await msg.DeleteAsync("Auto borrado de Yumiko");
+                await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
             }
         }
     }
