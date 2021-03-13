@@ -21,7 +21,7 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
         private readonly UsuariosDiscordo usuariosService = new UsuariosDiscordo();
-        private readonly CanalesAnuncios anunciosService = new CanalesAnuncios();
+        private readonly CanalesAnuncioss anunciosService = new CanalesAnuncioss();
 
         [Command("cumpleaños"), Aliases("birthday"), Description("Muestra los próximos cumpleaños del mes."), RequireGuild]
         public async Task Birthdays(CommandContext ctx, string flag = null)
@@ -136,7 +136,7 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("borrarcumpleaños"), Aliases("deletebirthday", "deletecumpleaños"), Description("Borra el cumpleaños del usuario."), RequireGuild]
+        [Command("borrarcumpleaños"), Aliases("deletebirthday", "deletecumpleaños", "eliminarcumpleaños"), Description("Borra el cumpleaños del usuario."), RequireGuild]
         public async Task DeleteBirthday(CommandContext ctx)
         {
             await usuariosService.DeleteBirthday(ctx);
@@ -148,8 +148,17 @@ namespace Discord_Bot.Modulos
         [Command("setcanalanuncios"), Aliases("setcanal", "setanuncios"), Description("Asigna un canal del servidor para los anuncios."), RequireGuild, RequirePermissions(Permissions.ManageGuild)]
         public async Task SetCanalAnuncios(CommandContext ctx, [Description("Canal para anuncios")]DiscordChannel canal)
         {
-            anunciosService.SetCanal(ctx, (long)canal.Id);
+            await anunciosService.SetCanal(ctx, (long)canal.Id);
             var msg = await ctx.RespondAsync("Canal para anuncios asignado correctamente");
+            await Task.Delay(3000);
+            await msg.DeleteAsync("Auto borrado de Yumiko");
+        }
+
+        [Command("borrarcanalanuncios"), Aliases("deletecanalanuncios", "eliminarcanalanuncios"), Description("Borra el canal de anuncios del servidor."), RequireGuild]
+        public async Task DeleteCanalAnuncios(CommandContext ctx)
+        {
+            await anunciosService.DeleteCanal(ctx);
+            var msg = await ctx.RespondAsync("Canal de anuncios borrado correctamente");
             await Task.Delay(3000);
             await msg.DeleteAsync("Auto borrado de Yumiko");
         }

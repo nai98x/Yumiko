@@ -92,17 +92,17 @@ namespace Discord_Bot
 
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             LogChannel = LogGuild.GetChannel(781679685838569502);
-            //await ScheduleBirthdays();
+            await ScheduleBirthdays();
 
             await Task.Delay(-1);
         }
 
         private async Task ScheduleBirthdays()
         {
-            CanalesAnuncios canalesService = new CanalesAnuncios();
+            CanalesAnuncioss canalesService = new CanalesAnuncioss();
             UsuariosDiscordo usuariosService = new UsuariosDiscordo();
-            var lista = canalesService.GetCanales();
-            foreach(CanalAnuncios canal in lista)
+            var lista = await canalesService.GetCanales();
+            foreach(CanalAnuncioss canal in lista)
             {
                 var cumples = await usuariosService.GetBirthdaysGuild(canal.guild_id, true);
                 var guild = await Client.GetGuildAsync((ulong)canal.guild_id);

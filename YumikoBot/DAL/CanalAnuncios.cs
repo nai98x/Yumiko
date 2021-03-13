@@ -10,6 +10,7 @@ namespace YumikoBot.DAL
 {
     public class CanalAnuncioss
     {
+        public int Id { get; set; }
         public long guild_id { get; set; }
         public long channel_id { get; set; }
     }
@@ -18,72 +19,66 @@ namespace YumikoBot.DAL
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        public void SetCanal(CommandContext ctx, long channelId)
+        public async Task<List<CanalAnuncioss>> GetListaCA()
         {
+            var client = funciones.getClienteFirebase();
+            FirebaseResponse response = await client.GetTaskAsync("CanalesAnuncios/");
+            var listaFirebase = response.ResultAs<List<CanalAnuncioss>>();
+            return listaFirebase.Where(x => x != null).ToList();
+        }
 
-            /*
-            using (var context = new YumikoEntities())
+        public async Task<int> GetLastId()
+        {
+            var lista = await GetListaCA();
+            return lista.Last().Id;
+        }
+
+        public async Task SetCanal(CommandContext ctx, long channelId)
+        {
+            var client = funciones.getClienteFirebase();
+            var listaFirebase = await GetListaCA();
+            var canal = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id);
+            if (canal == null)
             {
-                var canal = context.CanalAnunciosSet.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id);
-                if(canal == null)
+                int nuevoId = await GetLastId() + 1;
+                await client.SetTaskAsync("CanalesAnuncios/" + nuevoId, new CanalAnuncioss
                 {
-                    canal = new CanalAnuncios()
-                    {
-                        guild_id = (long)ctx.Guild.Id,
-                        channel_id = channelId
-                    };
-                    context.CanalAnunciosSet.Add(canal);
-                }
-                else
-                {
-                    canal.channel_id = channelId;
-                }
-                context.SaveChanges();
+                    Id = nuevoId,
+                    channel_id = channelId,
+                    guild_id = (long)ctx.Guild.Id
+                });
             }
-            */
+            else
+            {
+                await client.UpdateTaskAsync("CanalesAnuncios/" + canal.Id, new CanalAnuncioss
+                {
+                    Id = canal.Id,
+                    channel_id = channelId,
+                    guild_id = (long)ctx.Guild.Id
+                });
+            }
         }
 
         public async Task<CanalAnuncioss> GetCanal(long guildId)
         {
+            var canales = await GetListaCA();
+            return canales.FirstOrDefault(x => x.guild_id == guildId);
+        }
+
+        public async Task<List<CanalAnuncioss>> GetCanales()
+        {
+            return await GetListaCA();
+        }
+
+        public async Task DeleteCanal(CommandContext ctx)
+        {
             var client = funciones.getClienteFirebase();
-            FirebaseResponse response = await client.GetTaskAsync("CanalesAnuncios/");
-            var canales = response.ResultAs<dynamic>();
-            int i = 0;
-            //return canales.FirstOrDefault(x => x.guild_id == guildId);
-            return null;
-            /*
-            using (var context = new YumikoEntities())
+            var listaFirebase = await GetListaCA();
+            var canal = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id);
+            if (canal != null)
             {
-                return context.CanalAnunciosSet.FirstOrDefault(x => x.guild_id == guildId);
+                await client.DeleteTaskAsync("CanalesAnuncios/" + canal.Id);
             }
-            */
-        }
-
-        public List<CanalAnuncioss> GetCanales()
-        {
-            return new List<CanalAnuncioss>();
-            /*
-            using (var context = new YumikoEntities())
-            {
-                return context.CanalAnunciosSet.ToList();
-            }
-            */
-        }
-
-        public void DeleteCanal(CommandContext ctx, long channelId)
-        {
-
-            /*
-            using (var context = new YumikoEntities())
-            {
-                var canal = context.CanalAnunciosSet.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id);
-                if (canal != null)
-                {
-                    context.CanalAnunciosSet.Remove(canal);
-                    context.SaveChanges();
-                }
-            }
-            */
         }
     }
 }
