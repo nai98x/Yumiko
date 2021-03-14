@@ -56,8 +56,9 @@ namespace Discord_Bot.Modulos
         {
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
-                Color = funciones.GetColor(),
-                Description = "🏓 Pong! `" + ctx.Client.Ping.ToString() + " ms" + "`"
+                Description = "🏓 Pong! `" + ctx.Client.Ping.ToString() + " ms" + "`",
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor()
             }).ConfigureAwait(false);
         }
 

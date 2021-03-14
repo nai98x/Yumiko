@@ -31,6 +31,8 @@ namespace Discord_Bot
 
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
+        private bool Debug;
+
         public async Task RunAsync()
         {
             var json = string.Empty;
@@ -42,9 +44,23 @@ namespace Discord_Bot
 
             var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
 
+            string token, prefix;
+            IDebuggingService mode = new DebuggingService();
+            Debug = mode.RunningInDebugMode();
+            if (Debug)
+            {
+                token = configJson.TokenTest;
+                prefix = ConfigurationManager.AppSettings["PrefixTest"];
+            }
+            else
+            {
+                token = configJson.TokenProd;
+                prefix = ConfigurationManager.AppSettings["PrefixProd"];
+            }
+
             var Config = new DiscordConfiguration
             {
-                Token = configJson.Token,
+                Token = token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
                 ReconnectIndefinitely = true,
@@ -62,7 +78,7 @@ namespace Discord_Bot
 
             var commandsConfig = new CommandsNextConfiguration
             {
-                StringPrefixes = new string[] { ConfigurationManager.AppSettings["Prefix"] },
+                StringPrefixes = new string[] { prefix },
                 EnableMentionPrefix = true,
                 EnableDms = false,
                 DmHelp = false,
@@ -86,12 +102,18 @@ namespace Discord_Bot
             Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
 
-            await Client.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = ConfigurationManager.AppSettings["Prefix"] + "help | yumiko.uwu.ai | Desarrollado con <3 por Nai" }, UserStatus.Online);
+            await Client.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = prefix + "help | yumiko.uwu.ai | Desarrollado con ♥️ por Nai" }, UserStatus.Online);
 
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
-            LogChannel = LogGuild.GetChannel(781679685838569502);
-            await ScheduleBirthdays();
-
+            if (Debug)
+            {
+                LogChannel = LogGuild.GetChannel(820711607796891658);
+            }
+            else
+            {
+                LogChannel = LogGuild.GetChannel(781679685838569502);
+                await ScheduleBirthdays();
+            }
             await Task.Delay(-1);
         }
 
