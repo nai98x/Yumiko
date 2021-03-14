@@ -22,6 +22,5 @@ Lo primero a realizar es descargar el visual studio community desde su página w
 ### 4. Configuraciones del bot
 - Ir al archivo [config_ejemplo.json](YumikoBot/config_ejemplo.json) y renombrarlo a config.json
 - Configurar config.json con los datos correspondientes
-- Reemplazar TOKEN_DISCORD_BOT por tu token de bot de Discord
 
 ### Listo!
