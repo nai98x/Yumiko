@@ -94,13 +94,10 @@ namespace Discord_Bot.Modulos
                     }
                     catch (Exception ex)
                     {
-                        DiscordMessage msg;
-                        switch (ex.Message)
+                        DiscordMessage msg = ex.Message switch
                         {
-                            default:
-                                msg = await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false);
-                                break;
-                        }
+                            _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                        };
                         await Task.Delay(3000);
                         await msg.DeleteAsync("Auto borrado de Yumiko");
                         return;
@@ -288,13 +285,10 @@ namespace Discord_Bot.Modulos
                     }
                     catch (Exception ex)
                     {
-                        DiscordMessage msg;
-                        switch (ex.Message)
+                        DiscordMessage msg = ex.Message switch
                         {
-                            default:
-                                msg = await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false);
-                                break;
-                        }
+                            _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                        };
                         await Task.Delay(3000);
                         await msg.DeleteAsync("Auto borrado de Yumiko");
                         return;
@@ -471,13 +465,10 @@ namespace Discord_Bot.Modulos
                     }
                     catch (Exception ex)
                     {
-                        DiscordMessage msg;
-                        switch (ex.Message)
+                        DiscordMessage msg = ex.Message switch
                         {
-                            default:
-                                msg = await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false);
-                                break;
-                        }
+                            _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                        };
                         await Task.Delay(3000);
                         await msg.DeleteAsync("Auto borrado de Yumiko");
                         return;
@@ -713,13 +704,10 @@ namespace Discord_Bot.Modulos
                                                 }
                                                 catch (Exception ex)
                                                 {
-                                                    DiscordMessage msg;
-                                                    switch (ex.Message)
+                                                    DiscordMessage msg = ex.Message switch
                                                     {
-                                                        default:
-                                                            msg = await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false);
-                                                            break;
-                                                    }
+                                                        _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                                                    };
                                                     await Task.Delay(3000);
                                                     await msg.DeleteAsync("Auto borrado de Yumiko");
                                                     return;
@@ -824,13 +812,10 @@ namespace Discord_Bot.Modulos
                         }
                         catch (Exception ex)
                         {
-                            DiscordMessage msg;
-                            switch (ex.Message)
+                            DiscordMessage msg = ex.Message switch
                             {
-                                default:
-                                    msg = await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false);
-                                    break;
-                            }
+                                _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                            };
                             await Task.Delay(3000);
                             await msg.DeleteAsync("Auto borrado de Yumiko");
                             return;

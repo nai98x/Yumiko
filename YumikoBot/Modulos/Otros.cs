@@ -10,15 +10,6 @@ using System.Threading.Tasks;
 
 namespace Discord_Bot.Modulos
 {
-    public class UsuarioDiscordAux
-    {
-        public int Id { get; set; }
-        public long user_id { get; set; }
-        public long guild_id { get; set; }
-        public DateTime Birthday { get; set; }
-        public bool MostrarYear { get; set; }
-    }
-
     public class Otros : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
