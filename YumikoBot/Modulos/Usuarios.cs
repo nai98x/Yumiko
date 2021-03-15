@@ -153,7 +153,7 @@ namespace Discord_Bot.Modulos
             await msg.DeleteAsync("Auto borrado de Yumiko");
         }
 
-        [Command("borrarcanalanuncios"), Aliases("deletecanalanuncios", "eliminarcanalanuncios"), Description("Borra el canal de anuncios del servidor."), RequireGuild]
+        [Command("borrarcanalanuncios"), Aliases("deletecanalanuncios", "eliminarcanalanuncios"), Description("Borra el canal de anuncios del servidor."), RequireGuild, RequirePermissions(Permissions.ManageGuild)]
         public async Task DeleteCanalAnuncios(CommandContext ctx)
         {
             await anunciosService.DeleteCanal(ctx);
