@@ -72,6 +72,9 @@ namespace Discord_Bot
             Client.Ready += OnClientReady;
             Client.GuildAvailable += Client_GuildAvailable;
             Client.ClientErrored += Client_ClientError;
+            Client.GuildCreated += Client_GuildCreated;
+            Client.GuildDeleted += Client_GuildDeleted;
+            Client.GuildUnavailable += Client_GuildUnavailable;
 
             Client.UseInteractivity(new InteractivityConfiguration());
             Client.UseVoiceNext();
@@ -148,6 +151,44 @@ namespace Discord_Bot
         private Task Client_GuildAvailable(DiscordClient c, GuildCreateEventArgs e)
         {
             c.Logger.LogInformation($"Servidor disponible: {e.Guild.Name}", DateTime.Now);
+            return Task.CompletedTask;
+        }
+
+        private Task Client_GuildUnavailable(DiscordClient c, GuildDeleteEventArgs e)
+        {
+            c.Logger.LogInformation($"Servidor no disponible: {e.Guild.Name}", DateTime.Now);
+            return Task.CompletedTask;
+        }
+
+        private Task Client_GuildCreated(DiscordClient c, GuildCreateEventArgs e)
+        {
+            c.Logger.LogInformation($"Yumiko ha entrado al servidor: {e.Guild.Name}", DateTime.Now);
+            LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            {
+                Title = "Nuevo servidor",
+                Description = $"Yumiko ha entrado al servidor {e.Guild.Name}",
+                Footer = new EmbedFooter()
+                {
+                    Text = $"{DateTimeOffset.Now}"
+                },
+                Color = DiscordColor.Green
+            });
+            return Task.CompletedTask;
+        }
+
+        private Task Client_GuildDeleted(DiscordClient sender, GuildDeleteEventArgs e)
+        {
+            sender.Logger.LogInformation($"Yumiko ha sido removida del servidor: {e.Guild.Name}", DateTime.Now);
+            LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            {
+                Title = "Bye-bye servidor",
+                Description = $"Yumiko ha sido removida del servidor {e.Guild.Name}",
+                Footer = new EmbedFooter()
+                {
+                    Text = $"{DateTimeOffset.Now}"
+                },
+                Color = DiscordColor.Red
+            });
             return Task.CompletedTask;
         }
 
