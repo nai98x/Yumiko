@@ -23,6 +23,10 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
+            }
             else
             {
                 await ctx.RespondAsync($"{ctx.User.Mention} se folló a {usuario.Mention}", embed: new DiscordEmbedBuilder
@@ -52,6 +56,10 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
+            }
             else
             {
                 var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
@@ -78,6 +86,10 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
+            }
             else
             {
                 var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
@@ -98,6 +110,10 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
                 });
+            }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
             }
             else
             {
@@ -147,6 +163,10 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
+            }
             else
             {
                 await ctx.RespondAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
@@ -170,6 +190,10 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
                 });
+            }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
             }
             else
             {
@@ -195,6 +219,10 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
+            }
             else
             {
                 await ctx.RespondAsync($"{ctx.User.Mention} tiene una fantasía yaoi con {usuario.Mention}", embed: new DiscordEmbedBuilder
@@ -218,6 +246,10 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
                 });
+            }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
             }
             else
             {
@@ -243,6 +275,10 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
+            }
             else
             {
                 await ctx.RespondAsync($"{ctx.User.Mention} tiene una fantasía futa con {usuario.Mention}", embed: new DiscordEmbedBuilder
@@ -266,6 +302,10 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
                 });
+            }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
             }
             else
             {
@@ -291,6 +331,10 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
+            }
             else
             {
                 await ctx.RespondAsync($"{ctx.User.Mention} está azotando a {usuario.Mention}", embed: new DiscordEmbedBuilder
@@ -314,6 +358,10 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
                 });
+            }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
             }
             else
             {
@@ -343,6 +391,10 @@ namespace Discord_Bot.Modulos
                     await Task.Delay(3000);
                     await msg.DeleteAsync("Auto borrado de Yumiko");
                 }
+                else if (usuario1.Id == ctx.Client.CurrentUser.Id || usuario2.Id == ctx.Client.CurrentUser.Id)
+                {
+                    await YumikoYamete(ctx);
+                }
                 else
                 {
                     Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152926535417906);
@@ -369,15 +421,31 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("gangbang"), Description("Te hacen un gangbang")]
-        public async Task Gangbang(CommandContext ctx)
+        public async Task Gangbang(CommandContext ctx, [Description("A quien quieres que se lo hagan")] DiscordUser usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154217864888340);
-            await ctx.RespondAsync($"Le están haciendo un ganbang a {ctx.User.Mention}", embed: new DiscordEmbedBuilder
+            if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor(),
-                ImageUrl = elegida.Url
-            });
+                await ctx.RespondAsync($"Le están haciendo un ganbang a {ctx.User.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
+            }
+            else
+            {
+                await ctx.RespondAsync($"{ctx.User.Mention} quiere que le hagan un ganbang a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
         }
 
         [Command("footjob"), Description("Masturbas a otro con los pies")]
@@ -392,6 +460,10 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
                 });
+            }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
             }
             else
             {
@@ -417,6 +489,10 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
+            }
             else
             {
                 await ctx.RespondAsync($"{usuario.Mention} le ha provocado una erección a {ctx.User.Mention}", embed: new DiscordEmbedBuilder
@@ -441,6 +517,10 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+            else if (usuario.Id == ctx.Client.CurrentUser.Id)
+            {
+                await YumikoYamete(ctx);
+            }
             else
             {
                 await ctx.RespondAsync($"{ctx.User.Mention} está haciendo cosplay para hacer cosas impuras con {usuario.Mention}", embed: new DiscordEmbedBuilder
@@ -450,6 +530,18 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             } 
+        }
+
+        private async Task YumikoYamete(CommandContext ctx)
+        {
+            var msg = await ctx.RespondAsync($"No puedes hacerme esto {ctx.User.Mention} >.<", embed: new DiscordEmbedBuilder
+            {
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor(),
+                ImageUrl = "https://i.imgur.com/BOxbruw.png"
+            });
+            await Task.Delay(5000);
+            await msg.DeleteAsync("Auto borrado de Yumiko");
         }
     }
 }
