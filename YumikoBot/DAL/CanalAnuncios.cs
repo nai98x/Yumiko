@@ -21,7 +21,7 @@ namespace YumikoBot.DAL
 
         public async Task<List<CanalAnuncioss>> GetListaCA()
         {
-            var client = await funciones.getClienteFirebase();
+            var client = await funciones.GetClienteFirebase();
             FirebaseResponse response = await client.GetTaskAsync("CanalesAnuncios/");
             var listaFirebase = response.ResultAs<List<CanalAnuncioss>>();
             return listaFirebase.Where(x => x != null).ToList();
@@ -35,7 +35,7 @@ namespace YumikoBot.DAL
 
         public async Task SetCanal(CommandContext ctx, long channelId)
         {
-            var client = await funciones.getClienteFirebase();
+            var client = await funciones.GetClienteFirebase();
             var listaFirebase = await GetListaCA();
             var canal = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id);
             if (canal == null)
@@ -72,7 +72,7 @@ namespace YumikoBot.DAL
 
         public async Task DeleteCanal(CommandContext ctx)
         {
-            var client = await funciones.getClienteFirebase();
+            var client = await funciones.GetClienteFirebase();
             var listaFirebase = await GetListaCA();
             var canal = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id);
             if (canal != null)

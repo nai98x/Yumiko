@@ -22,15 +22,13 @@ namespace Discord_Bot
     {
         static Timer timer;
 
-        public async Task<IFirebaseClient> getClienteFirebase()
+        public async Task<IFirebaseClient> GetClienteFirebase()
         {
             var json = string.Empty;
             using (var fs = File.OpenRead("config.json"))
             {
-                using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
-                {
-                    json = await sr.ReadToEndAsync().ConfigureAwait(false);
-                }
+                using var sr = new StreamReader(fs, new UTF8Encoding(false));
+                json = await sr.ReadToEndAsync().ConfigureAwait(false);
             }
             var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
             IFirebaseConfig config = new FirebaseConfig
@@ -43,7 +41,6 @@ namespace Discord_Bot
 
         public async Task<Imagen> GetImagenDiscordYumiko(CommandContext ctx, ulong idChannel)
         {
-            List<Imagen> lista = new List<Imagen>();
             DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(713809173573271613);
             if (discordOOC == null)
             {

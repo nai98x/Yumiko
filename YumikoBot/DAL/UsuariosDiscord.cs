@@ -23,7 +23,7 @@ namespace YumikoBot.DAL
 
         public async Task<List<UsuarioDiscordo>> GetListaUsuarios()
         {
-            var client = await funciones.getClienteFirebase();
+            var client = await funciones.GetClienteFirebase();
             FirebaseResponse response = await client.GetTaskAsync("UsuariosDiscord/");
             var listaFirebase = response.ResultAs<List<UsuarioDiscordo>>();
             return listaFirebase.Where(x => x != null).ToList();
@@ -127,7 +127,7 @@ namespace YumikoBot.DAL
         
         public async Task SetBirthday(CommandContext ctx, DateTime fecha, bool mostrarEdad)
         {
-            var client = await funciones.getClienteFirebase();
+            var client = await funciones.GetClienteFirebase();
             var listaFirebase = await GetListaUsuarios();
             var usuario = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == (long)ctx.Member.Id);
             if (usuario == null)
@@ -156,7 +156,7 @@ namespace YumikoBot.DAL
         
         public async Task DeleteBirthday(CommandContext ctx)
         {
-            var client = await funciones.getClienteFirebase();
+            var client = await funciones.GetClienteFirebase();
             var listaFirebase = await GetListaUsuarios();
             var usuario = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == (long)ctx.Member.Id);
             if(usuario != null)
