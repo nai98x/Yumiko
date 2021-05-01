@@ -575,12 +575,12 @@ namespace Discord_Bot.Modulos
                         await msgCntRondas.DeleteAsync("Auto borrado de Yumiko");
                         await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
                         string query =
-                "query{" +
-                "   MediaTagCollection{" +
-                "       name," +
-                "       isAdult" +
-                "   }" +
-                "}";
+                        "query{" +
+                        "   MediaTagCollection{" +
+                        "       name," +
+                        "       isAdult" +
+                        "   }" +
+                        "}";
                         var request = new GraphQLRequest
                         {
                             Query = query
@@ -633,9 +633,10 @@ namespace Discord_Bot.Modulos
                                             List<UsuarioJuego> participantes = new List<UsuarioJuego>();
                                             DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo animes...").ConfigureAwait(false);
                                             string elegido = tagsFiltrados[numTagElegir - 1];
+                                            int porcentajeTag = 70;
                                             string query1 = "query($pagina : Int){" +
                                                     "   Page(page: $pagina){" +
-                                                    "       media(type: ANIME, sort: POPULARITY_DESC, tag: \"" + elegido + "\"){" +
+                                                    "       media(type: ANIME, sort: POPULARITY_DESC, tag: \"" + elegido + "\", minimumTagRank:" + porcentajeTag + "){" +
                                                     "           siteUrl," +
                                                     "           favourites," +
                                                     "           title{" +
@@ -715,6 +716,17 @@ namespace Discord_Bot.Modulos
                                             } while (seguir);
                                             await mensaje.DeleteAsync("Auto borrado de Yumiko");
                                             int lastRonda;
+                                            int cantidadAnimes = animeList.Count();
+                                            if (cantidadAnimes < rondas)
+                                            {
+                                                rondas = cantidadAnimes;
+                                                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                                {
+                                                    Color = DiscordColor.Yellow,
+                                                    Title = $"Rondas reducidas",
+                                                    Description = $"Se han reducido el numero de rondas a {rondas} ya que esta es la cantidad de animes con al menos un {porcentajeTag}% de {elegido}",
+                                                }).ConfigureAwait(false);
+                                            }
                                             for (int ronda = 1; ronda <= rondas; ronda++)
                                             {
                                                 lastRonda = ronda;

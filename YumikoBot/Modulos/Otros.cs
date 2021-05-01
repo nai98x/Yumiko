@@ -2,11 +2,14 @@
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
+using FireSharp.Response;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using YumikoBot.DAL;
 
 namespace Discord_Bot.Modulos
 {
@@ -17,38 +20,125 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
-            await ctx.RespondAsync("uwu!");
-        }
-
-        [Command("reiniciar"), Aliases("restart"), Description("Se reinicia Yumiko."), RequireOwner]
-        public async Task Reiniciar(CommandContext ctx)
-        {
-            await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            int n = 0;
+            string resp = "";
+            var timezones = TimeZoneInfo.GetSystemTimeZones();
+            foreach(var t in timezones)
             {
-                Title = "Ya vuelvo",
-                Description = "Mi dueño está reiniciandome onii-chan",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            });
-            await Task.Delay(3000);
-            System.Diagnostics.Process.Start(AppDomain.CurrentDomain.FriendlyName);
-            Environment.Exit(0);
+                if(n < 50)
+                {
+                    resp += $"{t.Id}\n";
+                    n++;
+                }
+                if(n >= 50)
+                {
+                    await ctx.RespondAsync(resp);
+                    resp = "";
+                    n = 0;
+                }
+            }
+            if (n < 50)
+            {
+                await ctx.RespondAsync(resp);
+            }
         }
 
-        [Command("apagar"), Description("Se apaga Yumiko."), RequireOwner]
-        public async Task Stop(CommandContext ctx)
+        [Command("horarios"), Description("Horarios para diversos paises.")]
+        public async Task Horarios(CommandContext ctx, [RemainingText]string texto)
         {
-            await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
-            var mensaje = await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
-                Title = "Sayonara",
-                Description = "Me voy onii-chan, mi dueño ha decidido apagarme " + DiscordEmoji.FromName(ctx.Client, ":sob:"),
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            });
-            await Task.Delay(3000);
-            await mensaje.DeleteAsync("Auto borrado de Yumiko");
-            Environment.Exit(0);
+            var interactivity = ctx.Client.GetInteractivity();
+            bool ok = true;
+            string error = "";
+            var msgInicial = await ctx.RespondAsync("Ingresa una fecha (En formato UTC)");
+            var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+            if (!msgFechaInter.TimedOut)
+            {
+                bool result = DateTime.TryParse(msgFechaInter.Result.Content, out DateTime timeUtc);
+                if (result)
+                {
+                    try
+                    {
+                        TimeZoneInfo spainZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+                        DateTime spainTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, spainZone);
+
+                        TimeZoneInfo argentinaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Argentina/Buenos_Aires");
+                        DateTime argentinaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, argentinaZone);
+
+                        TimeZoneInfo chileZone = TimeZoneInfo.FindSystemTimeZoneById("America/Santiago");
+                        DateTime chileTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, chileZone);
+
+                        TimeZoneInfo venezuelaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Caracas");
+                        DateTime venezuelaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, venezuelaZone);
+
+                        TimeZoneInfo uruguayZone = TimeZoneInfo.FindSystemTimeZoneById("America/Montevideo");
+                        DateTime uruguayTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, uruguayZone);
+
+                        TimeZoneInfo costaricaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Costa_Rica");
+                        DateTime costaricaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, costaricaZone);
+
+                        TimeZoneInfo panamaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Panama");
+                        DateTime panamaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, panamaZone);
+
+                        TimeZoneInfo mexicoZone = TimeZoneInfo.FindSystemTimeZoneById("America/Mexico_City");
+                        DateTime mexicoTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, mexicoZone);
+
+                        string desc =
+                            $"**España:**     {spainTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {spainTime.Day} de {spainTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {spainTime.Year} a las {spainTime.ToString("HH:ss")}\n" +
+                            $"**Argentina:**  {argentinaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {argentinaTime.Day} de {argentinaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {argentinaTime.Year} a las {argentinaTime.ToString("HH:ss")}\n" +
+                            $"**Chile:**      {chileTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {chileTime.Day} de {chileTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {chileTime.Year} a las {chileTime.ToString("HH:ss")}\n" +
+                            $"**Venezuela:**  {venezuelaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {venezuelaTime.Day} de {venezuelaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {venezuelaTime.Year} a las {venezuelaTime.ToString("HH:ss")}\n" +
+                            $"**Uruguay:**    {uruguayTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {uruguayTime.Day} de {uruguayTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {uruguayTime.Year} a las {uruguayTime.ToString("HH:ss")}\n" +
+                            $"**Costa Rica:** {costaricaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {costaricaTime.Day} de {costaricaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {costaricaTime.Year} a las {costaricaTime.ToString("HH:ss")}\n" +
+                            $"**Mexico:**     {mexicoTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {mexicoTime.Day} de {mexicoTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {mexicoTime.Year} a las {mexicoTime.ToString("HH:ss")}\n" +
+                            $"**Panama:**     {panamaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {panamaTime.Day} de {panamaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {panamaTime.Year} a las {panamaTime.ToString("HH:ss")}\n";
+
+                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        {
+                            Title = texto,
+                            Description = desc,
+                            Footer = funciones.GetFooter(ctx),
+                            Color = funciones.GetColor()
+                        });
+
+                        if (msgInicial != null)
+                            await msgInicial.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgFechaInter.Result != null)
+                            await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                    catch (TimeZoneNotFoundException)
+                    {
+                        await ctx.RespondAsync("The registry does not define the Time zone.");
+                    }
+                    catch (InvalidTimeZoneException)
+                    {
+                        await ctx.RespondAsync("Registry data on the Time zone has been corrupted.");
+                    }
+                }
+                else
+                {
+                    ok = false;
+                    error = "Fecha mal escrita";
+                }
+            }
+            else
+            {
+                ok = false;
+                error = "Tiempo agotado esperando la fecha";
+            }
+
+            if (!ok)
+            {
+                var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Error",
+                    Description = error,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                });
+                await Task.Delay(5000);
+                if (msgError != null)
+                    await msgError.DeleteAsync("Auto borrado de Yumiko");
+            }
         }
 
         [Command("ping"), Description("Muestra el ping de Yumiko.")]
@@ -105,87 +195,113 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("descargar"), Description("Descarga los capitulos de un anime.")]
+        [Command("descargar"), Description("Descarga los capitulos de un anime."), Hidden]
         public async Task DescargarAnime(CommandContext ctx, [RemainingText]string buscar)
         {
-            AnimeFLVDownloader animeflv = new AnimeFLVDownloader();
-            var interactivity = ctx.Client.GetInteractivity();
-            var msgBusqueda = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
-                Title = "Buscando animes...",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            });
-            var resBusqueda = await animeflv.Search(buscar);
-            if(resBusqueda.Count > 0)
+            if(
+                ctx.Guild.Id == 748315008131268693 || // Eli y Nai
+                ctx.Guild.Id == 701813281718927441 || // Anilist ESP
+                ctx.Guild.Id == 713809173573271613 || // Yumiko
+                ctx.Guild.Id == 741496210040553483 || // Maanhe
+                ctx.Guild.Id == 520398815103025156 || // Tomy
+                ctx.Guild.Id == 753023527623458916 // Andrea
+                )
             {
-                string resultados = "";
-                int cont = 1;
-                foreach(var res in resBusqueda)
+                MonoschinosDownloader animeflv = new MonoschinosDownloader();
+                var interactivity = ctx.Client.GetInteractivity();
+                var msgBusqueda = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    resultados += $"{cont} - **{res.name}** ({res.type})\n";
-                    cont++;
-                }
-                await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
-                var elegirRes = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
-                    Title = "Elije con un número el anime deseado",
-                    Description = resultados,
+                    Title = "Buscando animes...",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
                 });
-                var msgElegirInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                if (!msgElegirInter.TimedOut)
+                var resBusqueda = await animeflv.Search(buscar);
+                if (resBusqueda.Count > 0)
                 {
-                    bool result = int.TryParse(msgElegirInter.Result.Content, out int numElegir);
-                    if (result)
+                    string resultados = "";
+                    int cont = 1;
+                    foreach (var res in resBusqueda)
                     {
-                        if (numElegir > 0 && (numElegir <= resBusqueda.Count))
+                        resultados += $"{cont} - **{res.name}** ({res.type})\n";
+                        cont++;
+                    }
+                    await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
+                    var elegirRes = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "Elije con un número el anime deseado",
+                        Description = resultados,
+                        Footer = funciones.GetFooter(ctx),
+                        Color = funciones.GetColor()
+                    });
+                    var msgElegirInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                    if (!msgElegirInter.TimedOut)
+                    {
+                        bool result = int.TryParse(msgElegirInter.Result.Content, out int numElegir);
+                        if (result)
                         {
-                            await elegirRes.DeleteAsync("Auto borrado de Yumiko");
-                            await msgElegirInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                            var elegido = resBusqueda[numElegir - 1];
-                            var mensajeLinks = await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
-                                Title = "Descargar anime",
-                                Description = $"Procesando links para **{elegido.name}**",
-                                Footer = funciones.GetFooter(ctx),
-                                Color = funciones.GetColor()
-                            });
-                            var links = await animeflv.GetLinks(elegido.href, elegido.name);
-                            await mensajeLinks.DeleteAsync("Auto borrado de Yumiko");
-                            Dictionary<string, Stream> dic = new Dictionary<string, Stream>
+                            if (numElegir > 0 && (numElegir <= resBusqueda.Count))
                             {
-                                {"descargaLinks.txt",  (FileStream)funciones.CrearArchivo(links)}
+                                await elegirRes.DeleteAsync("Auto borrado de Yumiko");
+                                await msgElegirInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                var elegido = resBusqueda[numElegir - 1];
+                                var mensajeLinks = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                {
+                                    Title = "Descargar anime",
+                                    Description = $"Procesando links para **{elegido.name}**",
+                                    Footer = funciones.GetFooter(ctx),
+                                    Color = funciones.GetColor()
+                                });
+                                var links = await animeflv.GetLinks(elegido.href, elegido.name);
+                                await mensajeLinks.DeleteAsync("Auto borrado de Yumiko");
+                                Dictionary<string, Stream> dic = new Dictionary<string, Stream>
+                            {
+                                {"descargaLinks.txt",  (FileStream)funciones.CrearArchivoMonoschinos(links)}
                             };
-                            await ctx.RespondAsync(new DiscordMessageBuilder { 
-                                Content = $"{ctx.User.Mention}, aquí tienes los links para descargar **{elegido.name}**",
-                            }.WithFiles(dic));
+                                await ctx.RespondAsync(new DiscordMessageBuilder
+                                {
+                                    Content = $"{ctx.User.Mention}, aquí tienes los links para descargar **{elegido.name}**",
+                                }.WithFiles(dic));
+                            }
+                            else
+                            {
+                                var msg = await ctx.RespondAsync($"El número indicado debe ser valido");
+                                await Task.Delay(3000);
+                                await msg.DeleteAsync("Auto borrado de Yumiko");
+                            }
                         }
                         else
                         {
-                            var msg = await ctx.RespondAsync($"El número indicado debe ser valido");
+                            var msg = await ctx.RespondAsync($"La eleccion debe ser indicada con un numero");
                             await Task.Delay(3000);
                             await msg.DeleteAsync("Auto borrado de Yumiko");
                         }
                     }
                     else
                     {
-                        var msg = await ctx.RespondAsync($"La eleccion debe ser indicada con un numero");
+                        var msg = await ctx.RespondAsync($"Tiempo agotado esperando eleccion de anime");
                         await Task.Delay(3000);
                         await msg.DeleteAsync("Auto borrado de Yumiko");
                     }
                 }
                 else
                 {
-                    var msg = await ctx.RespondAsync($"Tiempo agotado esperando eleccion de anime");
+                    var msg = await ctx.RespondAsync($"No se encontraron resultados para {buscar}");
                     await Task.Delay(3000);
                     await msg.DeleteAsync("Auto borrado de Yumiko");
+                    await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
                 }
             }
             else
             {
-                var msg = await ctx.RespondAsync($"No se encontraron resultados para {buscar}");
+                var msg = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Comando no habilitado",
+                    Description = $"Hable con el owner del bot para habilitar este comando en el servidor",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                });
                 await Task.Delay(3000);
                 await msg.DeleteAsync("Auto borrado de Yumiko");
-                await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
             }
         }
     }

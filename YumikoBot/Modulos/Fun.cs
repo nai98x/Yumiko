@@ -133,7 +133,7 @@ namespace Discord_Bot.Modulos
             DiscordMember ctxMiembro = await ctx.Guild.GetMemberAsync(usuario.Id);
             shipeoUsr = ctxMiembro.Mention;
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 818293607709933602);
-            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            var msg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor(),
@@ -141,6 +141,9 @@ namespace Discord_Bot.Modulos
                 Description = $"Shippeo a {shipeoUsr} con {elegido.Mention} 💘",
                 ImageUrl = elegida.Url
             }).ConfigureAwait(false);
+            await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsup:")).ConfigureAwait(false);
+            await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsdown:")).ConfigureAwait(false);
+            await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":question:")).ConfigureAwait(false);
         }
 
         [Command("shipr"), Description("Eligo un ship en el servidor."), RequireGuild]
@@ -164,7 +167,7 @@ namespace Discord_Bot.Modulos
                 elegido2 = miembros.ElementAt(funciones.GetNumeroRandom(0, miembros.Count() - 1)).Value;
             }
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 818293607709933602);
-            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            var msg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor(),
@@ -172,61 +175,77 @@ namespace Discord_Bot.Modulos
                 Description = $"Shippeo a {elegido.Mention} con {elegido2.Mention} 💘",
                 ImageUrl = elegida.Url
             }).ConfigureAwait(false);
+            await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsup:")).ConfigureAwait(false);
+            await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsdown:")).ConfigureAwait(false);
+            await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":question:")).ConfigureAwait(false);
         }
 
-        [Command("ooc"), Description("Imagen aleatoria de Out of Context."), RequireGuild, RequireNsfw]
-        public async Task OOC(CommandContext ctx)
+        [Command("love"), Description("Muestra el porcentaje de amor entre dos usuarios."), RequireGuild]
+        public async Task Love(CommandContext ctx, DiscordMember user1, DiscordMember user2 = null)
         {
-            DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(787033852258418768);
-            if (discordOOC == null)
+            int porcentajeAmor;
+            string titulo;
+            if((user2 == null && user1.Id == ctx.Member.Id) || (user2 != null && user1.Id == user2.Id))
             {
-                await ctx.RespondAsync("Error al obtener servidor **AniList ESP OOC**").ConfigureAwait(false);
-                return;
+                titulo = $"Amor propio de **{user1.Username}#{user1.Discriminator}**";
             }
-            DiscordChannel channel = discordOOC.GetChannel(787033979274264577);
-            if (channel == null)
+            else
             {
-                await ctx.RespondAsync("Error al obtener canal **#capturas** del servidor **AniList ESP OOC**").ConfigureAwait(false);
-                return;
-            }
-            IReadOnlyList<DiscordMessage> mensajes = await channel.GetMessagesAsync();
-            List<DiscordMessage> msgs = mensajes.ToList();
-            int cntMensajes = msgs.Count();
-            DiscordMessage last = msgs.LastOrDefault();
-            while (cntMensajes == 100)
-            {
-                var mensajesAux = await channel.GetMessagesBeforeAsync(last.Id);
-
-                cntMensajes = mensajesAux.Count();
-                last = mensajesAux.LastOrDefault();
-
-                foreach (DiscordMessage mensaje in mensajesAux)
+                if(user2 == null)
                 {
-                    msgs.Add(mensaje);
+                    user2 = user1;
+                    user1 = ctx.Member;
                 }
+                titulo = $"Amor entre **{user1.Username}#{user1.Discriminator}** y **{user2.Username}#{user2.Discriminator}**";
             }
-            List<Imagen> opciones = new List<Imagen>();
-            foreach (DiscordMessage msg in msgs)
+            porcentajeAmor = funciones.GetNumeroRandom(0, 100);
+            string descripcion = $"**{porcentajeAmor}%** [";
+            string imagenUrl;
+            for (int i = 0; i < porcentajeAmor / 5; i++)
             {
-                var att = msg.Attachments.FirstOrDefault();
-                if (att != null && att.Url != null)
-                {
-                    opciones.Add(new Imagen
-                    {
-                        Url = att.Url,
-                        Autor = msg.Author
-                    });
-                }
+                descripcion += "█";
             }
-            Random rnd = new Random();
-            Imagen meme = opciones[rnd.Next(opciones.Count)];
-            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            for (int i=0; i<20-(porcentajeAmor/5); i++)
             {
+                descripcion += " . ";
+            }
+            descripcion += "]\n\n";
+            if ((user2 == null && user1.Id != ctx.Member.Id) || (user2 != null && user1.Id != user2.Id))
+            {
+                if (porcentajeAmor == 0)
+                    descripcion += "¡Aléjense ya! Ustedes dos se van a matar.\n";
+                else if (porcentajeAmor > 0 && porcentajeAmor <= 10)
+                    descripcion += "Se odiarán mutuamente, no son para nada compatibles.\n";
+                else if (porcentajeAmor > 10 && porcentajeAmor <= 25)
+                    descripcion += "Lo mejor es que se alejen uno del otro, no encajan.\n";
+                else if (porcentajeAmor > 25 && porcentajeAmor <= 50)
+                    descripcion += "Serán buenos amigos, pero veo dificil el amor.\n";
+                else if (porcentajeAmor > 50 && porcentajeAmor <= 75)
+                    descripcion += "Lo más probable es que sean mejores amigos y con suerte algo más.\n";
+                else if (porcentajeAmor > 75 && porcentajeAmor <= 90)
+                    descripcion += "Tienen mucha química, tienen que darse una oportunidad.\n";
+                else if (porcentajeAmor > 90 && porcentajeAmor <= 99)
+                    descripcion += "Ustedes dos están destinados a estar juntos.\n";
+                else
+                    descripcion += "¡Relación perfecta! Se casarán y tendran muchos hijos.\n";
+            }
+            if (porcentajeAmor <= 25)
+                imagenUrl = "https://i.imgur.com/BOxbruw.png";
+            else if (porcentajeAmor > 25 && porcentajeAmor <= 50)
+                imagenUrl = "https://i.imgur.com/ys2HoiL.jpg";
+            else if (porcentajeAmor > 50 && porcentajeAmor <= 75)
+                imagenUrl = "https://i.imgur.com/h7Ic2rk.jpg";
+            else if (porcentajeAmor > 75 && porcentajeAmor <= 99)
+                imagenUrl = "https://i.imgur.com/dhXR8mV.png";
+            else
+                imagenUrl = "https://i.imgur.com/Vk6JMJi.jpg";
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                Title = titulo,
+                Description = descripcion,
+                ImageUrl = imagenUrl,
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor(),
-                Title = "Out of Context",
-                ImageUrl = meme.Url
-            }).ConfigureAwait(false);
+            });
         }
     }
 }

@@ -19,8 +19,7 @@ namespace Discord_Bot.Modulos
     public class Usuarios : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-        private readonly UsuariosDiscordo usuariosService = new UsuariosDiscordo();
-        private readonly CanalesAnuncioss anunciosService = new CanalesAnuncioss();
+        private readonly UsuariosDiscord usuariosService = new UsuariosDiscord();
 
         [Command("cumpleaños"), Aliases("birthday"), Description("Muestra los próximos cumpleaños del mes."), RequireGuild]
         public async Task Birthdays(CommandContext ctx, string flag = null)
@@ -46,7 +45,7 @@ namespace Discord_Bot.Modulos
                     anios += 1;
                 string dia = user.BirthdayActual.ToString("dddd", CultureInfo.CreateSpecificCulture("es"));
                 string mes = user.BirthdayActual.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"));
-                if(user.MostrarYear ?? false)
+                if (user.MostrarYear ?? false)
                     desc += $"- **{miembro.DisplayName}** ({miembro.Username}#{miembro.Discriminator}) - Cumple **{anios} años** el {dia} {user.BirthdayActual.Day} de {mes} del {user.BirthdayActual.Year}\n";
                 else
                     desc += $"- **{miembro.DisplayName}** ({miembro.Username}#{miembro.Discriminator}) - Cumple el {dia} {user.BirthdayActual.Day} de {mes} del {user.BirthdayActual.Year}\n";
@@ -55,7 +54,7 @@ namespace Discord_Bot.Modulos
             {
                 desc = "(No hay ningún usuario registrado que cumpla años este mes)";
             }
-            
+
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Footer = funciones.GetFooter(ctx),
@@ -128,7 +127,7 @@ namespace Discord_Bot.Modulos
             {
                 msgError = await ctx.RespondAsync("Tiempo agotado esperando la fecha de nacimiento");
             }
-            if(msgError != null)
+            if (msgError != null)
             {
                 await Task.Delay(3000);
                 await msgError.DeleteAsync("Auto borrado de Yumiko");
@@ -140,24 +139,6 @@ namespace Discord_Bot.Modulos
         {
             await usuariosService.DeleteBirthday(ctx);
             var msg = await ctx.RespondAsync("Cumpleaños borrado correctamente");
-            await Task.Delay(3000);
-            await msg.DeleteAsync("Auto borrado de Yumiko");
-        }
-
-        [Command("setcanalanuncios"), Aliases("setcanal", "setanuncios"), Description("Asigna un canal del servidor para los anuncios."), RequireGuild, RequirePermissions(Permissions.ManageGuild)]
-        public async Task SetCanalAnuncios(CommandContext ctx, [Description("Canal para anuncios")]DiscordChannel canal)
-        {
-            await anunciosService.SetCanal(ctx, (long)canal.Id);
-            var msg = await ctx.RespondAsync("Canal para anuncios asignado correctamente");
-            await Task.Delay(3000);
-            await msg.DeleteAsync("Auto borrado de Yumiko");
-        }
-
-        [Command("borrarcanalanuncios"), Aliases("deletecanalanuncios", "eliminarcanalanuncios"), Description("Borra el canal de anuncios del servidor."), RequireGuild, RequirePermissions(Permissions.ManageGuild)]
-        public async Task DeleteCanalAnuncios(CommandContext ctx)
-        {
-            await anunciosService.DeleteCanal(ctx);
-            var msg = await ctx.RespondAsync("Canal de anuncios borrado correctamente");
             await Task.Delay(3000);
             await msg.DeleteAsync("Auto borrado de Yumiko");
         }

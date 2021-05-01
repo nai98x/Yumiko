@@ -111,27 +111,55 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("gmasturbate"), Description("Te masturbas (vagina)")]
-        public async Task GMasturbate(CommandContext ctx)
+        public async Task GMasturbate(CommandContext ctx, [Description("El usuario al que quieres masturbar")] DiscordUser usuario = null)
         {
-            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130300458565672);
-            await ctx.RespondAsync($"...", embed: new DiscordEmbedBuilder
+            Imagen elegida; 
+            if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor(),
-                ImageUrl = elegida.Url
-            });
+                elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130300458565672);
+                await ctx.RespondAsync($"{ctx.User.Mention} se está masturbando", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                elegida = await funciones.GetImagenDiscordYumiko(ctx, 823001635751854130);
+                await ctx.RespondAsync($"{ctx.User.Mention} está masturbando a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
         }
 
         [Command("bmasturbate"), Description("Te masturbas (pene)")]
-        public async Task BMasturbate(CommandContext ctx)
+        public async Task BMasturbate(CommandContext ctx, [Description("El usuario al que quieres masturbar")] DiscordUser usuario = null)
         {
-            Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130322554945567);
-            await ctx.RespondAsync($"...", embed: new DiscordEmbedBuilder
+            Imagen elegida;
+            if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor(),
-                ImageUrl = elegida.Url
-            });
+                elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130322554945567); // Cambiar por el solo, cuando tenga contenido
+                await ctx.RespondAsync($"{ctx.User.Mention} se está masturbando", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
+            else
+            {
+                elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130322554945567);
+                await ctx.RespondAsync($"{ctx.User.Mention} está masturbando a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    ImageUrl = elegida.Url
+                });
+            }
         }
 
         [Command("gsuck"), Description("Se la chupas a alguien (con vagina)")]

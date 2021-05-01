@@ -88,6 +88,8 @@ namespace Discord_Bot
 
         public int GetNumeroRandom(int min, int max)
         {
+            if (min <= 0 && max <= 0)
+                return 0;
             var client = new RestClient("http://www.randomnumberapi.com/api/v1.0/random?min=" + min + "&max=" + max + "&count=1");
             var request = new RestRequest(Method.GET);
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
@@ -215,7 +217,7 @@ namespace Discord_Bot
             return texto;
         }
 
-        public Stream CrearArchivo(AnimeLinks links)
+        public Stream CrearArchivoAnimeFLV(AnimeLinks links)
         {
             string path = $@"c:\temp\descargaLinks.txt";
             using (FileStream fs = File.Create(path))
@@ -229,6 +231,29 @@ namespace Discord_Bot
                     foreach(var l in linkList)
                     {
                         linksList += $"{l.number} - {l.href}\n";
+                    }
+                    linksList += "\n";
+                }
+                byte[] info = new UTF8Encoding(true).GetBytes(linksList);
+                fs.Write(info, 0, info.Length);
+            }
+            return File.OpenRead(path);
+        }
+
+        public Stream CrearArchivoMonoschinos(AnimeLinks links)
+        {
+            string path = $@"c:\temp\descargaLinks.txt";
+            using (FileStream fs = File.Create(path))
+            {
+                string linksList = $"Links de descarga para {links.name}\n\n";
+                var hosts = links.hosts;
+                foreach (var host in hosts)
+                {
+                    linksList += $"Episodio: {host.name}\n";
+                    var linkList = host.links;
+                    foreach (var l in linkList)
+                    {
+                        linksList += $"{l.href}\n";
                     }
                     linksList += "\n";
                 }

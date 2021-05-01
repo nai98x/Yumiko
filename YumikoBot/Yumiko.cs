@@ -100,45 +100,29 @@ namespace Discord_Bot
             Commands.RegisterCommands<Fun>();
             Commands.RegisterCommands<Anilist>();
             Commands.RegisterCommands<Juegos>();
-            Commands.RegisterCommands<Usuarios>();
             Commands.RegisterCommands<NSFW>();
+            Commands.RegisterCommands<Usuarios>();
             Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
 
-            await Client.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = prefix + "help | yumiko.uwu.ai | Desarrollado con ♥️ por Nai" }, UserStatus.Online);
+            await Client.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = prefix + "help | yumiko.uwu.ai" }, UserStatus.Online);
 
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             if (Debug)
-            {
                 LogChannel = LogGuild.GetChannel(820711607796891658);
-            }
             else
-            {
                 LogChannel = LogGuild.GetChannel(781679685838569502);
-                await ScheduleBirthdays();
-            }
-            await Task.Delay(-1);
+            await RotarEstado(prefix);
         }
 
-        private async Task ScheduleBirthdays()
+        private async Task RotarEstado(string prefix)
         {
-            CanalesAnuncioss canalesService = new CanalesAnuncioss();
-            UsuariosDiscordo usuariosService = new UsuariosDiscordo();
-            var lista = await canalesService.GetCanales();
-            foreach(CanalAnuncioss canal in lista)
+            while (true)
             {
-                var cumples = await usuariosService.GetBirthdaysGuild(canal.guild_id, true);
-                var guild = await Client.GetGuildAsync((ulong)canal.guild_id);
-                var channel = guild.GetChannel((ulong)canal.channel_id);
-                foreach(var usr in cumples)
-                {
-                    var listaVerif = guild.Members.Values.ToList();
-                    if (listaVerif.Find(u => u.Id == (ulong)usr.Id) != null)
-                    {
-                        DiscordMember miembro = await guild.GetMemberAsync((ulong)usr.Id);
-                        funciones.ScheduleAction(channel, miembro, usr.BirthdayActual);
-                    }
-                }
+                await Task.Delay(10000);
+                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "Desarrollado con ♥️ por Nai" }, UserStatus.Online);
+                await Task.Delay(10000);
+                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = prefix + "help | yumiko.uwu.ai" }, UserStatus.Online);
             }
         }
 

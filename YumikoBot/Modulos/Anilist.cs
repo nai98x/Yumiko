@@ -575,7 +575,7 @@ namespace Discord_Bot.Modulos
                                 if (score.Length > 0)
                                     builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), true);
                                 if (fechas.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha emisión", funciones.NormalizarField(fechas), false);
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha de publicación", funciones.NormalizarField(fechas), false);
                                 if (generos.Length > 0)
                                     builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(generos), false);
                                 if (tags.Length > 0)
@@ -873,6 +873,83 @@ namespace Discord_Bot.Modulos
                 DiscordMessage msgError = await ctx.RespondAsync(msg).ConfigureAwait(false);
                 await Task.Delay(3000);
                 await msgError.DeleteAsync("Auto borrado de Yumiko").ConfigureAwait(false);
+            }
+        }
+
+        [Command("pj"), Description("Personaje aleatorio.")]
+        public async Task W(CommandContext ctx)
+        {
+            string name = "", imageUrl = "", siteUrl = "", titleMedia = "", siteUrlMedia = "";
+            int favoritos = 0;
+            string query = "query($pagina: Int){" +
+                        "   Page(page: $pagina, perPage: 1){" +
+                        "       characters(sort: FAVOURITES_DESC){" +
+                        "           name{" +
+                        "               full" +
+                        "           }," +
+                        "           image{" +
+                        "               large" +
+                        "           }" +
+                        "           siteUrl," +
+                        "           favourites," +
+                        "           media(sort: POPULARITY_DESC, perPage: 1){" +
+                        "               nodes{" +
+                        "                   title{" +
+                        "                       romaji" +
+                        "                   }," +
+                        "                   siteUrl" +
+                        "               }" +
+                        "           }" +
+                        "       }" +
+                        "   }" +
+                        "}";
+            int pag = funciones.GetNumeroRandom(1, 5000);
+            var request = new GraphQLRequest
+            {
+                Query = query,
+                Variables = new
+                {
+                    pagina = pag
+                }
+            };
+            try
+            {
+                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                foreach (var x in data.Data.Page.characters)
+                {
+                    name = x.name.full;
+                    imageUrl = x.image.large;
+                    siteUrl = x.siteUrl;
+                    favoritos = x.favourites;
+                    foreach (var m in x.media.nodes)
+                    {
+                        titleMedia = m.title.romaji;
+                        siteUrlMedia = m.siteUrl;
+                    }
+                }
+                DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
+                var msg = await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+                    Title = name,
+                    Url = siteUrl,
+                    ImageUrl = imageUrl,
+                    Description = $"[{titleMedia}]({siteUrlMedia})\n{favoritos} {corazon} (nº {pag} en popularidad)",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+
+                }).ConfigureAwait(false);
+                await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsup:")).ConfigureAwait(false);
+                await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsdown:")).ConfigureAwait(false);
+                await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":question:")).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                DiscordMessage msg = ex.Message switch
+                {
+                    _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                };
+                await Task.Delay(3000);
+                await msg.DeleteAsync("Auto borrado de Yumiko");
+                return;
             }
         }
     }

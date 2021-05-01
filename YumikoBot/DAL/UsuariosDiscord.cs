@@ -17,7 +17,7 @@ namespace YumikoBot.DAL
         public bool MostrarYear { get; set; }
     }
 
-    public class UsuariosDiscordo
+    public class UsuariosDiscord
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
@@ -81,7 +81,7 @@ namespace YumikoBot.DAL
             lista.Sort((x, y) => x.BirthdayActual.CompareTo(y.BirthdayActual));
             return lista;
         }
-        
+
         public async Task<List<UserCumple>> GetBirthdaysGuild(long guildId, bool month)
         {
             List<UserCumple> lista = new List<UserCumple>();
@@ -124,7 +124,7 @@ namespace YumikoBot.DAL
             lista.Sort((x, y) => x.BirthdayActual.CompareTo(y.BirthdayActual));
             return lista;
         }
-        
+
         public async Task SetBirthday(CommandContext ctx, DateTime fecha, bool mostrarEdad)
         {
             var client = await funciones.GetClienteFirebase();
@@ -133,7 +133,8 @@ namespace YumikoBot.DAL
             if (usuario == null)
             {
                 int nuevoId = await GetLastId() + 1;
-                await client.SetTaskAsync("UsuariosDiscord/" + nuevoId, new UsuarioDiscordo { 
+                await client.SetTaskAsync("UsuariosDiscord/" + nuevoId, new UsuarioDiscordo
+                {
                     Id = nuevoId,
                     user_id = (long)ctx.Member.Id,
                     guild_id = (long)ctx.Guild.Id,
@@ -153,13 +154,13 @@ namespace YumikoBot.DAL
                 });
             }
         }
-        
+
         public async Task DeleteBirthday(CommandContext ctx)
         {
             var client = await funciones.GetClienteFirebase();
             var listaFirebase = await GetListaUsuarios();
             var usuario = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == (long)ctx.Member.Id);
-            if(usuario != null)
+            if (usuario != null)
             {
                 await client.DeleteTaskAsync("UsuariosDiscord/" + usuario.Id);
             }
