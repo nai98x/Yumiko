@@ -72,7 +72,7 @@ namespace Discord_Bot.Modulos
             var msgFecha = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "Escribe tu fecha de nacimiento",
-                Description = "En este formato: **dd/mm/yyyy**\n  Ejemplo: 31/01/2000"
+                Description = "En este formato: **mm/dd/yyyy**\n  Ejemplo: 01/31/2000"
             });
             var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
             if (!msgFechaInter.TimedOut)

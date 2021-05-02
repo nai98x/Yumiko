@@ -49,7 +49,11 @@ namespace Discord_Bot.Modulos
             var interactivity = ctx.Client.GetInteractivity();
             bool ok = true;
             string error = "";
-            var msgInicial = await ctx.RespondAsync("Ingresa una fecha (En formato UTC)");
+            var msgInicial = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Ingresa una fecha (En zona horaria UTC)",
+                Description = "En este formato: **mm/dd/yyyy**\n  Ejemplo: 01/31/2000"
+            });
             var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
             if (!msgFechaInter.TimedOut)
             {
