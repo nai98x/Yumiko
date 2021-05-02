@@ -602,15 +602,15 @@ namespace Discord_Bot.Modulos
                                     });
                                 }
                             }
-                            if (tags.Count > 0)
+                            var preguntaTag = await ctx.RespondAsync("Escribe un tag");
+                            var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                            if (!msgTagInter.TimedOut)
                             {
-                                var preguntaTag = await ctx.RespondAsync("Escribe un tag");
-                                var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-                                if (!msgTagInter.TimedOut)
+                                int numTag = 0;
+                                string tagResp = "";
+                                List<Tag> tagsFiltrados = tags.Where(x => x.Nombre.ToLower().Trim().Contains(msgTagInter.Result.Content.ToLower().Trim())).ToList();
+                                if(tagsFiltrados.Count > 0)
                                 {
-                                    int numTag = 0;
-                                    string tagResp = "";
-                                    List<Tag> tagsFiltrados = tags.Where(x => x.Nombre.ToLower().Trim().Contains(msgTagInter.Result.Content.ToLower().Trim())).ToList();
                                     foreach (Tag t in tagsFiltrados)
                                     {
                                         numTag++;
@@ -639,7 +639,8 @@ namespace Discord_Bot.Modulos
                                                 Random rnd = new Random();
                                                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
                                                 string elegido = tagsFiltrados[numTagElegir - 1].Nombre;
-                                                DiscordMessage mensaje = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                                                DiscordMessage mensaje = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                                {
                                                     Title = $"Obteniendo animes...",
                                                     Description = $"**Tag:** {elegido}\n**Descripción:** {tagsFiltrados[numTagElegir - 1].Descripcion}",
                                                     Footer = funciones.GetFooter(ctx),
@@ -729,7 +730,7 @@ namespace Discord_Bot.Modulos
                                                 await mensaje.DeleteAsync("Auto borrado de Yumiko");
                                                 int lastRonda;
                                                 int cantidadAnimes = animeList.Count();
-                                                if(cantidadAnimes > 0)
+                                                if (cantidadAnimes > 0)
                                                 {
                                                     if (cantidadAnimes < rondas)
                                                     {
@@ -839,14 +840,15 @@ namespace Discord_Bot.Modulos
                                 else
                                 {
                                     ok = false;
-                                    msgError = "Tiempo agotado esperando el tag";
+                                    msgError = "No se encontro ningun tag";
                                 }
                             }
                             else
                             {
                                 ok = false;
-                                msgError = "No se encontro ningun tag";
+                                msgError = "Tiempo agotado esperando el tag";
                             }
+                            
 
                             
                         }
