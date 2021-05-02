@@ -72,12 +72,12 @@ namespace Discord_Bot.Modulos
             var msgFecha = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "Escribe tu fecha de nacimiento",
-                Description = "En este formato: **mm/dd/yyyy**\n  Ejemplo: 01/31/2000"
+                Description = "En este formato: **dd/mm/yyyy**\n  Ejemplo: 30/01/2000"
             });
             var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
             if (!msgFechaInter.TimedOut)
             {
-                bool result = DateTime.TryParse(msgFechaInter.Result.Content, out DateTime fecha);
+                bool result = DateTime.TryParseExact(msgFechaInter.Result.Content, "dd/MM/yyyy", null, DateTimeStyles.None, out DateTime fecha);
                 await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
                 await msgFecha.DeleteAsync("Auto borrado de Yumiko");
                 if (result)
