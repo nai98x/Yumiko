@@ -58,7 +58,7 @@ namespace Discord_Bot.Modulos
             var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
             if (!msgFechaInter.TimedOut)
             {
-                bool result = DateTime.TryParseExact(msgFechaInter.Result.Content, "dd/MM/yyyy HH:mm", null, DateTimeStyles.None, out DateTime timeUtc);
+                bool result = funciones.ParsearFechaFromString(msgFechaInter.Result.Content, out DateTime timeUtc);
                 if (result)
                 {
                     try
@@ -156,6 +156,10 @@ namespace Discord_Bot.Modulos
                 await Task.Delay(5000);
                 if (msgError != null)
                     await msgError.DeleteAsync("Auto borrado de Yumiko");
+                if (msgFechaInter.Result != null)
+                    await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                if (msgInicial != null)
+                    await msgInicial.DeleteAsync("Auto borrado de Yumiko");
             }
         }
 
