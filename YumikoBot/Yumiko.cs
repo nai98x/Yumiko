@@ -119,7 +119,7 @@ namespace Discord_Bot
         {
             while (true)
             {
-                await Task.Delay(10000);
+                await Task.Delay(30000);
                 await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "Desarrollado con ♥️ por Nai" }, UserStatus.Online);
                 await Task.Delay(10000);
                 await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = prefix + "help | yumiko.uwu.ai" }, UserStatus.Online);
@@ -150,7 +150,7 @@ namespace Discord_Bot
             LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
                 Title = "Nuevo servidor",
-                Description = $"Yumiko ha entrado al servidor {e.Guild.Name}",
+                Description = $"Yumiko ha entrado al servidor **{e.Guild.Name}**\n   Miembros: **{e.Guild.Members}**",
                 Footer = new EmbedFooter()
                 {
                     Text = $"{DateTimeOffset.Now}"
@@ -166,7 +166,7 @@ namespace Discord_Bot
             LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
                 Title = "Bye-bye servidor",
-                Description = $"Yumiko ha sido removida del servidor {e.Guild.Name}",
+                Description = $"Yumiko ha sido removida del servidor **{e.Guild.Name}**\n   Miembros: **{e.Guild.Members}**",
                 Footer = new EmbedFooter()
                 {
                     Text = $"{DateTimeOffset.Now}"
@@ -223,7 +223,7 @@ namespace Discord_Bot
 
         private async Task Commands_CommandErrored(CommandsNextExtension cm, CommandErrorEventArgs e)
         {
-            if (e.Exception.Message == "Specified command was not found." || e.Exception.Message == "Could not find a suitable overload for the command.")
+            if (e.Exception.Message == "Specified command was not found.")
             {
                 await LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
@@ -246,11 +246,43 @@ namespace Discord_Bot
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
                 var embed = new DiscordEmbedBuilder
                 {
+                    Title = "Comando no encontrado",
+                    Description = $"{emoji} No existe ese comando, " + e.Context.User.Username + " baka.",
+                    Color = DiscordColor.Red
+                };
+                var mensajeErr = e.Context.RespondAsync(embed: embed);
+                await Task.Delay(3000);
+                await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+            }
+            else if (e.Exception.Message == "Could not find a suitable overload for the command.")
+            {
+                await LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                {
+                    Title = "Comando mal escrito",
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{e.Context.Message.Timestamp}"
+                    },
+                    Author = new EmbedAuthor()
+                    {
+                        IconUrl = e.Context.User.AvatarUrl,
+                        Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                    },
+                    Color = DiscordColor.Yellow
+                }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                .AddField("Mensaje", $"{e.Context.Message.Content}", false)
+                );
+
+                var emoji = DiscordEmoji.FromName(e.Context.Client, ":warning:");
+                var embed = new DiscordEmbedBuilder
+                {
                     Title = "Comando mal escrito",
                     Description = $"{emoji} Pone el comando bien, " + e.Context.User.Username + " baka.",
-                    Color = new DiscordColor(0xFF0000)
+                    Color = DiscordColor.Yellow
                 };
-                var mensajeErr = e.Context.RespondAsync("", embed: embed);
+                var mensajeErr = e.Context.RespondAsync(embed: embed);
                 await Task.Delay(3000);
                 await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
                 await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");

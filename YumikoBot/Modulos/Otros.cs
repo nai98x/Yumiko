@@ -47,103 +47,181 @@ namespace Discord_Bot.Modulos
         [Command("horarios"), Aliases("recordatorios", "horario", "recordatorio"), Description("Horarios para diversos paises.")]
         public async Task Horarios(CommandContext ctx, [RemainingText]string texto)
         {
-            var interactivity = ctx.Client.GetInteractivity();
+            bool fechaPuesta = funciones.ParsearFechaFromString(texto, out DateTime timeUtc);
             bool ok = true;
             string error = "";
-            var msgInicial = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            if (fechaPuesta)
             {
-                Title = "Ingresa una fecha (En zona horaria UTC)",
-                Description = "En este formato: **dd/mm/yyyy**\n  Ejemplo: 30/01/2000 23:15"
-            });
-            var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-            if (!msgFechaInter.TimedOut)
-            {
-                bool result = funciones.ParsearFechaFromString(msgFechaInter.Result.Content, out DateTime timeUtc);
-                if (result)
+                try
                 {
-                    try
+                    TimeZoneInfo spainZone, argentinaZone, chileZone, venezuelaZone, uruguayZone, costaricaZone, panamaZone, mexicoZone;
+                    DateTime spainTime, argentinaTime, chileTime, venezuelaTime, uruguayTime, costaricaTime, panamaTime, mexicoTime;
+
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
-                        TimeZoneInfo spainZone, argentinaZone, chileZone, venezuelaZone, uruguayZone, costaricaZone, panamaZone, mexicoZone;
-                        DateTime spainTime, argentinaTime, chileTime, venezuelaTime, uruguayTime, costaricaTime, panamaTime, mexicoTime;
+                        spainZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+                        spainTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, spainZone);
 
-                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                        argentinaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Argentina/Buenos_Aires");
+                        argentinaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, argentinaZone);
+
+                        chileZone = TimeZoneInfo.FindSystemTimeZoneById("America/Santiago");
+                        chileTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, chileZone);
+
+                        venezuelaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Caracas");
+                        venezuelaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, venezuelaZone);
+
+                        uruguayZone = TimeZoneInfo.FindSystemTimeZoneById("America/Montevideo");
+                        uruguayTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, uruguayZone);
+
+                        costaricaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Costa_Rica");
+                        costaricaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, costaricaZone);
+
+                        panamaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Panama");
+                        panamaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, panamaZone);
+
+                        mexicoZone = TimeZoneInfo.FindSystemTimeZoneById("America/Mexico_City");
+                        mexicoTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, mexicoZone);
+
+                        string desc =
+                        $"**España:**     {spainTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {spainTime.Day} de {spainTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {spainTime.Year} a las {spainTime.ToString("HH:ss")}\n" +
+                        $"**Argentina:**  {argentinaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {argentinaTime.Day} de {argentinaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {argentinaTime.Year} a las {argentinaTime.ToString("HH:ss")}\n" +
+                        $"**Chile:**      {chileTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {chileTime.Day} de {chileTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {chileTime.Year} a las {chileTime.ToString("HH:ss")}\n" +
+                        $"**Venezuela:**  {venezuelaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {venezuelaTime.Day} de {venezuelaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {venezuelaTime.Year} a las {venezuelaTime.ToString("HH:ss")}\n" +
+                        $"**Uruguay:**    {uruguayTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {uruguayTime.Day} de {uruguayTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {uruguayTime.Year} a las {uruguayTime.ToString("HH:ss")}\n" +
+                        $"**Costa Rica:** {costaricaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {costaricaTime.Day} de {costaricaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {costaricaTime.Year} a las {costaricaTime.ToString("HH:ss")}\n" +
+                        $"**Mexico:**     {mexicoTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {mexicoTime.Day} de {mexicoTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {mexicoTime.Year} a las {mexicoTime.ToString("HH:ss")}\n" +
+                        $"**Panama:**     {panamaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {panamaTime.Day} de {panamaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {panamaTime.Year} a las {panamaTime.ToString("HH:ss")}\n";
+
+                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                         {
-                            spainZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
-                            spainTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, spainZone);
+                            Title = texto,
+                            Description = desc,
+                            Footer = funciones.GetFooter(ctx),
+                            Color = funciones.GetColor()
+                        });
+                    }
+                    else
+                    {
+                        ok = false;
+                        error = "Comando no habilitado";
+                    }
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                    ok = false;
+                    error = "No se ha podido encontrar una zona horaria";
+                }
+                catch (InvalidTimeZoneException)
+                {
+                    ok = false;
+                    error = "Una zona horaria parece estar corrupta";
+                }
+            }
+            else
+            {
+                var interactivity = ctx.Client.GetInteractivity();
+                var msgInicial = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Ingresa una fecha (En zona horaria UTC)",
+                    Description = "En este formato: **dd/mm/yyyy**\n  Ejemplo: 30/01/2000 23:15"
+                });
+                var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                if (!msgFechaInter.TimedOut)
+                {
+                    bool result = funciones.ParsearFechaFromString(msgFechaInter.Result.Content, out timeUtc);
+                    if (result)
+                    {
+                        try
+                        {
+                            TimeZoneInfo spainZone, argentinaZone, chileZone, venezuelaZone, uruguayZone, costaricaZone, panamaZone, mexicoZone;
+                            DateTime spainTime, argentinaTime, chileTime, venezuelaTime, uruguayTime, costaricaTime, panamaTime, mexicoTime;
 
-                            argentinaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Argentina/Buenos_Aires");
-                            argentinaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, argentinaZone);
-
-                            chileZone = TimeZoneInfo.FindSystemTimeZoneById("America/Santiago");
-                            chileTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, chileZone);
-
-                            venezuelaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Caracas");
-                            venezuelaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, venezuelaZone);
-
-                            uruguayZone = TimeZoneInfo.FindSystemTimeZoneById("America/Montevideo");
-                            uruguayTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, uruguayZone);
-
-                            costaricaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Costa_Rica");
-                            costaricaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, costaricaZone);
-
-                            panamaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Panama");
-                            panamaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, panamaZone);
-
-                            mexicoZone = TimeZoneInfo.FindSystemTimeZoneById("America/Mexico_City");
-                            mexicoTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, mexicoZone);
-
-                            string desc =
-                            $"**España:**     {spainTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {spainTime.Day} de {spainTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {spainTime.Year} a las {spainTime.ToString("HH:ss")}\n" +
-                            $"**Argentina:**  {argentinaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {argentinaTime.Day} de {argentinaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {argentinaTime.Year} a las {argentinaTime.ToString("HH:ss")}\n" +
-                            $"**Chile:**      {chileTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {chileTime.Day} de {chileTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {chileTime.Year} a las {chileTime.ToString("HH:ss")}\n" +
-                            $"**Venezuela:**  {venezuelaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {venezuelaTime.Day} de {venezuelaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {venezuelaTime.Year} a las {venezuelaTime.ToString("HH:ss")}\n" +
-                            $"**Uruguay:**    {uruguayTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {uruguayTime.Day} de {uruguayTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {uruguayTime.Year} a las {uruguayTime.ToString("HH:ss")}\n" +
-                            $"**Costa Rica:** {costaricaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {costaricaTime.Day} de {costaricaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {costaricaTime.Year} a las {costaricaTime.ToString("HH:ss")}\n" +
-                            $"**Mexico:**     {mexicoTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {mexicoTime.Day} de {mexicoTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {mexicoTime.Year} a las {mexicoTime.ToString("HH:ss")}\n" +
-                            $"**Panama:**     {panamaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {panamaTime.Day} de {panamaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {panamaTime.Year} a las {panamaTime.ToString("HH:ss")}\n";
-
-                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                             {
-                                Title = texto,
-                                Description = desc,
-                                Footer = funciones.GetFooter(ctx),
-                                Color = funciones.GetColor()
-                            });
+                                spainZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid");
+                                spainTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, spainZone);
 
-                            if (msgInicial != null)
-                                await msgInicial.DeleteAsync("Auto borrado de Yumiko");
-                            if (msgFechaInter.Result != null)
-                                await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                argentinaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Argentina/Buenos_Aires");
+                                argentinaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, argentinaZone);
+
+                                chileZone = TimeZoneInfo.FindSystemTimeZoneById("America/Santiago");
+                                chileTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, chileZone);
+
+                                venezuelaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Caracas");
+                                venezuelaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, venezuelaZone);
+
+                                uruguayZone = TimeZoneInfo.FindSystemTimeZoneById("America/Montevideo");
+                                uruguayTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, uruguayZone);
+
+                                costaricaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Costa_Rica");
+                                costaricaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, costaricaZone);
+
+                                panamaZone = TimeZoneInfo.FindSystemTimeZoneById("America/Panama");
+                                panamaTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, panamaZone);
+
+                                mexicoZone = TimeZoneInfo.FindSystemTimeZoneById("America/Mexico_City");
+                                mexicoTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, mexicoZone);
+
+                                string desc =
+                                $"**España:**     {spainTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {spainTime.Day} de {spainTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {spainTime.Year} a las {spainTime.ToString("HH:ss")}\n" +
+                                $"**Argentina:**  {argentinaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {argentinaTime.Day} de {argentinaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {argentinaTime.Year} a las {argentinaTime.ToString("HH:ss")}\n" +
+                                $"**Chile:**      {chileTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {chileTime.Day} de {chileTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {chileTime.Year} a las {chileTime.ToString("HH:ss")}\n" +
+                                $"**Venezuela:**  {venezuelaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {venezuelaTime.Day} de {venezuelaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {venezuelaTime.Year} a las {venezuelaTime.ToString("HH:ss")}\n" +
+                                $"**Uruguay:**    {uruguayTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {uruguayTime.Day} de {uruguayTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {uruguayTime.Year} a las {uruguayTime.ToString("HH:ss")}\n" +
+                                $"**Costa Rica:** {costaricaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {costaricaTime.Day} de {costaricaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {costaricaTime.Year} a las {costaricaTime.ToString("HH:ss")}\n" +
+                                $"**Mexico:**     {mexicoTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {mexicoTime.Day} de {mexicoTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {mexicoTime.Year} a las {mexicoTime.ToString("HH:ss")}\n" +
+                                $"**Panama:**     {panamaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {panamaTime.Day} de {panamaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {panamaTime.Year} a las {panamaTime.ToString("HH:ss")}\n";
+
+                                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                {
+                                    Title = texto,
+                                    Description = desc,
+                                    Footer = funciones.GetFooter(ctx),
+                                    Color = funciones.GetColor()
+                                });
+
+                                if (msgInicial != null)
+                                    await msgInicial.DeleteAsync("Auto borrado de Yumiko");
+                                if (msgFechaInter.Result != null)
+                                    await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                            }
+                            else
+                            {
+                                ok = false;
+                                error = "Comando no habilitado";
+                            }
                         }
-                        else
+                        catch (TimeZoneNotFoundException)
                         {
                             ok = false;
-                            error = "Comando no habilitado";
+                            error = "No se ha podido encontrar una zona horaria";
+                        }
+                        catch (InvalidTimeZoneException)
+                        {
+                            ok = false;
+                            error = "Una zona horaria parece estar corrupta";
                         }
                     }
-                    catch (TimeZoneNotFoundException)
+                    else
                     {
                         ok = false;
-                        error = "No se ha podido encontrar una zona horaria";
-                    }
-                    catch (InvalidTimeZoneException)
-                    {
-                        ok = false;
-                        error = "Una zona horaria parece estar corrupta";
+                        error = "Fecha mal escrita";
                     }
                 }
                 else
                 {
                     ok = false;
-                    error = "Fecha mal escrita";
+                    error = "Tiempo agotado esperando la fecha";
+                }
+                if(!ok)
+                {
+                    if (msgFechaInter.Result != null)
+                        await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                    if (msgInicial != null)
+                        await msgInicial.DeleteAsync("Auto borrado de Yumiko");
                 }
             }
-            else
-            {
-                ok = false;
-                error = "Tiempo agotado esperando la fecha";
-            }
-
             if (!ok)
             {
                 var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
@@ -156,10 +234,6 @@ namespace Discord_Bot.Modulos
                 await Task.Delay(5000);
                 if (msgError != null)
                     await msgError.DeleteAsync("Auto borrado de Yumiko");
-                if (msgFechaInter.Result != null)
-                    await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                if (msgInicial != null)
-                    await msgInicial.DeleteAsync("Auto borrado de Yumiko");
             }
         }
 
@@ -183,22 +257,22 @@ namespace Discord_Bot.Modulos
         [Command("servers"), Description("Muestra los servidores en los que esta Yumiko."), RequireOwner]
         public async Task Servers(CommandContext ctx)
         {
-            string servers = "";
+            await ctx.RespondAsync("Servidores de Yumiko");
             var guilds = ctx.Client.Guilds.Values;
             foreach (var guild in guilds)
             {
-                servers += 
-                    $"\n**{guild.Name}**\n" +
+                string server = 
                     $"  - **Id**: {guild.Id}\n" +
                     $"  - **Fecha que entró Yumiko**: {guild.JoinedAt}\n" +
                     $"  - **Miembros**: {guild.MemberCount}\n";
+                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = $"{guild.Name}",
+                    Description = server,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor()
+                });
             }
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
-                Title = "Servidores de Yumiko",
-                Description = servers,
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            });
         }
 
         [Command("eliminarmensaje"), Description("Elimina un mensaje de Yumiko."), RequireOwner]

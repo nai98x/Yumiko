@@ -40,7 +40,8 @@ namespace Discord_Bot.Modulos
                     List<string> listaComandos = new List<string>();
                     foreach (var comando1 in grupo)
                     {
-                        listaComandos.Add($"`{comando1.Name}`");
+                        if(!comando1.IsHidden)
+                            listaComandos.Add($"`{comando1.Name}`");
                     }
                     comandosDesc = string.Join(", ", listaComandos);
                     if (nomGrupo == "NSFW" && !ctx.Channel.IsNSFW)
@@ -54,7 +55,7 @@ namespace Discord_Bot.Modulos
                 var comanditos = comandos.Distinct();
                 var listaComandos = comanditos.ToList();
                 Command comandoEncontrado = listaComandos.Find(x => x.Name == comando || x.Aliases.Contains(comando));
-                if(comandoEncontrado != null)
+                if(comandoEncontrado != null && !comandoEncontrado.IsHidden)
                 {
                     string nomComando = comandoEncontrado.Name;
                     var builder = new DiscordEmbedBuilder

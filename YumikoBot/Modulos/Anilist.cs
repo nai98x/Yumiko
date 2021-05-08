@@ -21,8 +21,44 @@ namespace Discord_Bot.Modulos
         private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         [Command("anilist"), Aliases("user"), Description("Busca un perfil de AniList.")]
-        public async Task Profile(CommandContext ctx, [Description("El nick del perfil de AniList")]string usuario)
+        public async Task Profile(CommandContext ctx, [Description("El nick del perfil de AniList")]string usuario = null)
         {
+            if (String.IsNullOrEmpty(usuario))
+            {
+                var interactivity = ctx.Client.GetInteractivity();
+                var msgUsuario = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Escribe un nombre de usuario de AniList",
+                    Description = "Ejemplo: Josh",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                });
+                var msgUserInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                if (!msgUserInter.TimedOut)
+                {
+                    usuario = msgUserInter.Result.Content;
+                    if(msgUsuario != null)
+                        await msgUsuario.DeleteAsync("Auto borrado de Yumiko");
+                    if(msgUserInter.Result != null)
+                    await msgUserInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                }
+                else
+                {
+                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                        Title = "Error",
+                        Description = "Tiempo agotado esperando el usuario de AniList",
+                        Footer = funciones.GetFooter(ctx),
+                        Color = DiscordColor.Red,
+                    });
+                    await Task.Delay(3000);
+                    if (msgError != null)
+                        await msgError.DeleteAsync("Auto borrado de Yumiko");
+                    if (msgUsuario != null)
+                        await msgUsuario.DeleteAsync("Auto borrado de Yumiko");
+                    return;
+                }
+            }
+
             var request = new GraphQLRequest
             {
                 Query =
