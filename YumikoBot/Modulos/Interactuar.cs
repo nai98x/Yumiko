@@ -66,7 +66,7 @@ namespace Discord_Bot.Modulos
                 {
                     options += "\n   - " + msj;
                 }
-                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
                 {
                     await mensajeBot.DeleteAsync().ConfigureAwait(false);
                     await msg.Result.DeleteAsync().ConfigureAwait(false);
@@ -101,7 +101,7 @@ namespace Discord_Bot.Modulos
             else
             {
                 DiscordMessage msgError = await ctx.RespondAsync("Debes pasar un emote").ConfigureAwait(false);
-                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
                 {
                     await Task.Delay(3000);
                     await msgError.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);

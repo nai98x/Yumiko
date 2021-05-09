@@ -130,7 +130,7 @@ namespace Discord_Bot
                                             orden = "FAVOURITES_DESC";
                                             break;
                                     }
-                                    if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                                    if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
                                     {
                                         await msgCntRondas.DeleteAsync("Auto borrado de Yumiko");
                                         await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
@@ -283,7 +283,7 @@ namespace Discord_Bot
                 {
                     if (numTagElegir > 0 && (numTagElegir <= tagsList.Count))
                     {
-                        if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                        if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
                         {
                             await msgOpciones.DeleteAsync("Auto borrado de Yumiko");
                             await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
@@ -313,7 +313,7 @@ namespace Discord_Bot
             {
                 msgError = "Tiempo agotado esperando el tag";
             }
-            if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+            if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
                 await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
             return new DiscordEmbedBuilder
             {

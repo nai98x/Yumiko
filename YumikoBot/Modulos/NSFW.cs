@@ -55,7 +55,7 @@ namespace Discord_Bot.Modulos
             else
             {
                 var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
-                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
                 {
                     await Task.Delay(3000);
                     await msg.DeleteAsync("Auto borrado de Yumiko");
@@ -84,7 +84,7 @@ namespace Discord_Bot.Modulos
             else
             {
                 var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
-                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
                 {
                     await Task.Delay(3000);
                     await msg.DeleteAsync("Auto borrado de Yumiko");
@@ -366,7 +366,7 @@ namespace Discord_Bot.Modulos
             if (usuario1 == null || usuario2 == null)
             {
                 var msg = await ctx.RespondAsync("Debes mencionar a dos personas");
-                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
                 {
                     await Task.Delay(3000);
                     await msg.DeleteAsync("Auto borrado de Yumiko");
@@ -378,7 +378,7 @@ namespace Discord_Bot.Modulos
                 if (ctx.User.Id == usuario1.Id || ctx.User.Id == usuario2.Id)
                 {
                     var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
-                    if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                    if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
                     {
                         await Task.Delay(3000);
                         await msg.DeleteAsync("Auto borrado de Yumiko");
