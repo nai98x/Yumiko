@@ -77,7 +77,7 @@ namespace Discord_Bot.Modulos
             var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
             if (!msgFechaInter.TimedOut)
             {
-                bool result = funciones.ParsearFechaFromString(msgFechaInter.Result.Content, out DateTime fecha);
+                bool result = DateTime.TryParse(msgFechaInter.Result.Content, CultureInfo.CreateSpecificCulture("es-ES"), DateTimeStyles.None, out DateTime fecha);
                 if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                 {
                     await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");

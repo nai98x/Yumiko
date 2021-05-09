@@ -264,51 +264,6 @@ namespace Discord_Bot
             return File.OpenRead(path);
         }
 
-        public bool ParsearFechaFromString(string s, out DateTime time)
-        {
-            // Casos con fechas en distintos formatos (Hora normal)
-
-            bool result = DateTime.TryParseExact(s, "dd/MM/yyyy HH:mm", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "dd/M/yyyy HH:mm", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "d/MM/yyyy HH:mm", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "d/M/yyyy HH:mm", null, DateTimeStyles.None, out time);
-
-            // Casos con horas en distintos formatos
-
-            if (!result)
-                result = DateTime.TryParseExact(s, "dd/MM/yyyy H:mm", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "dd/MM/yyyy HH:m", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "dd/MM/yyyy H:m", null, DateTimeStyles.None, out time);
-
-            if (!result)
-                result = DateTime.TryParseExact(s, "dd/M/yyyy H:mm", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "dd/M/yyyy HH:m", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "dd/M/yyyy H:m", null, DateTimeStyles.None, out time);
-
-            if (!result)
-                result = DateTime.TryParseExact(s, "d/MM/yyyy H:mm", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "d/MM/yyyy HH:m", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "d/MM/yyyy H:m", null, DateTimeStyles.None, out time);
-
-            if (!result)
-                result = DateTime.TryParseExact(s, "d/M/yyyy H:mm", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "d/M/yyyy HH:m", null, DateTimeStyles.None, out time);
-            if (!result)
-                result = DateTime.TryParseExact(s, "d/M/yyyy H:m", null, DateTimeStyles.None, out time);
-
-            return result;
-        }
-
         public bool ChequearPermisoYumiko(CommandContext ctx, DSharpPlus.Permissions permiso)
         {
             return DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), permiso);
