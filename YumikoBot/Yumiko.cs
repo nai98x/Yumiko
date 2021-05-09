@@ -422,7 +422,6 @@ namespace Discord_Bot
                     {
                         await mensaje.DeleteAsync("Auto borrado de Yumiko");
                     }
-
                 }
                 else
                 {
