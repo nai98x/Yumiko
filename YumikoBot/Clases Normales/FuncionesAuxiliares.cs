@@ -308,5 +308,10 @@ namespace Discord_Bot
 
             return result;
         }
+
+        public bool ChequearPermisoYumiko(CommandContext ctx, DSharpPlus.Permissions permiso)
+        {
+            return DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), permiso);
+        }
     }
 }

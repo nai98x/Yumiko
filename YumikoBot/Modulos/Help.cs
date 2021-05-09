@@ -109,7 +109,7 @@ namespace Discord_Bot.Modulos
                 else
                 {
                     var msgError = await ctx.RespondAsync($"No se ha encontrado el comando `{comando}`").ConfigureAwait(false);
-                    if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                     {
                         await Task.Delay(3000);
                         await msgError.DeleteAsync().ConfigureAwait(false);

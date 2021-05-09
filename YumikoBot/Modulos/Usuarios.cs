@@ -78,7 +78,7 @@ namespace Discord_Bot.Modulos
             if (!msgFechaInter.TimedOut)
             {
                 bool result = funciones.ParsearFechaFromString(msgFechaInter.Result.Content, out DateTime fecha);
-                if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
+                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                 {
                     await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
                     await msgFecha.DeleteAsync("Auto borrado de Yumiko");
@@ -96,7 +96,7 @@ namespace Discord_Bot.Modulos
                         bool result2 = int.TryParse(msgOcultarInter.Result.Content, out int mostrarEdadInt);
                         if (result2)
                         {
-                            if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
+                            if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                             {
                                 await msgOcultarInter.Result.DeleteAsync("Auto borrado de Yumiko");
                                 await msgOcultar.DeleteAsync("Auto borrado de Yumiko");
@@ -135,7 +135,7 @@ namespace Discord_Bot.Modulos
             }
             if (msgError != null)
             {
-                if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
+                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                 {
                     await Task.Delay(3000);
                     await msgError.DeleteAsync("Auto borrado de Yumiko");
@@ -148,7 +148,7 @@ namespace Discord_Bot.Modulos
         {
             await usuariosService.DeleteBirthday(ctx);
             var msg = await ctx.RespondAsync("Cumpleaños borrado correctamente");
-            if (DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), DSharpPlus.Permissions.ManageMessages))
+            if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
             {
                 await Task.Delay(3000);
                 await msg.DeleteAsync("Auto borrado de Yumiko");
