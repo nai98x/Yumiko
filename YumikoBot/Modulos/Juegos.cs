@@ -940,7 +940,7 @@ namespace Discord_Bot.Modulos
                         "           coverImage{" +
                         "               large" +
                         "           }," +
-                        "           studios(isMain: true){" +
+                        "           studios{" +
                         "               nodes{" +
                         "                   name," +
                         "                   siteUrl," +
@@ -972,7 +972,6 @@ namespace Discord_Bot.Modulos
                         {
                             string titleEnglish = x.title.english;
                             string titleRomaji = x.title.romaji;
-                            string nombreEstudio = x.studios.nodes[0].name;
                             Anime anim = new Anime()
                             {
                                 Image = x.coverImage.large,
@@ -981,15 +980,22 @@ namespace Discord_Bot.Modulos
                                 SiteUrl = x.siteUrl,
                                 Favoritos = x.favourites,
                                 Popularidad = popularidad,
-                                Estudio = new Estudio()
-                                {
-                                    Nombre = funciones.QuitarCaracteresEspeciales(nombreEstudio),
-                                    SiteUrl = x.studios.nodes[0].siteUrl,
-                                    Favoritos = x.studios.nodes[0].favourites
-                                }
+                                Estudios = new List<Estudio>()
                             };
+                            foreach (var estudio in x.studios.nodes)
+                            {
+                                anim.Estudios.Add(new Estudio()
+                                {
+                                    Nombre = estudio.name,
+                                    SiteUrl = estudio.siteUrl,
+                                    Favoritos = estudio.favourites
+                                });
+                            }
                             popularidad++;
-                            animeList.Add(anim);
+                            if (anim.Estudios.Count() > 0)
+                            {
+                                animeList.Add(anim);
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -1013,6 +1019,12 @@ namespace Discord_Bot.Modulos
                     int random = funciones.GetNumeroRandom(0, animeList.Count - 1);
                     Anime elegido = animeList[random];
                     DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
+                    string estudiosStr = $"Los estudios de [{elegido.TitleRomaji}]({elegido.SiteUrl}) son:\n";
+                    foreach (var studio in elegido.Estudios)
+                    {
+                        estudiosStr += $"- [{studio.Nombre}]({studio.SiteUrl})\n";
+                    }
+                    string estudiosStrGood = funciones.NormalizarDescription(estudiosStr);
                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
                         Color = DiscordColor.Gold,
@@ -1026,9 +1038,8 @@ namespace Discord_Bot.Modulos
                     }).ConfigureAwait(false);
                     var msg = await interactivity.WaitForMessageAsync
                         (xm => (xm.Channel == ctx.Channel) &&
-                        (elegido.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim()) || elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim()) ||
-                        (elegido.Estudio.Nombre.ToLower().Trim() == xm.Content.ToLower().Trim())
-                        ) && xm.Author.Id != ctx.Client.CurrentUser.Id || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
+                        (elegido.Estudios.Find(y => y.Nombre.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
+                        && xm.Author.Id != ctx.Client.CurrentUser.Id || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
                         , TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                     if (!msg.TimedOut)
                     {
@@ -1037,7 +1048,7 @@ namespace Discord_Bot.Modulos
                             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                             {
                                 Title = "¡Juego cancelado!",
-                                Description = $"El nombre era: [{elegido.Estudio.Nombre}]({elegido.Estudio.SiteUrl})",
+                                Description = $"{estudiosStrGood}",
                                 Color = DiscordColor.Red
                             }).ConfigureAwait(false);
                             await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "estudio");
@@ -1061,7 +1072,7 @@ namespace Discord_Bot.Modulos
                         await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
-                            Description = $"El nombre es: [{elegido.Estudio.Nombre}]({elegido.Estudio.SiteUrl})",
+                            Description = $"{estudiosStrGood}",
                             Color = DiscordColor.Green
                         }).ConfigureAwait(false);
                     }
@@ -1070,7 +1081,7 @@ namespace Discord_Bot.Modulos
                         await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "¡Nadie ha acertado!",
-                            Description = $"El nombre era: [{elegido.Estudio.Nombre}]({elegido.Estudio.SiteUrl})",
+                            Description = $"{estudiosStrGood}",
                             Color = DiscordColor.Red
                         }).ConfigureAwait(false);
                     }
