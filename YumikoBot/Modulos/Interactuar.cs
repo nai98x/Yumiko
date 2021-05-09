@@ -20,7 +20,7 @@ namespace Discord_Bot.Modulos
             await ctx.RespondAsync(mensaje);
         }
 
-        [Command("pregunta"), Aliases("p", "question", "sisonon"), Description("Responde con SIS O NON.")]
+        [Command("pregunta"), Aliases("p", "question", "siono"), Description("Responde con SI O NO.")]
         public async Task Sisonon(CommandContext ctx, [Description("La pregunta que le quieres hacer")][RemainingText]string pregunta)
         {
             Random rnd = new Random();
@@ -33,7 +33,7 @@ namespace Discord_Bot.Modulos
                         Footer = funciones.GetFooter(ctx),
                         Color = DiscordColor.Red,
                         Title = "¿SIS O NON?",
-                        Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** NON"
+                        Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** NO"
                     }).ConfigureAwait(false);
                     break;
                 case 1:
@@ -41,8 +41,8 @@ namespace Discord_Bot.Modulos
                     {
                         Footer = funciones.GetFooter(ctx),
                         Color = DiscordColor.Green,
-                        Title = "¿SIS O NON?",
-                        Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** SIS"
+                        Title = "¿SI O NO?",
+                        Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** SI"
                     }).ConfigureAwait(false);
                     break;
             }
@@ -86,7 +86,7 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("emote"), Aliases("emoji"), Description("Muestra un emote en grande."), RequireGuild]
-        public async Task Emote(CommandContext ctx, [Description("El emote para agrandar")] DiscordEmoji emote)
+        public async Task Emote(CommandContext ctx, [Description("El emote para agrandar")] DiscordEmoji emote = null)
         {
             if (emote != null)
             {
