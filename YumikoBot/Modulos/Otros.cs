@@ -181,10 +181,13 @@ namespace Discord_Bot.Modulos
                                     Color = funciones.GetColor()
                                 });
 
-                                if (msgInicial != null)
-                                    await msgInicial.DeleteAsync("Auto borrado de Yumiko");
-                                if (msgFechaInter.Result != null)
-                                    await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                                {
+                                    if (msgInicial != null)
+                                        await msgInicial.DeleteAsync("Auto borrado de Yumiko");
+                                    if (msgFechaInter.Result != null)
+                                        await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                }
                             }
                             else
                             {
@@ -216,10 +219,13 @@ namespace Discord_Bot.Modulos
                 }
                 if(!ok)
                 {
-                    if (msgFechaInter.Result != null)
-                        await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                    if (msgInicial != null)
-                        await msgInicial.DeleteAsync("Auto borrado de Yumiko");
+                    if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                    {
+                        if (msgFechaInter.Result != null)
+                            await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgInicial != null)
+                            await msgInicial.DeleteAsync("Auto borrado de Yumiko");
+                    }
                 }
             }
             if (!ok)
@@ -232,8 +238,9 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor()
                 });
                 await Task.Delay(5000);
-                if (msgError != null)
-                    await msgError.DeleteAsync("Auto borrado de Yumiko");
+                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                    if (msgError != null)
+                        await msgError.DeleteAsync("Auto borrado de Yumiko");
             }
         }
 
@@ -257,22 +264,49 @@ namespace Discord_Bot.Modulos
         [Command("servers"), Description("Muestra los servidores en los que esta Yumiko."), RequireOwner]
         public async Task Servers(CommandContext ctx)
         {
-            await ctx.RespondAsync("Servidores de Yumiko");
             var guilds = ctx.Client.Guilds.Values;
+            string servers = "";
+            int cont = 1;
+            int usuarios = 0;
+            await ctx.RespondAsync(embed : new DiscordEmbedBuilder { 
+                Title = "Servidores de Yumiko",
+                Description = $"Cantidad: {ctx.Client.Guilds.Count}",
+            });
             foreach (var guild in guilds)
             {
-                string server = 
+                if (cont >= 10)
+                {
+                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Description = servers,
+                        Footer = funciones.GetFooter(ctx),
+                        Color = funciones.GetColor()
+                    });
+                    cont = 1;
+                    servers = "";
+                }
+                servers +=
+                    $"**{guild.Name}**" +
                     $"  - **Id**: {guild.Id}\n" +
                     $"  - **Fecha que entró Yumiko**: {guild.JoinedAt}\n" +
-                    $"  - **Miembros**: {guild.MemberCount}\n";
+                    $"  - **Miembros**: {guild.MemberCount}\n\n";
+                usuarios += guild.MemberCount;
+                cont++;
+            }
+            if(cont != 1)
+            {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"{guild.Name}",
-                    Description = server,
+                    Description = servers,
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
                 });
             }
+            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Total de usuarios",
+                Description = $"Cantidad: {usuarios}",
+            });
         }
 
         [Command("eliminarmensaje"), Description("Elimina un mensaje de Yumiko."), RequireOwner]
@@ -286,8 +320,11 @@ namespace Discord_Bot.Modulos
             else
             {
                 var mensaje = await ctx.RespondAsync("Solo puedo borrar mis propios mensajes");
-                await Task.Delay(3000);
-                await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                {
+                    await Task.Delay(3000);
+                    await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                }
             }
         }
 
@@ -321,7 +358,8 @@ namespace Discord_Bot.Modulos
                         resultados += $"{cont} - **{res.name}** ({res.type})\n";
                         cont++;
                     }
-                    await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
+                    if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                        await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
                     var elegirRes = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Elije con un número el anime deseado",
@@ -337,8 +375,11 @@ namespace Discord_Bot.Modulos
                         {
                             if (numElegir > 0 && (numElegir <= resBusqueda.Count))
                             {
-                                await elegirRes.DeleteAsync("Auto borrado de Yumiko");
-                                await msgElegirInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                                {
+                                    await elegirRes.DeleteAsync("Auto borrado de Yumiko");
+                                    await msgElegirInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                }
                                 var elegido = resBusqueda[numElegir - 1];
                                 var mensajeLinks = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                                 {
@@ -348,7 +389,8 @@ namespace Discord_Bot.Modulos
                                     Color = funciones.GetColor()
                                 });
                                 var links = await animeflv.GetLinks(elegido.href, elegido.name);
-                                await mensajeLinks.DeleteAsync("Auto borrado de Yumiko");
+                                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                                    await mensajeLinks.DeleteAsync("Auto borrado de Yumiko");
                                 Dictionary<string, Stream> dic = new Dictionary<string, Stream>
                             {
                                 {"descargaLinks.txt",  (FileStream)funciones.CrearArchivoMonoschinos(links)}
@@ -361,30 +403,42 @@ namespace Discord_Bot.Modulos
                             else
                             {
                                 var msg = await ctx.RespondAsync($"El número indicado debe ser valido");
-                                await Task.Delay(3000);
-                                await msg.DeleteAsync("Auto borrado de Yumiko");
+                                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                                {
+                                    await Task.Delay(3000);
+                                    await msg.DeleteAsync("Auto borrado de Yumiko");
+                                }
                             }
                         }
                         else
                         {
                             var msg = await ctx.RespondAsync($"La eleccion debe ser indicada con un numero");
-                            await Task.Delay(3000);
-                            await msg.DeleteAsync("Auto borrado de Yumiko");
+                            if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                            {
+                                await Task.Delay(3000);
+                                await msg.DeleteAsync("Auto borrado de Yumiko");
+                            }
                         }
                     }
                     else
                     {
                         var msg = await ctx.RespondAsync($"Tiempo agotado esperando eleccion de anime");
-                        await Task.Delay(3000);
-                        await msg.DeleteAsync("Auto borrado de Yumiko");
+                        if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                        {
+                            await Task.Delay(3000);
+                            await msg.DeleteAsync("Auto borrado de Yumiko");
+                        }   
                     }
                 }
                 else
                 {
                     var msg = await ctx.RespondAsync($"No se encontraron resultados para {buscar}");
-                    await Task.Delay(3000);
-                    await msg.DeleteAsync("Auto borrado de Yumiko");
-                    await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
+                    if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                    {
+                        await Task.Delay(3000);
+                        await msg.DeleteAsync("Auto borrado de Yumiko");
+                        await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
+                    }
                 }
             }
             else
@@ -396,8 +450,11 @@ namespace Discord_Bot.Modulos
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
                 });
-                await Task.Delay(3000);
-                await msg.DeleteAsync("Auto borrado de Yumiko");
+                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                {
+                    await Task.Delay(3000);
+                    await msg.DeleteAsync("Auto borrado de Yumiko");
+                }      
             }
         }
     }

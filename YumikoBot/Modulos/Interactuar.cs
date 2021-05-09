@@ -66,9 +66,11 @@ namespace Discord_Bot.Modulos
                 {
                     options += "\n   - " + msj;
                 }
-                await mensajeBot.DeleteAsync().ConfigureAwait(false);
-                await msg.Result.DeleteAsync().ConfigureAwait(false);
-
+                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                {
+                    await mensajeBot.DeleteAsync().ConfigureAwait(false);
+                    await msg.Result.DeleteAsync().ConfigureAwait(false);
+                }
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
@@ -99,8 +101,11 @@ namespace Discord_Bot.Modulos
             else
             {
                 DiscordMessage msgError = await ctx.RespondAsync("Debes pasar un emote").ConfigureAwait(false);
-                await Task.Delay(3000);
-                await msgError.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
+                if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                {
+                    await Task.Delay(3000);
+                    await msgError.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
+                }
             }
         }
 

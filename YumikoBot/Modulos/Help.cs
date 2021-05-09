@@ -109,8 +109,12 @@ namespace Discord_Bot.Modulos
                 else
                 {
                     var msgError = await ctx.RespondAsync($"No se ha encontrado el comando `{comando}`").ConfigureAwait(false);
-                    await Task.Delay(3000);
-                    await msgError.DeleteAsync().ConfigureAwait(false);
+                    if (ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember) == DSharpPlus.Permissions.ManageMessages)
+                    {
+                        await Task.Delay(3000);
+                        await msgError.DeleteAsync().ConfigureAwait(false);
+                    }
+                        
                 }
             }
         }

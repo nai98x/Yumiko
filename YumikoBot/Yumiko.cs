@@ -29,6 +29,10 @@ namespace Discord_Bot
 
         private DiscordChannel LogChannel;
 
+        private DiscordChannel LogChannelServers;
+
+        private DiscordChannel LogChannelErrores;
+
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         private bool Debug;
@@ -109,9 +113,18 @@ namespace Discord_Bot
 
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             if (Debug)
+            {
                 LogChannel = LogGuild.GetChannel(820711607796891658);
+                LogChannelServers = LogGuild.GetChannel(840440818921897985);
+                LogChannelErrores = LogGuild.GetChannel(840440877565739008);
+            }
             else
+            {
                 LogChannel = LogGuild.GetChannel(781679685838569502);
+                LogChannelServers = LogGuild.GetChannel(840437931847974932);
+                LogChannelErrores = LogGuild.GetChannel(840439731011452959);
+            }
+                
             await RotarEstado(prefix);
         }
 
@@ -147,10 +160,10 @@ namespace Discord_Bot
         private Task Client_GuildCreated(DiscordClient c, GuildCreateEventArgs e)
         {
             c.Logger.LogInformation($"Yumiko ha entrado al servidor: {e.Guild.Name}", DateTime.Now);
-            LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            LogChannelServers.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
                 Title = "Nuevo servidor",
-                Description = $"Yumiko ha entrado al servidor **{e.Guild.Name}**\n   Miembros: **{e.Guild.Members}**",
+                Description = $"Yumiko ha entrado al servidor **{e.Guild.Name}**\n   Miembros: **{e.Guild.MemberCount}**",
                 Footer = new EmbedFooter()
                 {
                     Text = $"{DateTimeOffset.Now}"
@@ -163,10 +176,10 @@ namespace Discord_Bot
         private Task Client_GuildDeleted(DiscordClient sender, GuildDeleteEventArgs e)
         {
             sender.Logger.LogInformation($"Yumiko ha sido removida del servidor: {e.Guild.Name}", DateTime.Now);
-            LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            LogChannelServers.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
                 Title = "Bye-bye servidor",
-                Description = $"Yumiko ha sido removida del servidor **{e.Guild.Name}**\n   Miembros: **{e.Guild.Members}**",
+                Description = $"Yumiko ha sido removida del servidor **{e.Guild.Name}**\n   Miembros: **{e.Guild.MemberCount}**",
                 Footer = new EmbedFooter()
                 {
                     Text = $"{DateTimeOffset.Now}"
@@ -181,7 +194,7 @@ namespace Discord_Bot
             c.Logger.LogError($"Ha ocurrido una excepcion: {e.Exception.GetType()}: {e.Exception.Message}", DateTime.Now);
             if(e.Exception.Message != "An event handler caused the invocation of an asynchronous event to time out.")
             {
-                LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
                     Title = "Ha ocurrido una excepcion",
                     Footer = new EmbedFooter()
@@ -281,6 +294,38 @@ namespace Discord_Bot
                     Title = "Comando mal escrito",
                     Description = $"{emoji} Pone el comando bien, " + e.Context.User.Username + " baka.",
                     Color = DiscordColor.Yellow
+                };
+                var mensajeErr = e.Context.RespondAsync(embed: embed);
+                await Task.Delay(3000);
+                await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+            }
+            else if (e.Exception.Message == "Unauthorized: 403")
+            {
+                await LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                {
+                    Title = "Permisos faltantes",
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{e.Context.Message.Timestamp}"
+                    },
+                    Author = new EmbedAuthor()
+                    {
+                        IconUrl = e.Context.User.AvatarUrl,
+                        Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                    },
+                    Color = DiscordColor.Red
+                }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                .AddField("Mensaje", $"{e.Context.Message.Content}", false)
+                );
+
+                var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = "Permisos faltantes",
+                    Description = $"{emoji} Me faltan permisos para poder ejecutar este comando.",
+                    Color = DiscordColor.Red
                 };
                 var mensajeErr = e.Context.RespondAsync(embed: embed);
                 await Task.Delay(3000);

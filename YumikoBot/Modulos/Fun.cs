@@ -181,11 +181,15 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("love"), Description("Muestra el porcentaje de amor entre dos usuarios."), RequireGuild]
-        public async Task Love(CommandContext ctx, DiscordMember user1, DiscordMember user2 = null)
+        public async Task Love(CommandContext ctx, DiscordMember user1 = null, DiscordMember user2 = null)
         {
             int porcentajeAmor;
             string titulo;
-            if((user2 == null && user1.Id == ctx.Member.Id) || (user2 != null && user1.Id == user2.Id))
+            if (user1 == null) 
+            {
+                user1 = ctx.Member;
+            }
+            if ((user2 == null && user1.Id == ctx.Member.Id) || (user2 != null && user1.Id == user2.Id))
             {
                 titulo = $"Amor propio de **{user1.Username}#{user1.Discriminator}**";
             }
