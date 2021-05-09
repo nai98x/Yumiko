@@ -337,7 +337,22 @@ namespace Discord_Bot
                 if(e.Exception.Message != "One or more pre-execution checks failed.")
                 {
                     e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} trato de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}", DateTime.Now);
-                    await LogChannel.SendMessageAsync($"**{e.Context.User.Username}** trato de ejecutar **{e.Command?.QualifiedName ?? "<comando desconocido>"}** pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}");
+                    await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder {
+                        Title = "Error no controlado",
+                        Description= $"{e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}",
+                        Color = DiscordColor.Red,
+                        Footer = new EmbedFooter()
+                        {
+                            Text = $"{e.Context.Message.Timestamp}"
+                        },
+                        Author = new EmbedAuthor()
+                        {
+                            IconUrl = e.Context.User.AvatarUrl,
+                            Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                        }
+                    }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                    .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                    .AddField("Mensaje", $"{e.Context.Message.Content}", false));
                 }
                 if (e.Exception is ChecksFailedException ex)
                 {

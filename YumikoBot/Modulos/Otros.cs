@@ -21,27 +21,13 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
-            int n = 0;
-            string resp = "";
-            var timezones = TimeZoneInfo.GetSystemTimeZones();
-            foreach(var t in timezones)
-            {
-                if(n < 50)
-                {
-                    resp += $"{t.Id}\n";
-                    n++;
-                }
-                if(n >= 50)
-                {
-                    await ctx.RespondAsync(resp);
-                    resp = "";
-                    n = 0;
-                }
-            }
-            if (n < 50)
-            {
-                await ctx.RespondAsync(resp);
-            }
+            var reallyLongString = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+            reallyLongString += "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).";
+
+            var interactivity = ctx.Client.GetInteractivity();
+            var pages = interactivity.GeneratePagesInEmbed(reallyLongString);
+
+            //await ctx.Channel.SendPaginatedMessageAsync(ctx.Member, pages, deletion:DSharpPlus.Interactivity.Enums.PaginationDeletion.KeepEmojis);
         }
 
         [Command("horarios"), Aliases("recordatorios", "horario", "recordatorio"), Description("Horarios para diversos paises.")]
@@ -322,8 +308,10 @@ namespace Discord_Bot.Modulos
                                 var msg = await ctx.RespondAsync($"El número indicado debe ser valido");
                                 if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                                 {
-                                    await Task.Delay(3000);
+                                    await Task.Delay(5000);
                                     await msg.DeleteAsync("Auto borrado de Yumiko");
+                                    await elegirRes.DeleteAsync("Auto borrado de Yumiko");
+                                    await msgElegirInter.Result.DeleteAsync("Auto borrado de Yumiko");
                                 }
                             }
                         }
@@ -332,8 +320,10 @@ namespace Discord_Bot.Modulos
                             var msg = await ctx.RespondAsync($"La eleccion debe ser indicada con un numero");
                             if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                             {
-                                await Task.Delay(3000);
+                                await Task.Delay(5000);
                                 await msg.DeleteAsync("Auto borrado de Yumiko");
+                                await elegirRes.DeleteAsync("Auto borrado de Yumiko");
+                                await msgElegirInter.Result.DeleteAsync("Auto borrado de Yumiko");
                             }
                         }
                     }
@@ -342,8 +332,10 @@ namespace Discord_Bot.Modulos
                         var msg = await ctx.RespondAsync($"Tiempo agotado esperando eleccion de anime");
                         if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                         {
-                            await Task.Delay(3000);
+                            await Task.Delay(5000);
                             await msg.DeleteAsync("Auto borrado de Yumiko");
+                            await elegirRes.DeleteAsync("Auto borrado de Yumiko");
+                            await msgElegirInter.Result.DeleteAsync("Auto borrado de Yumiko");
                         }   
                     }
                 }
@@ -352,7 +344,7 @@ namespace Discord_Bot.Modulos
                     var msg = await ctx.RespondAsync($"No se encontraron resultados para {buscar}");
                     if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                     {
-                        await Task.Delay(3000);
+                        await Task.Delay(5000);
                         await msg.DeleteAsync("Auto borrado de Yumiko");
                         await msgBusqueda.DeleteAsync("Auto borrado de Yumiko");
                     }
@@ -369,7 +361,7 @@ namespace Discord_Bot.Modulos
                 });
                 if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                 {
-                    await Task.Delay(3000);
+                    await Task.Delay(5000);
                     await msg.DeleteAsync("Auto borrado de Yumiko");
                 }      
             }
