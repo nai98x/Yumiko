@@ -264,7 +264,7 @@ namespace Discord_Bot
                     Color = DiscordColor.Red
                 };
                 var mensajeErr = e.Context.RespondAsync(embed: embed);
-                await Task.Delay(3000);
+                await Task.Delay(7000);
                 await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
                 await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
             }
@@ -296,7 +296,7 @@ namespace Discord_Bot
                     Color = DiscordColor.Yellow
                 };
                 var mensajeErr = e.Context.RespondAsync(embed: embed);
-                await Task.Delay(3000);
+                await Task.Delay(7000);
                 await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
                 await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
             }

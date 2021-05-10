@@ -43,9 +43,7 @@ namespace Discord_Bot.Modulos
                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo personajes...").ConfigureAwait(false);
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
-                        "       characters(sort:";
-                query += settings.Orden;
-                query +="){" +
+                        "       characters(sort: FAVOURITES_DESC){" +
                         "           siteUrl," +
                         "           favourites," +
                         "           name{" +
@@ -179,6 +177,11 @@ namespace Discord_Bot.Modulos
             else
             {
                 var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
+                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                {
+                    await Task.Delay(5000);
+                    await error.DeleteAsync("Auto borrado de Yumiko");
+                }
             }
         }
 
@@ -206,9 +209,7 @@ namespace Discord_Bot.Modulos
                 var characterList = new List<Character>();
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
-                        "       characters(sort: ";
-                query += settings.Orden;
-                query += "){" +
+                        "       characters(sort: FAVOURITES_DESC){" +
                         "           siteUrl," +
                         "           name{" +
                         "               full" +
@@ -382,6 +383,11 @@ namespace Discord_Bot.Modulos
             else
             {
                 var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
+                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                {
+                    await Task.Delay(5000);
+                    await error.DeleteAsync("Auto borrado de Yumiko");
+                }
             }
         }
 
@@ -409,9 +415,7 @@ namespace Discord_Bot.Modulos
                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo mangas...").ConfigureAwait(false);
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
-                        "       media(type: MANGA, sort: ";
-                query += settings.Orden;
-                query += "){" +
+                        "       media(type: MANGA, sort: FAVOURITES_DESC){" +
                         "           siteUrl," +
                         "           favourites," +
                         "           title{" +
@@ -556,6 +560,11 @@ namespace Discord_Bot.Modulos
             else
             {
                 var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
+                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                {
+                    await Task.Delay(5000);
+                    await error.DeleteAsync("Auto borrado de Yumiko");
+                }
             }
         }
 
@@ -862,9 +871,6 @@ namespace Discord_Bot.Modulos
                                 ok = false;
                                 msgError = "Tiempo agotado esperando el tag";
                             }
-                            
-
-                            
                         }
                         catch (Exception ex)
                         {
@@ -898,9 +904,12 @@ namespace Discord_Bot.Modulos
             if (!ok)
             {
                 var error = await ctx.RespondAsync(msgError);
-                await Task.Delay(3000);
                 if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                {
+                    await Task.Delay(3000);
                     await error.DeleteAsync("Auto borrado de Yumiko");
+                }
+                    
             }
         }
 
@@ -928,9 +937,7 @@ namespace Discord_Bot.Modulos
                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo animes...").ConfigureAwait(false);
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
-                        "       media(type: ANIME, sort: ";
-                query += settings.Orden;
-                query += "){" +
+                        "       media(type: ANIME, sort: FAVOURITES_DESC){" +
                         "           siteUrl," +
                         "           favourites," +
                         "           title{" +
@@ -944,7 +951,8 @@ namespace Discord_Bot.Modulos
                         "               nodes{" +
                         "                   name," +
                         "                   siteUrl," +
-                        "                   favourites" +
+                        "                   favourites," +
+                        "                   isAnimationStudio" +
                         "               }" +
                         "           }" +
                         "       }" +
@@ -984,12 +992,15 @@ namespace Discord_Bot.Modulos
                             };
                             foreach (var estudio in x.studios.nodes)
                             {
-                                anim.Estudios.Add(new Estudio()
+                                if(estudio.isAnimationStudio == "true")
                                 {
-                                    Nombre = estudio.name,
-                                    SiteUrl = estudio.siteUrl,
-                                    Favoritos = estudio.favourites
-                                });
+                                    anim.Estudios.Add(new Estudio()
+                                    {
+                                        Nombre = estudio.name,
+                                        SiteUrl = estudio.siteUrl,
+                                        Favoritos = estudio.favourites
+                                    });
+                                }
                             }
                             popularidad++;
                             if (anim.Estudios.Count() > 0)
@@ -1092,6 +1103,11 @@ namespace Discord_Bot.Modulos
             else
             {
                 var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
+                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                {
+                    await Task.Delay(5000);
+                    await error.DeleteAsync("Auto borrado de Yumiko");
+                }
             }
         }
 

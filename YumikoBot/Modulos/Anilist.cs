@@ -934,9 +934,9 @@ namespace Discord_Bot.Modulos
                             case HttpStatusCode.Forbidden:
                                 msg = "Acceso denegado";
                                 break;
-                            //case HttpStatusCode.TooManyRequests:
-                            //    msg = "Ratelimit excedido";
-                            //    break;
+                            case HttpStatusCode.TooManyRequests:
+                                msg = "Ratelimit excedido";
+                                break;
                             case HttpStatusCode.InternalServerError:
                             case HttpStatusCode.ServiceUnavailable:
                                 msg = "Error interno en el servidor de Trace.moe";
@@ -966,7 +966,7 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("pj"), Description("Personaje aleatorio.")]
-        public async Task W(CommandContext ctx)
+        public async Task Pj(CommandContext ctx)
         {
             string name = "", imageUrl = "", siteUrl = "", titleMedia = "", siteUrlMedia = "";
             int favoritos = 0;

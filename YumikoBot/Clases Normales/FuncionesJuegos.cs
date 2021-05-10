@@ -58,7 +58,8 @@ namespace Discord_Bot
             {
                 Title = $"Resultados - Adivina el {juego}",
                 Description = resultados,
-                Color = funciones.GetColor()
+                Color = funciones.GetColor(),
+                Footer = funciones.GetFooter(ctx)
             }).ConfigureAwait(false);
         }
 
@@ -103,31 +104,26 @@ namespace Discord_Bot
                                             iterIni = 1;
                                             iterFin = 10;
                                             dificultadStr = "Fácil";
-                                            orden = "FAVOURITES_DESC";
                                             break;
                                         case 2:
                                             iterIni = 10;
                                             iterFin = 30;
                                             dificultadStr = "Media";
-                                            orden = "FAVOURITES_DESC";
                                             break;
                                         case 3:
                                             iterIni = 30;
                                             iterFin = 60;
                                             dificultadStr = "Dificil";
-                                            orden = "FAVOURITES_DESC";
                                             break;
                                         case 4:
                                             iterIni = 60;
                                             iterFin = 100;
                                             dificultadStr = "Extremo";
-                                            orden = "FAVOURITES_DESC";
                                             break;
                                         default:
                                             iterIni = 6;
                                             iterFin = 20;
                                             dificultadStr = "Medio";
-                                            orden = "FAVOURITES_DESC";
                                             break;
                                     }
                                     if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
@@ -143,8 +139,7 @@ namespace Discord_Bot
                                         Rondas = rondas,
                                         IterIni = iterIni,
                                         IterFin = iterFin,
-                                        Dificultad = dificultadStr,
-                                        Orden = orden
+                                        Dificultad = dificultadStr
                                     };
                                 }
                                 else
