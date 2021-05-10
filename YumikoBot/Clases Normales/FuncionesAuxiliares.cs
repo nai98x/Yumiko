@@ -100,7 +100,11 @@ namespace Discord_Bot
                 var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
                 return resp.First;
             }
-            return 0;
+            else
+            {
+                Random rnd = new Random();
+                return rnd.Next(minValue: min, maxValue: max);
+            }
         }
 
         public string NormalizarField(string s)
