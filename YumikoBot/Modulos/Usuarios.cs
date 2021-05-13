@@ -52,8 +52,11 @@ namespace Discord_Bot.Modulos
             }
             if (string.IsNullOrEmpty(desc))
             {
-                desc = "(No hay ningún usuario registrado que cumpla años este mes)";
+                desc = "(No hay ningún usuario registrado que cumpla años este mes)\n";
             }
+
+            if (string.IsNullOrEmpty(flag) || flag != "-all")
+                desc += "\n**Tip:** Si agregas ` -all` al final del comando, veras todos los cumpleaños registrados.";
 
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
@@ -74,7 +77,7 @@ namespace Discord_Bot.Modulos
                 Title = "Escribe tu fecha de nacimiento",
                 Description = "En este formato: **dd/mm/yyyy**\n  Ejemplo: 30/01/2000"
             });
-            var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+            var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(60));
             if (!msgFechaInter.TimedOut)
             {
                 bool result = DateTime.TryParse(msgFechaInter.Result.Content, CultureInfo.CreateSpecificCulture("es-ES"), DateTimeStyles.None, out DateTime fecha);
@@ -116,7 +119,13 @@ namespace Discord_Bot.Modulos
                         }
                         else
                         {
-                            msgError = await ctx.RespondAsync("Ingresa bien la respuesta, baka");
+                            string content = msgOcultarInter.Result.Content.ToLower().Trim();
+                            if (content == "1- Si" || content == "Si")
+                                await usuariosService.SetBirthday(ctx, fecha, true);
+                            else if (content == "2- No" || content == "No")
+                                await usuariosService.SetBirthday(ctx, fecha, false);
+                            else
+                                msgError = await ctx.RespondAsync("Ingresa bien la respuesta, baka");
                         }
                     }
                     else

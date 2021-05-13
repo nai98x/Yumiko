@@ -97,7 +97,6 @@ namespace Discord_Bot
                                         dificultad = funciones.GetNumeroRandom(1, 4);
                                     int iterIni;
                                     int iterFin;
-                                    string orden;
                                     switch (dificultad)
                                     {
                                         case 1:
@@ -128,10 +127,15 @@ namespace Discord_Bot
                                     }
                                     if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                                     {
-                                        await msgCntRondas.DeleteAsync("Auto borrado de Yumiko");
-                                        await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                        await msgDificultad.DeleteAsync("Auto borrado de Yumiko");
-                                        await msgDificultadInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                        
+                                        if(msgCntRondas != null && ctx.Channel.GetMessageAsync(msgCntRondas.Id) != null)
+                                            await msgCntRondas.DeleteAsync("Auto borrado de Yumiko");
+                                        if (msgRondasInter.Result != null && ctx.Channel.GetMessageAsync(msgRondasInter.Result.Id) != null)
+                                            await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                        if (msgDificultad != null && ctx.Channel.GetMessageAsync(msgDificultad.Id) != null)
+                                            await msgDificultad.DeleteAsync("Auto borrado de Yumiko");
+                                        if (msgDificultadInter.Result != null && ctx.Channel.GetMessageAsync(msgDificultadInter.Result.Id) != null)
+                                            await msgDificultadInter.Result.DeleteAsync("Auto borrado de Yumiko");
                                     }
                                     return new SettingsJuego()
                                     {
@@ -197,9 +201,10 @@ namespace Discord_Bot
             }
         }
 
-        public async Task<string> GetEstadisticasDificultad(CommandContext ctx, string tipoStats, string dificultad)
+        public async Task<string> GetEstadisticasDificultad(CommandContext ctx, string tipoStats, string dificultad, string flag)
         {
-            List<StatsJuego> res = await leaderboard.GetLeaderboard(ctx, dificultad, tipoStats);
+            bool global = !string.IsNullOrEmpty(flag) && flag == "-g";
+            List<StatsJuego> res = await leaderboard.GetLeaderboard(ctx, dificultad, tipoStats, global);
             string stats = "";
             int pos = 0;
             int lastScore = 0;
@@ -240,86 +245,103 @@ namespace Discord_Bot
             return stats;
         }
 
-        public async Task<DiscordEmbedBuilder> GetEstadisticas(CommandContext ctx, string juego)
+        public async Task<DiscordEmbedBuilder> GetEstadisticas(CommandContext ctx, string juego, string flag)
         {
-            string facil = await GetEstadisticasDificultad(ctx, juego, "Fácil");
-            string media = await GetEstadisticasDificultad(ctx, juego, "Media");
-            string dificil = await GetEstadisticasDificultad(ctx, juego, "Dificil");
-            string extremo = await GetEstadisticasDificultad(ctx, juego, "Extremo");
+            string facil = await GetEstadisticasDificultad(ctx, juego, "Fácil", flag);
+            string media = await GetEstadisticasDificultad(ctx, juego, "Media", flag);
+            string dificil = await GetEstadisticasDificultad(ctx, juego, "Dificil", flag);
+            string extremo = await GetEstadisticasDificultad(ctx, juego, "Extremo", flag);
 
-            var builder = CrearEmbedStats(ctx, $"Estadisticas - Adivina el {juego}", facil, media, dificil, extremo);
+            var builder = CrearEmbedStats(ctx, $"Estadisticas - Adivina el {juego}", facil, media, dificil, extremo, flag);
             return builder;
         }
 
-        public async Task<DiscordEmbedBuilder> GetEstadisticasTag(CommandContext ctx)
+        public async Task<DiscordEmbedBuilder> GetEstadisticasTag(CommandContext ctx, string flag)
         {
             string msgError = "";
             var interactivity = ctx.Client.GetInteractivity();
-            List<string> tagsList = await leaderboard.GetTags();
-            string tags = "";
-            int cont = 1;
-            foreach(string s in tagsList)
+            List<string> tagsList = await leaderboard.GetTags(ctx);
+            if (tagsList.Count > 0)
             {
-                tags += $"{cont} - {s}\n";
-                cont++;
-            }
-            var msgOpciones = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
-            {
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor(),
-                Title = "Elije el tag escribiendo su número",
-                Description = tags
-            });
-            var msgElegirTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-            if (!msgElegirTagInter.TimedOut)
-            {
-                bool result = int.TryParse(msgElegirTagInter.Result.Content, out int numTagElegir);
-                if (result)
+                string tags = "";
+                int cont = 1;
+                foreach (string s in tagsList)
                 {
-                    if (numTagElegir > 0 && (numTagElegir <= tagsList.Count))
+                    tags += $"{cont} - {s}\n";
+                    cont++;
+                }
+                var msgOpciones = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                    Title = "Elije el tag escribiendo su número",
+                    Description = tags
+                });
+                var msgElegirTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                if (!msgElegirTagInter.TimedOut)
+                {
+                    bool result = int.TryParse(msgElegirTagInter.Result.Content, out int numTagElegir);
+                    if (result)
                     {
-                        if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                        if (numTagElegir > 0 && (numTagElegir <= tagsList.Count))
                         {
-                            await msgOpciones.DeleteAsync("Auto borrado de Yumiko");
-                            await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                            if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                            {
+                                await msgOpciones.DeleteAsync("Auto borrado de Yumiko");
+                                await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                            }
+                            List<Anime> animeList = new List<Anime>();
+                            string elegido = tagsList[numTagElegir - 1];
+                            string stats = await GetEstadisticasDificultad(ctx, "tag", elegido, flag);
+                            return new DiscordEmbedBuilder
+                            {
+                                Title = $"Estadisticas - Adivina el {elegido}",
+                                Footer = funciones.GetFooter(ctx),
+                                Color = funciones.GetColor(),
+                                Description = stats
+                            };
                         }
-                        List<Anime> animeList = new List<Anime>();
-                        string elegido = tagsList[numTagElegir - 1];
-                        string stats = await GetEstadisticasDificultad(ctx, "tag", elegido);
-                        return  new DiscordEmbedBuilder
+                        else
                         {
-                            Title = $"Estadisticas - Adivina el {elegido}",
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            Description = stats
-                        };
+                            msgError = "El numero que indica el tag debe ser valido";
+                        }
                     }
                     else
                     {
-                        msgError = "El numero que indica el tag debe ser valido";
+                        msgError = "Debes indicar un numero para elegir el tag";
                     }
                 }
                 else
                 {
-                    msgError = "Debes indicar un numero para elegir el tag";
+                    msgError = "Tiempo agotado esperando el tag";
                 }
+                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                {
+                    await msgOpciones.DeleteAsync("Auto borrado de Yumiko");
+                    await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                }
+                return new DiscordEmbedBuilder
+                {
+                    Title = "Error",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = DiscordColor.Red,
+                    Description = msgError
+                };
             }
             else
             {
-                msgError = "Tiempo agotado esperando el tag";
+                return new DiscordEmbedBuilder
+                {
+                    Title = "Error",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = DiscordColor.Red,
+                    Description = "No se encontró ninguna partida de adivina el tag, juega partidas para consultar las estadísticas."
+                };
             }
-            if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
-            return new DiscordEmbedBuilder
-            {
-                Title = $"Error!",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor(),
-                Description = msgError
-            };
+            
         }
 
-        public DiscordEmbedBuilder CrearEmbedStats(CommandContext ctx, string titulo, string facil, string media, string dificil, string extremo)
+        public DiscordEmbedBuilder CrearEmbedStats(CommandContext ctx, string titulo, string facil, string media, string dificil, string extremo, string flag)
         {
             var builder = new DiscordEmbedBuilder
             {
@@ -335,7 +357,10 @@ namespace Discord_Bot
                 builder.AddField("Dificultad Dificil", dificil);
             if (!String.IsNullOrEmpty(extremo))
                 builder.AddField("Dificultad Extremo", extremo);
-
+            /* Comentado hasta unificar ranking de un usr en varios servidores
+            if (string.IsNullOrEmpty(flag) || flag != "-g")
+                builder.AddField("Tip", "Si agregas ` -g` al final del comando, veras las puntuaciones globales.");
+            */
             return builder;
         }
     }

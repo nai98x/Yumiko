@@ -66,11 +66,16 @@ namespace YumikoBot.DAL
             }
         }
 
-        public async Task<List<StatsJuego>> GetLeaderboard(CommandContext ctx, string dificultad, string juego)
+        public async Task<List<StatsJuego>> GetLeaderboard(CommandContext ctx, string dificultad, string juego, bool global)
         {
             List<StatsJuego> lista = new List<StatsJuego>();
             var listaFirebase = await GetLeaderboardFirebase();
-            var list = listaFirebase.Where(x => x.guild_id == (long)ctx.Guild.Id && x.dificultad == dificultad && x.juego == juego);
+            IEnumerable<Leaderboardo> list;
+            /* Comantado hasta unificar las estadisticas de un usuario en distintos servidores
+            if (global) 
+                list = listaFirebase.Where(x => x.dificultad == dificultad && x.juego == juego);
+            else */
+            list = listaFirebase.Where(x => x.guild_id == (long)ctx.Guild.Id && x.dificultad == dificultad && x.juego == juego);
             var listaVerif = ctx.Guild.Members.Values.ToList();
             list.ToList().ForEach(x =>
             {
@@ -90,10 +95,10 @@ namespace YumikoBot.DAL
             return lista.Take(10).ToList();
         }
         
-        public async Task<List<string>> GetTags()
+        public async Task<List<string>> GetTags(CommandContext ctx)
         {
             var listaFirebase = await GetLeaderboardFirebase();
-            var list = listaFirebase.Where(x => x.juego == "tag").ToList();
+            var list = listaFirebase.Where(x => x.guild_id == (long)ctx.Guild.Id && x.juego == "tag").ToList();
             var distinctTags = list
               .GroupBy(p => p.dificultad)
               .Select(g => g.First().dificultad)

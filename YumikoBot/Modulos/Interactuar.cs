@@ -5,6 +5,7 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,8 +16,50 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
         [Command("say"), Aliases("s"), Description("Yumiko habla en el chat.")]
-        public async Task Say(CommandContext ctx, [Description("Mensaje para replicar")][RemainingText]string mensaje)
+        public async Task Say(CommandContext ctx, [Description("Mensaje para replicar")][RemainingText] string mensaje = null)
         {
+            if (String.IsNullOrEmpty(mensaje))
+            {
+                var interactivity = ctx.Client.GetInteractivity();
+                var msgAnime = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Escribe un mensaje",
+                    Description = "Ejemplo: Hola! Soy Yumiko",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                });
+                var msgAnimeInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                if (!msgAnimeInter.TimedOut)
+                {
+                    mensaje = msgAnimeInter.Result.Content;
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgAnime != null)
+                            await msgAnime.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgAnimeInter.Result != null)
+                            await msgAnimeInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                }
+                else
+                {
+                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "Error",
+                        Description = "Tiempo agotado esperando un mensaje",
+                        Footer = funciones.GetFooter(ctx),
+                        Color = DiscordColor.Red,
+                    });
+                    await Task.Delay(3000);
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgError != null)
+                            await msgError.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgAnime != null)
+                            await msgAnime.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                    return;
+                }
+            }
             await ctx.RespondAsync(mensaje);
         }
 

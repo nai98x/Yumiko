@@ -415,7 +415,7 @@ namespace Discord_Bot.Modulos
                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo mangas...").ConfigureAwait(false);
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
-                        "       media(type: MANGA, sort: FAVOURITES_DESC){" +
+                        "       media(type: MANGA, sort: FAVOURITES_DESC, isAdult:false){" +
                         "           siteUrl," +
                         "           favourites," +
                         "           title{" +
@@ -670,7 +670,7 @@ namespace Discord_Bot.Modulos
                                                 int porcentajeTag = 70;
                                                 string query1 = "query($pagina : Int){" +
                                                         "   Page(page: $pagina){" +
-                                                        "       media(type: ANIME, sort: POPULARITY_DESC, tag: \"" + elegido + "\", minimumTagRank:" + porcentajeTag + "){" +
+                                                        "       media(type: ANIME, sort: POPULARITY_DESC, tag: \"" + elegido + "\", minimumTagRank:" + porcentajeTag + ", isAdult:false){" +
                                                         "           siteUrl," +
                                                         "           favourites," +
                                                         "           title{" +
@@ -937,7 +937,7 @@ namespace Discord_Bot.Modulos
                 DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo animes...").ConfigureAwait(false);
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
-                        "       media(type: ANIME, sort: FAVOURITES_DESC){" +
+                        "       media(type: ANIME, sort: FAVOURITES_DESC, isAdult:false){" +
                         "           siteUrl," +
                         "           favourites," +
                         "           title{" +
@@ -1112,37 +1112,45 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("rankingC"), Aliases("statsC", "leaderboardC"), Description("Estadisticas de adivina el personaje."), RequireGuild]
-        public async Task EstadisticasAdivinaPersonaje(CommandContext ctx)
+        public async Task EstadisticasAdivinaPersonaje(CommandContext ctx, string flag = null)
         {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "personaje");
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "personaje", flag);
             await ctx.RespondAsync(embed: builder);
         }
 
         [Command("rankingA"), Aliases("statsA", "leaderboardA"), Description("Estadisticas de adivina el anime."), RequireGuild]
-        public async Task EstadisticasAdivinaAnime(CommandContext ctx)
+        public async Task EstadisticasAdivinaAnime(CommandContext ctx, string flag = null)
         {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "anime");
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "anime", flag);
             await ctx.RespondAsync(embed: builder);
         }
 
         [Command("rankingM"), Aliases("statsM", "leaderboardM"), Description("Estadisticas de adivina el anime."), RequireGuild]
-        public async Task EstadisticasAdivinaManga(CommandContext ctx)
+        public async Task EstadisticasAdivinaManga(CommandContext ctx, string flag = null)
         {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "manga");
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "manga", flag);
             await ctx.RespondAsync(embed: builder);
         }
 
         [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el anime."), RequireGuild]
-        public async Task EstadisticasAdivinaTag(CommandContext ctx)
+        public async Task EstadisticasAdivinaTag(CommandContext ctx, string flag = null)
         {
-            var builder = await funcionesJuegos.GetEstadisticasTag(ctx);
-            await ctx.RespondAsync(embed: builder);
+            var builder = await funcionesJuegos.GetEstadisticasTag(ctx, flag);
+            var msg = await ctx.RespondAsync(embed: builder);
+            if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+            {
+                if (builder.Title == "Error")
+                {
+                    await Task.Delay(5000);
+                    await msg.DeleteAsync("Auto borrado de Yumiko");
+                }
+            } 
         }
 
         [Command("rankingS"), Aliases("statsS", "leaderboardS"), Description("Estadisticas de adivina el estudio."), RequireGuild]
-        public async Task EstadisticasAdivinaEstudio(CommandContext ctx)
+        public async Task EstadisticasAdivinaEstudio(CommandContext ctx, string flag = null)
         {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "estudio");
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "estudio", flag);
             await ctx.RespondAsync(embed: builder);
         }
     }

@@ -27,7 +27,7 @@ namespace Discord_Bot
         public DiscordClient Client { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
 
-        private DiscordChannel LogChannel;
+        private DiscordChannel LogChannelGeneral;
 
         private DiscordChannel LogChannelServers;
 
@@ -74,11 +74,10 @@ namespace Discord_Bot
             Client = new DiscordClient(Config);
 
             Client.Ready += OnClientReady;
-            Client.GuildAvailable += Client_GuildAvailable;
             Client.ClientErrored += Client_ClientError;
             Client.GuildCreated += Client_GuildCreated;
             Client.GuildDeleted += Client_GuildDeleted;
-            Client.GuildUnavailable += Client_GuildUnavailable;
+            Client.Resumed += Client_Resumed;
 
             Client.UseInteractivity(new InteractivityConfiguration());
             Client.UseVoiceNext();
@@ -114,13 +113,13 @@ namespace Discord_Bot
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             if (Debug)
             {
-                LogChannel = LogGuild.GetChannel(820711607796891658);
+                LogChannelGeneral = LogGuild.GetChannel(820711607796891658);
                 LogChannelServers = LogGuild.GetChannel(840440818921897985);
                 LogChannelErrores = LogGuild.GetChannel(840440877565739008);
             }
             else
             {
-                LogChannel = LogGuild.GetChannel(781679685838569502);
+                LogChannelGeneral = LogGuild.GetChannel(781679685838569502);
                 LogChannelServers = LogGuild.GetChannel(840437931847974932);
                 LogChannelErrores = LogGuild.GetChannel(840439731011452959);
             }
@@ -133,37 +132,36 @@ namespace Discord_Bot
             while (true)
             {
                 await Task.Delay(30000);
-                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "Desarrollado con ♥️ por Nai" }, UserStatus.Online);
+                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "yumiko.uwu.ai" }, UserStatus.Online);
                 await Task.Delay(10000);
-                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = prefix + "help | yumiko.uwu.ai" }, UserStatus.Online);
+                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = prefix + "help" }, UserStatus.Online);
             }
         }
 
         private Task OnClientReady(DiscordClient c, ReadyEventArgs e)
         {
+            e.Handled = true;
             c.Logger.LogInformation("El cliente esta listo para procesar eventos.", DateTime.Now);
             return Task.CompletedTask;
         }
 
-        private Task Client_GuildAvailable(DiscordClient c, GuildCreateEventArgs e)
+        private Task Client_Resumed(DiscordClient c, ReadyEventArgs e)
         {
-            c.Logger.LogInformation($"Servidor disponible: {e.Guild.Name}", DateTime.Now);
-            return Task.CompletedTask;
-        }
-
-        private Task Client_GuildUnavailable(DiscordClient c, GuildDeleteEventArgs e)
-        {
-            c.Logger.LogInformation($"Servidor no disponible: {e.Guild.Name}", DateTime.Now);
+            e.Handled = true;
+            c.Logger.LogInformation("El cliente vuelve a estar listo para procesar eventos.", DateTime.Now);
             return Task.CompletedTask;
         }
 
         private Task Client_GuildCreated(DiscordClient c, GuildCreateEventArgs e)
         {
-            c.Logger.LogInformation($"Yumiko ha entrado al servidor: {e.Guild.Name}", DateTime.Now);
+            e.Handled = true;
             LogChannelServers.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
                 Title = "Nuevo servidor",
-                Description = $"Yumiko ha entrado al servidor **{e.Guild.Name}**\n   Miembros: **{e.Guild.MemberCount}**",
+                Description =
+                $"   **Id**: {e.Guild.Id}\n" +
+                $"   **Nombre**: {e.Guild.Name}\n" +
+                $"   **Miembros**: {e.Guild.MemberCount}\n",
                 Footer = new EmbedFooter()
                 {
                     Text = $"{DateTimeOffset.Now}"
@@ -175,11 +173,14 @@ namespace Discord_Bot
 
         private Task Client_GuildDeleted(DiscordClient sender, GuildDeleteEventArgs e)
         {
-            sender.Logger.LogInformation($"Yumiko ha sido removida del servidor: {e.Guild.Name}", DateTime.Now);
+            e.Handled = true;
             LogChannelServers.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
                 Title = "Bye-bye servidor",
-                Description = $"Yumiko ha sido removida del servidor **{e.Guild.Name}**\n   Miembros: **{e.Guild.MemberCount}**",
+                Description =
+                $"   **Id**: {e.Guild.Id}\n" +
+                $"   **Nombre**: {e.Guild.Name}\n" +
+                $"   **Miembros**: {e.Guild.MemberCount}\n",
                 Footer = new EmbedFooter()
                 {
                     Text = $"{DateTimeOffset.Now}"
@@ -191,8 +192,8 @@ namespace Discord_Bot
 
         private Task Client_ClientError(DiscordClient c, ClientErrorEventArgs e)
         {
-            c.Logger.LogError($"Ha ocurrido una excepcion: {e.Exception.GetType()}: {e.Exception.Message}", DateTime.Now);
-            if(e.Exception.Message != "An event handler caused the invocation of an asynchronous event to time out.")
+            e.Handled = true;
+            if (e.Exception.Message != "An event handler caused the invocation of an asynchronous event to time out.")
             {
                 LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
@@ -203,7 +204,8 @@ namespace Discord_Bot
                     },
                     Color = DiscordColor.Red
                 }.AddField("Tipo", $"{e.Exception.GetType()}", false)
-                .AddField("Mensaje", $"{e.Exception.Message}", false)
+                .AddField("Descripcion", $"{e.Exception.Message}", false)
+                .AddField("Evento", $"{e.EventName}", false)
                 );
             }
             return Task.CompletedTask;
@@ -211,34 +213,36 @@ namespace Discord_Bot
 
         private Task Commands_CommandExecuted(CommandsNextExtension cm, CommandExecutionEventArgs e)
         {
-            e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} ejecuto el comando '{e.Command.QualifiedName}'", DateTime.Now);
-            LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            e.Handled = true;
+            LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
                 Title = "Comando ejecutado",
                 Footer = new EmbedFooter()
                 {
-                    Text = $"{e.Context.Message.Timestamp}"
+                    Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}",
+                    IconUrl = e.Context.User.AvatarUrl
                 },
                 Author = new EmbedAuthor()
                 {
-                    IconUrl = e.Context.User.AvatarUrl,
-                    Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                    IconUrl = e.Context.Guild.IconUrl,
+                    Name = $"{e.Context.Guild.Name}"
                 },
                 Color = DiscordColor.Green
-            }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
-            .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+            }.AddField("Canal", $"#{e.Context.Channel.Name}", false)
             .AddField("Mensaje", $"{e.Context.Message.Content}", false)
             );
-            if (e.Context.Message != null)
+            if (e.Context.Message != null && funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
                 e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
             return Task.CompletedTask;
         }
 
         private async Task Commands_CommandErrored(CommandsNextExtension cm, CommandErrorEventArgs e)
         {
+            e.Handled = true;
+            string web = ConfigurationManager.AppSettings["Web"] + "#commands";
             if (e.Exception.Message == "Specified command was not found.")
             {
-                await LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
                     Title = "Comando no encontrado",
                     Footer = new EmbedFooter()
@@ -260,17 +264,25 @@ namespace Discord_Bot
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = "Comando no encontrado",
-                    Description = $"{emoji} No existe ese comando, " + e.Context.User.Username + " baka.",
-                    Color = DiscordColor.Red
+                    Description = $"Puedes ver los comandos disponibles en mi [página web]({web}).",
+                    Color = DiscordColor.Red,
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"Invocado por {e.Context.Member.DisplayName} ({e.Context.Member.Username}#{e.Context.Member.Discriminator})",
+                        IconUrl = e.Context.Member.AvatarUrl
+                    }
                 };
                 var mensajeErr = e.Context.RespondAsync(embed: embed);
-                await Task.Delay(7000);
-                await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
-                await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+                if(e.Context.Message != null && mensajeErr != null && funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
+                {
+                    await Task.Delay(7000);
+                    await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                    await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+                }
             }
             else if (e.Exception.Message == "Could not find a suitable overload for the command.")
             {
-                await LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
                     Title = "Comando mal escrito",
                     Footer = new EmbedFooter()
@@ -292,17 +304,25 @@ namespace Discord_Bot
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = "Comando mal escrito",
-                    Description = $"{emoji} Pone el comando bien, " + e.Context.User.Username + " baka.",
-                    Color = DiscordColor.Yellow
+                    Description = $"Puedes ver ejemplos de como usar los comandos en mi [página web]({web}).",
+                    Color = DiscordColor.Yellow,
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"Invocado por {e.Context.Member.DisplayName} ({e.Context.Member.Username}#{e.Context.Member.Discriminator}) | {e.Context.Prefix}{e.Command.Name}",
+                        IconUrl = e.Context.Member.AvatarUrl
+                    }
                 };
                 var mensajeErr = e.Context.RespondAsync(embed: embed);
-                await Task.Delay(7000);
-                await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
-                await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+                if (e.Context.Message != null && mensajeErr != null && funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
+                {
+                    await Task.Delay(7000);
+                    await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                    await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+                }
             }
             else if (e.Exception.Message == "Unauthorized: 403")
             {
-                await LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
                     Title = "Permisos faltantes",
                     Footer = new EmbedFooter()
@@ -328,15 +348,17 @@ namespace Discord_Bot
                     Color = DiscordColor.Red
                 };
                 var mensajeErr = e.Context.RespondAsync(embed: embed);
-                await Task.Delay(3000);
-                await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
-                await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+                if (e.Context.Message != null && mensajeErr != null && funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
+                {
+                    await Task.Delay(3000);
+                    await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
+                    await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+                } 
             }
             else
             {
                 if(e.Exception.Message != "One or more pre-execution checks failed.")
                 {
-                    e.Context.Client.Logger.LogInformation($"{e.Context.User.Username} trato de ejecutar '{e.Command?.QualifiedName ?? "<comando desconocido>"}' pero falló: {e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}", DateTime.Now);
                     await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder {
                         Title = "Error no controlado",
                         Description= $"{e.Exception.GetType()}: {e.Exception.Message ?? "<sin mensaje>"}",
@@ -399,7 +421,7 @@ namespace Discord_Bot
                             Footer = footer
                         });
                         mensajes.Add(msg.Result);
-                        await LogChannel.SendMessageAsync(embed: new DiscordEmbedBuilder {
+                        await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder {
                             Title = titulo,
                             Description = descripcion,
                             Footer = new EmbedFooter()
@@ -416,11 +438,15 @@ namespace Discord_Bot
                         .AddField("Canal", $"#{e.Context.Channel.Name}", false)
                         .AddField("Mensaje", $"{e.Context.Message.Content}", false));
                     }
-                    await Task.Delay(3000);
-                    await e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
-                    foreach (DiscordMessage mensaje in mensajes)
+                    if (funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
                     {
-                        await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                        await Task.Delay(3000);
+                        if (e.Context.Message != null)
+                            await e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
+                        foreach (DiscordMessage mensaje in mensajes)
+                        {
+                            await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                        }
                     }
                 }
                 else
@@ -438,10 +464,22 @@ namespace Discord_Bot
                         Color = new DiscordColor(0xFF0000),
                         Footer = footer
                     });
-                    await Task.Delay(3000);
-                    if(e.Context.Message != null)
-                        await e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
-                    await msg.Result.DeleteAsync("Auto borrado de Yumiko");
+                    await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "Error desconocido",
+                        Description = $"{e.Exception.Message}",
+                        Color = DiscordColor.Red,
+                        Footer = footer
+                    }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                    .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                    .AddField("Mensaje", $"{e.Context.Message.Content}", false));
+                    if (funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
+                    {
+                        await Task.Delay(3000);
+                        if (e.Context.Message != null)
+                            await e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
+                        await msg.Result.DeleteAsync("Auto borrado de Yumiko");
+                    }
                 }
             }
         }

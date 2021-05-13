@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using DiscordBotsList.Api;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
@@ -21,13 +22,27 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
+            /*
             var reallyLongString = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
             reallyLongString += "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).";
 
             var interactivity = ctx.Client.GetInteractivity();
             var pages = interactivity.GeneratePagesInEmbed(reallyLongString);
 
-            //await ctx.Channel.SendPaginatedMessageAsync(ctx.Member, pages, deletion:DSharpPlus.Interactivity.Enums.PaginationDeletion.KeepEmojis);
+            await ctx.Channel.SendPaginatedMessageAsync(ctx.Member, pages, deletion:DSharpPlus.Interactivity.Enums.PaginationDeletion.KeepEmojis);
+            */
+
+            /*
+            DiscordBotListApi DblApi = new DiscordBotListApi();
+
+            var botResp = DblApi.GetBotAsync(295182825521545218);
+            var bot = botResp.Result;
+            var user = DblApi.GetUserAsync(198212314892075009).Result;
+
+            var stats = DblApi.GetBotStatsAsync(295182825521545218).Result;
+            */
+
+            await ctx.RespondAsync("uwu");
         }
 
         [Command("horarios"), Aliases("recordatorios", "horario", "recordatorio"), Description("Horarios para diversos paises.")]
@@ -44,7 +59,7 @@ namespace Discord_Bot.Modulos
                     Title = "Ingresa una fecha (En zona horaria UTC)",
                     Description = "En este formato: **dd/mm/yyyy**\n  Ejemplo: 30/01/2000 23:15"
                 });
-                var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(60));
                 if (!msgFechaInter.TimedOut)
                 {
                     fechaPuesta = DateTime.TryParse(msgFechaInter.Result.Content, CultureInfo.CreateSpecificCulture("es-ES"), DateTimeStyles.None, out timeUtc);
@@ -171,10 +186,6 @@ namespace Discord_Bot.Modulos
             string servers = "";
             int cont = 1;
             int usuarios = 0;
-            await ctx.RespondAsync(embed : new DiscordEmbedBuilder { 
-                Title = "Servidores de Yumiko",
-                Description = $"Cantidad: {ctx.Client.Guilds.Count}",
-            });
             foreach (var guild in guilds)
             {
                 if (cont >= 10)
@@ -189,7 +200,7 @@ namespace Discord_Bot.Modulos
                     servers = "";
                 }
                 servers +=
-                    $"**{guild.Name}**" +
+                    $"**{guild.Name}**\n" +
                     $"  - **Id**: {guild.Id}\n" +
                     $"  - **Fecha que entró Yumiko**: {guild.JoinedAt}\n" +
                     $"  - **Miembros**: {guild.MemberCount}\n\n";
@@ -207,8 +218,8 @@ namespace Discord_Bot.Modulos
             }
             await ctx.RespondAsync(embed: new DiscordEmbedBuilder
             {
-                Title = "Total de usuarios",
-                Description = $"Cantidad: {usuarios}",
+                Title = "Servidores de Yumiko",
+                Description = $"Cantidad: {ctx.Client.Guilds.Count}\nTotal de usuarios: {usuarios}",
             });
         }
 

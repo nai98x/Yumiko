@@ -37,12 +37,13 @@ namespace Discord_Bot.Modulos
                 if (!msgUserInter.TimedOut)
                 {
                     usuario = msgUserInter.Result.Content;
-                    if(msgUsuario != null)
-                        if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgUsuario != null)
                             await msgUsuario.DeleteAsync("Auto borrado de Yumiko");
-                    if(msgUserInter.Result != null)
-                        if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                        if (msgUserInter.Result != null)
                             await msgUserInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                    }
                 }
                 else
                 {
@@ -53,16 +54,16 @@ namespace Discord_Bot.Modulos
                         Color = DiscordColor.Red,
                     });
                     await Task.Delay(3000);
-                    if (msgError != null)
-                        if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgError != null)
                             await msgError.DeleteAsync("Auto borrado de Yumiko");
-                    if (msgUsuario != null)
-                        if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                        if (msgUsuario != null)
                             await msgUsuario.DeleteAsync("Auto borrado de Yumiko");
+                    }
                     return;
                 }
             }
-
             var request = new GraphQLRequest
             {
                 Query =
@@ -228,8 +229,50 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("anime"), Description("Busco un anime en AniList")]
-        public async Task Anime(CommandContext ctx, [RemainingText][Description("Nombre del anime a buscar")] string anime)
+        public async Task Anime(CommandContext ctx, [RemainingText][Description("Nombre del anime a buscar")] string anime = null)
         {
+            if (String.IsNullOrEmpty(anime))
+            {
+                var interactivity = ctx.Client.GetInteractivity();
+                var msgAnime = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Escribe el nombre del anime",
+                    Description = "Ejemplo: Grisaia no Kajitsu",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                });
+                var msgAnimeInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                if (!msgAnimeInter.TimedOut)
+                {
+                    anime = msgAnimeInter.Result.Content;
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgAnime != null)
+                            await msgAnime.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgAnimeInter.Result != null)
+                            await msgAnimeInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                }
+                else
+                {
+                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "Error",
+                        Description = "Tiempo agotado esperando el usuario de AniList",
+                        Footer = funciones.GetFooter(ctx),
+                        Color = DiscordColor.Red,
+                    });
+                    await Task.Delay(3000);
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgError != null)
+                            await msgError.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgAnime != null)
+                            await msgAnime.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                    return;
+                }
+            }
             var request = new GraphQLRequest
             {
                 Query =
@@ -483,8 +526,50 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("manga"), Description("Busco un manga en AniList")]
-        public async Task Manga(CommandContext ctx, [RemainingText][Description("Nombre del manga a buscar")] string anime)
+        public async Task Manga(CommandContext ctx, [RemainingText][Description("Nombre del manga a buscar")] string manga = null)
         {
+            if (String.IsNullOrEmpty(manga))
+            {
+                var interactivity = ctx.Client.GetInteractivity();
+                var msgAnime = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Escribe un nombre del manga",
+                    Description = "Ejemplo: Berserk",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                });
+                var msgAnimeInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                if (!msgAnimeInter.TimedOut)
+                {
+                    manga = msgAnimeInter.Result.Content;
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgAnime != null)
+                            await msgAnime.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgAnimeInter.Result != null)
+                            await msgAnimeInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                }
+                else
+                {
+                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "Error",
+                        Description = "Tiempo agotado esperando el usuario de AniList",
+                        Footer = funciones.GetFooter(ctx),
+                        Color = DiscordColor.Red,
+                    });
+                    await Task.Delay(3000);
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgError != null)
+                            await msgError.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgAnime != null)
+                            await msgAnime.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                    return;
+                }
+            }
             var request = new GraphQLRequest
             {
                 Query =
@@ -525,7 +610,7 @@ namespace Discord_Bot.Modulos
                 "}",
                 Variables = new
                 {
-                    nombre = anime
+                    nombre = manga
                 }
             };
             try
@@ -698,7 +783,7 @@ namespace Discord_Bot.Modulos
             {
                 DiscordMessage msg = ex.Message switch
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false),
+                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el anime `{manga}`").ConfigureAwait(false),
                     _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
                 };
                 if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
@@ -710,8 +795,50 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("character"), Aliases("personaje"), Description("Busco un personaje en AniList")]
-        public async Task Character(CommandContext ctx, [RemainingText][Description("Nombre del personaje a buscar")] string personaje)
+        public async Task Character(CommandContext ctx, [RemainingText][Description("Nombre del personaje a buscar")] string personaje = null)
         {
+            if (String.IsNullOrEmpty(personaje))
+            {
+                var interactivity = ctx.Client.GetInteractivity();
+                var msgCharacter = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Escribe el nombre de un personaje",
+                    Description = "Ejemplo: Yumiko Sakaki",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                });
+                var msgCharacterInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                if (!msgCharacterInter.TimedOut)
+                {
+                    personaje = msgCharacterInter.Result.Content;
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgCharacter != null)
+                            await msgCharacter.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgCharacterInter.Result != null)
+                            await msgCharacterInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                }
+                else
+                {
+                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "Error",
+                        Description = "Tiempo agotado esperando el usuario de AniList",
+                        Footer = funciones.GetFooter(ctx),
+                        Color = DiscordColor.Red,
+                    });
+                    await Task.Delay(3000);
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgError != null)
+                            await msgError.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgCharacter != null)
+                            await msgCharacter.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                    return;
+                }
+            }
             var request = new GraphQLRequest
             {
                 Query =
@@ -872,8 +999,50 @@ namespace Discord_Bot.Modulos
         // Staff, algun dia
 
         [Command("sauce"), Description("Busca el anime de una imagen.")]
-        public async Task Sauce(CommandContext ctx, [Description("Link de la imagen")] string url)
+        public async Task Sauce(CommandContext ctx, [Description("Link de la imagen")] string url = null)
         {
+            if (String.IsNullOrEmpty(url))
+            {
+                var interactivity = ctx.Client.GetInteractivity();
+                var msgAnime = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Pon el link de una imagen",
+                    Description = "La imagen debe ser JPG, PNG o JPEG",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = funciones.GetColor(),
+                });
+                var msgAnimeInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                if (!msgAnimeInter.TimedOut)
+                {
+                    url = msgAnimeInter.Result.Content;
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgAnime != null)
+                            await msgAnime.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgAnimeInter.Result != null)
+                            await msgAnimeInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                }
+                else
+                {
+                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "Error",
+                        Description = "Tiempo agotado esperando el link de la imagen",
+                        Footer = funciones.GetFooter(ctx),
+                        Color = DiscordColor.Red,
+                    });
+                    await Task.Delay(3000);
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        if (msgError != null)
+                            await msgError.DeleteAsync("Auto borrado de Yumiko");
+                        if (msgAnime != null)
+                            await msgAnime.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                    return;
+                }
+            }
             string msg = "OK";
             if (url.Length > 0)
             {
@@ -1043,6 +1212,70 @@ namespace Discord_Bot.Modulos
                 }
                 return;
             }
+        }
+
+        [Command("recomendacion"), Description("Personaje aleatorio."), Aliases("recomendaciones", "recommendation", "recommendations"), Hidden]
+        public async Task Recommendation(CommandContext ctx, string anime = null)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            var msgAnime = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Escribe el nombre del anime",
+                Description = "Ejemplo: Grisaia no Kajitsu",
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor(),
+            });
+            var msgAnimeInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+            if (!msgAnimeInter.TimedOut)
+            {
+                anime = msgAnimeInter.Result.Content;
+                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                {
+                    if (msgAnime != null)
+                        await msgAnime.DeleteAsync("Auto borrado de Yumiko");
+                    if (msgAnimeInter.Result != null)
+                        await msgAnimeInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                }
+            }
+            else
+            {
+                var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Error",
+                    Description = "Tiempo agotado esperando el usuario de AniList",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = DiscordColor.Red,
+                });
+                await Task.Delay(3000);
+                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                {
+                    if (msgError != null)
+                        await msgError.DeleteAsync("Auto borrado de Yumiko");
+                    if (msgAnime != null)
+                        await msgAnime.DeleteAsync("Auto borrado de Yumiko");
+                }
+                return;
+            }
+            var request = new GraphQLRequest
+            {
+                Query =
+                "query($nombre : String){" +
+                "   Page(perPage:10){" +
+                "       media(type: ANIME, search: $nombre){" +
+                "           id," +
+                "           title{" +
+                "               romaji" +
+                "           }," +
+                "           siteUrl," +
+                "           isAdult" +
+                "       }" +
+                "   }" +
+                "}",
+                Variables = new
+                {
+                    nombre = anime
+                }
+            };
         }
     }
 }
