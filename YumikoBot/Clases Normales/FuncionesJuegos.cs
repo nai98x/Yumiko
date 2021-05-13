@@ -61,6 +61,7 @@ namespace Discord_Bot
                 Color = funciones.GetColor(),
                 Footer = funciones.GetFooter(ctx)
             }).ConfigureAwait(false);
+            await funciones.ChequearVotoTopGG(ctx);
         }
 
         public async Task<SettingsJuego> InicializarJuego(CommandContext ctx, InteractivityExtension interactivity)

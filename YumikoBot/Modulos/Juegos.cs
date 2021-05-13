@@ -1116,6 +1116,7 @@ namespace Discord_Bot.Modulos
         {
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "personaje", flag);
             await ctx.RespondAsync(embed: builder);
+            await funciones.ChequearVotoTopGG(ctx);
         }
 
         [Command("rankingA"), Aliases("statsA", "leaderboardA"), Description("Estadisticas de adivina el anime."), RequireGuild]
@@ -1123,6 +1124,7 @@ namespace Discord_Bot.Modulos
         {
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "anime", flag);
             await ctx.RespondAsync(embed: builder);
+            await funciones.ChequearVotoTopGG(ctx);
         }
 
         [Command("rankingM"), Aliases("statsM", "leaderboardM"), Description("Estadisticas de adivina el anime."), RequireGuild]
@@ -1130,6 +1132,7 @@ namespace Discord_Bot.Modulos
         {
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "manga", flag);
             await ctx.RespondAsync(embed: builder);
+            await funciones.ChequearVotoTopGG(ctx);
         }
 
         [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el anime."), RequireGuild]
@@ -1137,6 +1140,7 @@ namespace Discord_Bot.Modulos
         {
             var builder = await funcionesJuegos.GetEstadisticasTag(ctx, flag);
             var msg = await ctx.RespondAsync(embed: builder);
+            await funciones.ChequearVotoTopGG(ctx);
             if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
             {
                 if (builder.Title == "Error")
@@ -1152,6 +1156,7 @@ namespace Discord_Bot.Modulos
         {
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "estudio", flag);
             await ctx.RespondAsync(embed: builder);
+            await funciones.ChequearVotoTopGG(ctx);
         }
     }
 }

@@ -4,13 +4,18 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
 using FireSharp.Response;
+using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
+using YumikoBot;
 using YumikoBot.DAL;
 
 namespace Discord_Bot.Modulos
@@ -30,16 +35,6 @@ namespace Discord_Bot.Modulos
             var pages = interactivity.GeneratePagesInEmbed(reallyLongString);
 
             await ctx.Channel.SendPaginatedMessageAsync(ctx.Member, pages, deletion:DSharpPlus.Interactivity.Enums.PaginationDeletion.KeepEmojis);
-            */
-
-            /*
-            DiscordBotListApi DblApi = new DiscordBotListApi();
-
-            var botResp = DblApi.GetBotAsync(295182825521545218);
-            var bot = botResp.Result;
-            var user = DblApi.GetUserAsync(198212314892075009).Result;
-
-            var stats = DblApi.GetBotStatsAsync(295182825521545218).Result;
             */
 
             await ctx.RespondAsync("uwu");

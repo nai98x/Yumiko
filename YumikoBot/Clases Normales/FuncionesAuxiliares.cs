@@ -16,6 +16,7 @@ using FireSharp.Interfaces;
 using FireSharp.Config;
 using YumikoBot;
 using System.Globalization;
+using DiscordBotsList.Api;
 
 namespace Discord_Bot
 {
@@ -91,20 +92,8 @@ namespace Discord_Bot
         {
             if (min <= 0 && max <= 0)
                 return 0;
-            var client = new RestClient("http://www.randomnumberapi.com/api/v1.0/random?min=" + min + "&max=" + max + "&count=1");
-            var request = new RestRequest(Method.GET);
-            request.AddHeader("content-type", "application/x-www-form-urlencoded");
-            IRestResponse response = client.Execute(request);
-            if(response.StatusCode == HttpStatusCode.OK)
-            {
-                var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
-                return resp.First;
-            }
-            else
-            {
-                Random rnd = new Random();
-                return rnd.Next(minValue: min, maxValue: max);
-            }
+            Random rnd = new Random();
+            return rnd.Next(minValue: min, maxValue: max);
         }
 
         public string NormalizarField(string s)
@@ -271,6 +260,46 @@ namespace Discord_Bot
         public bool ChequearPermisoYumiko(CommandContext ctx, DSharpPlus.Permissions permiso)
         {
             return DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), permiso);
+        }
+
+        public async Task ChequearVotoTopGG(CommandContext ctx)
+        {
+            IDebuggingService mode = new DebuggingService();
+            bool debug = mode.RunningInDebugMode();
+            if (!debug)
+            {
+                if (GetNumeroRandom(1, 10) == 1)
+                {
+                    /*
+                    var json = string.Empty;
+                    using (var fs = File.OpenRead("config.json"))
+                    {
+                        using var sr = new StreamReader(fs, new UTF8Encoding(false));
+                        json = await sr.ReadToEndAsync().ConfigureAwait(false);
+                    }
+                    var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
+
+                    AuthDiscordBotListApi DblApi = new AuthDiscordBotListApi(ctx.Client.CurrentUser.Id, configJson.TopGG_token);
+                    bool voto = await DblApi.HasVoted(ctx.User.Id).ConfigureAwait(false);
+                    */
+                    bool voto = false;
+                    if (!voto)
+                    {
+                        string url = "https://top.gg/bot/295182825521545218/vote";
+                        var mensaje = await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
+                        {
+                            Title = $"¡Votame en Top.gg!",
+                            Description = $"Puedes ayudarme votando en [este sitio web]({url}). ¡Gracias!",
+                            Color = GetColor()
+                        }).ConfigureAwait(false);
+                        if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                        {
+                            await Task.Delay(5000);
+                            await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                        }
+                    }
+                }
+            }
         }
     }
 }

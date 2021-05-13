@@ -20,5 +20,8 @@ namespace YumikoBot
 
         [JsonProperty("firestore_secret")]
         public string Firestore_secret { get; private set; }
+
+        [JsonProperty("topgg_token")]
+        public string TopGG_token { get; private set; }
     }
 }
