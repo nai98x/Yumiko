@@ -157,11 +157,16 @@ namespace Discord_Bot
             e.Handled = true;
             LogChannelServers.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
+                Author = new EmbedAuthor()
+                {
+                    IconUrl = e.Guild.IconUrl,
+                    Name = $"{e.Guild.Name}"
+                },
                 Title = "Nuevo servidor",
                 Description =
                 $"   **Id**: {e.Guild.Id}\n" +
-                $"   **Nombre**: {e.Guild.Name}\n" +
-                $"   **Miembros**: {e.Guild.MemberCount}\n",
+                $"   **Miembros**: {e.Guild.MemberCount - 1}\n" +
+                $"   **Owner**: {e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator}",
                 Footer = new EmbedFooter()
                 {
                     Text = $"{DateTimeOffset.Now}"
@@ -176,11 +181,16 @@ namespace Discord_Bot
             e.Handled = true;
             LogChannelServers.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
+                Author = new EmbedAuthor()
+                {
+                    IconUrl = e.Guild.IconUrl,
+                    Name = $"{e.Guild.Name}"
+                },
                 Title = "Bye-bye servidor",
                 Description =
                 $"   **Id**: {e.Guild.Id}\n" +
-                $"   **Nombre**: {e.Guild.Name}\n" +
-                $"   **Miembros**: {e.Guild.MemberCount}\n",
+                $"   **Miembros**: {e.Guild.MemberCount - 1}\n" +
+                $"   **Owner**: {e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator}",
                 Footer = new EmbedFooter()
                 {
                     Text = $"{DateTimeOffset.Now}"

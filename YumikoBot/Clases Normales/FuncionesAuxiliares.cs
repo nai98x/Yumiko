@@ -17,6 +17,7 @@ using FireSharp.Config;
 using YumikoBot;
 using System.Globalization;
 using DiscordBotsList.Api;
+using DSharpPlus.Interactivity.Extensions;
 
 namespace Discord_Bot
 {
@@ -300,6 +301,223 @@ namespace Discord_Bot
                     }
                 }
             }
+        }
+
+        public async Task<DateTime?> CrearDate(CommandContext ctx)
+        {
+            DiscordMessage msgDia, msgMes, msgAnio, error;
+            DSharpPlus.Interactivity.InteractivityResult<DiscordMessage> msgDiaInter, msgMesInter, msgAnioInter;
+            var interactivity = ctx.Client.GetInteractivity();
+            msgDia = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Escribe el dia tu fecha de nacimiento",
+                Description = "Ejemplo: 30"
+            });
+            msgDiaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(60));
+            if (!msgDiaInter.TimedOut)
+            {
+                bool resultDia = int.TryParse(msgDiaInter.Result.Content, out int dia);
+                if (resultDia)
+                {
+                    msgMes = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "Escribe el mes tu fecha de nacimiento",
+                        Description = "Ejemplo: 1"
+                    });
+                    msgMesInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(60));
+                    if (!msgMesInter.TimedOut)
+                    {
+                        bool resultMes = int.TryParse(msgMesInter.Result.Content, out int mes);
+                        if (resultMes)
+                        {
+                            msgAnio = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            {
+                                Title = "Escribe el año tu fecha de nacimiento",
+                                Description = "Ejemplo: 2000"
+                            });
+                            msgAnioInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(60));
+                            if (!msgAnioInter.TimedOut)
+                            {
+                                bool resultAnio = int.TryParse(msgAnioInter.Result.Content, out int anio);
+                                if (resultAnio)
+                                {
+                                    bool result = DateTime.TryParse($"{dia}/{mes}/{anio}", CultureInfo.CreateSpecificCulture("es-ES"), DateTimeStyles.None, out DateTime fecha);
+                                    if (result)
+                                    {
+                                        if(fecha >= DateTime.Today)
+                                        {
+                                            error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                            {
+                                                Title = "Error",
+                                                Description = "La fecha de cumpleaños no puede ser posterior a la actual",
+                                                Footer = GetFooter(ctx),
+                                                Color = GetColor()
+                                            });
+                                            if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                                            {
+                                                await Task.Delay(5000);
+                                                await msgDia.DeleteAsync("Auto borrado de Yumiko");
+                                                await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                                await msgMes.DeleteAsync("Auto borrado de Yumiko");
+                                                await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                                await msgAnio.DeleteAsync("Auto borrado de Yumiko");
+                                                await msgAnioInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                                await error.DeleteAsync("Auto borrado de Yumiko");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                                            {
+                                                await msgDia.DeleteAsync("Auto borrado de Yumiko");
+                                                await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                                await msgMes.DeleteAsync("Auto borrado de Yumiko");
+                                                await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                                await msgAnio.DeleteAsync("Auto borrado de Yumiko");
+                                                await msgAnioInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                            }
+                                            return fecha;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                        {
+                                            Title = "Error",
+                                            Description = $"La fecha `{dia}/{mes}/{anio}` no es real",
+                                            Footer = GetFooter(ctx),
+                                            Color = GetColor()
+                                        });
+                                        if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                                        {
+                                            await Task.Delay(5000);
+                                            await msgDia.DeleteAsync("Auto borrado de Yumiko");
+                                            await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                            await msgMes.DeleteAsync("Auto borrado de Yumiko");
+                                            await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                            await msgAnio.DeleteAsync("Auto borrado de Yumiko");
+                                            await msgAnioInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                            await error.DeleteAsync("Auto borrado de Yumiko");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                    {
+                                        Title = "Error",
+                                        Description = "El año debe ser un numero",
+                                        Footer = GetFooter(ctx),
+                                        Color = GetColor()
+                                    });
+                                    if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                                    {
+                                        await Task.Delay(5000);
+                                        await msgDia.DeleteAsync("Auto borrado de Yumiko");
+                                        await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                        await msgMes.DeleteAsync("Auto borrado de Yumiko");
+                                        await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                        await msgAnio.DeleteAsync("Auto borrado de Yumiko");
+                                        await msgAnioInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                        await error.DeleteAsync("Auto borrado de Yumiko");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                {
+                                    Title = "Error",
+                                    Description = "Tiempo agotado esperando el año",
+                                    Footer = GetFooter(ctx),
+                                    Color = GetColor()
+                                });
+                                if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                                {
+                                    await Task.Delay(5000);
+                                    await msgDia.DeleteAsync("Auto borrado de Yumiko");
+                                    await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                    await msgMes.DeleteAsync("Auto borrado de Yumiko");
+                                    await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                    await msgAnio.DeleteAsync("Auto borrado de Yumiko");
+                                    await error.DeleteAsync("Auto borrado de Yumiko");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            {
+                                Title = "Error",
+                                Description = "El mes debe ser un numero",
+                                Footer = GetFooter(ctx),
+                                Color = GetColor()
+                            });
+                            if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                            {
+                                await Task.Delay(5000);
+                                await msgDia.DeleteAsync("Auto borrado de Yumiko");
+                                await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                await msgMes.DeleteAsync("Auto borrado de Yumiko");
+                                await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                                await error.DeleteAsync("Auto borrado de Yumiko");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        {
+                            Title = "Error",
+                            Description = "Tiempo agotado esperando el mes",
+                            Footer = GetFooter(ctx),
+                            Color = GetColor()
+                        });
+                        if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                        {
+                            await Task.Delay(5000);
+                            await msgDia.DeleteAsync("Auto borrado de Yumiko");
+                            await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                            await msgMes.DeleteAsync("Auto borrado de Yumiko");
+                            await error.DeleteAsync("Auto borrado de Yumiko");
+                        }
+                    }
+                }
+                else
+                {
+                    error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "Error",
+                        Description = "El dia debe ser un numero",
+                        Footer = GetFooter(ctx),
+                        Color = GetColor()
+                    });
+                    if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        await Task.Delay(5000);
+                        await msgDia.DeleteAsync("Auto borrado de Yumiko");
+                        await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                        await error.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                }
+            }
+            else
+            {
+                error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Error",
+                    Description = "Tiempo agotado esperando el dia",
+                    Footer = GetFooter(ctx),
+                    Color = GetColor()
+                });
+                if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                {
+                    await Task.Delay(5000);
+                    await msgDia.DeleteAsync("Auto borrado de Yumiko");
+                    await error.DeleteAsync("Auto borrado de Yumiko");
+                }
+            }
+            return null;
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -177,11 +178,14 @@ namespace Discord_Bot.Modulos
         [Command("servers"), Description("Muestra los servidores en los que esta Yumiko."), RequireOwner]
         public async Task Servers(CommandContext ctx)
         {
-            var guilds = ctx.Client.Guilds.Values;
+            var guildsdesordenadas = ctx.Client.Guilds.Values;
+            var lista = guildsdesordenadas.ToList();
+            lista.Sort((x, y) => x.JoinedAt.CompareTo(y.JoinedAt));
             string servers = "";
             int cont = 1;
             int usuarios = 0;
-            foreach (var guild in guilds)
+            int miembros;
+            foreach (var guild in lista)
             {
                 if (cont >= 10)
                 {
@@ -194,12 +198,13 @@ namespace Discord_Bot.Modulos
                     cont = 1;
                     servers = "";
                 }
+                miembros = guild.MemberCount - 1;
                 servers +=
                     $"**{guild.Name}**\n" +
                     $"  - **Id**: {guild.Id}\n" +
                     $"  - **Fecha que entró Yumiko**: {guild.JoinedAt}\n" +
                     $"  - **Miembros**: {guild.MemberCount}\n\n";
-                usuarios += guild.MemberCount;
+                usuarios += miembros;
                 cont++;
             }
             if(cont != 1)

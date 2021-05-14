@@ -70,85 +70,69 @@ namespace Discord_Bot.Modulos
         [Command("setcumpleaños"), Aliases("setbirthday"), Description("Agrega o modifica el cumpleaños del usuario."), RequireGuild]
         public async Task SetBirthday(CommandContext ctx)
         {
-            var interactivity = ctx.Client.GetInteractivity();
-            DiscordMessage msgError = null;
-            var msgFecha = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            DateTime? cumple = await funciones.CrearDate(ctx);
+            if (cumple != null)
             {
-                Title = "Escribe tu fecha de nacimiento",
-                Description = "En este formato: **dd/mm/yyyy**\n  Ejemplo: 30/01/2000"
-            });
-            var msgFechaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(60));
-            if (!msgFechaInter.TimedOut)
-            {
-                bool result = DateTime.TryParse(msgFechaInter.Result.Content, CultureInfo.CreateSpecificCulture("es-ES"), DateTimeStyles.None, out DateTime fecha);
-                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                DateTime fecha = cumple ?? DateTime.Today;
+                DiscordMessage msgError = null;
+                var interactivity = ctx.Client.GetInteractivity();
+                var msgOcultar = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    await msgFechaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                    await msgFecha.DeleteAsync("Auto borrado de Yumiko");
-                }
-                if (result)
+                    Title = "¿Quieres que se muestre tu edad?",
+                    Description = "1- Si\n2- No"
+                });
+                var msgOcultarInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                if (!msgOcultarInter.TimedOut)
                 {
-                    var msgOcultar = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    bool result2 = int.TryParse(msgOcultarInter.Result.Content, out int mostrarEdadInt);
+                    if (result2)
                     {
-                        Title = "¿Quieres que se muestre tu edad?",
-                        Description = "1- Si\n2- No"
-                    });
-                    var msgOcultarInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                    if (!msgOcultarInter.TimedOut)
-                    {
-                        bool result2 = int.TryParse(msgOcultarInter.Result.Content, out int mostrarEdadInt);
-                        if (result2)
+                        if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
                         {
-                            if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                            {
-                                await msgOcultarInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                await msgOcultar.DeleteAsync("Auto borrado de Yumiko");
-                            }
-                            switch (mostrarEdadInt)
-                            {
-                                case 1:
-                                    await usuariosService.SetBirthday(ctx, fecha, true);
-                                    break;
-                                case 2:
-                                    await usuariosService.SetBirthday(ctx, fecha, false);
-                                    break;
-                                default:
-                                    msgError = await ctx.RespondAsync("Ingresa bien la respuesta, baka");
-                                    break;
-                            }
+                            await msgOcultarInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                            await msgOcultar.DeleteAsync("Auto borrado de Yumiko");
                         }
-                        else
+                        switch (mostrarEdadInt)
                         {
-                            string content = msgOcultarInter.Result.Content.ToLower().Trim();
-                            if (content == "1- Si" || content == "Si")
+                            case 1:
                                 await usuariosService.SetBirthday(ctx, fecha, true);
-                            else if (content == "2- No" || content == "No")
+                                break;
+                            case 2:
                                 await usuariosService.SetBirthday(ctx, fecha, false);
-                            else
-                                msgError = await ctx.RespondAsync("Ingresa bien la respuesta, baka");
+                                break;
+                            default:
+                                msgError = await ctx.RespondAsync("Ingresa bien la respuesta");
+                                break;
                         }
                     }
                     else
                     {
-                        msgError = await ctx.RespondAsync("Tiempo agotado esperando la respuesta");
+                        string content = msgOcultarInter.Result.Content.ToLower().Trim();
+                        if (content == "1- si" || content == "si")
+                            await usuariosService.SetBirthday(ctx, fecha, true);
+                        else if (content == "2- no" || content == "no")
+                            await usuariosService.SetBirthday(ctx, fecha, false);
+                        else
+                            msgError = await ctx.RespondAsync("Ingresa bien la respuesta");
+                        if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                        {
+                            await msgOcultarInter.Result.DeleteAsync("Auto borrado de Yumiko");
+                            await msgOcultar.DeleteAsync("Auto borrado de Yumiko");
+                        }
                     }
                 }
                 else
                 {
-                    msgError = await ctx.RespondAsync("Ingresa bien la fecha, baka");
+                    msgError = await ctx.RespondAsync("Tiempo agotado esperando la respuesta");
                 }
-            }
-            else
-            {
-                msgError = await ctx.RespondAsync("Tiempo agotado esperando la fecha de nacimiento");
-            }
-            if (msgError != null)
-            {
-                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                if (msgError != null)
                 {
-                    await Task.Delay(3000);
-                    await msgError.DeleteAsync("Auto borrado de Yumiko");
-                } 
+                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
+                    {
+                        await Task.Delay(3000);
+                        await msgError.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                }
             }
         }
 
