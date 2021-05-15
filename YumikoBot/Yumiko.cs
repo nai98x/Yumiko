@@ -242,7 +242,9 @@ namespace Discord_Bot
                     Name = $"{e.Context.Guild.Name}"
                 },
                 Color = DiscordColor.Green
-            }.AddField("Canal", $"#{e.Context.Channel.Name}", false)
+            }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+            .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+            .AddField("Canal", $"#{e.Context.Channel.Name}", false)
             .AddField("Mensaje", $"{e.Context.Message.Content}", false)
             );
             if (e.Context.Message != null)
@@ -261,15 +263,17 @@ namespace Discord_Bot
                     Title = "Comando no encontrado",
                     Footer = new EmbedFooter()
                     {
-                        Text = $"{e.Context.Message.Timestamp}"
+                        IconUrl = e.Context.User.AvatarUrl,
+                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}"
                     },
                     Author = new EmbedAuthor()
                     {
-                        IconUrl = e.Context.User.AvatarUrl,
-                        Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                        IconUrl = e.Context.Guild.IconUrl,
+                        Name = $"{e.Context.Guild.Name}"
                     },
                     Color = DiscordColor.Yellow
-                }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
                 .AddField("Canal", $"#{e.Context.Channel.Name}", false)
                 .AddField("Mensaje", $"{e.Context.Message.Content}", false)
                 );
@@ -301,15 +305,17 @@ namespace Discord_Bot
                     Title = "Comando mal escrito",
                     Footer = new EmbedFooter()
                     {
-                        Text = $"{e.Context.Message.Timestamp}"
+                        IconUrl = e.Context.User.AvatarUrl,
+                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}"
                     },
                     Author = new EmbedAuthor()
                     {
-                        IconUrl = e.Context.User.AvatarUrl,
-                        Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                        IconUrl = e.Context.Guild.IconUrl,
+                        Name = $"{e.Context.Guild.Name}"
                     },
                     Color = DiscordColor.Yellow
-                }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
                 .AddField("Canal", $"#{e.Context.Channel.Name}", false)
                 .AddField("Mensaje", $"{e.Context.Message.Content}", false)
                 );

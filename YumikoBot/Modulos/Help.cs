@@ -14,7 +14,7 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        [Command("help"), Aliases("ayuda")]
+        [Command("help"), Aliases("ayuda", "commands", "comandos")]
         public async Task Ayuda(CommandContext ctx, [Description("Comando para ver en detalle, si se deja vacío se muestran todos los comandos")] string comando = null)
         {
             var commandsNext = ctx.CommandsNext;
