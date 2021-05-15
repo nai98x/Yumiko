@@ -32,13 +32,10 @@ namespace Discord_Bot.Modulos
                 if (!msgAnimeInter.TimedOut)
                 {
                     mensaje = msgAnimeInter.Result.Content;
-                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                    {
-                        if (msgAnime != null)
-                            await msgAnime.DeleteAsync("Auto borrado de Yumiko");
-                        if (msgAnimeInter.Result != null)
-                            await msgAnimeInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                    }
+                    if (msgAnime != null)
+                        await funciones.BorrarMensaje(ctx, msgAnime.Id);
+                    if (msgAnimeInter.Result != null)
+                        await funciones.BorrarMensaje(ctx, msgAnimeInter.Result.Id);
                 }
                 else
                 {
@@ -50,17 +47,45 @@ namespace Discord_Bot.Modulos
                         Color = DiscordColor.Red,
                     });
                     await Task.Delay(3000);
-                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                    {
-                        if (msgError != null)
-                            await msgError.DeleteAsync("Auto borrado de Yumiko");
-                        if (msgAnime != null)
-                            await msgAnime.DeleteAsync("Auto borrado de Yumiko");
-                    }
+                    if (msgError != null)
+                        await funciones.BorrarMensaje(ctx, msgError.Id);
+                    if (msgAnime != null)
+                        await funciones.BorrarMensaje(ctx, msgAnime.Id);
                     return;
                 }
             }
             await ctx.RespondAsync(mensaje);
+        }
+
+        [Command("sayO"), Description("Yumiko habla en el chat."), Hidden, RequireOwner]
+        public async Task SayO(CommandContext ctx, ulong guildId, ulong channelId, [Description("Mensaje para replicar")][RemainingText] string mensaje)
+        {
+            var guild = await ctx.Client.GetGuildAsync(guildId);
+            if(guild != null)
+            {
+                var channel = guild.GetChannel(channelId);
+                if(channel != null && funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.SendMessages))
+                {
+                    await channel.SendMessageAsync(embed: new DiscordEmbedBuilder { 
+                        Color = funciones.GetColor(),
+                        Footer = new DiscordEmbedBuilder.EmbedFooter
+                        {
+                            IconUrl = ctx.User.AvatarUrl,
+                            Text = $"Enviado por {ctx.User.Username}"
+                        },
+                        Title = "Mensaje del administrador",
+                        Description = mensaje
+                    }).ConfigureAwait(false);
+                }
+                else
+                {
+                    await ctx.RespondAsync("Canal no encontrado");
+                }
+            }
+            else
+            {
+                await ctx.RespondAsync("Servidor no encontrado");
+            }
         }
 
         [Command("pregunta"), Aliases("p", "question", "siono"), Description("Responde con SI O NO.")]
@@ -109,11 +134,8 @@ namespace Discord_Bot.Modulos
                 {
                     options += "\n   - " + msj;
                 }
-                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                {
-                    await mensajeBot.DeleteAsync().ConfigureAwait(false);
-                    await msg.Result.DeleteAsync().ConfigureAwait(false);
-                }
+                await funciones.BorrarMensaje(ctx, mensajeBot.Id);
+                await funciones.BorrarMensaje(ctx, msg.Result.Id);
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
@@ -144,11 +166,8 @@ namespace Discord_Bot.Modulos
             else
             {
                 DiscordMessage msgError = await ctx.RespondAsync("Debes pasar un emote").ConfigureAwait(false);
-                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                {
-                    await Task.Delay(3000);
-                    await msgError.DeleteAsync("Auto borrado de yumiko").ConfigureAwait(false);
-                }
+                await Task.Delay(3000);
+                await funciones.BorrarMensaje(ctx, msgError.Id);
             }
         }
 

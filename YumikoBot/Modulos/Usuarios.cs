@@ -87,11 +87,8 @@ namespace Discord_Bot.Modulos
                     bool result2 = int.TryParse(msgOcultarInter.Result.Content, out int mostrarEdadInt);
                     if (result2)
                     {
-                        if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                        {
-                            await msgOcultarInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                            await msgOcultar.DeleteAsync("Auto borrado de Yumiko");
-                        }
+                        await funciones.BorrarMensaje(ctx, msgOcultarInter.Result.Id);
+                        await funciones.BorrarMensaje(ctx, msgOcultar.Id);
                         switch (mostrarEdadInt)
                         {
                             case 1:
@@ -114,11 +111,8 @@ namespace Discord_Bot.Modulos
                             await usuariosService.SetBirthday(ctx, fecha, false);
                         else
                             msgError = await ctx.RespondAsync("Ingresa bien la respuesta");
-                        if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                        {
-                            await msgOcultarInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                            await msgOcultar.DeleteAsync("Auto borrado de Yumiko");
-                        }
+                        await funciones.BorrarMensaje(ctx, msgOcultarInter.Result.Id);
+                        await funciones.BorrarMensaje(ctx, msgOcultar.Id);
                     }
                 }
                 else
@@ -127,11 +121,8 @@ namespace Discord_Bot.Modulos
                 }
                 if (msgError != null)
                 {
-                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                    {
-                        await Task.Delay(3000);
-                        await msgError.DeleteAsync("Auto borrado de Yumiko");
-                    }
+                    await Task.Delay(3000);
+                    await funciones.BorrarMensaje(ctx, msgError.Id);
                 }
             }
         }
@@ -141,11 +132,8 @@ namespace Discord_Bot.Modulos
         {
             await usuariosService.DeleteBirthday(ctx);
             var msg = await ctx.RespondAsync("Cumpleaños borrado correctamente");
-            if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-            {
-                await Task.Delay(3000);
-                await msg.DeleteAsync("Auto borrado de Yumiko");
-            }
+            await Task.Delay(3000);
+            await funciones.BorrarMensaje(ctx, msg.Id);
         }
     }
 }

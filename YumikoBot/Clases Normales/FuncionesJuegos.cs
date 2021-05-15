@@ -126,18 +126,14 @@ namespace Discord_Bot
                                             dificultadStr = "Medio";
                                             break;
                                     }
-                                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                                    {
-                                        
-                                        if(msgCntRondas != null && ctx.Channel.GetMessageAsync(msgCntRondas.Id) != null)
-                                            await msgCntRondas.DeleteAsync("Auto borrado de Yumiko");
-                                        if (msgRondasInter.Result != null && ctx.Channel.GetMessageAsync(msgRondasInter.Result.Id) != null)
-                                            await msgRondasInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                        if (msgDificultad != null && ctx.Channel.GetMessageAsync(msgDificultad.Id) != null)
-                                            await msgDificultad.DeleteAsync("Auto borrado de Yumiko");
-                                        if (msgDificultadInter.Result != null && ctx.Channel.GetMessageAsync(msgDificultadInter.Result.Id) != null)
-                                            await msgDificultadInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                    }
+                                    if(msgCntRondas != null)
+                                        await funciones.BorrarMensaje(ctx, msgCntRondas.Id);
+                                    if (msgRondasInter.Result != null)
+                                        await funciones.BorrarMensaje(ctx, msgRondasInter.Result.Id);
+                                    if (msgDificultad != null)
+                                        await funciones.BorrarMensaje(ctx, msgDificultad.Id);
+                                    if (msgDificultadInter.Result != null)
+                                        await funciones.BorrarMensaje(ctx, msgDificultadInter.Result.Id);
                                     return new SettingsJuego()
                                     {
                                         Ok = true,
@@ -286,11 +282,8 @@ namespace Discord_Bot
                     {
                         if (numTagElegir > 0 && (numTagElegir <= tagsList.Count))
                         {
-                            if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                            {
-                                await msgOpciones.DeleteAsync("Auto borrado de Yumiko");
-                                await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                            }
+                            await funciones.BorrarMensaje(ctx, msgOpciones.Id);
+                            await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
                             List<Anime> animeList = new List<Anime>();
                             string elegido = tagsList[numTagElegir - 1];
                             string stats = await GetEstadisticasDificultad(ctx, "tag", elegido, flag);
@@ -316,11 +309,8 @@ namespace Discord_Bot
                 {
                     msgError = "Tiempo agotado esperando el tag";
                 }
-                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                {
-                    await msgOpciones.DeleteAsync("Auto borrado de Yumiko");
-                    await msgElegirTagInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                }
+                await funciones.BorrarMensaje(ctx, msgOpciones.Id);
+                await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
                 return new DiscordEmbedBuilder
                 {
                     Title = "Error",

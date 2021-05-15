@@ -18,6 +18,7 @@ using YumikoBot;
 using System.Globalization;
 using DiscordBotsList.Api;
 using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus;
 
 namespace Discord_Bot
 {
@@ -263,6 +264,25 @@ namespace Discord_Bot
             return DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), permiso);
         }
 
+        public async Task BorrarMensaje(CommandContext ctx, ulong msgId)
+        {
+            if(ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
+            {
+                try
+                {
+                    var mensaje = await ctx.Channel.GetMessageAsync(msgId);
+                    if (mensaje != null)
+                    {
+                        await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
+
         public async Task ChequearVotoTopGG(CommandContext ctx)
         {
             IDebuggingService mode = new DebuggingService();
@@ -293,14 +313,26 @@ namespace Discord_Bot
                             Description = $"Puedes ayudarme votando en [este sitio web]({url}). ¡Gracias!",
                             Color = GetColor()
                         }).ConfigureAwait(false);
-                        if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                        {
-                            await Task.Delay(5000);
-                            await mensaje.DeleteAsync("Auto borrado de Yumiko");
-                        }
+                        await Task.Delay(10000);
+                        await BorrarMensaje(ctx, mensaje.Id);
                     }
                 }
             }
+        }
+
+        public async Task UpdateStatsTopGG(DiscordClient c)
+        {
+            var json = string.Empty;
+            using (var fs = File.OpenRead("config.json"))
+            {
+                using var sr = new StreamReader(fs, new UTF8Encoding(false));
+                json = await sr.ReadToEndAsync().ConfigureAwait(false);
+            }
+            var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
+
+            AuthDiscordBotListApi DblApi = new AuthDiscordBotListApi(c.CurrentUser.Id, configJson.TopGG_token);
+            var guilds = c.Guilds.Count;
+            await DblApi.UpdateStats(guildCount: c.Guilds.Count);
         }
 
         public async Task<DateTime?> CrearDate(CommandContext ctx)
@@ -353,29 +385,23 @@ namespace Discord_Bot
                                                 Footer = GetFooter(ctx),
                                                 Color = GetColor()
                                             });
-                                            if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                                            {
-                                                await Task.Delay(5000);
-                                                await msgDia.DeleteAsync("Auto borrado de Yumiko");
-                                                await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                                await msgMes.DeleteAsync("Auto borrado de Yumiko");
-                                                await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                                await msgAnio.DeleteAsync("Auto borrado de Yumiko");
-                                                await msgAnioInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                                await error.DeleteAsync("Auto borrado de Yumiko");
-                                            }
+                                            await Task.Delay(5000);
+                                            await BorrarMensaje(ctx, msgDia.Id);
+                                            await BorrarMensaje(ctx, msgDiaInter.Result.Id);
+                                            await BorrarMensaje(ctx, msgMes.Id);
+                                            await BorrarMensaje(ctx, msgMesInter.Result.Id);
+                                            await BorrarMensaje(ctx, msgAnio.Id);
+                                            await BorrarMensaje(ctx, msgAnioInter.Result.Id);
+                                            await BorrarMensaje(ctx, error.Id);
                                         }
                                         else
                                         {
-                                            if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                                            {
-                                                await msgDia.DeleteAsync("Auto borrado de Yumiko");
-                                                await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                                await msgMes.DeleteAsync("Auto borrado de Yumiko");
-                                                await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                                await msgAnio.DeleteAsync("Auto borrado de Yumiko");
-                                                await msgAnioInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                            }
+                                            await BorrarMensaje(ctx, msgDia.Id);
+                                            await BorrarMensaje(ctx, msgDiaInter.Result.Id);
+                                            await BorrarMensaje(ctx, msgMes.Id);
+                                            await BorrarMensaje(ctx, msgMesInter.Result.Id);
+                                            await BorrarMensaje(ctx, msgAnio.Id);
+                                            await BorrarMensaje(ctx, msgAnioInter.Result.Id);
                                             return fecha;
                                         }
                                     }
@@ -388,17 +414,14 @@ namespace Discord_Bot
                                             Footer = GetFooter(ctx),
                                             Color = GetColor()
                                         });
-                                        if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                                        {
-                                            await Task.Delay(5000);
-                                            await msgDia.DeleteAsync("Auto borrado de Yumiko");
-                                            await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                            await msgMes.DeleteAsync("Auto borrado de Yumiko");
-                                            await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                            await msgAnio.DeleteAsync("Auto borrado de Yumiko");
-                                            await msgAnioInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                            await error.DeleteAsync("Auto borrado de Yumiko");
-                                        }
+                                        await Task.Delay(5000);
+                                        await BorrarMensaje(ctx, msgDia.Id);
+                                        await BorrarMensaje(ctx, msgDiaInter.Result.Id);
+                                        await BorrarMensaje(ctx, msgMes.Id);
+                                        await BorrarMensaje(ctx, msgMesInter.Result.Id);
+                                        await BorrarMensaje(ctx, msgAnio.Id);
+                                        await BorrarMensaje(ctx, msgAnioInter.Result.Id);
+                                        await BorrarMensaje(ctx, error.Id);
                                     }
                                 }
                                 else
@@ -410,17 +433,14 @@ namespace Discord_Bot
                                         Footer = GetFooter(ctx),
                                         Color = GetColor()
                                     });
-                                    if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                                    {
-                                        await Task.Delay(5000);
-                                        await msgDia.DeleteAsync("Auto borrado de Yumiko");
-                                        await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                        await msgMes.DeleteAsync("Auto borrado de Yumiko");
-                                        await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                        await msgAnio.DeleteAsync("Auto borrado de Yumiko");
-                                        await msgAnioInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                        await error.DeleteAsync("Auto borrado de Yumiko");
-                                    }
+                                    await Task.Delay(5000);
+                                    await BorrarMensaje(ctx, msgDia.Id);
+                                    await BorrarMensaje(ctx, msgDiaInter.Result.Id);
+                                    await BorrarMensaje(ctx, msgMes.Id);
+                                    await BorrarMensaje(ctx, msgMesInter.Result.Id);
+                                    await BorrarMensaje(ctx, msgAnio.Id);
+                                    await BorrarMensaje(ctx, msgAnioInter.Result.Id);
+                                    await BorrarMensaje(ctx, error.Id);
                                 }
                             }
                             else
@@ -432,16 +452,13 @@ namespace Discord_Bot
                                     Footer = GetFooter(ctx),
                                     Color = GetColor()
                                 });
-                                if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                                {
-                                    await Task.Delay(5000);
-                                    await msgDia.DeleteAsync("Auto borrado de Yumiko");
-                                    await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                    await msgMes.DeleteAsync("Auto borrado de Yumiko");
-                                    await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                    await msgAnio.DeleteAsync("Auto borrado de Yumiko");
-                                    await error.DeleteAsync("Auto borrado de Yumiko");
-                                }
+                                await Task.Delay(5000);
+                                await BorrarMensaje(ctx, msgDia.Id);
+                                await BorrarMensaje(ctx, msgDiaInter.Result.Id);
+                                await BorrarMensaje(ctx, msgMes.Id);
+                                await BorrarMensaje(ctx, msgMesInter.Result.Id);
+                                await BorrarMensaje(ctx, msgAnio.Id);
+                                await BorrarMensaje(ctx, error.Id);
                             }
                         }
                         else
@@ -453,15 +470,12 @@ namespace Discord_Bot
                                 Footer = GetFooter(ctx),
                                 Color = GetColor()
                             });
-                            if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                            {
-                                await Task.Delay(5000);
-                                await msgDia.DeleteAsync("Auto borrado de Yumiko");
-                                await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                await msgMes.DeleteAsync("Auto borrado de Yumiko");
-                                await msgMesInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                                await error.DeleteAsync("Auto borrado de Yumiko");
-                            }
+                            await Task.Delay(5000);
+                            await BorrarMensaje(ctx, msgDia.Id);
+                            await BorrarMensaje(ctx, msgDiaInter.Result.Id);
+                            await BorrarMensaje(ctx, msgMes.Id);
+                            await BorrarMensaje(ctx, msgMesInter.Result.Id);
+                            await BorrarMensaje(ctx, error.Id);
                         }
                     }
                     else
@@ -473,14 +487,11 @@ namespace Discord_Bot
                             Footer = GetFooter(ctx),
                             Color = GetColor()
                         });
-                        if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                        {
-                            await Task.Delay(5000);
-                            await msgDia.DeleteAsync("Auto borrado de Yumiko");
-                            await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                            await msgMes.DeleteAsync("Auto borrado de Yumiko");
-                            await error.DeleteAsync("Auto borrado de Yumiko");
-                        }
+                        await Task.Delay(5000);
+                        await BorrarMensaje(ctx, msgDia.Id);
+                        await BorrarMensaje(ctx, msgDiaInter.Result.Id);
+                        await BorrarMensaje(ctx, msgMes.Id);
+                        await BorrarMensaje(ctx, error.Id);
                     }
                 }
                 else
@@ -492,13 +503,10 @@ namespace Discord_Bot
                         Footer = GetFooter(ctx),
                         Color = GetColor()
                     });
-                    if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                    {
-                        await Task.Delay(5000);
-                        await msgDia.DeleteAsync("Auto borrado de Yumiko");
-                        await msgDiaInter.Result.DeleteAsync("Auto borrado de Yumiko");
-                        await error.DeleteAsync("Auto borrado de Yumiko");
-                    }
+                    await Task.Delay(5000);
+                    await BorrarMensaje(ctx, msgDia.Id);
+                    await BorrarMensaje(ctx, msgDiaInter.Result.Id);
+                    await BorrarMensaje(ctx, error.Id);
                 }
             }
             else
@@ -510,12 +518,9 @@ namespace Discord_Bot
                     Footer = GetFooter(ctx),
                     Color = GetColor()
                 });
-                if (ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                {
-                    await Task.Delay(5000);
-                    await msgDia.DeleteAsync("Auto borrado de Yumiko");
-                    await error.DeleteAsync("Auto borrado de Yumiko");
-                }
+                await Task.Delay(5000);
+                await BorrarMensaje(ctx, msgDia.Id);
+                await BorrarMensaje(ctx, error.Id);
             }
             return null;
         }

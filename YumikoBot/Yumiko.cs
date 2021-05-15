@@ -173,6 +173,8 @@ namespace Discord_Bot
                 },
                 Color = DiscordColor.Green
             });
+            if (!Debug)
+                funciones.UpdateStatsTopGG(c).ConfigureAwait(false);
             return Task.CompletedTask;
         }
 
@@ -197,6 +199,8 @@ namespace Discord_Bot
                 },
                 Color = DiscordColor.Red
             });
+            if (!Debug)
+                funciones.UpdateStatsTopGG(sender).ConfigureAwait(false);
             return Task.CompletedTask;
         }
 
@@ -241,8 +245,8 @@ namespace Discord_Bot
             }.AddField("Canal", $"#{e.Context.Channel.Name}", false)
             .AddField("Mensaje", $"{e.Context.Message.Content}", false)
             );
-            if (e.Context.Message != null && funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
-                e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
+            if (e.Context.Message != null)
+                funciones.BorrarMensaje(e.Context, e.Context.Message.Id).ConfigureAwait(false);
             return Task.CompletedTask;
         }
 
@@ -283,11 +287,11 @@ namespace Discord_Bot
                     }
                 };
                 var mensajeErr = e.Context.RespondAsync(embed: embed);
-                if(e.Context.Message != null && mensajeErr != null && funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
+                if(e.Context.Message != null && mensajeErr != null)
                 {
                     await Task.Delay(7000);
-                    await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
-                    await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+                    await funciones.BorrarMensaje(e.Context, e.Context.Message.Id);
+                    await funciones.BorrarMensaje(e.Context, mensajeErr.Result.Id);
                 }
             }
             else if (e.Exception.Message == "Could not find a suitable overload for the command.")
@@ -323,11 +327,11 @@ namespace Discord_Bot
                     }
                 };
                 var mensajeErr = e.Context.RespondAsync(embed: embed);
-                if (e.Context.Message != null && mensajeErr != null && funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
+                if (e.Context.Message != null && mensajeErr != null)
                 {
                     await Task.Delay(7000);
-                    await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
-                    await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+                    await funciones.BorrarMensaje(e.Context, e.Context.Message.Id);
+                    await funciones.BorrarMensaje(e.Context, mensajeErr.Result.Id);
                 }
             }
             else if (e.Exception.Message == "Unauthorized: 403")
@@ -358,11 +362,11 @@ namespace Discord_Bot
                     Color = DiscordColor.Red
                 };
                 var mensajeErr = e.Context.RespondAsync(embed: embed);
-                if (e.Context.Message != null && mensajeErr != null && funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
+                if (e.Context.Message != null && mensajeErr != null)
                 {
                     await Task.Delay(3000);
-                    await e.Context.Message.DeleteAsync("Auto borrado de yumiko");
-                    await mensajeErr.Result.DeleteAsync("Auto borrado de yumiko");
+                    await funciones.BorrarMensaje(e.Context, e.Context.Message.Id);
+                    await funciones.BorrarMensaje(e.Context, mensajeErr.Result.Id);
                 } 
             }
             else
@@ -429,15 +433,12 @@ namespace Discord_Bot
                         .AddField("Canal", $"#{e.Context.Channel.Name}", false)
                         .AddField("Mensaje", $"{e.Context.Message.Content}", false));
                     }
-                    if (funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
+                    await Task.Delay(3000);
+                    if (e.Context.Message != null)
+                        await funciones.BorrarMensaje(e.Context, e.Context.Message.Id);
+                    foreach (DiscordMessage mensaje in mensajes)
                     {
-                        await Task.Delay(3000);
-                        if (e.Context.Message != null)
-                            await e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
-                        foreach (DiscordMessage mensaje in mensajes)
-                        {
-                            await mensaje.DeleteAsync("Auto borrado de Yumiko");
-                        }
+                        await funciones.BorrarMensaje(e.Context, mensaje.Id);
                     }
                 }
                 else
@@ -464,13 +465,10 @@ namespace Discord_Bot
                     }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
                     .AddField("Canal", $"#{e.Context.Channel.Name}", false)
                     .AddField("Mensaje", $"{e.Context.Message.Content}", false));
-                    if (funciones.ChequearPermisoYumiko(e.Context, Permissions.ManageMessages))
-                    {
-                        await Task.Delay(3000);
-                        if (e.Context.Message != null)
-                            await e.Context.Message.DeleteAsync("Auto borrado de Yumiko");
-                        await msg.Result.DeleteAsync("Auto borrado de Yumiko");
-                    }
+                    await Task.Delay(3000);
+                    if (e.Context.Message != null)
+                        await funciones.BorrarMensaje(e.Context, e.Context.Message.Id);
+                    await funciones.BorrarMensaje(e.Context, msg.Result.Id);
                 }
             }
         }

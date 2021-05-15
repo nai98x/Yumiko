@@ -55,11 +55,8 @@ namespace Discord_Bot.Modulos
             else
             {
                 var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
-                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                {
-                    await Task.Delay(3000);
-                    await msg.DeleteAsync("Auto borrado de Yumiko");
-                }
+                await Task.Delay(3000);
+                await funciones.BorrarMensaje(ctx, msg.Id);
             }
         }
 
@@ -84,11 +81,8 @@ namespace Discord_Bot.Modulos
             else
             {
                 var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
-                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                {
-                    await Task.Delay(3000);
-                    await msg.DeleteAsync("Auto borrado de Yumiko");
-                }
+                await Task.Delay(3000);
+                await funciones.BorrarMensaje(ctx, msg.Id);
             }
         }
 
@@ -366,23 +360,16 @@ namespace Discord_Bot.Modulos
             if (usuario1 == null || usuario2 == null)
             {
                 var msg = await ctx.RespondAsync("Debes mencionar a dos personas");
-                if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                {
-                    await Task.Delay(3000);
-                    await msg.DeleteAsync("Auto borrado de Yumiko");
-                }
-                    
+                await Task.Delay(3000);
+                await funciones.BorrarMensaje(ctx, msg.Id);
             }
             else
             {
                 if (ctx.User.Id == usuario1.Id || ctx.User.Id == usuario2.Id)
                 {
                     var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
-                    if (funciones.ChequearPermisoYumiko(ctx, DSharpPlus.Permissions.ManageMessages))
-                    {
-                        await Task.Delay(3000);
-                        await msg.DeleteAsync("Auto borrado de Yumiko");
-                    }
+                    await Task.Delay(3000);
+                    await funciones.BorrarMensaje(ctx, msg.Id);
                 }
                 else
                 {
