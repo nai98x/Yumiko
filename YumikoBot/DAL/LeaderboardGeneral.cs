@@ -1,7 +1,9 @@
 ﻿using Discord_Bot;
 using DSharpPlus.CommandsNext;
 using FireSharp.Response;
+using Google.Cloud.Firestore;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +18,22 @@ namespace YumikoBot.DAL
         public int rondasTotales { get; set; }
     }
 
+    [FirestoreData]
+    public class LeaderboardFirebase
+    {
+        [FirestoreProperty]
+        public long user_id { get; set; }
+
+        [FirestoreProperty]
+        public int partidasJugadas { get; set; }
+
+        [FirestoreProperty]
+        public int rondasAcertadas { get; set; }
+
+        [FirestoreProperty]
+        public int rondasTotales { get; set; }
+    }
+
     public class LeaderboardoNew
     {
         public int partidasJugadas { get; set; }
@@ -27,57 +45,83 @@ namespace YumikoBot.DAL
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        public async Task<List<Leaderboardo>> GetLeaderboardFirebase(CommandContext ctx, string juego, string dificultad)
+        public async Task<List<LeaderboardFirebase>> GetLeaderboardFirebase(long guildId, string juego, string dificultad)
         {
-            var ret = new List<Leaderboardo>();
-            var client = await funciones.GetClienteFirebase();
-            FirebaseResponse response = await client.GetTaskAsync($"Juegos/{juego}/{dificultad}/{ctx.Guild.Id}/");
-            var json = response.Body;
-            if(json != "null")
+            var ret = new List<LeaderboardFirebase>();
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+
+            CollectionReference col = db.Collection("Estadisticas").Document($"{guildId}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios");
+            var snap = await col.GetSnapshotAsync();
+
+            if (snap.Count > 0)
             {
-                dynamic items = JsonConvert.DeserializeObject<dynamic>(json);
-                foreach (var item in items)
+                foreach(var document in snap.Documents)
                 {
-                    ret.Add(new Leaderboardo()
-                    {
-                        user_id = long.Parse(item.Name),
-                        partidasJugadas = item.First.partidasJugadas,
-                        rondasAcertadas = item.First.rondasAcertadas,
-                        rondasTotales = item.First.rondasTotales,
-                    });
+                    ret.Add(document.ConvertTo<LeaderboardFirebase>());
                 }
             }
+
             return ret;
+        }
+
+        public async Task<LeaderboardFirebase> GetRegistro(long guildId, string juego, string dificultad, long userId)
+        {
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+
+            DocumentReference doc = db.Collection("Estadisticas").Document($"{guildId}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios").Document($"{userId}");
+            var snap = await doc.GetSnapshotAsync();
+            if (snap.Exists)
+            {
+                return snap.ConvertTo<LeaderboardFirebase>();
+            }
+            return null;
         }
 
         public async Task AddRegistro(CommandContext ctx, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)
         {
-            var clientFirebase = await funciones.GetClienteFirebase();
-            var response = await clientFirebase.GetTaskAsync($"Juegos/{juego}/{dificultad}/{ctx.Guild.Id}/{ctx.Member.Id}/");
-            if(response.Body.ToLower() == "null")
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            DocumentReference doc = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios").Document($"{userId}");
+            var snap = await doc.GetSnapshotAsync();
+            LeaderboardFirebase registro;
+            if (snap.Exists)
             {
-                await clientFirebase.SetTaskAsync($"Juegos/{juego}/{dificultad}/{ctx.Guild.Id}/{ctx.Member.Id}", new LeaderboardoNew()
-                {
-                    partidasJugadas = 1,
-                    rondasAcertadas = rondasAcertadas,
-                    rondasTotales = rondasTotales
-                });
-            }
-            else
-            {
-                var registro = response.ResultAs<LeaderboardoNew>();
+                registro = snap.ConvertTo<LeaderboardFirebase>();
                 registro.partidasJugadas++;
                 registro.rondasAcertadas += rondasAcertadas;
                 registro.rondasTotales += rondasTotales;
-                await clientFirebase.UpdateTaskAsync($"Juegos/{juego}/{dificultad}/{ctx.Guild.Id}/{ctx.Member.Id}", registro);
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"user_id", registro.user_id},
+                    {"partidasJugadas", registro.partidasJugadas},
+                    {"rondasAcertadas", registro.rondasAcertadas},
+                    {"rondasTotales", registro.rondasTotales},
+                };
+                await doc.UpdateAsync(data);
+            }
+            else
+            {
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"user_id", userId},
+                    {"partidasJugadas", 1},
+                    {"rondasAcertadas", rondasAcertadas},
+                    {"rondasTotales", rondasTotales},
+                };
+                await doc.SetAsync(data);
             }
         }
 
         public async Task<List<StatsJuego>> GetLeaderboard(CommandContext ctx, string dificultad, string juego, bool global)
         {
             List<StatsJuego> lista = new List<StatsJuego>();
-            var listaFirebase = await GetLeaderboardFirebase(ctx, juego, dificultad);
-            /* Comantado hasta unificar las estadisticas de un usuario en distintos servidores
+            var listaFirebase = await GetLeaderboardFirebase((long)ctx.Guild.Id, juego, dificultad);
+            /* Comantado hasta unificar las estadisticas de un usuario en distintos servidores (hacer otro metodo getleaderbaordfirebaseglobal)
             if (global) 
                 list = listaFirebase.Where(x => x.dificultad == dificultad && x.juego == juego);
             else */
@@ -99,25 +143,23 @@ namespace YumikoBot.DAL
         public async Task<List<string>> GetTags(CommandContext ctx)
         {
             List<string> ret = new List<string>();
-            var client = await funciones.GetClienteFirebase();
-            FirebaseResponse response = await client.GetTaskAsync($"Juegos/tag/");
-            var json = response.Body;
-            dynamic items = JsonConvert.DeserializeObject<dynamic>(json);
-            foreach (var item in items)
+
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+
+            CollectionReference col = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos");//.Document("tag").Collection("Dificultad");
+            var snap = await col.GetSnapshotAsync();
+
+            if (snap.Count > 0)
             {
-                string tagName = item.Name;
-                FirebaseResponse response2 = await client.GetTaskAsync($"Juegos/tag/{tagName}/");
-                var json2 = response2.Body;
-                dynamic items2 = JsonConvert.DeserializeObject<dynamic>(json2);
-                foreach (var item2 in items2)
+                foreach (var document in snap.Documents)
                 {
-                    var guildId = long.Parse(item2.Name);
-                    if (ctx.Guild.Id == (ulong)guildId)
-                    {
-                        ret.Add(tagName);
-                    }
+                    int i = 0;
+                   // ret.Add(document.ConvertTo<LeaderboardFirebase>());
                 }
             }
+
             return ret;
         }
     }

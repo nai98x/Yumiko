@@ -18,26 +18,37 @@ using System.Text;
 using System.Threading.Tasks;
 using YumikoBot;
 using YumikoBot.DAL;
+using Google.Cloud.Firestore;
 
 namespace Discord_Bot.Modulos
 {
+    public class LeaderboardOld
+    {
+        public int Id { get; set; }
+        public long user_id { get; set; }
+        public long guild_id { get; set; }
+        public string juego { get; set; }
+        public string dificultad { get; set; }
+        public int partidasJugadas { get; set; }
+        public int rondasAcertadas { get; set; }
+        public int rondasTotales { get; set; }
+    }
+
     public class Otros : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
+        public async Task<List<LeaderboardOld>> GetLeaderboardFirebase()
+        {
+            var client = await funciones.GetClienteFirebase();
+            FirebaseResponse response = await client.GetTaskAsync("Leaderboard/");
+            var listaFirebase = response.ResultAs<List<LeaderboardOld>>();
+            return listaFirebase.Where(x => x != null).ToList();
+        }
+
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
-            /*
-            var reallyLongString = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-            reallyLongString += "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).";
-
-            var interactivity = ctx.Client.GetInteractivity();
-            var pages = interactivity.GeneratePagesInEmbed(reallyLongString);
-
-            await ctx.Channel.SendPaginatedMessageAsync(ctx.Member, pages, deletion:DSharpPlus.Interactivity.Enums.PaginationDeletion.KeepEmojis);
-            */          
-
             await ctx.RespondAsync("uwu");
         }
 
