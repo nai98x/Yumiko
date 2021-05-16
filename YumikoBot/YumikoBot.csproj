@@ -9,10 +9,14 @@
 
   <ItemGroup>
     <None Remove="firebase.json" />
+    <None Remove="firebase_ejemplo.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="firebase.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="firebase_ejemplo.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
