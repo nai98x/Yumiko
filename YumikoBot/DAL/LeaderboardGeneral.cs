@@ -121,10 +121,6 @@ namespace YumikoBot.DAL
         {
             List<StatsJuego> lista = new List<StatsJuego>();
             var listaFirebase = await GetLeaderboardFirebase((long)ctx.Guild.Id, juego, dificultad);
-            /* Comantado hasta unificar las estadisticas de un usuario en distintos servidores (hacer otro metodo getleaderbaordfirebaseglobal)
-            if (global) 
-                list = listaFirebase.Where(x => x.dificultad == dificultad && x.juego == juego);
-            else */
             listaFirebase.ForEach(x =>
             {
                 lista.Add(new StatsJuego()
@@ -148,14 +144,16 @@ namespace YumikoBot.DAL
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
             FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
 
-            CollectionReference col = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos");//.Document("tag").Collection("Dificultad");
+            CollectionReference col = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");
             var snap = await col.GetSnapshotAsync();
+
+            var col2 = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag");
+            var snap2 = await col2.GetSnapshotAsync();
 
             if (snap.Count > 0)
             {
                 foreach (var document in snap.Documents)
                 {
-                    int i = 0;
                    // ret.Add(document.ConvertTo<LeaderboardFirebase>());
                 }
             }

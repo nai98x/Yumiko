@@ -1304,6 +1304,15 @@ namespace Discord_Bot.Modulos
         [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaTag(CommandContext ctx, string flag = null)
         {
+            var mensaje = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                Title = "Comando deshabilitado temporalmente",
+                Description = "Por mantenimientos",
+                Color = DiscordColor.Red,
+                Footer = funciones.GetFooter(ctx)
+            });
+            await Task.Delay(5000);
+            await funciones.BorrarMensaje(ctx, mensaje.Id);
+            /*
             var builder = await funcionesJuegos.GetEstadisticasTag(ctx, flag);
             var msg = await ctx.RespondAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
@@ -1312,6 +1321,7 @@ namespace Discord_Bot.Modulos
                 await Task.Delay(5000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
             }
+            */
         }
 
         [Command("rankingS"), Aliases("statsS", "leaderboardS"), Description("Estadisticas de adivina el estudio."), RequireGuild]
