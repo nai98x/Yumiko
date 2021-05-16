@@ -1,6 +1,7 @@
 ﻿using Discord_Bot;
 using DSharpPlus.CommandsNext;
 using FireSharp.Response;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,11 +10,14 @@ namespace YumikoBot.DAL
 {
     public class Leaderboardo
     {
-        public int Id { get; set; }
         public long user_id { get; set; }
-        public long guild_id { get; set; }
-        public string juego { get; set; }
-        public string dificultad { get; set; }
+        public int partidasJugadas { get; set; }
+        public int rondasAcertadas { get; set; }
+        public int rondasTotales { get; set; }
+    }
+
+    public class LeaderboardoNew
+    {
         public int partidasJugadas { get; set; }
         public int rondasAcertadas { get; set; }
         public int rondasTotales { get; set; }
@@ -23,73 +27,70 @@ namespace YumikoBot.DAL
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        public async Task<List<Leaderboardo>> GetLeaderboardFirebase()
+        public async Task<List<Leaderboardo>> GetLeaderboardFirebase(CommandContext ctx, string juego, string dificultad)
         {
+            var ret = new List<Leaderboardo>();
             var client = await funciones.GetClienteFirebase();
-            FirebaseResponse response = await client.GetTaskAsync("Leaderboard/");
-            var listaFirebase = response.ResultAs<List<Leaderboardo>>();
-            return listaFirebase.Where(x => x != null).ToList();
-        }
-
-        public async Task<int> GetLastId()
-        {
-            var lista = await GetLeaderboardFirebase();
-            return lista.Last().Id;
+            FirebaseResponse response = await client.GetTaskAsync($"Juegos/{juego}/{dificultad}/{ctx.Guild.Id}/");
+            var json = response.Body;
+            if(json != "null")
+            {
+                dynamic items = JsonConvert.DeserializeObject<dynamic>(json);
+                foreach (var item in items)
+                {
+                    ret.Add(new Leaderboardo()
+                    {
+                        user_id = long.Parse(item.Name),
+                        partidasJugadas = item.First.partidasJugadas,
+                        rondasAcertadas = item.First.rondasAcertadas,
+                        rondasTotales = item.First.rondasTotales,
+                    });
+                }
+            }
+            return ret;
         }
 
         public async Task AddRegistro(CommandContext ctx, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)
         {
             var clientFirebase = await funciones.GetClienteFirebase();
-            var listaFirebase = await GetLeaderboardFirebase();
-            var registro = listaFirebase.FirstOrDefault(x => x.user_id == userId && x.guild_id == (long)ctx.Guild.Id && x.dificultad == dificultad && x.juego == juego);
-            if (registro == null)
+            var response = await clientFirebase.GetTaskAsync($"Juegos/{juego}/{dificultad}/{ctx.Guild.Id}/{ctx.Member.Id}/");
+            if(response.Body.ToLower() == "null")
             {
-                int nuevoId = await GetLastId() + 1;
-                await clientFirebase.SetTaskAsync("Leaderboard/" + nuevoId, new Leaderboardo()
+                await clientFirebase.SetTaskAsync($"Juegos/{juego}/{dificultad}/{ctx.Guild.Id}/{ctx.Member.Id}", new LeaderboardoNew()
                 {
-                    Id = nuevoId,
-                    user_id = userId,
-                    guild_id = (long)ctx.Guild.Id,
-                    dificultad = dificultad,
                     partidasJugadas = 1,
                     rondasAcertadas = rondasAcertadas,
-                    rondasTotales = rondasTotales,
-                    juego = juego
+                    rondasTotales = rondasTotales
                 });
             }
             else
             {
+                var registro = response.ResultAs<LeaderboardoNew>();
                 registro.partidasJugadas++;
                 registro.rondasAcertadas += rondasAcertadas;
                 registro.rondasTotales += rondasTotales;
-                await clientFirebase.UpdateTaskAsync("Leaderboard/" + registro.Id, registro);
+                await clientFirebase.UpdateTaskAsync($"Juegos/{juego}/{dificultad}/{ctx.Guild.Id}/{ctx.Member.Id}", registro);
             }
         }
 
         public async Task<List<StatsJuego>> GetLeaderboard(CommandContext ctx, string dificultad, string juego, bool global)
         {
             List<StatsJuego> lista = new List<StatsJuego>();
-            var listaFirebase = await GetLeaderboardFirebase();
-            IEnumerable<Leaderboardo> list;
+            var listaFirebase = await GetLeaderboardFirebase(ctx, juego, dificultad);
             /* Comantado hasta unificar las estadisticas de un usuario en distintos servidores
             if (global) 
                 list = listaFirebase.Where(x => x.dificultad == dificultad && x.juego == juego);
             else */
-            list = listaFirebase.Where(x => x.guild_id == (long)ctx.Guild.Id && x.dificultad == dificultad && x.juego == juego);
-            var listaVerif = ctx.Guild.Members.Values.ToList();
-            list.ToList().ForEach(x =>
+            listaFirebase.ForEach(x =>
             {
-                if (listaVerif.Find(u => u.Id == (ulong)x.user_id) != null)
+                lista.Add(new StatsJuego()
                 {
-                    lista.Add(new StatsJuego()
-                    {
-                        UserId = x.user_id,
-                        PartidasTotales = x.partidasJugadas,
-                        RondasTotales = x.rondasTotales,
-                        RondasAcertadas = x.rondasAcertadas,
-                        PorcentajeAciertos = (x.rondasAcertadas * 100) / x.rondasTotales
-                    });
-                }
+                    UserId = x.user_id,
+                    PartidasTotales = x.partidasJugadas,
+                    RondasTotales = x.rondasTotales,
+                    RondasAcertadas = x.rondasAcertadas,
+                    PorcentajeAciertos = (x.rondasAcertadas * 100) / x.rondasTotales
+                });
             });
             lista.Sort((x, y) => y.PorcentajeAciertos.CompareTo(x.PorcentajeAciertos));
             return lista.Take(10).ToList();
@@ -97,14 +98,27 @@ namespace YumikoBot.DAL
         
         public async Task<List<string>> GetTags(CommandContext ctx)
         {
-            var listaFirebase = await GetLeaderboardFirebase();
-            var list = listaFirebase.Where(x => x.guild_id == (long)ctx.Guild.Id && x.juego == "tag").ToList();
-            var distinctTags = list
-              .GroupBy(p => p.dificultad)
-              .Select(g => g.First().dificultad)
-              .ToList();
-            distinctTags.Sort((x, y) => x.CompareTo(y));
-            return distinctTags;
+            List<string> ret = new List<string>();
+            var client = await funciones.GetClienteFirebase();
+            FirebaseResponse response = await client.GetTaskAsync($"Juegos/tag/");
+            var json = response.Body;
+            dynamic items = JsonConvert.DeserializeObject<dynamic>(json);
+            foreach (var item in items)
+            {
+                string tagName = item.Name;
+                FirebaseResponse response2 = await client.GetTaskAsync($"Juegos/tag/{tagName}/");
+                var json2 = response2.Body;
+                dynamic items2 = JsonConvert.DeserializeObject<dynamic>(json2);
+                foreach (var item2 in items2)
+                {
+                    var guildId = long.Parse(item2.Name);
+                    if (ctx.Guild.Id == (ulong)guildId)
+                    {
+                        ret.Add(tagName);
+                    }
+                }
+            }
+            return ret;
         }
     }
 }

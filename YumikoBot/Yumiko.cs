@@ -69,7 +69,7 @@ namespace Discord_Bot
                 AutoReconnect = true,
                 ReconnectIndefinitely = true,
                 MinimumLogLevel = LogLevel.Information,
-                Intents = DiscordIntents.All
+                Intents = DiscordIntents.AllUnprivileged
             };
             Client = new DiscordClient(Config);
 
@@ -100,7 +100,6 @@ namespace Discord_Bot
             Commands.CommandErrored += Commands_CommandErrored;
 
             Commands.RegisterCommands<Interactuar>();
-            Commands.RegisterCommands<Fun>();
             Commands.RegisterCommands<Anilist>();
             Commands.RegisterCommands<Juegos>();
             Commands.RegisterCommands<NSFW>();
@@ -207,7 +206,8 @@ namespace Discord_Bot
         private Task Client_ClientError(DiscordClient c, ClientErrorEventArgs e)
         {
             e.Handled = true;
-            if (e.Exception.Message != "An event handler caused the invocation of an asynchronous event to time out.")
+            if (e.Exception.Message != "An event handler caused the invocation of an asynchronous event to time out." &&
+                e.Exception.Message != "One or more errors occurred. (Unauthorized: 403)")
             {
                 LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {

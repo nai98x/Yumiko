@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Discord_Bot.Modulos
 {
+    [RequireBotPermissions(DSharpPlus.Permissions.SendMessages)]
     public class Help : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
@@ -104,7 +105,8 @@ namespace Discord_Bot.Modulos
                                     parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **Si**\n";
                             }  
                         }
-                        builder.AddField("Parametros", parametros, false);
+                        if(!string.IsNullOrEmpty(parametros))
+                            builder.AddField("Parametros", parametros, false);
                     }
                     await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
                 }

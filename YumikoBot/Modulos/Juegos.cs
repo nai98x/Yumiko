@@ -1079,6 +1079,204 @@ namespace Discord_Bot.Modulos
             }
         }
 
+        [Command("quizP"), Aliases("adivinaelprotagonista"), Description("Empieza el juego de adivina el protagonista."), RequireGuild]
+        public async Task QuizProtagonistGlobal(CommandContext ctx)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity);
+            if (settings.Ok)
+            {
+                int rondas = settings.Rondas;
+                string dificultadStr = settings.Dificultad;
+                int iterIni = settings.IterIni;
+                int iterFin = settings.IterFin;
+                DiscordEmbed embebido = new DiscordEmbedBuilder
+                {
+                    Title = "Adivina el protagonista del anime",
+                    Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
+                    Color = funciones.GetColor()
+                }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
+                await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
+                List<Anime> animeList = new List<Anime>();
+                Random rnd = new Random();
+                List<UsuarioJuego> participantes = new List<UsuarioJuego>();
+                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo animes...").ConfigureAwait(false);
+                string query = "query($pagina : Int){" +
+                        "   Page(page: $pagina){" +
+                        "       media(type: ANIME, sort: FAVOURITES_DESC, isAdult:false){" +
+                        "           siteUrl," +
+                        "           favourites," +
+                        "           title{" +
+                        "               romaji," +
+                        "               english" +
+                        "           }," +
+                        "           coverImage{" +
+                        "               large" +
+                        "           }," +
+                        "           characters(role: MAIN){" +
+                        "               nodes{" +
+                        "                   name{" +
+                        "                       first," +
+                        "                       last," +
+                        "                       full" +
+                        "                   }," +
+                        "                   siteUrl," +
+                        "                   favourites," +
+                        "               }" +
+                        "           }" +
+                        "       }" +
+                        "   }" +
+                        "}";
+                int popularidad;
+                if (iterIni == 1)
+                    popularidad = 1;
+                else
+                    popularidad = iterIni * 50;
+                for (int i = iterIni; i <= iterFin; i++)
+                {
+                    var request = new GraphQLRequest
+                    {
+                        Query = query,
+                        Variables = new
+                        {
+                            pagina = i
+                        }
+                    };
+                    try
+                    {
+                        var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                        foreach (var x in data.Data.Page.media)
+                        {
+                            string titleEnglish = x.title.english;
+                            string titleRomaji = x.title.romaji;
+                            Anime anim = new Anime()
+                            {
+                                Image = x.coverImage.large,
+                                TitleEnglish = funciones.QuitarCaracteresEspeciales(titleEnglish),
+                                TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
+                                SiteUrl = x.siteUrl,
+                                Favoritos = x.favourites,
+                                Popularidad = popularidad,
+                                Personajes = new List<Character>()
+                            };
+                            foreach (var character in x.characters.nodes)
+                            {
+                                anim.Personajes.Add(new Character()
+                                {
+                                    NameFull = character.name.full,
+                                    NameFirst = character.name.first,
+                                    NameLast = character.name.last,
+                                    SiteUrl = character.siteUrl,
+                                    Favoritos = character.favourites
+                                });
+                            }
+                            popularidad++;
+                            if (anim.Personajes.Count() > 0)
+                            {
+                                animeList.Add(anim);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DiscordMessage msg = ex.Message switch
+                        {
+                            _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                        };
+                        await Task.Delay(3000);
+                        await funciones.BorrarMensaje(ctx, msg.Id);
+                        return;
+                    }
+                }
+                await funciones.BorrarMensaje(ctx, mensaje.Id);
+                int lastRonda;
+                for (int ronda = 1; ronda <= rondas; ronda++)
+                {
+                    lastRonda = ronda;
+                    int random = funciones.GetNumeroRandom(0, animeList.Count - 1);
+                    Anime elegido = animeList[random];
+                    DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
+                    string protagonistasStr = $"Los protagonistas de [{elegido.TitleRomaji}]({elegido.SiteUrl}) son:\n";
+                    foreach (var personaje in elegido.Personajes)
+                    {
+                        protagonistasStr += $"- [{personaje.NameFull}]({personaje.SiteUrl})\n";
+                    }
+                    string protagonistasStrGood = funciones.NormalizarDescription(protagonistasStr);
+                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Color = DiscordColor.Gold,
+                        Title = "Adivina el protagonista del anime",
+                        Description = $"Ronda {ronda} de {rondas}",
+                        ImageUrl = elegido.Image,
+                        Footer = new DiscordEmbedBuilder.EmbedFooter
+                        {
+                            Text = $"{elegido.Favoritos} {corazon} (nº {elegido.Popularidad} en popularidad)"
+                        }
+                    }).ConfigureAwait(false);
+                    var msg = await interactivity.WaitForMessageAsync
+                        (xm => (xm.Channel == ctx.Channel) &&
+                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) || (
+                        (elegido.Personajes.Find(x => x.NameFull != null && x.NameFull.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
+                        (elegido.Personajes.Find(x => x.NameFirst != null && x.NameFirst.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
+                        (elegido.Personajes.Find(x => x.NameLast != null && x.NameLast.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
+                        ) && xm.Author.Id != ctx.Client.CurrentUser.Id),
+                        TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
+                    if (!msg.TimedOut)
+                    {
+                        if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
+                        {
+                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            {
+                                Title = "¡Juego cancelado!",
+                                Description = $"{protagonistasStrGood}",
+                                Color = DiscordColor.Red
+                            }).ConfigureAwait(false);
+                            await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "protagonista");
+                            await ctx.RespondAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
+                            return;
+                        }
+                        DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
+                        UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
+                        if (usr != null)
+                        {
+                            usr.Puntaje++;
+                        }
+                        else
+                        {
+                            participantes.Add(new UsuarioJuego()
+                            {
+                                Usuario = msg.Result.Author,
+                                Puntaje = 1
+                            });
+                        }
+                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        {
+                            Title = $"¡**{acertador.DisplayName}** ha acertado!",
+                            Description = $"{protagonistasStrGood}",
+                            Color = DiscordColor.Green
+                        }).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        {
+                            Title = "¡Nadie ha acertado!",
+                            Description = $"{protagonistasStrGood}",
+                            Color = DiscordColor.Red
+                        }).ConfigureAwait(false);
+                    }
+                    animeList.Remove(animeList[random]);
+                }
+                await funcionesJuegos.GetResultados(ctx, participantes, rondas, settings.Dificultad, "protagonista");
+            }
+            else
+            {
+                var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
+                await Task.Delay(5000);
+                await funciones.BorrarMensaje(ctx, error.Id);
+            }
+        }
+
         [Command("rankingC"), Aliases("statsC", "leaderboardC"), Description("Estadisticas de adivina el personaje."), RequireGuild]
         public async Task EstadisticasAdivinaPersonaje(CommandContext ctx, string flag = null)
         {
@@ -1120,6 +1318,14 @@ namespace Discord_Bot.Modulos
         public async Task EstadisticasAdivinaEstudio(CommandContext ctx, string flag = null)
         {
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "estudio", flag);
+            await ctx.RespondAsync(embed: builder);
+            await funciones.ChequearVotoTopGG(ctx);
+        }
+
+        [Command("rankingP"), Aliases("statsP", "leaderboardP"), Description("Estadisticas de adivina el protagonista."), RequireGuild]
+        public async Task EstadisticasAdivinaProtagonista(CommandContext ctx, string flag = null)
+        {
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "protagonista", flag);
             await ctx.RespondAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }

@@ -12,5 +12,6 @@ namespace Discord_Bot
         public List<string> Sinonimos { get; set; }
         public int Popularidad { get; set; }
         public List<Estudio> Estudios { get; set; }
+        public List<Character> Personajes { get; set; }
     }
 }

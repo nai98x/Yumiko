@@ -212,9 +212,9 @@ namespace Discord_Bot
                 {
                     long x = jugador.UserId;
                     ulong id = (ulong)x;
-                    DiscordUser miembro = await ctx.Client.GetUserAsync(id);
-                    if (miembro != null)
+                    try
                     {
+                        DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
                         if (lastScore != jugador.PorcentajeAciertos)
                             pos++;
                         switch (pos)
@@ -237,6 +237,7 @@ namespace Discord_Bot
                         }
                         lastScore = jugador.PorcentajeAciertos;
                     }
+                    catch (Exception){}
                 }
             }
             return stats;

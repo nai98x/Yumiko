@@ -36,27 +36,7 @@ namespace Discord_Bot.Modulos
             var pages = interactivity.GeneratePagesInEmbed(reallyLongString);
 
             await ctx.Channel.SendPaginatedMessageAsync(ctx.Member, pages, deletion:DSharpPlus.Interactivity.Enums.PaginationDeletion.KeepEmojis);
-            */
-
-            try
-            {
-                var json = string.Empty;
-                using (var fs = File.OpenRead("config.json"))
-                {
-                    using var sr = new StreamReader(fs, new UTF8Encoding(false));
-                    json = await sr.ReadToEndAsync().ConfigureAwait(false);
-                }
-                var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
-
-                AuthDiscordBotListApi DblApi = new AuthDiscordBotListApi(295182825521545218, configJson.TopGG_token);
-                var guilds = ctx.Client.Guilds.Count;
-                await DblApi.UpdateStats(guildCount: ctx.Client.Guilds.Count);
-            }
-            catch (Exception)
-            {
-
-            }
-            
+            */          
 
             await ctx.RespondAsync("uwu");
         }
