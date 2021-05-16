@@ -344,3 +344,5 @@ healthchecksdb
 
 # Configuracion general
 /YumikoBot/config.json
+
+YumikoBot/firebase.json
