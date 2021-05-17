@@ -26,7 +26,7 @@ namespace Discord_Bot.Modulos
             if (String.IsNullOrEmpty(usuario))
             {
                 var interactivity = ctx.Client.GetInteractivity();
-                var msgUsuario = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgUsuario = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Escribe un nombre de usuario de AniList",
                     Description = "Ejemplo: Josh",
@@ -44,7 +44,7 @@ namespace Discord_Bot.Modulos
                 }
                 else
                 {
-                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder { 
                         Title = "Error",
                         Description = "Tiempo agotado esperando el usuario de AniList",
                         Footer = funciones.GetFooter(ctx),
@@ -196,13 +196,13 @@ namespace Discord_Bot.Modulos
                         builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":man_artist:")} Staff favoritos", favoriteStaff, true);
                     if (favoriteStudios != "")
                         builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios favoritos", favoriteStudios, true);
-                    await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
                 }
                 else
                 {
                     foreach (var x in data.Errors)
                     {
-                        var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
+                        var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
                     }
@@ -212,8 +212,8 @@ namespace Discord_Bot.Modulos
             {
                 DiscordMessage msg = ex.Message switch
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado al usuario de anilist `{usuario}`").ConfigureAwait(false),
-                    _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
+                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado al usuario de anilist `{usuario}`").ConfigureAwait(false),
+                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
                 };
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
@@ -226,7 +226,7 @@ namespace Discord_Bot.Modulos
             if (String.IsNullOrEmpty(anime))
             {
                 var interactivity = ctx.Client.GetInteractivity();
-                var msgAnime = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgAnime = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Escribe el nombre del anime",
                     Description = "Ejemplo: Grisaia no Kajitsu",
@@ -244,7 +244,7 @@ namespace Discord_Bot.Modulos
                 }
                 else
                 {
-                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Error",
                         Description = "Tiempo agotado esperando el usuario de AniList",
@@ -330,7 +330,7 @@ namespace Discord_Bot.Modulos
                         elegido = cont;
                     if (cont > 1)
                     {
-                        DiscordMessage elegirMsg = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        DiscordMessage elegirMsg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Footer = funciones.GetFooter(ctx),
                             Color = funciones.GetColor(),
@@ -351,7 +351,7 @@ namespace Discord_Bot.Modulos
                             else
                             {
                                 ok = false;
-                                var msg = await ctx.RespondAsync($"Debes escribir un numero válido").ConfigureAwait(false);
+                                var msg = await ctx.Channel.SendMessageAsync($"Debes escribir un numero válido").ConfigureAwait(false);
                                 await Task.Delay(3000);
                                 await funciones.BorrarMensaje(ctx, msg.Id);
                                 await funciones.BorrarMensaje(ctx, elegirMsg.Id);
@@ -361,7 +361,7 @@ namespace Discord_Bot.Modulos
                         else
                         {
                             ok = false;
-                            var msg = await ctx.RespondAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
+                            var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
                             await Task.Delay(3000);
                             await funciones.BorrarMensaje(ctx, msg.Id);
                             await funciones.BorrarMensaje(ctx, elegirMsg.Id);
@@ -474,11 +474,11 @@ namespace Discord_Bot.Modulos
                                 builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios", funciones.NormalizarField(estudios), false);
                             if (linksExternos.Length > 0)
                                 builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} Links externos", funciones.NormalizarField(linksExternos), false);
-                            await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
                         }
                         else
                         {
-                            DiscordMessage msg = await ctx.RespondAsync("", embed: new DiscordEmbedBuilder
+                            DiscordMessage msg = await ctx.Channel.SendMessageAsync("", embed: new DiscordEmbedBuilder
                             {
                                 Title = "Requiere NSFW",
                                 Description = "Este comando debe ser invocado en un canal NSFW.",
@@ -494,7 +494,7 @@ namespace Discord_Bot.Modulos
                 {
                     foreach (var x in data.Errors)
                     {
-                        var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
+                        var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
                     }
@@ -504,8 +504,8 @@ namespace Discord_Bot.Modulos
             {
                 DiscordMessage msg = ex.Message switch
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false),
-                    _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
+                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false),
+                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
                 };
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
@@ -518,7 +518,7 @@ namespace Discord_Bot.Modulos
             if (String.IsNullOrEmpty(manga))
             {
                 var interactivity = ctx.Client.GetInteractivity();
-                var msgAnime = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgAnime = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Escribe un nombre del manga",
                     Description = "Ejemplo: Berserk",
@@ -536,7 +536,7 @@ namespace Discord_Bot.Modulos
                 }
                 else
                 {
-                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Error",
                         Description = "Tiempo agotado esperando el usuario de AniList",
@@ -612,7 +612,7 @@ namespace Discord_Bot.Modulos
                         elegido = cont;
                     if (cont > 1)
                     {
-                        DiscordMessage elegirMsg = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        DiscordMessage elegirMsg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Footer = funciones.GetFooter(ctx),
                             Color = funciones.GetColor(),
@@ -633,7 +633,7 @@ namespace Discord_Bot.Modulos
                             else
                             {
                                 ok = false;
-                                var msg = await ctx.RespondAsync($"Debes escribir un numero válido").ConfigureAwait(false);
+                                var msg = await ctx.Channel.SendMessageAsync($"Debes escribir un numero válido").ConfigureAwait(false);
                                 await Task.Delay(3000);
                                 await funciones.BorrarMensaje(ctx, msg.Id);
                                 await funciones.BorrarMensaje(ctx, elegirMsg.Id);
@@ -643,7 +643,7 @@ namespace Discord_Bot.Modulos
                         else
                         {
                             ok = false;
-                            var msg = await ctx.RespondAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
+                            var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
                             await Task.Delay(3000);
                             await funciones.BorrarMensaje(ctx, msg.Id);
                             await funciones.BorrarMensaje(ctx, elegirMsg.Id);
@@ -731,11 +731,11 @@ namespace Discord_Bot.Modulos
                                 builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(tags), false);
                             if (titulos.Length > 0)
                                 builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(titulos), false);
-                            await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
                         }
                         else
                         {
-                            DiscordMessage msg = await ctx.RespondAsync("", embed: new DiscordEmbedBuilder
+                            DiscordMessage msg = await ctx.Channel.SendMessageAsync("", embed: new DiscordEmbedBuilder
                             {
                                 Title = "Requiere NSFW",
                                 Description = "Este comando debe ser invocado en un canal NSFW.",
@@ -751,7 +751,7 @@ namespace Discord_Bot.Modulos
                 {
                     foreach (var x in data.Errors)
                     {
-                        var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
+                        var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
                     }
@@ -761,8 +761,8 @@ namespace Discord_Bot.Modulos
             {
                 DiscordMessage msg = ex.Message switch
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el anime `{manga}`").ConfigureAwait(false),
-                    _ => await ctx.RespondAsync($"Error inesperado").ConfigureAwait(false),
+                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el anime `{manga}`").ConfigureAwait(false),
+                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
                 };
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
@@ -775,7 +775,7 @@ namespace Discord_Bot.Modulos
             if (String.IsNullOrEmpty(personaje))
             {
                 var interactivity = ctx.Client.GetInteractivity();
-                var msgCharacter = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgCharacter = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Escribe el nombre de un personaje",
                     Description = "Ejemplo: Yumiko Sakaki",
@@ -793,7 +793,7 @@ namespace Discord_Bot.Modulos
                 }
                 else
                 {
-                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Error",
                         Description = "Tiempo agotado esperando el usuario de AniList",
@@ -864,7 +864,7 @@ namespace Discord_Bot.Modulos
                         elegido = cont;
                     if (cont > 1)
                     {
-                        DiscordMessage elegirMsg = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        DiscordMessage elegirMsg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Footer = funciones.GetFooter(ctx),
                             Color = funciones.GetColor(),
@@ -885,7 +885,7 @@ namespace Discord_Bot.Modulos
                             else
                             {
                                 ok = false;
-                                var msg = await ctx.RespondAsync($"Debes escribir un numero válido").ConfigureAwait(false);
+                                var msg = await ctx.Channel.SendMessageAsync($"Debes escribir un numero válido").ConfigureAwait(false);
                                 await Task.Delay(3000);
                                 await funciones.BorrarMensaje(ctx, msg.Id);
                                 await funciones.BorrarMensaje(ctx, elegirMsg.Id);
@@ -895,7 +895,7 @@ namespace Discord_Bot.Modulos
                         else
                         {
                             ok = false;
-                            var msg = await ctx.RespondAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
+                            var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
                             await Task.Delay(3000);
                             await funciones.BorrarMensaje(ctx, msg.Id);
                             await funciones.BorrarMensaje(ctx, elegirMsg.Id);
@@ -937,14 +937,14 @@ namespace Discord_Bot.Modulos
                             builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes", funciones.NormalizarField(animes), false);
                         if (mangas.Length > 0)
                             builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas", funciones.NormalizarField(mangas), false);
-                        await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                        await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     foreach (var x in data.Errors)
                     {
-                        var msg = await ctx.RespondAsync($"Error: {x.Message}").ConfigureAwait(false);
+                        var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
                     }
@@ -954,8 +954,8 @@ namespace Discord_Bot.Modulos
             {
                 DiscordMessage msg = ex.Message switch
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.RespondAsync($"No se ha encontrado el personaje `{personaje}`").ConfigureAwait(false),
-                    _ => await ctx.RespondAsync($"Error inesperado, mensaje: [{ex.Message}").ConfigureAwait(false),
+                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el personaje `{personaje}`").ConfigureAwait(false),
+                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado, mensaje: [{ex.Message}").ConfigureAwait(false),
                 };
                 await Task.Delay(5000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
@@ -970,7 +970,7 @@ namespace Discord_Bot.Modulos
             if (String.IsNullOrEmpty(url))
             {
                 var interactivity = ctx.Client.GetInteractivity();
-                var msgAnime = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgAnime = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Pon el link de una imagen",
                     Description = "La imagen debe ser JPG, PNG o JPEG",
@@ -988,7 +988,7 @@ namespace Discord_Bot.Modulos
                 }
                 else
                 {
-                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Error",
                         Description = "Tiempo agotado esperando el link de la imagen",
@@ -1014,7 +1014,7 @@ namespace Discord_Bot.Modulos
                         var client = new RestClient("https://trace.moe/api/search?url=" + url);
                         var request = new RestRequest(Method.GET);
                         request.AddHeader("content-type", "application/json");
-                        var procesando = await ctx.RespondAsync("Procesando imagen..").ConfigureAwait(false);
+                        var procesando = await ctx.Channel.SendMessageAsync("Procesando imagen..").ConfigureAwait(false);
                         IRestResponse response = client.Execute(request);
                         await funciones.BorrarMensaje(ctx, procesando.Id);
                         switch (response.StatusCode)
@@ -1086,7 +1086,7 @@ namespace Discord_Bot.Modulos
             }
             if (msg != "OK")
             {
-                DiscordMessage msgError = await ctx.RespondAsync(msg).ConfigureAwait(false);
+                DiscordMessage msgError = await ctx.Channel.SendMessageAsync(msg).ConfigureAwait(false);
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msgError.Id);
             }
@@ -1144,7 +1144,7 @@ namespace Discord_Bot.Modulos
                     }
                 }
                 DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
-                var msg = await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
+                var msg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder {
                     Title = name,
                     Url = siteUrl,
                     ImageUrl = imageUrl,
@@ -1161,7 +1161,7 @@ namespace Discord_Bot.Modulos
             {
                 DiscordMessage msg = ex.Message switch
                 {
-                    _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
                 };
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
@@ -1173,7 +1173,7 @@ namespace Discord_Bot.Modulos
         public async Task Recommendation(CommandContext ctx, string anime = null)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            var msgAnime = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            var msgAnime = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "Escribe el nombre del anime",
                 Description = "Ejemplo: Grisaia no Kajitsu",
@@ -1191,7 +1191,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Error",
                     Description = "Tiempo agotado esperando el usuario de AniList",

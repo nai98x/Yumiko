@@ -80,7 +80,7 @@ namespace Discord_Bot.Modulos
                 DateTime fecha = cumple ?? DateTime.Today;
                 DiscordMessage msgError = null;
                 var interactivity = ctx.Client.GetInteractivity();
-                var msgOcultar = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgOcultar = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "¿Quieres que se muestre tu edad?",
                     Description = "1- Si\n2- No"
@@ -102,7 +102,7 @@ namespace Discord_Bot.Modulos
                                 await usuariosService.SetBirthday(ctx, fecha, false);
                                 break;
                             default:
-                                msgError = await ctx.RespondAsync("Ingresa bien la respuesta");
+                                msgError = await ctx.Channel.SendMessageAsync("Ingresa bien la respuesta");
                                 break;
                         }
                     }
@@ -114,14 +114,14 @@ namespace Discord_Bot.Modulos
                         else if (content == "2- no" || content == "no")
                             await usuariosService.SetBirthday(ctx, fecha, false);
                         else
-                            msgError = await ctx.RespondAsync("Ingresa bien la respuesta");
+                            msgError = await ctx.Channel.SendMessageAsync("Ingresa bien la respuesta");
                         await funciones.BorrarMensaje(ctx, msgOcultarInter.Result.Id);
                         await funciones.BorrarMensaje(ctx, msgOcultar.Id);
                     }
                 }
                 else
                 {
-                    msgError = await ctx.RespondAsync("Tiempo agotado esperando la respuesta");
+                    msgError = await ctx.Channel.SendMessageAsync("Tiempo agotado esperando la respuesta");
                 }
                 if (msgError != null)
                 {
@@ -135,7 +135,7 @@ namespace Discord_Bot.Modulos
         public async Task DeleteBirthday(CommandContext ctx)
         {
             await usuariosService.DeleteBirthday(ctx);
-            var msg = await ctx.RespondAsync("Cumpleaños borrado correctamente");
+            var msg = await ctx.Channel.SendMessageAsync("Cumpleaños borrado correctamente");
             await Task.Delay(3000);
             await funciones.BorrarMensaje(ctx, msg.Id);
         }

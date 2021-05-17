@@ -290,7 +290,7 @@ namespace Discord_Bot
                         IconUrl = e.Context.Member.AvatarUrl
                     }
                 };
-                var mensajeErr = e.Context.RespondAsync(embed: embed);
+                var mensajeErr = e.Context.Channel.SendMessageAsync(embed: embed);
                 if(e.Context.Message != null && mensajeErr != null)
                 {
                     await Task.Delay(7000);
@@ -332,7 +332,7 @@ namespace Discord_Bot
                         IconUrl = e.Context.Member.AvatarUrl
                     }
                 };
-                var mensajeErr = e.Context.RespondAsync(embed: embed);
+                var mensajeErr = e.Context.Channel.SendMessageAsync(embed: embed);
                 if (e.Context.Message != null && mensajeErr != null)
                 {
                     await Task.Delay(7000);
@@ -367,7 +367,7 @@ namespace Discord_Bot
                     Description = $"{emoji} Me faltan permisos para poder ejecutar este comando.",
                     Color = DiscordColor.Red
                 };
-                var mensajeErr = e.Context.RespondAsync(embed: embed);
+                var mensajeErr = e.Context.Channel.SendMessageAsync(embed: embed);
                 if (e.Context.Message != null && mensajeErr != null)
                 {
                     await Task.Delay(3000);
@@ -414,7 +414,7 @@ namespace Discord_Bot
                             Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
                             IconUrl = miembro.AvatarUrl
                         };
-                        var msg = e.Context.RespondAsync(embed: new DiscordEmbedBuilder
+                        var msg = e.Context.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = titulo,
                             Description = descripcion,
@@ -455,7 +455,7 @@ namespace Discord_Bot
                         Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
                         IconUrl = miembro.AvatarUrl
                     };
-                    var msg = e.Context.RespondAsync(embed: new DiscordEmbedBuilder
+                    var msg = e.Context.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Error desconocido",
                         Description = "Ha ocurrido un error que no puedo manejar",

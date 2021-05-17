@@ -54,7 +54,7 @@ namespace Discord_Bot
                 await leaderboard.AddRegistro(ctx, long.Parse(uj.Usuario.Id.ToString()), dificultad, uj.Puntaje, rondas, juego);
             }
             resultados += $"\n**Total ({tot}/{rondas})**";
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
                 Title = $"Resultados - Adivina el {juego}",
                 Description = resultados,
@@ -66,7 +66,7 @@ namespace Discord_Bot
 
         public async Task<SettingsJuego> InicializarJuego(CommandContext ctx, InteractivityExtension interactivity)
         {
-            var msgCntRondas = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            var msgCntRondas = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "Elige la cantidad de rondas (máximo 100)",
                 Description = "Por ejemplo: 10"
@@ -80,7 +80,7 @@ namespace Discord_Bot
                     if (rondas > 0 && rondas <= 100)
                     {
                         DiscordEmoji emojiDado = DiscordEmoji.FromName(ctx.Client, ":game_die:");
-                        var msgDificultad = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        var msgDificultad = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "Elije la dificultad",
                             Description = $"0- Aleatorio {emojiDado}\n1- Fácil\n2- Media\n3- Dificil\n4- Extremo"
@@ -268,7 +268,7 @@ namespace Discord_Bot
                     tags += $"{cont} - {s}\n";
                     cont++;
                 }
-                var msgOpciones = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgOpciones = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),

@@ -27,13 +27,13 @@ namespace Discord_Bot
             DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(713809173573271613);
             if (discordOOC == null)
             {
-                await ctx.RespondAsync("Error al obtener servidor").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync("Error al obtener servidor").ConfigureAwait(false);
                 return null;
             }
             DiscordChannel channel = discordOOC.GetChannel(idChannel);
             if (channel == null)
             {
-                await ctx.RespondAsync("Error al obtener canal del servidor").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync("Error al obtener canal del servidor").ConfigureAwait(false);
                 return null;
             }
             IReadOnlyList<DiscordMessage> mensajes = await channel.GetMessagesAsync();
@@ -286,7 +286,7 @@ namespace Discord_Bot
                     if (!voto)
                     {
                         string url = "https://top.gg/bot/295182825521545218/vote";
-                        var mensaje = await ctx.RespondAsync(embed: new DiscordEmbedBuilder()
+                        var mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
                         {
                             Title = $"¡Votame en Top.gg!",
                             Description = $"Puedes ayudarme votando en [este sitio web]({url}). ¡Gracias!",
@@ -319,7 +319,7 @@ namespace Discord_Bot
             DiscordMessage msgDia, msgMes, msgAnio, error;
             DSharpPlus.Interactivity.InteractivityResult<DiscordMessage> msgDiaInter, msgMesInter, msgAnioInter;
             var interactivity = ctx.Client.GetInteractivity();
-            msgDia = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            msgDia = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "Escribe el dia tu fecha de nacimiento",
                 Description = "Ejemplo: 30"
@@ -330,7 +330,7 @@ namespace Discord_Bot
                 bool resultDia = int.TryParse(msgDiaInter.Result.Content, out int dia);
                 if (resultDia)
                 {
-                    msgMes = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    msgMes = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Escribe el mes tu fecha de nacimiento",
                         Description = "Ejemplo: 1"
@@ -341,7 +341,7 @@ namespace Discord_Bot
                         bool resultMes = int.TryParse(msgMesInter.Result.Content, out int mes);
                         if (resultMes)
                         {
-                            msgAnio = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            msgAnio = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                             {
                                 Title = "Escribe el año tu fecha de nacimiento",
                                 Description = "Ejemplo: 2000"
@@ -357,7 +357,7 @@ namespace Discord_Bot
                                     {
                                         if(fecha >= DateTime.Today)
                                         {
-                                            error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                            error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                             {
                                                 Title = "Error",
                                                 Description = "La fecha de cumpleaños no puede ser posterior a la actual",
@@ -386,7 +386,7 @@ namespace Discord_Bot
                                     }
                                     else
                                     {
-                                        error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                        error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                         {
                                             Title = "Error",
                                             Description = $"La fecha `{dia}/{mes}/{anio}` no es real",
@@ -405,7 +405,7 @@ namespace Discord_Bot
                                 }
                                 else
                                 {
-                                    error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                    error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                     {
                                         Title = "Error",
                                         Description = "El año debe ser un numero",
@@ -424,7 +424,7 @@ namespace Discord_Bot
                             }
                             else
                             {
-                                error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                 {
                                     Title = "Error",
                                     Description = "Tiempo agotado esperando el año",
@@ -442,7 +442,7 @@ namespace Discord_Bot
                         }
                         else
                         {
-                            error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                             {
                                 Title = "Error",
                                 Description = "El mes debe ser un numero",
@@ -459,7 +459,7 @@ namespace Discord_Bot
                     }
                     else
                     {
-                        error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "Error",
                             Description = "Tiempo agotado esperando el mes",
@@ -475,7 +475,7 @@ namespace Discord_Bot
                 }
                 else
                 {
-                    error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Error",
                         Description = "El dia debe ser un numero",
@@ -490,7 +490,7 @@ namespace Discord_Bot
             }
             else
             {
-                error = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Error",
                     Description = "Tiempo agotado esperando el dia",

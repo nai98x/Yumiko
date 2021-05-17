@@ -20,7 +20,7 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
-            await ctx.RespondAsync("uwu");
+            await ctx.Channel.SendMessageAsync("uwu");
         }
 
         [Command("horarios"), Aliases("recordatorios", "horario", "recordatorio"), Description("Horarios para diversos paises.")]
@@ -32,7 +32,7 @@ namespace Discord_Bot.Modulos
             if (!fechaPuesta)
             {
                 var interactivity = ctx.Client.GetInteractivity();
-                var msgInicial = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgInicial = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Ingresa una fecha (En zona horaria UTC)",
                     Description = "En este formato: **dd/mm/yyyy**\n  Ejemplo: 30/01/2000 23:15"
@@ -90,7 +90,7 @@ namespace Discord_Bot.Modulos
                         $"**Mexico:**     {mexicoTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {mexicoTime.Day} de {mexicoTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {mexicoTime.Year} a las {mexicoTime.ToString("HH:mm")}\n" +
                         $"**Panama:**     {panamaTime.ToString("dddd", CultureInfo.CreateSpecificCulture("es"))} {panamaTime.Day} de {panamaTime.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))} del {panamaTime.Year} a las {panamaTime.ToString("HH:mm")}\n";
 
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "Horarios",
                             Description = desc,
@@ -123,7 +123,7 @@ namespace Discord_Bot.Modulos
 
             if (!ok)
             {
-                var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Error",
                     Description = error,
@@ -139,7 +139,7 @@ namespace Discord_Bot.Modulos
         [Command("ping"), Description("Muestra el ping de Yumiko.")]
         public async Task Ping(CommandContext ctx)
         {
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Description = "🏓 Pong! `" + ctx.Client.Ping.ToString() + " ms" + "`",
                 Footer = funciones.GetFooter(ctx),
@@ -150,7 +150,7 @@ namespace Discord_Bot.Modulos
         [Command("invite"), Aliases("invitar"), Description("Muestra el link para invitar a Yumiko a un servidor.")]
         public async Task Invite(CommandContext ctx)
         {
-            await ctx.RespondAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
+            await ctx.Channel.SendMessageAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
         }
 
         [Command("servers"), Description("Muestra los servidores en los que esta Yumiko."), RequireOwner]
@@ -167,7 +167,7 @@ namespace Discord_Bot.Modulos
             {
                 if (cont >= 10)
                 {
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Description = servers,
                         Footer = funciones.GetFooter(ctx),
@@ -187,14 +187,14 @@ namespace Discord_Bot.Modulos
             }
             if(cont != 1)
             {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Description = servers,
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
                 });
             }
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "Servidores de Yumiko",
                 Description = $"Cantidad: {ctx.Client.Guilds.Count}\nTotal de usuarios: {usuarios}",
@@ -211,7 +211,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var mensaje = await ctx.RespondAsync("Solo puedo borrar mis propios mensajes");
+                var mensaje = await ctx.Channel.SendMessageAsync("Solo puedo borrar mis propios mensajes");
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, mensaje.Id);
             }
@@ -231,7 +231,7 @@ namespace Discord_Bot.Modulos
             {
                 MonoschinosDownloader animeflv = new MonoschinosDownloader();
                 var interactivity = ctx.Client.GetInteractivity();
-                var msgBusqueda = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgBusqueda = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Buscando animes...",
                     Footer = funciones.GetFooter(ctx),
@@ -248,7 +248,7 @@ namespace Discord_Bot.Modulos
                         cont++;
                     }
                     await funciones.BorrarMensaje(ctx, msgBusqueda.Id);
-                    var elegirRes = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    var elegirRes = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Elije con un número el anime deseado",
                         Description = resultados,
@@ -266,7 +266,7 @@ namespace Discord_Bot.Modulos
                                 await funciones.BorrarMensaje(ctx, elegirRes.Id);
                                 await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
                                 var elegido = resBusqueda[numElegir - 1];
-                                var mensajeLinks = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                var mensajeLinks = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                 {
                                     Title = "Descargar anime",
                                     Description = $"Procesando links para **{elegido.name}**",
@@ -279,14 +279,14 @@ namespace Discord_Bot.Modulos
                             {
                                 {"descargaLinks.txt",  (FileStream)funciones.CrearArchivoMonoschinos(links)}
                             };
-                                await ctx.RespondAsync(new DiscordMessageBuilder
+                                await ctx.Channel.SendMessageAsync(new DiscordMessageBuilder
                                 {
                                     Content = $"{ctx.User.Mention}, aquí tienes los links para descargar **{elegido.name}**",
                                 }.WithFiles(dic));
                             }
                             else
                             {
-                                var msg = await ctx.RespondAsync($"El número indicado debe ser valido");
+                                var msg = await ctx.Channel.SendMessageAsync($"El número indicado debe ser valido");
                                 await Task.Delay(5000);
                                 await funciones.BorrarMensaje(ctx, msg.Id);
                                 await funciones.BorrarMensaje(ctx, elegirRes.Id);
@@ -295,7 +295,7 @@ namespace Discord_Bot.Modulos
                         }
                         else
                         {
-                            var msg = await ctx.RespondAsync($"La eleccion debe ser indicada con un numero");
+                            var msg = await ctx.Channel.SendMessageAsync($"La eleccion debe ser indicada con un numero");
                             await Task.Delay(5000);
                             await funciones.BorrarMensaje(ctx, msg.Id);
                             await funciones.BorrarMensaje(ctx, elegirRes.Id);
@@ -304,7 +304,7 @@ namespace Discord_Bot.Modulos
                     }
                     else
                     {
-                        var msg = await ctx.RespondAsync($"Tiempo agotado esperando eleccion de anime");
+                        var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando eleccion de anime");
                         await Task.Delay(5000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
                         await funciones.BorrarMensaje(ctx, elegirRes.Id);
@@ -313,7 +313,7 @@ namespace Discord_Bot.Modulos
                 }
                 else
                 {
-                    var msg = await ctx.RespondAsync($"No se encontraron resultados para {buscar}");
+                    var msg = await ctx.Channel.SendMessageAsync($"No se encontraron resultados para {buscar}");
                     await Task.Delay(5000);
                     await funciones.BorrarMensaje(ctx, msg.Id);
                     await funciones.BorrarMensaje(ctx, msgBusqueda.Id);
@@ -321,7 +321,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var msg = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Comando no habilitado",
                     Description = $"Hable con el owner del bot para habilitar este comando en el servidor",

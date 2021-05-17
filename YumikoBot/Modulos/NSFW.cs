@@ -16,7 +16,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130213346934834);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} quiere que se lo follen", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} quiere que se lo follen", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -25,7 +25,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} se folló a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} se folló a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -45,7 +45,7 @@ namespace Discord_Bot.Modulos
                     titulo = $"{ctx.User.Mention} se ha venido";
                 else
                     titulo = $"{ctx.User.Mention} se vino en {usuario.Mention}";
-                await ctx.RespondAsync(titulo, embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync(titulo, embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -54,7 +54,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
+                var msg = await ctx.Channel.SendMessageAsync("No puedes hacerte eso a ti mismo");
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
             }
@@ -71,7 +71,7 @@ namespace Discord_Bot.Modulos
                     titulo = $"{ctx.User.Mention} se ha venido";
                 else
                     titulo = $"{ctx.User.Mention} se vino en {usuario.Mention}";
-                await ctx.RespondAsync(titulo, embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync(titulo, embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -80,7 +80,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
+                var msg = await ctx.Channel.SendMessageAsync("No puedes hacerte eso a ti mismo");
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
             }
@@ -92,7 +92,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130262567485483);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} quiere que le hagan una rusa", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} quiere que le hagan una rusa", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -101,7 +101,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} le hizo una rusa a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} le hizo una rusa a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -117,7 +117,7 @@ namespace Discord_Bot.Modulos
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130300458565672);
-                await ctx.RespondAsync($"{ctx.User.Mention} se está masturbando", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} se está masturbando", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -127,7 +127,7 @@ namespace Discord_Bot.Modulos
             else
             {
                 elegida = await funciones.GetImagenDiscordYumiko(ctx, 823001635751854130);
-                await ctx.RespondAsync($"{ctx.User.Mention} está masturbando a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} está masturbando a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -143,7 +143,7 @@ namespace Discord_Bot.Modulos
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130322554945567); // Cambiar por el solo, cuando tenga contenido
-                await ctx.RespondAsync($"{ctx.User.Mention} se está masturbando", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} se está masturbando", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -153,7 +153,7 @@ namespace Discord_Bot.Modulos
             else
             {
                 elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130322554945567);
-                await ctx.RespondAsync($"{ctx.User.Mention} está masturbando a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} está masturbando a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -168,7 +168,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130366343348234);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} quiere que se la chupen", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} quiere que se la chupen", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -177,7 +177,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -192,7 +192,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130449679319041);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} quiere que se la chupen", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} quiere que se la chupen", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -201,7 +201,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} se la chupó a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -216,7 +216,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152519256178750);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} está teniendo pensamientos yaoi", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} está teniendo pensamientos yaoi", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -225,7 +225,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} tiene una fantasía yaoi con {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} tiene una fantasía yaoi con {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -240,7 +240,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152538906230795);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} está teniendo pensamientos yuri", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} está teniendo pensamientos yuri", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -249,7 +249,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} tiene una fantasía yuri con {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} tiene una fantasía yuri con {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -264,7 +264,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152813917962281);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} está teniendo pensamientos futas", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} está teniendo pensamientos futas", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -273,7 +273,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} tiene una fantasía futa con {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} tiene una fantasía futa con {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -288,7 +288,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152852023476224);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} está teniendo pensamientos BDSM", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} está teniendo pensamientos BDSM", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -297,7 +297,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} tiene una fantasía BDSM con {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} tiene una fantasía BDSM con {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -312,7 +312,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152880862986260);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} quiere que lo azoten", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} quiere que lo azoten", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -321,7 +321,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} está azotando a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} está azotando a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -336,7 +336,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152907690672188);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} quiere que lo pisen", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} quiere que lo pisen", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -345,7 +345,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} está pisando a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} está pisando a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -359,7 +359,7 @@ namespace Discord_Bot.Modulos
         {
             if (usuario1 == null || usuario2 == null)
             {
-                var msg = await ctx.RespondAsync("Debes mencionar a dos personas");
+                var msg = await ctx.Channel.SendMessageAsync("Debes mencionar a dos personas");
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
             }
@@ -367,14 +367,14 @@ namespace Discord_Bot.Modulos
             {
                 if (ctx.User.Id == usuario1.Id || ctx.User.Id == usuario2.Id)
                 {
-                    var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
+                    var msg = await ctx.Channel.SendMessageAsync("No puedes hacerte eso a ti mismo");
                     await Task.Delay(3000);
                     await funciones.BorrarMensaje(ctx, msg.Id);
                 }
                 else
                 {
                     Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152926535417906);
-                    await ctx.RespondAsync($"{ctx.User.Mention} tiene un trio con {usuario1.Mention} y {usuario2.Mention}", embed: new DiscordEmbedBuilder
+                    await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} tiene un trio con {usuario1.Mention} y {usuario2.Mention}", embed: new DiscordEmbedBuilder
                     {
                         Footer = funciones.GetFooter(ctx),
                         Color = funciones.GetColor(),
@@ -388,7 +388,7 @@ namespace Discord_Bot.Modulos
         public async Task Orgia(CommandContext ctx)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154197790687263);
-            await ctx.RespondAsync($"{ctx.User.Mention} ha iniciado una orgia en el servidor", embed: new DiscordEmbedBuilder
+            await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} ha iniciado una orgia en el servidor", embed: new DiscordEmbedBuilder
             {
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor(),
@@ -402,7 +402,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154217864888340);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"Le están haciendo un ganbang a {ctx.User.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"Le están haciendo un ganbang a {ctx.User.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -411,7 +411,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} quiere que le hagan un ganbang a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} quiere que le hagan un ganbang a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -426,7 +426,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154242997551104);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} quiere que le hagan footjob", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} quiere que le hagan footjob", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -435,7 +435,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} masturba con su pie a {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} masturba con su pie a {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -450,7 +450,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154258503630918);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} ha tenido una erección", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} ha tenido una erección", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -459,7 +459,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{usuario.Mention} le ha provocado una erección a {ctx.User.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{usuario.Mention} le ha provocado una erección a {ctx.User.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -474,7 +474,7 @@ namespace Discord_Bot.Modulos
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154286551597086);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} está haciendo cosplay para hacer cosas impuras", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} está haciendo cosplay para hacer cosas impuras", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -483,7 +483,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention} está haciendo cosplay para hacer cosas impuras con {usuario.Mention}", embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} está haciendo cosplay para hacer cosas impuras con {usuario.Mention}", embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),

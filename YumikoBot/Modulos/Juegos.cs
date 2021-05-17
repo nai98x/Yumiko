@@ -36,11 +36,11 @@ namespace Discord_Bot.Modulos
                     Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
-                await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 List<Character> characterList = new List<Character>();
                 Random rnd = new Random();
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
-                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo personajes...").ConfigureAwait(false);
+                DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo personajes...").ConfigureAwait(false);
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
                         "       characters(sort: FAVOURITES_DESC){" +
@@ -94,7 +94,7 @@ namespace Discord_Bot.Modulos
                     {
                         DiscordMessage msg = ex.Message switch
                         {
-                            _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                            _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
                         };
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
@@ -109,7 +109,7 @@ namespace Discord_Bot.Modulos
                     int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
                     Character elegido = characterList[random];
                     DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Color = DiscordColor.Gold,
                         Title = "Adivina el personaje",
@@ -128,14 +128,14 @@ namespace Discord_Bot.Modulos
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
-                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                             {
                                 Title = "¡Juego cancelado!",
                                 Description = $"El nombre era: [{elegido.NameFull}]({elegido.SiteUrl})",
                                 Color = DiscordColor.Red
                             }).ConfigureAwait(false);
                             await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "personaje");
-                            await ctx.RespondAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -152,7 +152,7 @@ namespace Discord_Bot.Modulos
                                 Puntaje = 1
                             });
                         }
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
                             Description = $"El nombre es: [{elegido.NameFull}]({elegido.SiteUrl})",
@@ -161,7 +161,7 @@ namespace Discord_Bot.Modulos
                     }
                     else
                     {
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "¡Nadie ha acertado!",
                             Description = $"El nombre era: [{elegido.NameFull}]({elegido.SiteUrl})",
@@ -174,7 +174,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
+                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
                 await Task.Delay(5000);
                 await funciones.BorrarMensaje(ctx, error.Id);
             }
@@ -197,10 +197,10 @@ namespace Discord_Bot.Modulos
                     Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
-                await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 Random rnd = new Random();
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
-                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo personajes...").ConfigureAwait(false);
+                DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo personajes...").ConfigureAwait(false);
                 var characterList = new List<Character>();
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
@@ -285,7 +285,7 @@ namespace Discord_Bot.Modulos
                     {
                         DiscordMessage msg = ex.Message switch
                         {
-                            _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                            _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
                         };
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
@@ -300,7 +300,7 @@ namespace Discord_Bot.Modulos
                     int random = funciones.GetNumeroRandom(0, characterList.Count - 1);
                     Character elegido = characterList[random];
                     DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Color = DiscordColor.Gold,
                         Title = $"Adivina el anime del personaje",
@@ -329,14 +329,14 @@ namespace Discord_Bot.Modulos
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
-                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                             {
                                 Title = "¡Juego cancelado!",
                                 Description = descAnimes,
                                 Color = DiscordColor.Red
                             }).ConfigureAwait(false);
                             await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "anime");
-                            await ctx.RespondAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync($"El juego ha sido cancelado por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -353,7 +353,7 @@ namespace Discord_Bot.Modulos
                                 Puntaje = 1
                             });
                         }
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
                             Description = descAnimes,
@@ -362,7 +362,7 @@ namespace Discord_Bot.Modulos
                     }
                     else
                     {
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "¡Nadie ha acertado!",
                             Description = descAnimes,
@@ -375,7 +375,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
+                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
                 await Task.Delay(5000);
                 await funciones.BorrarMensaje(ctx, error.Id);
             }
@@ -398,11 +398,11 @@ namespace Discord_Bot.Modulos
                     Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
-                await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 List<Anime> animeList = new List<Anime>();
                 Random rnd = new Random();
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
-                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo mangas...").ConfigureAwait(false);
+                DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo mangas...").ConfigureAwait(false);
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
                         "       media(type: MANGA, sort: FAVOURITES_DESC, isAdult:false){" +
@@ -465,7 +465,7 @@ namespace Discord_Bot.Modulos
                     {
                         DiscordMessage msg = ex.Message switch
                         {
-                            _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                            _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
                         };
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
@@ -480,7 +480,7 @@ namespace Discord_Bot.Modulos
                     int random = funciones.GetNumeroRandom(0, animeList.Count - 1);
                     Anime elegido = animeList[random];
                     DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Color = DiscordColor.Gold,
                         Title = "Adivina el manga",
@@ -501,14 +501,14 @@ namespace Discord_Bot.Modulos
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
-                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                             {
                                 Title = "¡Juego cancelado!",
                                 Description = $"El nombre era: [{elegido.TitleRomaji}]({elegido.SiteUrl})",
                                 Color = DiscordColor.Red
                             }).ConfigureAwait(false);
                             await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "manga");
-                            await ctx.RespondAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -525,7 +525,7 @@ namespace Discord_Bot.Modulos
                                 Puntaje = 1
                             });
                         }
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
                             Description = $"El nombre es: [{elegido.TitleRomaji}]({elegido.SiteUrl})",
@@ -534,7 +534,7 @@ namespace Discord_Bot.Modulos
                     }
                     else
                     {
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "¡Nadie ha acertado!",
                             Description = $"El nombre era: [{elegido.TitleRomaji}]({elegido.SiteUrl})",
@@ -547,7 +547,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
+                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
                 await Task.Delay(5000);
                 await funciones.BorrarMensaje(ctx, error.Id);
             }
@@ -559,7 +559,7 @@ namespace Discord_Bot.Modulos
             var interactivity = ctx.Client.GetInteractivity();
             bool ok = true;
             string msgError = "";
-            var msgCntRondas = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            var msgCntRondas = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "Elige la cantidad de rondas (máximo 100)",
                 Description = "Por ejemplo: 10"
@@ -602,7 +602,7 @@ namespace Discord_Bot.Modulos
                                     });
                                 }
                             }
-                            var preguntaTag = await ctx.RespondAsync("Escribe un tag");
+                            var preguntaTag = await ctx.Channel.SendMessageAsync("Escribe un tag");
                             var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
                             if (!msgTagInter.TimedOut)
                             {
@@ -616,7 +616,7 @@ namespace Discord_Bot.Modulos
                                         numTag++;
                                         tagResp += $"{numTag} - {t.Nombre}\n";
                                     }
-                                    var msgOpciones = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                    var msgOpciones = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                     {
                                         Footer = funciones.GetFooter(ctx),
                                         Color = funciones.GetColor(),
@@ -639,7 +639,7 @@ namespace Discord_Bot.Modulos
                                                 Random rnd = new Random();
                                                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
                                                 string elegido = tagsFiltrados[numTagElegir - 1].Nombre;
-                                                DiscordMessage mensaje = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                                DiscordMessage mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                                 {
                                                     Title = $"Obteniendo animes...",
                                                     Description = $"**Tag:** {elegido}\n**Descripción:** {tagsFiltrados[numTagElegir - 1].Descripcion}",
@@ -720,7 +720,7 @@ namespace Discord_Bot.Modulos
                                                     {
                                                         DiscordMessage msg = ex.Message switch
                                                         {
-                                                            _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                                                            _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
                                                         };
                                                         await Task.Delay(3000);
                                                         await funciones.BorrarMensaje(ctx, msg.Id);
@@ -735,7 +735,7 @@ namespace Discord_Bot.Modulos
                                                     if (cantidadAnimes < rondas)
                                                     {
                                                         rondas = cantidadAnimes;
-                                                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                                         {
                                                             Color = DiscordColor.Yellow,
                                                             Title = $"Rondas reducidas",
@@ -748,7 +748,7 @@ namespace Discord_Bot.Modulos
                                                         int random = funciones.GetNumeroRandom(0, animeList.Count - 1);
                                                         Anime elegido1 = animeList[random];
                                                         DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
-                                                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                                         {
                                                             Color = DiscordColor.Gold,
                                                             Title = $"Adivina el {elegido}",
@@ -769,14 +769,14 @@ namespace Discord_Bot.Modulos
                                                         {
                                                             if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                                                             {
-                                                                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                                                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                                                 {
                                                                     Title = "¡Juego cancelado!",
                                                                     Description = $"El nombre era: [{elegido1.TitleRomaji}]({elegido1.SiteUrl})",
                                                                     Color = DiscordColor.Red
                                                                 }).ConfigureAwait(false);
                                                                 await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, elegido, "tag");
-                                                                await ctx.RespondAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
+                                                                await ctx.Channel.SendMessageAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                                                                 return;
                                                             }
                                                             DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -793,7 +793,7 @@ namespace Discord_Bot.Modulos
                                                                     Puntaje = 1
                                                                 });
                                                             }
-                                                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                                             {
                                                                 Title = $"¡**{acertador.DisplayName}** ha acertado!",
                                                                 Description = $"El nombre es: [{elegido1.TitleRomaji}]({elegido1.SiteUrl})",
@@ -802,7 +802,7 @@ namespace Discord_Bot.Modulos
                                                         }
                                                         else
                                                         {
-                                                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                                                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                                                             {
                                                                 Title = "¡Nadie ha acertado!",
                                                                 Description = $"El nombre era: [{elegido1.TitleRomaji}]({elegido1.SiteUrl})",
@@ -853,7 +853,7 @@ namespace Discord_Bot.Modulos
                         {
                             DiscordMessage msg = ex.Message switch
                             {
-                                _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                                _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
                             };
                             await Task.Delay(3000);
                             await funciones.BorrarMensaje(ctx, msg.Id);
@@ -879,7 +879,7 @@ namespace Discord_Bot.Modulos
             }
             if (!ok)
             {
-                var error = await ctx.RespondAsync(msgError);
+                var error = await ctx.Channel.SendMessageAsync(msgError);
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, error.Id);
                     
@@ -903,11 +903,11 @@ namespace Discord_Bot.Modulos
                     Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
-                await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 List<Anime> animeList = new List<Anime>();
                 Random rnd = new Random();
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
-                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo animes...").ConfigureAwait(false);
+                DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo animes...").ConfigureAwait(false);
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
                         "       media(type: ANIME, sort: FAVOURITES_DESC, isAdult:false){" +
@@ -986,7 +986,7 @@ namespace Discord_Bot.Modulos
                     {
                         DiscordMessage msg = ex.Message switch
                         {
-                            _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                            _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
                         };
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
@@ -1007,7 +1007,7 @@ namespace Discord_Bot.Modulos
                         estudiosStr += $"- [{studio.Nombre}]({studio.SiteUrl})\n";
                     }
                     string estudiosStrGood = funciones.NormalizarDescription(estudiosStr);
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Color = DiscordColor.Gold,
                         Title = "Adivina el estudio del anime",
@@ -1027,14 +1027,14 @@ namespace Discord_Bot.Modulos
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
-                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                             {
                                 Title = "¡Juego cancelado!",
                                 Description = $"{estudiosStrGood}",
                                 Color = DiscordColor.Red
                             }).ConfigureAwait(false);
                             await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "estudio");
-                            await ctx.RespondAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -1051,7 +1051,7 @@ namespace Discord_Bot.Modulos
                                 Puntaje = 1
                             });
                         }
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
                             Description = $"{estudiosStrGood}",
@@ -1060,7 +1060,7 @@ namespace Discord_Bot.Modulos
                     }
                     else
                     {
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "¡Nadie ha acertado!",
                             Description = $"{estudiosStrGood}",
@@ -1073,7 +1073,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
+                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
                 await Task.Delay(5000);
                 await funciones.BorrarMensaje(ctx, error.Id);
             }
@@ -1096,11 +1096,11 @@ namespace Discord_Bot.Modulos
                     Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
-                await ctx.RespondAsync(embed: embebido).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 List<Anime> animeList = new List<Anime>();
                 Random rnd = new Random();
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
-                DiscordMessage mensaje = await ctx.RespondAsync($"Obteniendo animes...").ConfigureAwait(false);
+                DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo animes...").ConfigureAwait(false);
                 string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
                         "       media(type: ANIME, sort: FAVOURITES_DESC, isAdult:false){" +
@@ -1181,7 +1181,7 @@ namespace Discord_Bot.Modulos
                     {
                         DiscordMessage msg = ex.Message switch
                         {
-                            _ => await ctx.RespondAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                            _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
                         };
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
@@ -1202,7 +1202,7 @@ namespace Discord_Bot.Modulos
                         protagonistasStr += $"- [{personaje.NameFull}]({personaje.SiteUrl})\n";
                     }
                     string protagonistasStrGood = funciones.NormalizarDescription(protagonistasStr);
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Color = DiscordColor.Gold,
                         Title = "Adivina el protagonista del anime",
@@ -1225,14 +1225,14 @@ namespace Discord_Bot.Modulos
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
                         {
-                            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                             {
                                 Title = "¡Juego cancelado!",
                                 Description = $"{protagonistasStrGood}",
                                 Color = DiscordColor.Red
                             }).ConfigureAwait(false);
                             await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, settings.Dificultad, "protagonista");
-                            await ctx.RespondAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
+                            await ctx.Channel.SendMessageAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                             return;
                         }
                         DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -1249,7 +1249,7 @@ namespace Discord_Bot.Modulos
                                 Puntaje = 1
                             });
                         }
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = $"¡**{acertador.DisplayName}** ha acertado!",
                             Description = $"{protagonistasStrGood}",
@@ -1258,7 +1258,7 @@ namespace Discord_Bot.Modulos
                     }
                     else
                     {
-                        await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "¡Nadie ha acertado!",
                             Description = $"{protagonistasStrGood}",
@@ -1271,7 +1271,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var error = await ctx.RespondAsync(settings.MsgError).ConfigureAwait(false);
+                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
                 await Task.Delay(5000);
                 await funciones.BorrarMensaje(ctx, error.Id);
             }
@@ -1281,7 +1281,7 @@ namespace Discord_Bot.Modulos
         public async Task EstadisticasAdivinaPersonaje(CommandContext ctx, string flag = null)
         {
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "personaje", flag);
-            await ctx.RespondAsync(embed: builder);
+            await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }
 
@@ -1289,7 +1289,7 @@ namespace Discord_Bot.Modulos
         public async Task EstadisticasAdivinaAnime(CommandContext ctx, string flag = null)
         {
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "anime", flag);
-            await ctx.RespondAsync(embed: builder);
+            await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }
 
@@ -1297,14 +1297,14 @@ namespace Discord_Bot.Modulos
         public async Task EstadisticasAdivinaManga(CommandContext ctx, string flag = null)
         {
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "manga", flag);
-            await ctx.RespondAsync(embed: builder);
+            await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }
 
         [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaTag(CommandContext ctx, string flag = null)
         {
-            var mensaje = await ctx.RespondAsync(embed: new DiscordEmbedBuilder { 
+            var mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder { 
                 Title = "Comando deshabilitado temporalmente",
                 Description = "Por mantenimientos",
                 Color = DiscordColor.Red,
@@ -1314,7 +1314,7 @@ namespace Discord_Bot.Modulos
             await funciones.BorrarMensaje(ctx, mensaje.Id);
             /*
             var builder = await funcionesJuegos.GetEstadisticasTag(ctx, flag);
-            var msg = await ctx.RespondAsync(embed: builder);
+            var msg = await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
             if (builder.Title == "Error")
             {
@@ -1328,7 +1328,7 @@ namespace Discord_Bot.Modulos
         public async Task EstadisticasAdivinaEstudio(CommandContext ctx, string flag = null)
         {
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "estudio", flag);
-            await ctx.RespondAsync(embed: builder);
+            await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }
 
@@ -1336,7 +1336,7 @@ namespace Discord_Bot.Modulos
         public async Task EstadisticasAdivinaProtagonista(CommandContext ctx, string flag = null)
         {
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "protagonista", flag);
-            await ctx.RespondAsync(embed: builder);
+            await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }
     }

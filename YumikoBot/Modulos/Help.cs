@@ -51,7 +51,7 @@ namespace Discord_Bot.Modulos
                         comandosDesc = "`Para ver estos comandos ejecutalo en un canal NSFW`";
                     builder.AddField(nomGrupo, comandosDesc, false);
                 }
-                await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
             }
             else
             {
@@ -108,11 +108,11 @@ namespace Discord_Bot.Modulos
                         if(!string.IsNullOrEmpty(parametros))
                             builder.AddField("Parametros", parametros, false);
                     }
-                    await ctx.RespondAsync(embed: builder).ConfigureAwait(false);
+                    await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
                 }
                 else
                 {
-                    var msgError = await ctx.RespondAsync($"No se ha encontrado el comando `{comando}`").ConfigureAwait(false);
+                    var msgError = await ctx.Channel.SendMessageAsync($"No se ha encontrado el comando `{comando}`").ConfigureAwait(false);
                     await Task.Delay(3000);
                     await funciones.BorrarMensaje(ctx, msgError.Id);
                 }

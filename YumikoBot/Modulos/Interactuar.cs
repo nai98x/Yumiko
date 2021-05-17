@@ -21,7 +21,7 @@ namespace Discord_Bot.Modulos
             if (String.IsNullOrEmpty(mensaje))
             {
                 var interactivity = ctx.Client.GetInteractivity();
-                var msgAnime = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                var msgAnime = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = "Escribe un mensaje",
                     Description = "Ejemplo: Hola! Soy Yumiko",
@@ -39,7 +39,7 @@ namespace Discord_Bot.Modulos
                 }
                 else
                 {
-                    var msgError = await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Title = "Error",
                         Description = "Tiempo agotado esperando un mensaje",
@@ -54,7 +54,7 @@ namespace Discord_Bot.Modulos
                     return;
                 }
             }
-            await ctx.RespondAsync(mensaje);
+            await ctx.Channel.SendMessageAsync(mensaje);
         }
 
         [Command("sayO"), Description("Yumiko habla en el chat."), Hidden, RequireOwner]
@@ -79,12 +79,12 @@ namespace Discord_Bot.Modulos
                 }
                 else
                 {
-                    await ctx.RespondAsync("Canal no encontrado");
+                    await ctx.Channel.SendMessageAsync("Canal no encontrado");
                 }
             }
             else
             {
-                await ctx.RespondAsync("Servidor no encontrado");
+                await ctx.Channel.SendMessageAsync("Servidor no encontrado");
             }
         }
 
@@ -96,7 +96,7 @@ namespace Discord_Bot.Modulos
             switch (random)
             {
                 case 0:
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Footer = funciones.GetFooter(ctx),
                         Color = DiscordColor.Red,
@@ -105,7 +105,7 @@ namespace Discord_Bot.Modulos
                     }).ConfigureAwait(false);
                     break;
                 case 1:
-                    await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Footer = funciones.GetFooter(ctx),
                         Color = DiscordColor.Green,
@@ -136,7 +136,7 @@ namespace Discord_Bot.Modulos
                 }
                 await funciones.BorrarMensaje(ctx, mensajeBot.Id);
                 await funciones.BorrarMensaje(ctx, msg.Result.Id);
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -146,7 +146,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                await ctx.RespondAsync("No escribiste las opciones onii-chan" + ctx.User.Mention);
+                await ctx.Channel.SendMessageAsync("No escribiste las opciones onii-chan" + ctx.User.Mention);
             }
         }
 
@@ -155,7 +155,7 @@ namespace Discord_Bot.Modulos
         {
             if (emote != null)
             {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -165,7 +165,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                DiscordMessage msgError = await ctx.RespondAsync("Debes pasar un emote").ConfigureAwait(false);
+                DiscordMessage msgError = await ctx.Channel.SendMessageAsync("Debes pasar un emote").ConfigureAwait(false);
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msgError.Id);
             }
@@ -178,7 +178,7 @@ namespace Discord_Bot.Modulos
             {
                 usuario = await ctx.Guild.GetMemberAsync(ctx.User.Id);
             }
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Title = $"Avatar de {usuario.Username}#{usuario.Discriminator}",
                 ImageUrl = usuario.AvatarUrl,
@@ -200,7 +200,7 @@ namespace Discord_Bot.Modulos
             int waifuLevel = funciones.GetNumeroRandom(0, 100);
             if (waifuLevel < 25)
             {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Red,
@@ -211,7 +211,7 @@ namespace Discord_Bot.Modulos
             }
             if (waifuLevel >= 25 && waifuLevel < 50)
             {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Orange,
@@ -222,7 +222,7 @@ namespace Discord_Bot.Modulos
             }
             if (waifuLevel >= 50 && waifuLevel < 75)
             {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Yellow,
@@ -233,7 +233,7 @@ namespace Discord_Bot.Modulos
             }
             if (waifuLevel >= 75 && waifuLevel < 100)
             {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Green,
@@ -244,7 +244,7 @@ namespace Discord_Bot.Modulos
             }
             if (waifuLevel == 100)
             {
-                await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Blue,
@@ -318,7 +318,7 @@ namespace Discord_Bot.Modulos
                 imagenUrl = "https://i.imgur.com/dhXR8mV.png";
             else
                 imagenUrl = "https://i.imgur.com/Vk6JMJi.jpg";
-            await ctx.RespondAsync(embed: new DiscordEmbedBuilder
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Title = titulo,
                 Description = descripcion,
