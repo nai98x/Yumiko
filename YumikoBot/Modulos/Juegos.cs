@@ -881,8 +881,7 @@ namespace Discord_Bot.Modulos
             {
                 var error = await ctx.Channel.SendMessageAsync(msgError);
                 await Task.Delay(3000);
-                await funciones.BorrarMensaje(ctx, error.Id);
-                    
+                await funciones.BorrarMensaje(ctx, error.Id);    
             }
         }
 

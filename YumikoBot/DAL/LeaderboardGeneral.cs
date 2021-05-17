@@ -8,30 +8,6 @@ using System.Threading.Tasks;
 
 namespace YumikoBot.DAL
 {
-    public class Leaderboardo
-    {
-        public long user_id { get; set; }
-        public int partidasJugadas { get; set; }
-        public int rondasAcertadas { get; set; }
-        public int rondasTotales { get; set; }
-    }
-
-    [FirestoreData]
-    public class LeaderboardFirebase
-    {
-        [FirestoreProperty]
-        public long user_id { get; set; }
-
-        [FirestoreProperty]
-        public int partidasJugadas { get; set; }
-
-        [FirestoreProperty]
-        public int rondasAcertadas { get; set; }
-
-        [FirestoreProperty]
-        public int rondasTotales { get; set; }
-    }
-
     public class LeaderboardoGeneral
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
@@ -55,21 +31,6 @@ namespace YumikoBot.DAL
             }
 
             return ret;
-        }
-
-        public async Task<LeaderboardFirebase> GetRegistro(long guildId, string juego, string dificultad, long userId)
-        {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
-
-            DocumentReference doc = db.Collection("Estadisticas").Document($"{guildId}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios").Document($"{userId}");
-            var snap = await doc.GetSnapshotAsync();
-            if (snap.Exists)
-            {
-                return snap.ConvertTo<LeaderboardFirebase>();
-            }
-            return null;
         }
 
         public async Task AddRegistro(CommandContext ctx, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)

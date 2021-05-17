@@ -8,13 +8,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
-using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using System.Linq;
 using YumikoBot;
 using System.Globalization;
 using DiscordBotsList.Api;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus;
+using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
 {
@@ -255,10 +255,7 @@ namespace Discord_Bot
                         await mensaje.DeleteAsync("Auto borrado de Yumiko");
                     }
                 }
-                catch (Exception)
-                {
-
-                }
+                catch (Exception){ }
             }
         }
 

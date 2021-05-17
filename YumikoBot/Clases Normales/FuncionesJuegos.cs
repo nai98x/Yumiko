@@ -330,7 +330,6 @@ namespace Discord_Bot
                     Description = "No se encontró ninguna partida de adivina el tag, juega partidas para consultar las estadísticas."
                 };
             }
-            
         }
 
         public DiscordEmbedBuilder CrearEmbedStats(CommandContext ctx, string titulo, string facil, string media, string dificil, string extremo, string flag)

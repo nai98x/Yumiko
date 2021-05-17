@@ -7,26 +7,6 @@ using System.Threading.Tasks;
 
 namespace YumikoBot.DAL
 {
-    public class UsuarioDiscordo
-    {
-        public long user_id { get; set; }
-        public DateTime Birthday { get; set; }
-        public bool MostrarYear { get; set; }
-    }
-
-    [FirestoreData]
-    public class UsuarioDiscordFirebase
-    {
-        [FirestoreProperty]
-        public long user_id { get; set; }
-
-        [FirestoreProperty]
-        public DateTime Birthday { get; set; }
-
-        [FirestoreProperty]
-        public bool MostrarYear { get; set; }
-    }
-
     public class UsuariosDiscord
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();

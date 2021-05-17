@@ -1151,7 +1151,6 @@ namespace Discord_Bot.Modulos
                     Description = $"[{titleMedia}]({siteUrlMedia})\n{favoritos} {corazon} (nº {pag} en popularidad)",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
-
                 }).ConfigureAwait(false);
                 await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsup:")).ConfigureAwait(false);
                 await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsdown:")).ConfigureAwait(false);
