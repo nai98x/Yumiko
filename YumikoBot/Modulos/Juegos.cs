@@ -1213,13 +1213,12 @@ namespace Discord_Bot.Modulos
                         }
                     }).ConfigureAwait(false);
                     var msg = await interactivity.WaitForMessageAsync
-                        (xm => (xm.Channel == ctx.Channel) &&
-                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) || (
+                        (xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) || 
                         (elegido.Personajes.Find(x => x.NameFull != null && x.NameFull.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                         (elegido.Personajes.Find(x => x.NameFirst != null && x.NameFirst.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                         (elegido.Personajes.Find(x => x.NameLast != null && x.NameLast.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
-                        ) && xm.Author.Id != ctx.Client.CurrentUser.Id),
-                        TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
+                        ), TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                     if (!msg.TimedOut)
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
