@@ -121,9 +121,12 @@ namespace Discord_Bot.Modulos
                         }
                     }).ConfigureAwait(false);
                     var msg = await interactivity.WaitForMessageAsync
-                        (xm => (xm.Channel == ctx.Channel) &&
-                        ((xm.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim() || xm.Content.ToLower().Trim() == elegido.NameFirst.ToLower().Trim() || (elegido.NameLast != null && xm.Content.ToLower().Trim() == elegido.NameLast.ToLower().Trim())) && xm.Author.Id != ctx.Client.CurrentUser.Id) || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
-                        , TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
+                        (xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                        (xm.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim()) ||
+                        (xm.Content.ToLower().Trim() == elegido.NameFirst.ToLower().Trim()) || 
+                        (elegido.NameLast != null && xm.Content.ToLower().Trim() == elegido.NameLast.ToLower().Trim())
+                        ), TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                     if (!msg.TimedOut)
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
