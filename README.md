@@ -21,9 +21,16 @@ Lo primero a realizar es descargar el visual studio community desde su página w
 - Activar: Incluir versión preliminar
 - Instalar paquetes NuGet faltantes
 
-### 4. Configuraciones del bot
+### 4. Configurar Firebase
+- Ir al [sitio web](https://firebase.google.com/) de Firebase
+- Crear proyecto en caso de no tener (Con el plan Spark que es gratuito alcanza)
+- Ir a Firestore y crear base de datos en modo test
+- Quitar regla de expiracion del testeo
+- Ir a Proyect settings -> Service accounts y generar una clave privada
+
+### 5. Configuraciones del bot
 - Ir al archivo [config_ejemplo.json](YumikoBot/config_ejemplo.json) y renombrarlo a config.json
 - Ir al archivo [firebase_ejemplo.json](YumikoBot/firebase_ejemplo.json) y renombrarlo a firebase.json
-- Configurar config.json y firebase.json con los datos correspondientes
+- Configurar config.json y firebase.json con los datos correspondientes (los datos de firebase.json son los obtenidos del paso 4)
 
 ### Listo!
