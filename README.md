@@ -1,6 +1,9 @@
 # Yumiko
 ## Bot para Discord desarrollado en DSharpPlus - .NET Core 
 [![CodeFactor](https://www.codefactor.io/repository/github/nai98x/yumiko/badge?s=92181f030fc6101fb54afa74167809713aa4d060)](https://www.codefactor.io/repository/github/nai98x/yumiko)
+<a href="https://top.gg/bot/295182825521545218">
+  <img src="https://top.gg/api/widget/status/295182825521545218.svg" alt="Yumiko" />
+</a>
 
 Bot multi propósito con juegos, utilidades y consultas en AniList. Visita su página: https://yumiko.uwu.ai/
 
