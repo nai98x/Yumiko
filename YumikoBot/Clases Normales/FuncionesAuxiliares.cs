@@ -14,8 +14,8 @@ using System.Globalization;
 using DiscordBotsList.Api;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus;
-using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using System.Configuration;
+using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
 {
