@@ -352,25 +352,7 @@ namespace Discord_Bot
                                     bool result = DateTime.TryParse($"{dia}/{mes}/{anio}", CultureInfo.CreateSpecificCulture("es-ES"), DateTimeStyles.None, out DateTime fecha);
                                     if (result)
                                     {
-                                        if(fecha >= DateTime.Today)
-                                        {
-                                            error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                                            {
-                                                Title = "Error",
-                                                Description = "La fecha de cumpleaños no puede ser posterior a la actual",
-                                                Footer = GetFooter(ctx),
-                                                Color = GetColor()
-                                            });
-                                            await Task.Delay(5000);
-                                            await BorrarMensaje(ctx, msgDia.Id);
-                                            await BorrarMensaje(ctx, msgDiaInter.Result.Id);
-                                            await BorrarMensaje(ctx, msgMes.Id);
-                                            await BorrarMensaje(ctx, msgMesInter.Result.Id);
-                                            await BorrarMensaje(ctx, msgAnio.Id);
-                                            await BorrarMensaje(ctx, msgAnioInter.Result.Id);
-                                            await BorrarMensaje(ctx, error.Id);
-                                        }
-                                        else
+                                        if(fecha < DateTime.Today)
                                         {
                                             await BorrarMensaje(ctx, msgDia.Id);
                                             await BorrarMensaje(ctx, msgDiaInter.Result.Id);
@@ -379,6 +361,16 @@ namespace Discord_Bot
                                             await BorrarMensaje(ctx, msgAnio.Id);
                                             await BorrarMensaje(ctx, msgAnioInter.Result.Id);
                                             return fecha;
+                                        }
+                                        else
+                                        {
+                                            error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                            {
+                                                Title = "Error",
+                                                Description = "La fecha de cumpleaños no puede ser posterior a la actual",
+                                                Footer = GetFooter(ctx),
+                                                Color = GetColor()
+                                            });
                                         }
                                     }
                                     else
@@ -390,14 +382,6 @@ namespace Discord_Bot
                                             Footer = GetFooter(ctx),
                                             Color = GetColor()
                                         });
-                                        await Task.Delay(5000);
-                                        await BorrarMensaje(ctx, msgDia.Id);
-                                        await BorrarMensaje(ctx, msgDiaInter.Result.Id);
-                                        await BorrarMensaje(ctx, msgMes.Id);
-                                        await BorrarMensaje(ctx, msgMesInter.Result.Id);
-                                        await BorrarMensaje(ctx, msgAnio.Id);
-                                        await BorrarMensaje(ctx, msgAnioInter.Result.Id);
-                                        await BorrarMensaje(ctx, error.Id);
                                     }
                                 }
                                 else
@@ -409,14 +393,6 @@ namespace Discord_Bot
                                         Footer = GetFooter(ctx),
                                         Color = GetColor()
                                     });
-                                    await Task.Delay(5000);
-                                    await BorrarMensaje(ctx, msgDia.Id);
-                                    await BorrarMensaje(ctx, msgDiaInter.Result.Id);
-                                    await BorrarMensaje(ctx, msgMes.Id);
-                                    await BorrarMensaje(ctx, msgMesInter.Result.Id);
-                                    await BorrarMensaje(ctx, msgAnio.Id);
-                                    await BorrarMensaje(ctx, msgAnioInter.Result.Id);
-                                    await BorrarMensaje(ctx, error.Id);
                                 }
                             }
                             else
@@ -428,14 +404,11 @@ namespace Discord_Bot
                                     Footer = GetFooter(ctx),
                                     Color = GetColor()
                                 });
-                                await Task.Delay(5000);
-                                await BorrarMensaje(ctx, msgDia.Id);
-                                await BorrarMensaje(ctx, msgDiaInter.Result.Id);
-                                await BorrarMensaje(ctx, msgMes.Id);
-                                await BorrarMensaje(ctx, msgMesInter.Result.Id);
-                                await BorrarMensaje(ctx, msgAnio.Id);
-                                await BorrarMensaje(ctx, error.Id);
                             }
+                            if (msgAnio != null)
+                                await BorrarMensaje(ctx, msgAnio.Id);
+                            if (msgAnioInter.Result != null)
+                                await BorrarMensaje(ctx, msgAnioInter.Result.Id);
                         }
                         else
                         {
@@ -446,12 +419,6 @@ namespace Discord_Bot
                                 Footer = GetFooter(ctx),
                                 Color = GetColor()
                             });
-                            await Task.Delay(5000);
-                            await BorrarMensaje(ctx, msgDia.Id);
-                            await BorrarMensaje(ctx, msgDiaInter.Result.Id);
-                            await BorrarMensaje(ctx, msgMes.Id);
-                            await BorrarMensaje(ctx, msgMesInter.Result.Id);
-                            await BorrarMensaje(ctx, error.Id);
                         }
                     }
                     else
@@ -463,12 +430,11 @@ namespace Discord_Bot
                             Footer = GetFooter(ctx),
                             Color = GetColor()
                         });
-                        await Task.Delay(5000);
-                        await BorrarMensaje(ctx, msgDia.Id);
-                        await BorrarMensaje(ctx, msgDiaInter.Result.Id);
-                        await BorrarMensaje(ctx, msgMes.Id);
-                        await BorrarMensaje(ctx, error.Id);
                     }
+                    if (msgMes != null)
+                        await BorrarMensaje(ctx, msgMes.Id);
+                    if (msgMesInter.Result != null)
+                        await BorrarMensaje(ctx, msgMesInter.Result.Id);
                 }
                 else
                 {
@@ -479,10 +445,6 @@ namespace Discord_Bot
                         Footer = GetFooter(ctx),
                         Color = GetColor()
                     });
-                    await Task.Delay(5000);
-                    await BorrarMensaje(ctx, msgDia.Id);
-                    await BorrarMensaje(ctx, msgDiaInter.Result.Id);
-                    await BorrarMensaje(ctx, error.Id);
                 }
             }
             else
@@ -494,8 +456,14 @@ namespace Discord_Bot
                     Footer = GetFooter(ctx),
                     Color = GetColor()
                 });
-                await Task.Delay(5000);
+            }
+            if(msgDia != null)
                 await BorrarMensaje(ctx, msgDia.Id);
+            if(msgDiaInter.Result != null)
+                await BorrarMensaje(ctx, msgDiaInter.Result.Id);
+            if (error != null)
+            {
+                await Task.Delay(5000);
                 await BorrarMensaje(ctx, error.Id);
             }
             return null;
