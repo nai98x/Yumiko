@@ -312,13 +312,12 @@ namespace Discord_Bot.Modulos
                         }
                     }).ConfigureAwait(false);
                     var msg = await interactivity.WaitForMessageAsync
-                        (xm => (xm.Channel == ctx.Channel) &&
-                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) || (
+                        (xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                         (elegido.Animes.Find(x => x.TitleEnglish != null && x.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                         (elegido.Animes.Find(x => x.TitleRomaji != null && x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                         (elegido.Animes.Find(x => x.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) != null)
-                        ) && xm.Author.Id != ctx.Client.CurrentUser.Id),
-                        TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
+                        ), TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                     string descAnimes = $"Los animes de [{elegido.NameFull}]({elegido.SiteUrl}) son:\n\n";
                     foreach (Anime anim in elegido.Animes)
                     {
