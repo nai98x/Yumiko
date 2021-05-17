@@ -1,19 +1,29 @@
 ﻿using Discord_Bot;
 using DSharpPlus.CommandsNext;
-using FireSharp.Response;
+using Google.Cloud.Firestore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace YumikoBot.DAL
 {
     public class UsuarioDiscordo
     {
-        public int Id { get; set; }
         public long user_id { get; set; }
-        public long guild_id { get; set; }
         public DateTime Birthday { get; set; }
+        public bool MostrarYear { get; set; }
+    }
+
+    [FirestoreData]
+    public class UsuarioDiscordFirebase
+    {
+        [FirestoreProperty]
+        public long user_id { get; set; }
+
+        [FirestoreProperty]
+        public DateTime Birthday { get; set; }
+
+        [FirestoreProperty]
         public bool MostrarYear { get; set; }
     }
 
@@ -21,26 +31,32 @@ namespace YumikoBot.DAL
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
 
-        public async Task<List<UsuarioDiscordo>> GetListaUsuarios()
+        public async Task<List<UsuarioDiscordFirebase>> GetListaUsuarios(long guildId)
         {
-            var client = await funciones.GetClienteFirebase();
-            FirebaseResponse response = await client.GetTaskAsync("UsuariosDiscord/");
-            var listaFirebase = response.ResultAs<List<UsuarioDiscordo>>();
-            return listaFirebase.Where(x => x != null).ToList();
-        }
+            var ret = new List<UsuarioDiscordFirebase>();
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
 
-        public async Task<int> GetLastId()
-        {
-            var lista = await GetListaUsuarios();
-            return lista.Last().Id;
+            CollectionReference col = db.Collection("Cumpleaños").Document($"{guildId}").Collection("Usuarios");
+            var snap = await col.GetSnapshotAsync();
+
+            if (snap.Count > 0)
+            {
+                foreach (var document in snap.Documents)
+                {
+                    ret.Add(document.ConvertTo<UsuarioDiscordFirebase>());
+                }
+            }
+
+            return ret;
         }
 
         public async Task<List<UserCumple>> GetBirthdays(CommandContext ctx, bool month)
         {
             List<UserCumple> lista = new List<UserCumple>();
-            var listaFirebase = await GetListaUsuarios();
-            var list = listaFirebase.Where(x => x.guild_id == (long)ctx.Guild.Id).ToList();
-            list.ToList().ForEach(x =>
+            var listaFirebase = await GetListaUsuarios((long)ctx.Guild.Id);
+            listaFirebase.ForEach(x =>
             {
                 DateTime fchAux = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year);
                 DateTime nuevoCumple;
@@ -55,7 +71,6 @@ namespace YumikoBot.DAL
                         lista.Add(new UserCumple
                         {
                             Id = x.user_id,
-                            Guild_id = x.guild_id,
                             Birthday = x.Birthday,
                             BirthdayActual = nuevoCumple,
                             MostrarYear = x.MostrarYear
@@ -67,7 +82,6 @@ namespace YumikoBot.DAL
                     lista.Add(new UserCumple
                     {
                         Id = x.user_id,
-                        Guild_id = x.guild_id,
                         Birthday = x.Birthday,
                         BirthdayActual = nuevoCumple,
                         MostrarYear = x.MostrarYear
@@ -81,9 +95,8 @@ namespace YumikoBot.DAL
         public async Task<List<UserCumple>> GetBirthdaysGuild(long guildId, bool month)
         {
             List<UserCumple> lista = new List<UserCumple>();
-            var listaFirebase = await GetListaUsuarios();
-            var list = listaFirebase.Where(x => x != null && x.guild_id == guildId).ToList();
-            list.ToList().ForEach(x =>
+            var listaFirebase = await GetListaUsuarios(guildId);
+            listaFirebase.ForEach(x =>
             {
                 DateTime fchAux = new DateTime(day: x.Birthday.Day, month: x.Birthday.Month, year: DateTime.Now.Year);
                 DateTime nuevoCumple;
@@ -98,7 +111,6 @@ namespace YumikoBot.DAL
                         lista.Add(new UserCumple
                         {
                             Id = x.user_id,
-                            Guild_id = x.guild_id,
                             Birthday = x.Birthday,
                             BirthdayActual = nuevoCumple,
                             MostrarYear = x.MostrarYear
@@ -110,7 +122,6 @@ namespace YumikoBot.DAL
                     lista.Add(new UserCumple
                     {
                         Id = x.user_id,
-                        Guild_id = x.guild_id,
                         Birthday = x.Birthday,
                         BirthdayActual = nuevoCumple,
                         MostrarYear = x.MostrarYear
@@ -123,42 +134,48 @@ namespace YumikoBot.DAL
 
         public async Task SetBirthday(CommandContext ctx, DateTime fecha, bool mostrarEdad)
         {
-            var client = await funciones.GetClienteFirebase();
-            var listaFirebase = await GetListaUsuarios();
-            var usuario = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == (long)ctx.Member.Id);
-            if (usuario == null)
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            DocumentReference doc = db.Collection("Cumpleaños").Document($"{ctx.Guild.Id}").Collection("Usuarios").Document($"{ctx.User.Id}");
+            var snap = await doc.GetSnapshotAsync();
+            UsuarioDiscordFirebase registro;
+            var timeutc = new DateTime(day: fecha.Day, month: fecha.Month, year: fecha.Year, hour: 5, minute: 0, second: 0, kind: DateTimeKind.Utc);
+            if (snap.Exists)
             {
-                int nuevoId = await GetLastId() + 1;
-                await client.SetTaskAsync("UsuariosDiscord/" + nuevoId, new UsuarioDiscordo
+                registro = snap.ConvertTo<UsuarioDiscordFirebase>();
+                registro.Birthday = timeutc;
+                registro.MostrarYear = mostrarEdad;
+                Dictionary<string, object> data = new Dictionary<string, object>()
                 {
-                    Id = nuevoId,
-                    user_id = (long)ctx.Member.Id,
-                    guild_id = (long)ctx.Guild.Id,
-                    Birthday = fecha,
-                    MostrarYear = mostrarEdad
-                });
+                    {"user_id", registro.user_id},
+                    {"Birthday", registro.Birthday},
+                    {"MostrarYear", registro.MostrarYear},
+                };
+                await doc.UpdateAsync(data);
             }
             else
             {
-                await client.UpdateTaskAsync("UsuariosDiscord/" + usuario.Id, new UsuarioDiscordo
+                Dictionary<string, object> data = new Dictionary<string, object>()
                 {
-                    Id = usuario.Id,
-                    user_id = (long)ctx.Member.Id,
-                    guild_id = (long)ctx.Guild.Id,
-                    Birthday = fecha,
-                    MostrarYear = mostrarEdad
-                });
+                    {"user_id", ctx.User.Id},
+                    {"Birthday", timeutc},
+                    {"MostrarYear", mostrarEdad},
+                };
+                await doc.SetAsync(data);
             }
         }
 
         public async Task DeleteBirthday(CommandContext ctx)
         {
-            var client = await funciones.GetClienteFirebase();
-            var listaFirebase = await GetListaUsuarios();
-            var usuario = listaFirebase.FirstOrDefault(x => x.guild_id == (long)ctx.Guild.Id && x.user_id == (long)ctx.Member.Id);
-            if (usuario != null)
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            DocumentReference doc = db.Collection("Cumpleaños").Document($"{ctx.Guild.Id}").Collection("Usuarios").Document($"{ctx.User.Id}");
+            var snap = await doc.GetSnapshotAsync();
+            if (snap.Exists)
             {
-                await client.DeleteTaskAsync("UsuariosDiscord/" + usuario.Id);
+                await doc.DeleteAsync();
             }
         }
     }

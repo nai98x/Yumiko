@@ -1,8 +1,6 @@
 ﻿using Discord_Bot;
 using DSharpPlus.CommandsNext;
-using FireSharp.Response;
 using Google.Cloud.Firestore;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,13 +29,6 @@ namespace YumikoBot.DAL
         public int rondasAcertadas { get; set; }
 
         [FirestoreProperty]
-        public int rondasTotales { get; set; }
-    }
-
-    public class LeaderboardoNew
-    {
-        public int partidasJugadas { get; set; }
-        public int rondasAcertadas { get; set; }
         public int rondasTotales { get; set; }
     }
 

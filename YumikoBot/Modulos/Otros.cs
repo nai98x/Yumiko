@@ -1,50 +1,21 @@
-﻿using DiscordBotsList.Api;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
-using FireSharp.Response;
-using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
-using YumikoBot;
-using YumikoBot.DAL;
-using Google.Cloud.Firestore;
 
 namespace Discord_Bot.Modulos
 {
-    public class LeaderboardOld
-    {
-        public int Id { get; set; }
-        public long user_id { get; set; }
-        public long guild_id { get; set; }
-        public string juego { get; set; }
-        public string dificultad { get; set; }
-        public int partidasJugadas { get; set; }
-        public int rondasAcertadas { get; set; }
-        public int rondasTotales { get; set; }
-    }
-
     public class Otros : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-
-        public async Task<List<LeaderboardOld>> GetLeaderboardFirebase()
-        {
-            var client = await funciones.GetClienteFirebase();
-            FirebaseResponse response = await client.GetTaskAsync("Leaderboard/");
-            var listaFirebase = response.ResultAs<List<LeaderboardOld>>();
-            return listaFirebase.Where(x => x != null).ToList();
-        }
 
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)

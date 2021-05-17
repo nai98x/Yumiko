@@ -1,19 +1,15 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using System.Linq;
-using FireSharp.Interfaces;
-using FireSharp.Config;
 using YumikoBot;
 using System.Globalization;
 using DiscordBotsList.Api;
@@ -25,23 +21,6 @@ namespace Discord_Bot
     public class FuncionesAuxiliares
     {
         static Timer timer;
-
-        public async Task<IFirebaseClient> GetClienteFirebase()
-        {
-            var json = string.Empty;
-            using (var fs = File.OpenRead("config.json"))
-            {
-                using var sr = new StreamReader(fs, new UTF8Encoding(false));
-                json = await sr.ReadToEndAsync().ConfigureAwait(false);
-            }
-            var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
-            IFirebaseConfig config = new FirebaseConfig
-            {
-                AuthSecret = configJson.Firestore_secret,
-                BasePath = configJson.Firestore_url,
-            };
-            return new FireSharp.FirebaseClient(config);
-        }
 
         public async Task<Imagen> GetImagenDiscordYumiko(CommandContext ctx, ulong idChannel)
         {
