@@ -15,6 +15,7 @@ using DiscordBotsList.Api;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
+using System.Configuration;
 
 namespace Discord_Bot
 {
@@ -467,6 +468,51 @@ namespace Discord_Bot
                 await BorrarMensaje(ctx, error.Id);
             }
             return null;
+        }
+
+        public async Task<int> GetElegido(CommandContext ctx, string opciones, int cantidadOpciones)
+        {
+            int elegido = -1;
+            if (cantidadOpciones == 1)
+                elegido = cantidadOpciones;
+            if (cantidadOpciones > 1)
+            {
+                DiscordMessage elegirMsg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                {
+                    Footer = GetFooter(ctx),
+                    Color = GetColor(),
+                    Title = "Elije la opcion escribiendo su número a continuación",
+                    Description = opciones
+                });
+                var interactivity = ctx.Client.GetInteractivity();
+                var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                if (!msgElegir.TimedOut)
+                {
+                    bool result = int.TryParse(msgElegir.Result.Content, out elegido);
+                    if (result && elegido > 0)
+                    {
+                        await Task.Delay(3000);
+                        await BorrarMensaje(ctx, elegirMsg.Id);
+                        await BorrarMensaje(ctx, msgElegir.Result.Id);
+                    }
+                    else
+                    {
+                        var msg = await ctx.Channel.SendMessageAsync($"Debes escribir un numero válido").ConfigureAwait(false);
+                        await Task.Delay(3000);
+                        await BorrarMensaje(ctx, msg.Id);
+                        await BorrarMensaje(ctx, elegirMsg.Id);
+                        await BorrarMensaje(ctx, msgElegir.Result.Id);
+                    }
+                }
+                else
+                {
+                    var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
+                    await Task.Delay(3000);
+                    await BorrarMensaje(ctx, msg.Id);
+                    await BorrarMensaje(ctx, elegirMsg.Id);
+                }
+            }
+            return elegido;
         }
     }
 }

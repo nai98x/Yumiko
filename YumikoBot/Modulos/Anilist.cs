@@ -324,50 +324,8 @@ namespace Discord_Bot.Modulos
                         cont++;
                         opc += $"{cont} - {animeP.title.romaji}\n";
                     }
-                    int elegido = -1;
-                    bool ok = true;
-                    if (cont == 1)
-                        elegido = cont;
-                    if (cont > 1)
-                    {
-                        DiscordMessage elegirMsg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            Title = "Elije la opcion escribiendo su número a continuación",
-                            Description = opc
-                        });
-                        var interactivity = ctx.Client.GetInteractivity();
-                        var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                        if (!msgElegir.TimedOut)
-                        {
-                            bool result = int.TryParse(msgElegir.Result.Content, out elegido);
-                            if (result && elegido > 0)
-                            {
-                                await Task.Delay(3000);
-                                await funciones.BorrarMensaje(ctx, elegirMsg.Id);
-                                await funciones.BorrarMensaje(ctx, msgElegir.Result.Id);
-                            }
-                            else
-                            {
-                                ok = false;
-                                var msg = await ctx.Channel.SendMessageAsync($"Debes escribir un numero válido").ConfigureAwait(false);
-                                await Task.Delay(3000);
-                                await funciones.BorrarMensaje(ctx, msg.Id);
-                                await funciones.BorrarMensaje(ctx, elegirMsg.Id);
-                                await funciones.BorrarMensaje(ctx, msgElegir.Result.Id);
-                            }
-                        }
-                        else
-                        {
-                            ok = false;
-                            var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
-                            await Task.Delay(3000);
-                            await funciones.BorrarMensaje(ctx, msg.Id);
-                            await funciones.BorrarMensaje(ctx, elegirMsg.Id);
-                        }
-                    }
-                    if (ok)
+                    var elegido = await funciones.GetElegido(ctx, opc, cont);
+                    if (elegido > 0)
                     {
                         var datos = data.Data.Page.media[elegido - 1];
                         if ((datos.isAdult == "false") || (datos.isAdult == true && ctx.Channel.IsNSFW))
@@ -606,50 +564,8 @@ namespace Discord_Bot.Modulos
                         cont++;
                         opc += $"{cont} - {animeP.title.romaji}\n";
                     }
-                    int elegido = -1;
-                    bool ok = true;
-                    if (cont == 1)
-                        elegido = cont;
-                    if (cont > 1)
-                    {
-                        DiscordMessage elegirMsg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            Title = "Elije la opcion escribiendo su número a continuación",
-                            Description = opc
-                        });
-                        var interactivity = ctx.Client.GetInteractivity();
-                        var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                        if (!msgElegir.TimedOut)
-                        {
-                            bool result = int.TryParse(msgElegir.Result.Content, out elegido);
-                            if (result && elegido > 0)
-                            {
-                                await Task.Delay(3000);
-                                await funciones.BorrarMensaje(ctx, elegirMsg.Id);
-                                await funciones.BorrarMensaje(ctx, msgElegir.Result.Id);
-                            }
-                            else
-                            {
-                                ok = false;
-                                var msg = await ctx.Channel.SendMessageAsync($"Debes escribir un numero válido").ConfigureAwait(false);
-                                await Task.Delay(3000);
-                                await funciones.BorrarMensaje(ctx, msg.Id);
-                                await funciones.BorrarMensaje(ctx, elegirMsg.Id);
-                                await funciones.BorrarMensaje(ctx, msgElegir.Result.Id);
-                            }
-                        }
-                        else
-                        {
-                            ok = false;
-                            var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
-                            await Task.Delay(3000);
-                            await funciones.BorrarMensaje(ctx, msg.Id);
-                            await funciones.BorrarMensaje(ctx, elegirMsg.Id);
-                        }
-                    }
-                    if (ok)
+                    var elegido = await funciones.GetElegido(ctx, opc, cont);
+                    if (elegido > 0)
                     {
                         var datos = data.Data.Page.media[elegido - 1];
                         if ((datos.isAdult == "false") || (datos.isAdult == true && ctx.Channel.IsNSFW))
@@ -858,50 +774,8 @@ namespace Discord_Bot.Modulos
                         cont++;
                         opc += $"{cont} - {animeP.name.full}\n";
                     }
-                    int elegido = -1;
-                    bool ok = true;
-                    if (cont == 1)
-                        elegido = cont;
-                    if (cont > 1)
-                    {
-                        DiscordMessage elegirMsg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            Title = "Elije la opcion escribiendo su número a continuación",
-                            Description = opc
-                        });
-                        var interactivity = ctx.Client.GetInteractivity();
-                        var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                        if (!msgElegir.TimedOut)
-                        {
-                            bool result = int.TryParse(msgElegir.Result.Content, out elegido);
-                            if (result && elegido > 0)
-                            {
-                                await Task.Delay(3000);
-                                await funciones.BorrarMensaje(ctx, elegirMsg.Id);
-                                await funciones.BorrarMensaje(ctx, msgElegir.Result.Id);
-                            }
-                            else
-                            {
-                                ok = false;
-                                var msg = await ctx.Channel.SendMessageAsync($"Debes escribir un numero válido").ConfigureAwait(false);
-                                await Task.Delay(3000);
-                                await funciones.BorrarMensaje(ctx, msg.Id);
-                                await funciones.BorrarMensaje(ctx, elegirMsg.Id);
-                                await funciones.BorrarMensaje(ctx, msgElegir.Result.Id);
-                            }
-                        }
-                        else
-                        {
-                            ok = false;
-                            var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
-                            await Task.Delay(3000);
-                            await funciones.BorrarMensaje(ctx, msg.Id);
-                            await funciones.BorrarMensaje(ctx, elegirMsg.Id);
-                        }
-                    }
-                    if (ok)
+                    var elegido = await funciones.GetElegido(ctx, opc, cont);
+                    if (elegido > 0)
                     {
                         var datos = data.Data.Page.characters[elegido - 1];
                         string descripcion = datos.description;
