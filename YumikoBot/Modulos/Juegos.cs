@@ -762,7 +762,7 @@ namespace Discord_Bot.Modulos
                                                         var msg = await interactivity.WaitForMessageAsync
                                                             (xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
                                                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
-                                                            elegido1.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido1.TitleRomaji.ToLower().Trim()) || elegido1.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido1.TitleEnglish.ToLower().Trim()) ||
+                                                            (elegido1.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido1.TitleRomaji.ToLower().Trim())) || (elegido1.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido1.TitleEnglish.ToLower().Trim())) ||
                                                             (elegido1.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                                                             ), TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                                                         if (!msg.TimedOut)
