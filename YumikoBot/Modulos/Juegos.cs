@@ -1018,10 +1018,10 @@ namespace Discord_Bot.Modulos
                         }
                     }).ConfigureAwait(false);
                     var msg = await interactivity.WaitForMessageAsync
-                        (xm => (xm.Channel == ctx.Channel) &&
+                        (xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                         (elegido.Estudios.Find(y => y.Nombre.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
-                        && xm.Author.Id != ctx.Client.CurrentUser.Id || (xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User)
-                        , TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
+                        ), TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                     if (!msg.TimedOut)
                     {
                         if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
