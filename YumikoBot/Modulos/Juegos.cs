@@ -19,7 +19,98 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesJuegos funcionesJuegos = new FuncionesJuegos();
         private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        [Command("quizC"), Aliases("adivinaelpersonaje", "characterquiz"), Description("Empieza el juego de adivina el personaje."), RequireGuild/*, RequireBotPermissions(DSharpPlus.Permissions.ManageMessages)*/]
+        [Command("quiz"), Description("Empieza el juego de adivinar algo relacionado con el anime."), RequireGuild]
+        public async Task Quiz(CommandContext ctx)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            string opcion;
+            string juegos =
+                $"**1-** Adivina el personaje\n" +
+                $"**2-** Adivina el anime\n" +
+                $"**3-** Adivina el manga\n" +
+                $"**4-** Adivina el tag\n" +
+                $"**5-** Adivina el estudio\n" +
+                $"**6-** Adivina el protagonista\n";
+            var msgElegir = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Elige el juego",
+                Description = juegos,
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor(),
+            });
+            var msgElegirInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+            if (!msgElegirInter.TimedOut)
+            {
+                opcion = msgElegirInter.Result.Content;
+                if (msgElegir != null)
+                    await funciones.BorrarMensaje(ctx, msgElegir.Id);
+                if (msgElegirInter.Result != null)
+                    await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
+                opcion = opcion.ToLower();
+                switch (opcion)
+                {
+                    case "1":
+                    case "1- adivina el personaje":
+                    case "adivina el personaje":
+                        await QuizCharactersGlobal(ctx);
+                        break;
+                    case "2":
+                    case "2- adivina el anime":
+                    case "adivina el anime":
+                        await QuizAnimeGlobal(ctx);
+                        break;
+                    case "3":
+                    case "3- adivina el manga":
+                    case "adivina el manga":
+                        await QuizMangaGlobal(ctx);
+                        break;
+                    case "4":
+                    case "4- adivina el tag":
+                    case "adivina el tag":
+                        await QuizAnimeTagGlobal(ctx);
+                        break;
+                    case "5":
+                    case "5- adivina el estudio":
+                    case "adivina el estudio":
+                        await QuizStudioGlobal(ctx);
+                        break;
+                    case "6":
+                    case "6- adivina el protagonista":
+                    case "adivina el protagonista":
+                        await QuizProtagonistGlobal(ctx);
+                        break;
+                    default:
+                        var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                        {
+                            Title = "Error",
+                            Description = "Opcion de juego incorrecta",
+                            Footer = funciones.GetFooter(ctx),
+                            Color = DiscordColor.Red,
+                        });
+                        await Task.Delay(3000);
+                        if (msgError != null)
+                            await funciones.BorrarMensaje(ctx, msgError.Id);
+                        break;
+                }
+            }
+            else
+            {
+                var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Error",
+                    Description = "Tiempo agotado esperando el juego",
+                    Footer = funciones.GetFooter(ctx),
+                    Color = DiscordColor.Red,
+                });
+                await Task.Delay(3000);
+                if (msgError != null)
+                    await funciones.BorrarMensaje(ctx, msgError.Id);
+                if (msgElegir != null)
+                    await funciones.BorrarMensaje(ctx, msgElegir.Id);
+            }
+        }
+
+        [Command("quizC"), Aliases("adivinaelpersonaje", "characterquiz"), Description("Empieza el juego de adivina el personaje."), RequireGuild]
         public async Task QuizCharactersGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
@@ -1304,15 +1395,6 @@ namespace Discord_Bot.Modulos
         [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el anime."), RequireGuild]
         public async Task EstadisticasAdivinaTag(CommandContext ctx, string flag = null)
         {
-            var mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder { 
-                Title = "Comando deshabilitado temporalmente",
-                Description = "Por mantenimientos",
-                Color = DiscordColor.Red,
-                Footer = funciones.GetFooter(ctx)
-            });
-            await Task.Delay(5000);
-            await funciones.BorrarMensaje(ctx, mensaje.Id);
-            /*
             var builder = await funcionesJuegos.GetEstadisticasTag(ctx, flag);
             var msg = await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
@@ -1321,7 +1403,6 @@ namespace Discord_Bot.Modulos
                 await Task.Delay(5000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
             }
-            */
         }
 
         [Command("rankingS"), Aliases("statsS", "leaderboardS"), Description("Estadisticas de adivina el estudio."), RequireGuild]
@@ -1338,6 +1419,62 @@ namespace Discord_Bot.Modulos
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "protagonista", flag);
             await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
+        }
+
+        [Command("eliminarestadisticas"), Description("Elimina las estadisticas de todos los juegos del servidor."), RequireGuild]
+        public async Task EliminarEstadisticas(CommandContext ctx)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            string opcion;
+            string opciones =
+                $"**1-** Si\n" +
+                $"**2-** No\n\n" +
+                $"**Ten en cuenta que el borrado de estadisticas no se puede deshacer.**";
+            var msgElegir = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Confirma si quieres eliminar tus estadisticas del servidor",
+                Description = opciones,
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor(),
+            });
+            var msgElegirInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+            if (!msgElegirInter.TimedOut)
+            {
+                opcion = msgElegirInter.Result.Content;
+                if (msgElegir != null)
+                    await funciones.BorrarMensaje(ctx, msgElegir.Id);
+                if (msgElegirInter.Result != null)
+                    await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
+                opcion = opcion.ToLower();
+                switch (opcion)
+                {
+                    case "1":
+                    case "1- si":
+                    case "si":
+                        await funcionesJuegos.ElimianrEstadisticas(ctx);
+                        break;
+                    case "2":
+                    case "2- no":
+                    case "no":
+                        break;
+                    default:
+                        var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                        {
+                            Title = "Error",
+                            Description = "Opcion incorrecta",
+                            Footer = funciones.GetFooter(ctx),
+                            Color = DiscordColor.Red,
+                        });
+                        await Task.Delay(3000);
+                        if (msgError != null)
+                            await funciones.BorrarMensaje(ctx, msgError.Id);
+                        break;
+                }
+            }
+            if (msgElegir != null)
+                await funciones.BorrarMensaje(ctx, msgElegir.Id);
+            if (msgElegirInter.Result != null)
+                await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
         }
     }
 }

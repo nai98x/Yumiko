@@ -91,26 +91,62 @@ namespace YumikoBot.DAL
         public async Task<List<string>> GetTags(CommandContext ctx)
         {
             List<string> ret = new List<string>();
-
             string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
             FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
 
-            CollectionReference col = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");
-            var snap = await col.GetSnapshotAsync();
-
-            var col2 = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag");
-            var snap2 = await col2.GetSnapshotAsync();
-
-            if (snap.Count > 0)
+            CollectionReference estadisticasRef = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");
+            IAsyncEnumerable<DocumentReference> subcollections = estadisticasRef.ListDocumentsAsync();
+            IAsyncEnumerator<DocumentReference> subcollectionsEnumerator = subcollections.GetAsyncEnumerator(default);
+            while (await subcollectionsEnumerator.MoveNextAsync())
             {
-                foreach (var document in snap.Documents)
-                {
-                   // ret.Add(document.ConvertTo<LeaderboardFirebase>());
-                }
+                DocumentReference subcollectionRef = subcollectionsEnumerator.Current;
+                ret.Add(subcollectionRef.Id);
             }
-
             return ret;
+        }
+
+        public async Task EliminarEstadisticas(CommandContext ctx, string juego)
+        {
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+
+            DocumentReference docFacil = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document(juego).Collection("Dificultad").Document("Fácil").Collection("Usuarios").Document($"{ctx.User.Id}");
+            var snapFacil = await docFacil.GetSnapshotAsync();
+            DocumentReference docMedia = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document(juego).Collection("Dificultad").Document("Media").Collection("Usuarios").Document($"{ctx.User.Id}");
+            var snapMedia = await docMedia.GetSnapshotAsync();
+            DocumentReference docDificil = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document(juego).Collection("Dificultad").Document("Dificil").Collection("Usuarios").Document($"{ctx.User.Id}");
+            var snapDificil = await docDificil.GetSnapshotAsync();
+            DocumentReference docExtremo = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document(juego).Collection("Dificultad").Document("Extremo").Collection("Usuarios").Document($"{ctx.User.Id}");
+            var snapExtremo = await docExtremo.GetSnapshotAsync();
+
+            if (snapFacil.Exists)
+                await docFacil.DeleteAsync();
+            if (snapMedia.Exists)
+                await docMedia.DeleteAsync();
+            if (snapDificil.Exists)
+                await docDificil.DeleteAsync();
+            if (snapExtremo.Exists)
+                await docExtremo.DeleteAsync();
+        }
+        public async Task EliminarEstadisticasTag(CommandContext ctx)
+        {
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+
+            CollectionReference estadisticasRef = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");
+            IAsyncEnumerable<DocumentReference> subcollections = estadisticasRef.ListDocumentsAsync();
+            IAsyncEnumerator<DocumentReference> subcollectionsEnumerator = subcollections.GetAsyncEnumerator(default);
+            while (await subcollectionsEnumerator.MoveNextAsync())
+            {
+                DocumentReference subcollectionRef = subcollectionsEnumerator.Current;
+                DocumentReference doc = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad").Document(subcollectionRef.Id).Collection("Usuarios").Document($"{ctx.User.Id}");
+                var snapExtremo = await doc.GetSnapshotAsync();
+                if (snapExtremo.Exists)
+                    await doc.DeleteAsync();
+            }
         }
     }
 }

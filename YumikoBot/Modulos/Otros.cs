@@ -2,6 +2,7 @@
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
+using Google.Cloud.Firestore;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -20,6 +21,21 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+
+            Query allCitiesQuery = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");
+
+            CollectionReference cityRef = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");
+            IAsyncEnumerable<DocumentReference> subcollections = cityRef.ListDocumentsAsync();
+            IAsyncEnumerator<DocumentReference> subcollectionsEnumerator = subcollections.GetAsyncEnumerator(default);
+            while (await subcollectionsEnumerator.MoveNextAsync())
+            {
+                DocumentReference subcollectionRef = subcollectionsEnumerator.Current;
+                Console.WriteLine("Found subcollection with ID: {0}", subcollectionRef.Id);
+            }
+
             await ctx.Channel.SendMessageAsync("uwu");
         }
 

@@ -354,5 +354,15 @@ namespace Discord_Bot
             */
             return builder;
         }
+
+        public async Task ElimianrEstadisticas(CommandContext ctx)
+        {
+            await leaderboard.EliminarEstadisticas(ctx, "personaje");
+            await leaderboard.EliminarEstadisticas(ctx, "anime");
+            await leaderboard.EliminarEstadisticas(ctx, "manga");
+            await leaderboard.EliminarEstadisticasTag(ctx);
+            await leaderboard.EliminarEstadisticas(ctx, "estudio");
+            await leaderboard.EliminarEstadisticas(ctx, "protagonista");
+        }
     }
 }
