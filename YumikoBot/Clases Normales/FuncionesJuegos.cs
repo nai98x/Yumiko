@@ -198,6 +198,150 @@ namespace Discord_Bot
             }
         }
 
+        public async Task Jugar(CommandContext ctx, string juego, int rondas, dynamic lista, SettingsJuego settings, InteractivityExtension interactivity)
+        {
+            List<UsuarioJuego> participantes = new List<UsuarioJuego>();
+            int lastRonda;
+            for (int ronda = 1; ronda <= rondas; ronda++)
+            {
+                lastRonda = ronda;
+                int random = funciones.GetNumeroRandom(0, lista.Count - 1);
+                dynamic elegido = lista[random];
+                DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Gold,
+                    Title = $"Adivina el {juego}",
+                    Description = $"Ronda {ronda} de {rondas}",
+                    ImageUrl = elegido.Image,
+                    Footer = new DiscordEmbedBuilder.EmbedFooter
+                    {
+                        Text = $"{elegido.Favoritos} {corazon} (nº {elegido.Popularidad} en popularidad)"
+                    }
+                }).ConfigureAwait(false);
+                string desc = "";
+                dynamic predicate = null;
+                switch (juego)
+                {
+                    case "personaje":
+                        desc = $"El nombre es: [{elegido.NameFull}]({elegido.SiteUrl})";
+                        Character elegidoP = elegido;
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                        (xm.Content.ToLower().Trim() == elegidoP.NameFull.ToLower().Trim()) ||
+                        (xm.Content.ToLower().Trim() == elegidoP.NameFirst.ToLower().Trim()) ||
+                        (elegidoP.NameLast != null && xm.Content.ToLower().Trim() == elegidoP.NameLast.ToLower().Trim())
+                        ));
+                        break;
+                    case "anime":
+                        desc = $"Los animes de [{elegido.NameFull}]({elegido.SiteUrl}) son:\n\n";
+                        foreach (Anime anim in elegido.Animes)
+                        {
+                            desc += $"- [{anim.TitleRomaji}]({anim.SiteUrl})\n";
+                        }
+                        Character elegidoC = elegido;
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                        (elegidoC.Animes.Find(x => x.TitleEnglish != null && x.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
+                        (elegidoC.Animes.Find(x => x.TitleRomaji != null && x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
+                        (elegidoC.Animes.Find(x => x.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) != null)
+                        ));
+                        break;
+                    case "manga":
+                        desc = $"El nombre era: [{elegido.TitleRomaji}]({elegido.SiteUrl})";
+                        Anime elegidoM = elegido;
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                        (elegidoM.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
+                        (elegidoM.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
+                        ));
+                        break;
+                    //case "tag":
+                    //    desc = $"El nombre es: [{elegido.TitleRomaji}]({elegido.SiteUrl})";
+                    //    predicate = new Func<DiscordMessage, bool>();
+                    //    break;
+                    case "estudio":
+                        string estudiosStr = $"Los estudios de [{elegido.TitleRomaji}]({elegido.SiteUrl}) son:\n";
+                        foreach (var studio in elegido.Estudios)
+                        {
+                            estudiosStr += $"- [{studio.Nombre}]({studio.SiteUrl})\n";
+                        }
+                        desc = funciones.NormalizarDescription(estudiosStr);
+                        Anime elegidoS = elegido;
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                        (elegidoS.Estudios.Find(y => y.Nombre.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
+                        ));
+                        break;
+                    case "protagonista":
+                        string protagonistasStr = $"Los protagonistas de [{elegido.TitleRomaji}]({elegido.SiteUrl}) son:\n";
+                        foreach (var personaje in elegido.Personajes)
+                        {
+                            protagonistasStr += $"- [{personaje.NameFull}]({personaje.SiteUrl})\n";
+                        }
+                        desc = funciones.NormalizarDescription(protagonistasStr);
+                        Anime elegidoPr = elegido;
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                        (elegidoPr.Personajes.Find(x => x.NameFull != null && x.NameFull.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
+                        (elegidoPr.Personajes.Find(x => x.NameFirst != null && x.NameFirst.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
+                        (elegidoPr.Personajes.Find(x => x.NameLast != null && x.NameLast.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
+                        ));
+                        break;
+                    default:
+                        // Grabar log
+                        return;
+                }
+                var msg = await interactivity.WaitForMessageAsync(predicate, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
+                if (!msg.TimedOut)
+                {
+                    if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
+                    {
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                        {
+                            Title = "¡Juego cancelado!",
+                            Description = desc,
+                            Color = DiscordColor.Red
+                        }).ConfigureAwait(false);
+                        await GetResultados(ctx, participantes, lastRonda, settings.Dificultad, juego);
+                        await ctx.Channel.SendMessageAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
+                        return;
+                    }
+                    DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
+                    UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
+                    if (usr != null)
+                    {
+                        usr.Puntaje++;
+                    }
+                    else
+                    {
+                        participantes.Add(new UsuarioJuego()
+                        {
+                            Usuario = msg.Result.Author,
+                            Puntaje = 1
+                        });
+                    }
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = $"¡**{acertador.DisplayName}** ha acertado!",
+                        Description = desc,
+                        Color = DiscordColor.Green
+                    }).ConfigureAwait(false);
+                }
+                else
+                {
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "¡Nadie ha acertado!",
+                        Description = desc,
+                        Color = DiscordColor.Red
+                    }).ConfigureAwait(false);
+                }
+                lista.Remove(lista[random]);
+            }
+            await GetResultados(ctx, participantes, rondas, settings.Dificultad, juego);
+        }
+
         public async Task<string> GetEstadisticasDificultad(CommandContext ctx, string tipoStats, string dificultad, string flag)
         {
             bool global = !string.IsNullOrEmpty(flag) && flag == "-g";
