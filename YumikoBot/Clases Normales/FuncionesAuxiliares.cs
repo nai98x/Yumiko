@@ -15,6 +15,7 @@ using DiscordBotsList.Api;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus;
 using System.Configuration;
+using Google.Cloud.Firestore;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
@@ -22,6 +23,13 @@ namespace Discord_Bot
     public class FuncionesAuxiliares
     {
         static Timer timer;
+
+        public FirestoreDb GetFirestoreClient()
+        {
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            return FirestoreDb.Create(ConfigurationManager.AppSettings["NombreDbFirebase"]);
+        }
 
         public async Task<Imagen> GetImagenDiscordYumiko(CommandContext ctx, ulong idChannel)
         {

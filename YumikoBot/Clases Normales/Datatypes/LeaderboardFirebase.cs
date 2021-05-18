@@ -16,5 +16,8 @@ namespace YumikoBot.DAL
 
         [FirestoreProperty]
         public int rondasTotales { get; set; }
+
+        [FirestoreProperty]
+        public int porcentajeAciertos { get; set; }
     }
 }

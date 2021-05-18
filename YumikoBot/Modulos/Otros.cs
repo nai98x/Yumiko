@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using YumikoBot.DAL;
 
 namespace Discord_Bot.Modulos
 {
@@ -21,21 +22,6 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
-
-            Query allCitiesQuery = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");
-
-            CollectionReference cityRef = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");
-            IAsyncEnumerable<DocumentReference> subcollections = cityRef.ListDocumentsAsync();
-            IAsyncEnumerator<DocumentReference> subcollectionsEnumerator = subcollections.GetAsyncEnumerator(default);
-            while (await subcollectionsEnumerator.MoveNextAsync())
-            {
-                DocumentReference subcollectionRef = subcollectionsEnumerator.Current;
-                Console.WriteLine("Found subcollection with ID: {0}", subcollectionRef.Id);
-            }
-
             await ctx.Channel.SendMessageAsync("uwu");
         }
 

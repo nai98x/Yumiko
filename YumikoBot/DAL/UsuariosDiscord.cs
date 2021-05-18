@@ -14,9 +14,7 @@ namespace YumikoBot.DAL
         public async Task<List<UsuarioDiscordFirebase>> GetListaUsuarios(long guildId)
         {
             var ret = new List<UsuarioDiscordFirebase>();
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            FirestoreDb db = funciones.GetFirestoreClient();
 
             CollectionReference col = db.Collection("Cumpleaños").Document($"{guildId}").Collection("Usuarios");
             var snap = await col.GetSnapshotAsync();
@@ -114,9 +112,7 @@ namespace YumikoBot.DAL
 
         public async Task SetBirthday(CommandContext ctx, DateTime fecha, bool mostrarEdad)
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            FirestoreDb db = funciones.GetFirestoreClient();
             DocumentReference doc = db.Collection("Cumpleaños").Document($"{ctx.Guild.Id}").Collection("Usuarios").Document($"{ctx.User.Id}");
             var snap = await doc.GetSnapshotAsync();
             UsuarioDiscordFirebase registro;
@@ -148,9 +144,7 @@ namespace YumikoBot.DAL
 
         public async Task DeleteBirthday(CommandContext ctx)
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            FirestoreDb db = funciones.GetFirestoreClient();
             DocumentReference doc = db.Collection("Cumpleaños").Document($"{ctx.Guild.Id}").Collection("Usuarios").Document($"{ctx.User.Id}");
             var snap = await doc.GetSnapshotAsync();
             if (snap.Exists)

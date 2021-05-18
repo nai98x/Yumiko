@@ -15,11 +15,9 @@ namespace YumikoBot.DAL
         public async Task<List<LeaderboardFirebase>> GetLeaderboardFirebase(long guildId, string juego, string dificultad)
         {
             var ret = new List<LeaderboardFirebase>();
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            FirestoreDb db = funciones.GetFirestoreClient();
 
-            CollectionReference col = db.Collection("Estadisticas").Document($"{guildId}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios");
+            var col = db.Collection("Estadisticas").Document($"{guildId}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios").OrderByDescending("porcentajeAciertos").Limit(10);
             var snap = await col.GetSnapshotAsync();
 
             if (snap.Count > 0)
@@ -35,9 +33,7 @@ namespace YumikoBot.DAL
 
         public async Task AddRegistro(CommandContext ctx, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            FirestoreDb db = funciones.GetFirestoreClient();
             DocumentReference doc = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
             LeaderboardFirebase registro;
@@ -53,6 +49,7 @@ namespace YumikoBot.DAL
                     {"partidasJugadas", registro.partidasJugadas},
                     {"rondasAcertadas", registro.rondasAcertadas},
                     {"rondasTotales", registro.rondasTotales},
+                    {"porcentajeAciertos", (registro.rondasAcertadas * 100) / registro.rondasTotales},
                 };
                 await doc.UpdateAsync(data);
             }
@@ -64,6 +61,7 @@ namespace YumikoBot.DAL
                     {"partidasJugadas", 1},
                     {"rondasAcertadas", rondasAcertadas},
                     {"rondasTotales", rondasTotales},
+                    {"porcentajeAciertos", (rondasAcertadas * 100) / rondasTotales},
                 };
                 await doc.SetAsync(data);
             }
@@ -81,19 +79,16 @@ namespace YumikoBot.DAL
                     PartidasTotales = x.partidasJugadas,
                     RondasTotales = x.rondasTotales,
                     RondasAcertadas = x.rondasAcertadas,
-                    PorcentajeAciertos = (x.rondasAcertadas * 100) / x.rondasTotales
+                    PorcentajeAciertos = x.porcentajeAciertos
                 });
             });
-            lista.Sort((x, y) => y.PorcentajeAciertos.CompareTo(x.PorcentajeAciertos));
-            return lista.Take(10).ToList();
+            return lista;
         }
         
         public async Task<List<string>> GetTags(CommandContext ctx)
         {
             List<string> ret = new List<string>();
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            FirestoreDb db = funciones.GetFirestoreClient();
 
             CollectionReference estadisticasRef = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");
             IAsyncEnumerable<DocumentReference> subcollections = estadisticasRef.ListDocumentsAsync();
@@ -108,9 +103,7 @@ namespace YumikoBot.DAL
 
         public async Task EliminarEstadisticas(CommandContext ctx, string juego)
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            FirestoreDb db = funciones.GetFirestoreClient();
 
             DocumentReference docFacil = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document(juego).Collection("Dificultad").Document("Fácil").Collection("Usuarios").Document($"{ctx.User.Id}");
             var snapFacil = await docFacil.GetSnapshotAsync();
@@ -132,9 +125,7 @@ namespace YumikoBot.DAL
         }
         public async Task EliminarEstadisticasTag(CommandContext ctx)
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"firebase.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb db = FirestoreDb.Create("yumiko-1590195019393");
+            FirestoreDb db = funciones.GetFirestoreClient();
 
             CollectionReference estadisticasRef = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");
             IAsyncEnumerable<DocumentReference> subcollections = estadisticasRef.ListDocumentsAsync();
