@@ -611,76 +611,13 @@ namespace Discord_Bot.Modulos
                                                             Description = $"Se han reducido el numero de rondas a {rondas} ya que esta es la cantidad de animes con al menos un {porcentajeTag}% de {elegido}",
                                                         }).ConfigureAwait(false);
                                                     }
-                                                    for (int ronda = 1; ronda <= rondas; ronda++)
+                                                    SettingsJuego settings = new SettingsJuego()
                                                     {
-                                                        lastRonda = ronda;
-                                                        int random = funciones.GetNumeroRandom(0, animeList.Count - 1);
-                                                        Anime elegido1 = animeList[random];
-                                                        DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
-                                                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                                                        {
-                                                            Color = DiscordColor.Gold,
-                                                            Title = $"Adivina el {elegido}",
-                                                            Description = $"Ronda {ronda} de {rondas}",
-                                                            ImageUrl = elegido1.Image,
-                                                            Footer = new DiscordEmbedBuilder.EmbedFooter
-                                                            {
-                                                                Text = $"{elegido1.Favoritos} {corazon} (nº {elegido1.Popularidad} en popularidad)"
-                                                            }
-                                                        }).ConfigureAwait(false);
-                                                        var msg = await interactivity.WaitForMessageAsync
-                                                            (xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
-                                                            ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
-                                                            (elegido1.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido1.TitleRomaji.ToLower().Trim())) || (elegido1.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido1.TitleEnglish.ToLower().Trim())) ||
-                                                            (elegido1.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
-                                                            ), TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
-                                                        if (!msg.TimedOut)
-                                                        {
-                                                            if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
-                                                            {
-                                                                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                                                                {
-                                                                    Title = "¡Juego cancelado!",
-                                                                    Description = $"El nombre era: [{elegido1.TitleRomaji}]({elegido1.SiteUrl})",
-                                                                    Color = DiscordColor.Red
-                                                                }).ConfigureAwait(false);
-                                                                await funcionesJuegos.GetResultados(ctx, participantes, lastRonda, elegido, "tag");
-                                                                await ctx.Channel.SendMessageAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
-                                                                return;
-                                                            }
-                                                            DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
-                                                            UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
-                                                            if (usr != null)
-                                                            {
-                                                                usr.Puntaje++;
-                                                            }
-                                                            else
-                                                            {
-                                                                participantes.Add(new UsuarioJuego()
-                                                                {
-                                                                    Usuario = msg.Result.Author,
-                                                                    Puntaje = 1
-                                                                });
-                                                            }
-                                                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                                                            {
-                                                                Title = $"¡**{acertador.DisplayName}** ha acertado!",
-                                                                Description = $"El nombre es: [{elegido1.TitleRomaji}]({elegido1.SiteUrl})",
-                                                                Color = DiscordColor.Green
-                                                            }).ConfigureAwait(false);
-                                                        }
-                                                        else
-                                                        {
-                                                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                                                            {
-                                                                Title = "¡Nadie ha acertado!",
-                                                                Description = $"El nombre era: [{elegido1.TitleRomaji}]({elegido1.SiteUrl})",
-                                                                Color = DiscordColor.Red
-                                                            }).ConfigureAwait(false);
-                                                        }
-                                                        animeList.Remove(animeList[random]);
-                                                    }
-                                                    await funcionesJuegos.GetResultados(ctx, participantes, rondas, elegido, "tag");
+                                                        Rondas = rondas,
+                                                        Dificultad = elegido,
+                                                        Ok = true
+                                                    };
+                                                    await funcionesJuegos.Jugar(ctx, "tag", rondas, animeList, settings, interactivity);
                                                 }
                                                 else
                                                 {
