@@ -245,6 +245,7 @@ namespace Discord_Bot
                 Color = DiscordColor.Green
             }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
             .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+            .AddField("Id Usuario", $"{e.Context.User.Id}", true)
             .AddField("Canal", $"#{e.Context.Channel.Name}", false)
             .AddField("Mensaje", $"{e.Context.Message.Content}", false)
             );

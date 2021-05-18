@@ -155,13 +155,20 @@ namespace Discord_Bot.Modulos
         {
             if (emote != null)
             {
-                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                if (emote.Id != 0)
                 {
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor(),
-                    Title = emote.Name,
-                    ImageUrl = emote.Url
-                });
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Footer = funciones.GetFooter(ctx),
+                        Color = funciones.GetColor(),
+                        Title = emote.Name,
+                        ImageUrl = emote.Url
+                    });
+                }
+                else
+                {
+                    await ctx.Channel.SendMessageAsync(emote).ConfigureAwait(false);
+                }
             }
             else
             {
