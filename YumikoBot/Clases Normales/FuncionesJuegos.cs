@@ -231,7 +231,7 @@ namespace Discord_Bot
                     case "personaje":
                         desc = $"El nombre es: [{elegido.NameFull}]({elegido.SiteUrl})";
                         Character elegidoP = elegido;
-                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                             (xm.Content.ToLower().Trim() == elegidoP.NameFull.ToLower().Trim()) ||
                             (xm.Content.ToLower().Trim() == elegidoP.NameFirst.ToLower().Trim()) ||
@@ -245,7 +245,7 @@ namespace Discord_Bot
                             desc += $"- [{anim.TitleRomaji}]({anim.SiteUrl})\n";
                         }
                         Character elegidoC = elegido;
-                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                             (elegidoC.Animes.Find(x => x.TitleEnglish != null && x.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                             (elegidoC.Animes.Find(x => x.TitleRomaji != null && x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
@@ -255,7 +255,7 @@ namespace Discord_Bot
                     case "manga":
                         desc = $"El nombre era: [{elegido.TitleRomaji}]({elegido.SiteUrl})";
                         Anime elegidoM = elegido;
-                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                             (elegidoM.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
                             (elegidoM.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
@@ -264,7 +264,7 @@ namespace Discord_Bot
                     case "tag":
                         desc = $"El nombre es: [{elegido.TitleRomaji}]({elegido.SiteUrl})";
                         Anime elegidoT = elegido;
-                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                             (elegido.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
                             (elegidoT.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
@@ -278,7 +278,7 @@ namespace Discord_Bot
                         }
                         desc = funciones.NormalizarDescription(estudiosStr);
                         Anime elegidoS = elegido;
-                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                             (elegidoS.Estudios.Find(y => y.Nombre.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                             ));
@@ -291,7 +291,7 @@ namespace Discord_Bot
                         }
                         desc = funciones.NormalizarDescription(protagonistasStr);
                         Anime elegidoPr = elegido;
-                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                             (elegidoPr.Personajes.Find(x => x.NameFull != null && x.NameFull.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                             (elegidoPr.Personajes.Find(x => x.NameFirst != null && x.NameFirst.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||

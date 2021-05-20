@@ -990,7 +990,7 @@ namespace Discord_Bot.Modulos
                         if (personaje != null)
                         {
                             int errores = 0;
-                            char[] charsPj = personaje.NameFull.ToLower().ToCharArray();
+                            char[] charsPj = personaje.NameFull.ToLower().Trim().ToCharArray();
                             var charsEsp = charsPj.Distinct();
                             var chars = charsEsp.ToList();
                             chars.Remove((char)32);
@@ -1012,11 +1012,13 @@ namespace Discord_Bot.Modulos
                                 Footer = funciones.GetFooter(ctx),
                                 Color = funciones.GetColor()
                             }).ConfigureAwait(false);
-
+                            DiscordMember ganador = ctx.Member;
+                            string titRonda;
+                            DiscordColor colRonda;
                             do
                             {
                                 dynamic predicate = new Func<DiscordMessage, bool>(
-                                    xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                                    xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                                     ((xm.Content.ToLower().Trim().Length == 1) && 
                                     (letrasUsadas.Find(x => x == xm.Content.ToLower().Trim()) == null)) ||
                                     (xm.Content.ToLower().Trim() == personaje.NameFull.ToLower().Trim())
@@ -1024,33 +1026,131 @@ namespace Discord_Bot.Modulos
                                 var msg = await interactivity.WaitForMessageAsync(predicate, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                                 if (!msg.TimedOut)
                                 {
-                                    if(msg.Result.Content.ToLower().Trim().Length == 1)
+                                    DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
+                                    if (msg.Result.Content.ToLower().Trim().Length == 1)
                                     {
-                                        DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
                                         var acierto = caracteres.Find(x => x.Caracter.ToString() == msg.Result.Content.ToLower().Trim());
                                         if (acierto != null)
                                         {
                                             acierto.Acertado = true;
-                                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
-                                            {
-                                                Title = $"¡{acertador.DisplayName} ha acertado!",
-                                                Color = DiscordColor.Green
-                                            }).ConfigureAwait(false);
+                                            titRonda = $"¡{acertador.DisplayName} ha acertado!";
+                                            colRonda = DiscordColor.Green;
                                         }
                                         else
                                         {
                                             errores++;
-                                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
-                                            {
-                                                Title = $"¡{acertador.DisplayName} le ha errado!",
-                                                Color = DiscordColor.Red
-                                            }).ConfigureAwait(false);
+                                            titRonda = $"¡{acertador.DisplayName} le ha errado!";
+                                            colRonda = DiscordColor.Red;
                                         }
+
                                         var letraUsada = letrasUsadas.Find(x => x.ToLower().Trim() == msg.Result.Content.ToLower().Trim());
                                         if (letraUsada == null)
                                         {
                                             letrasUsadas.Add(msg.Result.Content.ToLower().Trim());
                                         }
+                                        string letras = "`";
+                                        foreach (var c in charsPj)
+                                        {
+                                            var registro = caracteres.Find(x => x.Caracter == c);
+                                            if (registro != null) // Por los espacios del string original
+                                            {
+                                                if (registro.Acertado)
+                                                    letras += c + " ";
+                                                else
+                                                    letras += "_ ";
+                                            }
+                                            else
+                                            {
+                                                letras += "` `";
+                                            }
+                                        }
+                                        letras += "`\n\n";
+                                        string desc = "";
+                                        desc += letras;
+                                        switch (errores)
+                                        {
+                                            case 0:
+                                                desc += ". ┌─────┐\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃\n" +
+                                                ".┃\n" +
+                                                ".┃\n" +
+                                                "/-\\" +
+                                                "\n";
+                                                break;
+                                            case 1:
+                                                desc += ". ┌─────┐\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃.............:dizzy_face: \n" +
+                                                ".┃\n" +
+                                                ".┃\n" +
+                                                "/-\\" +
+                                                "\n";
+                                                break;
+                                            case 2:
+                                                desc += ". ┌─────┐\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃.............:dizzy_face: \n" +
+                                                ".┃............./\n" +
+                                                ".┃\n" +
+                                                "/-\\" +
+                                                "\n";
+                                                break;
+                                            case 3:
+                                                desc += ". ┌─────┐\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃.............:dizzy_face: \n" +
+                                                ".┃............./ |\n" +
+                                                ".┃\n" +
+                                                "/-\\" +
+                                                "\n";
+                                                break;
+                                            case 4:
+                                                desc += ". ┌─────┐\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃.............:dizzy_face: \n" +
+                                                ".┃............./ | \\   \n" +
+                                                ".┃\n" +
+                                                "/-\\" +
+                                                "\n";
+                                                break;
+                                            case 5:
+                                                desc += ". ┌─────┐\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃.............:dizzy_face: \n" +
+                                                ".┃............./ | \\   \n" +
+                                                ".┃............../\n" +
+                                                "/-\\" +
+                                                "\n";
+                                                break;
+                                            case 6:
+                                                desc += ". ┌─────┐\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃...............┋\n" +
+                                                ".┃.............:dizzy_face: \n" +
+                                                ".┃............./ | \\   \n" +
+                                                ".┃............../\\ \n" +
+                                                "/-\\" +
+                                                "\n";
+                                                break;
+                                        }
+                                        desc += "\n**Letras usadas:**\n";
+                                        foreach (var cc in letrasUsadas)
+                                        {
+                                            desc += $"`{cc}` ";
+                                        }
+                                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                                        {
+                                            Title = titRonda,
+                                            Description = desc,
+                                            Color = colRonda
+                                        }).ConfigureAwait(false);
                                     }
                                     else
                                     {
@@ -1058,6 +1158,11 @@ namespace Discord_Bot.Modulos
                                         {
                                             ccc.Acertado = true;
                                         }
+                                        partidaTerminada = true;
+                                    }
+                                    if ((caracteres.Find(x => x.Acertado == false) == null) || msg.Result.Content.ToLower().Trim() == personaje.NameFull.ToLower().Trim())
+                                    {
+                                        ganador = acertador;
                                         partidaTerminada = true;
                                     }
                                 }
@@ -1072,111 +1177,6 @@ namespace Discord_Bot.Modulos
                                         Color = DiscordColor.Red
                                     }).ConfigureAwait(false);
                                 }
-
-                                string letras = "`";
-                                foreach (var c in charsPj)
-                                {
-                                    var registro = caracteres.Find(x => x.Caracter == c);
-                                    if (registro != null) // Por los espacios del string original
-                                    {
-                                        if (registro.Acertado)
-                                            letras += c + " ";
-                                        else
-                                            letras += "_ ";
-                                    }
-                                    else
-                                    {
-                                        letras += "` `";
-                                    }
-                                }
-                                letras += "`\n\n";
-                                string desc = "";
-                                desc += letras;
-                                switch (errores)
-                                {
-                                    case 0:
-                                        desc += ". ┌─────┐\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃\n" +
-                                        ".┃\n" +
-                                        ".┃\n" +
-                                        "/-\\" +
-                                        "\n";
-                                        break;
-                                    case 1:
-                                        desc += ". ┌─────┐\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃.............:dizzy_face: \n" +
-                                        ".┃\n" +
-                                        ".┃\n" +
-                                        "/-\\" +
-                                        "\n";
-                                        break;
-                                    case 2:
-                                        desc += ". ┌─────┐\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃.............:dizzy_face: \n" +
-                                        ".┃............./\n" +
-                                        ".┃\n" +
-                                        "/-\\" +
-                                        "\n";
-                                        break;
-                                    case 3:
-                                        desc += ". ┌─────┐\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃.............:dizzy_face: \n" +
-                                        ".┃............./ |\n" +
-                                        ".┃\n" +
-                                        "/-\\" +
-                                        "\n";
-                                        break;
-                                    case 4:
-                                        desc += ". ┌─────┐\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃.............:dizzy_face: \n" +
-                                        ".┃............./ | \\   \n" +
-                                        ".┃\n" +
-                                        "/-\\" +
-                                        "\n";
-                                        break;
-                                    case 5:
-                                        desc += ". ┌─────┐\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃.............:dizzy_face: \n" +
-                                        ".┃............./ | \\   \n" +
-                                        ".┃............../\n" +
-                                        "/-\\" +
-                                        "\n";
-                                        break;
-                                    case 6:
-                                        desc += ". ┌─────┐\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃...............┋\n" +
-                                        ".┃.............:dizzy_face: \n" +
-                                        ".┃............./ | \\   \n" +
-                                        ".┃............../\\ \n" +
-                                        "/-\\" +
-                                        "\n";
-                                        break;
-                                }
-                                desc += "\n**Letras usadas:**\n";
-                                foreach(var cc in letrasUsadas)
-                                {
-                                    desc += $"`{cc}` ";
-                                }
-                                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
-                                {
-                                    Title = "Ahorcado (Peronajes de anime)",
-                                    Description = desc,
-                                    Color = funciones.GetColor()
-                                }).ConfigureAwait(false);
-
                                 if (errores >= 6 || (caracteres.Find(x => x.Acertado == false) == null))
                                     partidaTerminada = true;
                             } while (!partidaTerminada);
@@ -1197,7 +1197,8 @@ namespace Discord_Bot.Modulos
                                 await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
                                 {
                                     Title = "¡Victoria!",
-                                    Description = $"El personaje es [{personaje.NameFull}]({personaje.SiteUrl}) de [{personaje.AnimePrincipal.TitleRomaji}]({personaje.AnimePrincipal.SiteUrl})",
+                                    Description = $"El personaje es [{personaje.NameFull}]({personaje.SiteUrl}) de [{personaje.AnimePrincipal.TitleRomaji}]({personaje.AnimePrincipal.SiteUrl})\n\n" +
+                                    $"Ganador: {ganador.Mention}",
                                     ImageUrl = personaje.Image,
                                     Footer = funciones.GetFooter(ctx),
                                     Color = DiscordColor.Green
@@ -1223,7 +1224,7 @@ namespace Discord_Bot.Modulos
             {
                 var mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
-                    Title = "¡Derrota!",
+                    Title = "Error",
                     Description = msgError,
                     Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Red
