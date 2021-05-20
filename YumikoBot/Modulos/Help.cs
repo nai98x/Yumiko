@@ -19,19 +19,20 @@ namespace Discord_Bot.Modulos
         public async Task Ayuda(CommandContext ctx, [Description("Comando para ver en detalle, si se deja vacío se muestran todos los comandos")] string comando = null)
         {
             var commandsNext = ctx.CommandsNext;
+
             var comandos = commandsNext.RegisteredCommands.Values;
             string web = ConfigurationManager.AppSettings["Web"] + "#commands";
             string urlTopGG = "https://top.gg/bot/295182825521545218/";
+            var comandosFiltrados = from com in comandos
+                                    group com by com.Module.ModuleType.Name;
             if (comando == null)
             {
-                var comandosFiltrados = from com in comandos
-                                        group com by com.Module.ModuleType.Name;
                 string comandosDesc = "";
                 var builder = new DiscordEmbedBuilder
                 {
                     Title = "Comandos disponibles",
                     Description = $"Puedes llamarme con `{ctx.Prefix}` o con {ctx.Client.CurrentUser.Mention}.\n" +
-                    $"[Ejemplos de comandos]({web}) | [Top.gg]({urlTopGG}) | [¡Vótame!]({urlTopGG}vote)",
+                    $"[Ejemplos de comandos]({web})",
                     Url = web,
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
@@ -112,9 +113,45 @@ namespace Discord_Bot.Modulos
                 }
                 else
                 {
-                    var msgError = await ctx.Channel.SendMessageAsync($"No se ha encontrado el comando `{comando}`").ConfigureAwait(false);
-                    await Task.Delay(3000);
-                    await funciones.BorrarMensaje(ctx, msgError.Id);
+                    var keys = from com in comandosFiltrados
+                               select com.Key;
+                    var keysList = keys.ToList();
+                    string categoria = keysList.Find(x => x.ToLower().Trim() == comando.ToLower().Trim());
+                    if (categoria != null)
+                    {
+                        string comandosDesc = "";
+                        foreach (var grp in comandosFiltrados)
+                        {
+                            var grupo = grp.Distinct();
+                            string nomGrupo = grp.Key;
+                            if (nomGrupo == categoria)
+                            {
+                                List<string> listaComandos1 = new List<string>();
+                                foreach (var comando1 in grupo)
+                                {
+                                    if (!comando1.IsHidden)
+                                        listaComandos1.Add($"`{comando1.Name}`");
+                                }
+                                comandosDesc = string.Join(", ", listaComandos1);
+                                if (nomGrupo == "NSFW" && !ctx.Channel.IsNSFW)
+                                    comandosDesc = "`Para ver estos comandos ejecutalo en un canal NSFW`";
+                            }
+                        }
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                        {
+                            Title = categoria,
+                            Description = comandosDesc,
+                            Url = ConfigurationManager.AppSettings["Web"] + "#" + categoria,
+                            Footer = funciones.GetFooter(ctx),
+                            Color = funciones.GetColor()
+                        }).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        var msgError = await ctx.Channel.SendMessageAsync($"No se ha encontrado el comando `{comando}`").ConfigureAwait(false);
+                        await Task.Delay(3000);
+                        await funciones.BorrarMensaje(ctx, msgError.Id);
+                    }
                 }
             }
         }

@@ -929,113 +929,308 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("rankingC"), Aliases("statsC", "leaderboardC"), Description("Estadisticas de adivina el personaje."), RequireGuild]
-        public async Task EstadisticasAdivinaPersonaje(CommandContext ctx, string flag = null)
-        {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "personaje", flag);
-            await ctx.Channel.SendMessageAsync(embed: builder);
-            await funciones.ChequearVotoTopGG(ctx);
-        }
-
-        [Command("rankingA"), Aliases("statsA", "leaderboardA"), Description("Estadisticas de adivina el anime."), RequireGuild]
-        public async Task EstadisticasAdivinaAnime(CommandContext ctx, string flag = null)
-        {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "anime", flag);
-            await ctx.Channel.SendMessageAsync(embed: builder);
-            await funciones.ChequearVotoTopGG(ctx);
-        }
-
-        [Command("rankingM"), Aliases("statsM", "leaderboardM"), Description("Estadisticas de adivina el anime."), RequireGuild]
-        public async Task EstadisticasAdivinaManga(CommandContext ctx, string flag = null)
-        {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "manga", flag);
-            await ctx.Channel.SendMessageAsync(embed: builder);
-            await funciones.ChequearVotoTopGG(ctx);
-        }
-
-        [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el anime."), RequireGuild]
-        public async Task EstadisticasAdivinaTag(CommandContext ctx, string flag = null)
-        {
-            var builder = await funcionesJuegos.GetEstadisticasTag(ctx, flag);
-            var msg = await ctx.Channel.SendMessageAsync(embed: builder);
-            await funciones.ChequearVotoTopGG(ctx);
-            if (builder.Title == "Error")
-            {
-                await Task.Delay(5000);
-                await funciones.BorrarMensaje(ctx, msg.Id);
-            }
-        }
-
-        [Command("rankingS"), Aliases("statsS", "leaderboardS"), Description("Estadisticas de adivina el estudio."), RequireGuild]
-        public async Task EstadisticasAdivinaEstudio(CommandContext ctx, string flag = null)
-        {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "estudio", flag);
-            await ctx.Channel.SendMessageAsync(embed: builder);
-            await funciones.ChequearVotoTopGG(ctx);
-        }
-
-        [Command("rankingP"), Aliases("statsP", "leaderboardP"), Description("Estadisticas de adivina el protagonista."), RequireGuild]
-        public async Task EstadisticasAdivinaProtagonista(CommandContext ctx, string flag = null)
-        {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "protagonista", flag);
-            await ctx.Channel.SendMessageAsync(embed: builder);
-            await funciones.ChequearVotoTopGG(ctx);
-        }
-
-        [Command("eliminarestadisticas"), Description("Elimina las estadisticas de todos los juegos del servidor."), RequireGuild]
-        public async Task EliminarEstadisticas(CommandContext ctx)
+        [Command("ahorcado"), Aliases("ahorcadopj"), Description("Empieza el juego del ahorcado con un personaje aleatorio."), RequireGuild]
+        public async Task AhorcadoPersonaje(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            string opcion;
-            string opciones =
-                $"**1-** Si\n" +
-                $"**2-** No\n\n" +
-                $"**Ten en cuenta que el borrado de estadisticas no se puede deshacer.**";
-            var msgElegir = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            string msgError = "";
+            DiscordEmoji emojiDado = DiscordEmoji.FromName(ctx.Client, ":game_die:");
+            var msgDificultad = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Title = "Confirma si quieres eliminar tus estadisticas del servidor",
-                Description = opciones,
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor(),
+                Title = "Elije la dificultad",
+                Description = $"0- Aleatorio {emojiDado}\n1- Fácil\n2- Media\n3- Dificil\n4- Extremo"
             });
-            var msgElegirInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-            if (!msgElegirInter.TimedOut)
+            var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+            if (!msgDificultadInter.TimedOut)
             {
-                opcion = msgElegirInter.Result.Content;
-                if (msgElegir != null)
-                    await funciones.BorrarMensaje(ctx, msgElegir.Id);
-                if (msgElegirInter.Result != null)
-                    await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
-                opcion = opcion.ToLower();
-                switch (opcion)
+                bool result = int.TryParse(msgDificultadInter.Result.Content, out int dificultad);
+                if (result)
                 {
-                    case "1":
-                    case "1- si":
-                    case "si":
-                        await funcionesJuegos.ElimianrEstadisticas(ctx);
-                        break;
-                    case "2":
-                    case "2- no":
-                    case "no":
-                        break;
-                    default:
-                        var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                    string dificultadStr;
+                    if (dificultad >= 0 && dificultad <= 4)
+                    {
+                        if (dificultad == 0)
+                            dificultad = funciones.GetNumeroRandom(1, 4);
+                        int iterIni;
+                        int iterFin;
+                        switch (dificultad)
                         {
-                            Title = "Error",
-                            Description = "Opcion incorrecta",
-                            Footer = funciones.GetFooter(ctx),
-                            Color = DiscordColor.Red,
-                        });
-                        await Task.Delay(3000);
-                        if (msgError != null)
-                            await funciones.BorrarMensaje(ctx, msgError.Id);
-                        break;
+                            case 1:
+                                iterIni = 1;
+                                iterFin = 500;
+                                dificultadStr = "Fácil";
+                                break;
+                            case 2:
+                                iterIni = 501;
+                                iterFin = 1500;
+                                dificultadStr = "Media";
+                                break;
+                            case 3:
+                                iterIni = 1500;
+                                iterFin = 3000;
+                                dificultadStr = "Dificil";
+                                break;
+                            case 4:
+                                iterIni = 3000;
+                                iterFin = 5000;
+                                dificultadStr = "Extremo";
+                                break;
+                            default:
+                                iterIni = 501;
+                                iterFin = 1500;
+                                dificultadStr = "Medio";
+                                break;
+                        }
+                        if (msgDificultad != null)
+                            await funciones.BorrarMensaje(ctx, msgDificultad.Id);
+                        if (msgDificultadInter.Result != null)
+                            await funciones.BorrarMensaje(ctx, msgDificultadInter.Result.Id);
+                        int pag = funciones.GetNumeroRandom(iterIni, iterFin);
+                        Character personaje = await funciones.GetRandomCharacter(ctx, pag);
+                        if (personaje != null)
+                        {
+                            int errores = 0;
+                            char[] charsPj = personaje.NameFull.ToLower().ToCharArray();
+                            var charsEsp = charsPj.Distinct();
+                            var chars = charsEsp.ToList();
+                            chars.Remove((char)32);
+                            List<CaracterBool> caracteres = new List<CaracterBool>();
+                            List<string> letrasUsadas = new List<string>();
+                            foreach (char c in chars)
+                            {
+                                caracteres.Add(new CaracterBool()
+                                {
+                                    Caracter = c,
+                                    Acertado = false
+                                });
+                            }
+                            bool partidaTerminada = false;
+                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                            {
+                                Title = "Ahorcado (Peronajes de anime)",
+                                Description = $"Dificultad: **{dificultadStr}**\n\n¡Escribe una letra!",
+                                Footer = funciones.GetFooter(ctx),
+                                Color = funciones.GetColor()
+                            }).ConfigureAwait(false);
+
+                            do
+                            {
+                                dynamic predicate = new Func<DiscordMessage, bool>(
+                                    xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) &&
+                                    ((xm.Content.ToLower().Trim().Length == 1) && 
+                                    (letrasUsadas.Find(x => x == xm.Content.ToLower().Trim()) == null)) ||
+                                    (xm.Content.ToLower().Trim() == personaje.NameFull.ToLower().Trim())
+                                    );
+                                var msg = await interactivity.WaitForMessageAsync(predicate, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
+                                if (!msg.TimedOut)
+                                {
+                                    if(msg.Result.Content.ToLower().Trim().Length == 1)
+                                    {
+                                        DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
+                                        var acierto = caracteres.Find(x => x.Caracter.ToString() == msg.Result.Content.ToLower().Trim());
+                                        if (acierto != null)
+                                        {
+                                            acierto.Acertado = true;
+                                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                                            {
+                                                Title = $"¡{acertador.DisplayName} ha acertado!",
+                                                Color = DiscordColor.Green
+                                            }).ConfigureAwait(false);
+                                        }
+                                        else
+                                        {
+                                            errores++;
+                                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                                            {
+                                                Title = $"¡{acertador.DisplayName} le ha errado!",
+                                                Color = DiscordColor.Red
+                                            }).ConfigureAwait(false);
+                                        }
+                                        var letraUsada = letrasUsadas.Find(x => x.ToLower().Trim() == msg.Result.Content.ToLower().Trim());
+                                        if (letraUsada == null)
+                                        {
+                                            letrasUsadas.Add(msg.Result.Content.ToLower().Trim());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var ccc in caracteres)
+                                        {
+                                            ccc.Acertado = true;
+                                        }
+                                        partidaTerminada = true;
+                                    }
+                                }
+                                else
+                                {
+                                    errores++;
+                                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                                    {
+                                        Title = "¡Nadie ha escrito!",
+                                        Description = "Escribe una letra cualquiera para seguir con el juego.",
+                                        Footer = funciones.GetFooter(ctx),
+                                        Color = DiscordColor.Red
+                                    }).ConfigureAwait(false);
+                                }
+
+                                string letras = "`";
+                                foreach (var c in charsPj)
+                                {
+                                    var registro = caracteres.Find(x => x.Caracter == c);
+                                    if (registro != null) // Por los espacios del string original
+                                    {
+                                        if (registro.Acertado)
+                                            letras += c + " ";
+                                        else
+                                            letras += "_ ";
+                                    }
+                                    else
+                                    {
+                                        letras += "` `";
+                                    }
+                                }
+                                letras += "`\n\n";
+                                string desc = "";
+                                desc += letras;
+                                switch (errores)
+                                {
+                                    case 0:
+                                        desc += ". ┌─────┐\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃\n" +
+                                        ".┃\n" +
+                                        ".┃\n" +
+                                        "/-\\" +
+                                        "\n";
+                                        break;
+                                    case 1:
+                                        desc += ". ┌─────┐\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃.............:dizzy_face: \n" +
+                                        ".┃\n" +
+                                        ".┃\n" +
+                                        "/-\\" +
+                                        "\n";
+                                        break;
+                                    case 2:
+                                        desc += ". ┌─────┐\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃.............:dizzy_face: \n" +
+                                        ".┃............./\n" +
+                                        ".┃\n" +
+                                        "/-\\" +
+                                        "\n";
+                                        break;
+                                    case 3:
+                                        desc += ". ┌─────┐\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃.............:dizzy_face: \n" +
+                                        ".┃............./ |\n" +
+                                        ".┃\n" +
+                                        "/-\\" +
+                                        "\n";
+                                        break;
+                                    case 4:
+                                        desc += ". ┌─────┐\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃.............:dizzy_face: \n" +
+                                        ".┃............./ | \\   \n" +
+                                        ".┃\n" +
+                                        "/-\\" +
+                                        "\n";
+                                        break;
+                                    case 5:
+                                        desc += ". ┌─────┐\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃.............:dizzy_face: \n" +
+                                        ".┃............./ | \\   \n" +
+                                        ".┃............../\n" +
+                                        "/-\\" +
+                                        "\n";
+                                        break;
+                                    case 6:
+                                        desc += ". ┌─────┐\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃...............┋\n" +
+                                        ".┃.............:dizzy_face: \n" +
+                                        ".┃............./ | \\   \n" +
+                                        ".┃............../\\ \n" +
+                                        "/-\\" +
+                                        "\n";
+                                        break;
+                                }
+                                desc += "\n**Letras usadas:**\n";
+                                foreach(var cc in letrasUsadas)
+                                {
+                                    desc += $"`{cc}` ";
+                                }
+                                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                                {
+                                    Title = "Ahorcado (Peronajes de anime)",
+                                    Description = desc,
+                                    Color = funciones.GetColor()
+                                }).ConfigureAwait(false);
+
+                                if (errores >= 6 || (caracteres.Find(x => x.Acertado == false) == null))
+                                    partidaTerminada = true;
+                            } while (!partidaTerminada);
+
+                            if (errores == 6)
+                            {
+                                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                                {
+                                    Title = "¡Derrota!",
+                                    Description = $"El personaje era [{personaje.NameFull}]({personaje.SiteUrl}) de [{personaje.AnimePrincipal.TitleRomaji}]({personaje.AnimePrincipal.SiteUrl})",
+                                    ImageUrl = personaje.Image,
+                                    Footer = funciones.GetFooter(ctx),
+                                    Color = DiscordColor.Red
+                                }).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                                {
+                                    Title = "¡Victoria!",
+                                    Description = $"El personaje es [{personaje.NameFull}]({personaje.SiteUrl}) de [{personaje.AnimePrincipal.TitleRomaji}]({personaje.AnimePrincipal.SiteUrl})",
+                                    ImageUrl = personaje.Image,
+                                    Footer = funciones.GetFooter(ctx),
+                                    Color = DiscordColor.Green
+                                }).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        msgError = "La dificultad debe ser 0, 1, 2, 3 o 4";
+                    }
+                }
+                else
+                {
+                    msgError = "La dificultad debe ser un número (0, 1, 2, 3 o 4)";
                 }
             }
-            if (msgElegir != null)
-                await funciones.BorrarMensaje(ctx, msgElegir.Id);
-            if (msgElegirInter.Result != null)
-                await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
+            else
+            {
+                msgError = "Tiempo agotado esperando la dificultad";
+            }
+            if (!String.IsNullOrEmpty(msgError))
+            {
+                var mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                {
+                    Title = "¡Derrota!",
+                    Description = msgError,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = DiscordColor.Red
+                }).ConfigureAwait(false);
+                await Task.Delay(5000);
+                await funciones.BorrarMensaje(ctx, mensaje.Id);
+            }
         }
     }
 }

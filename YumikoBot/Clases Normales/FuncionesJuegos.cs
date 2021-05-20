@@ -197,7 +197,7 @@ namespace Discord_Bot
                 };
             }
         }
-
+        
         public async Task Jugar(CommandContext ctx, string juego, int rondas, dynamic lista, SettingsJuego settings, InteractivityExtension interactivity)
         {
             List<UsuarioJuego> participantes = new List<UsuarioJuego>();

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using YumikoBot.DAL;
+using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot.Modulos
 {
@@ -155,6 +156,32 @@ namespace Discord_Bot.Modulos
             await ctx.Channel.SendMessageAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
         }
 
+        [Command("contactar"), Aliases("sugerencia", "contact"), Description("Envia una sugerencia o peticion de contacto al desarrollador del bot.")]
+        public async Task Contact(CommandContext ctx, [RemainingText]string texto)
+        {
+            var LogGuild = await ctx.Client.GetGuildAsync(713809173573271613);
+            var canalContacto = LogGuild.GetChannel(844384175925624852);
+            await canalContacto.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Nuevo feedback",
+                Footer = new EmbedFooter()
+                {
+                    Text = $"{ctx.User.Username}#{ctx.User.Discriminator} - {ctx.Message.Timestamp}",
+                    IconUrl = ctx.User.AvatarUrl
+                },
+                Author = new EmbedAuthor()
+                {
+                    IconUrl = ctx.Guild.IconUrl,
+                    Name = $"{ctx.Guild.Name}"
+                },
+                Color = DiscordColor.Green
+            }.AddField("Id Servidor", $"{ctx.Guild.Id}", true)
+            .AddField("Id Canal", $"{ctx.Channel.Id}", true)
+            .AddField("Id Usuario", $"{ctx.User.Id}", true)
+            .AddField("Canal", $"#{ctx.Channel.Name}", false)
+            .AddField("Mensaje", $"{texto}", false));
+        }
+
         [Command("servers"), Description("Muestra los servidores en los que esta Yumiko."), RequireOwner]
         public async Task Servers(CommandContext ctx)
         {
@@ -228,7 +255,8 @@ namespace Discord_Bot.Modulos
                 ctx.Guild.Id == 713809173573271613 || // Yumiko
                 ctx.Guild.Id == 741496210040553483 || // Maanhe
                 ctx.Guild.Id == 520398815103025156 || // Tomy
-                ctx.Guild.Id == 753023527623458916 // Andrea
+                ctx.Guild.Id == 753023527623458916 || // Andrea
+                ctx.Guild.Id == 724784732923232286 // Haze
                 )
             {
                 MonoschinosDownloader animeflv = new MonoschinosDownloader();

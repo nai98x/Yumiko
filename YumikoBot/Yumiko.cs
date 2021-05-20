@@ -102,6 +102,7 @@ namespace Discord_Bot
             Commands.RegisterCommands<Interactuar>();
             Commands.RegisterCommands<Anilist>();
             Commands.RegisterCommands<Juegos>();
+            Commands.RegisterCommands<Estadisticas>();
             Commands.RegisterCommands<NSFW>();
             Commands.RegisterCommands<Usuarios>();
             Commands.RegisterCommands<Otros>();

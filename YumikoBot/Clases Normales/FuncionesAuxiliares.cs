@@ -16,6 +16,9 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus;
 using System.Configuration;
 using Google.Cloud.Firestore;
+using GraphQL;
+using GraphQL.Client.Http;
+using GraphQL.Client.Serializer.Newtonsoft;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
@@ -23,6 +26,7 @@ namespace Discord_Bot
     public class FuncionesAuxiliares
     {
         static Timer timer;
+        private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         public FirestoreDb GetFirestoreClient()
         {
@@ -288,7 +292,7 @@ namespace Discord_Bot
                     AuthDiscordBotListApi DblApi = new AuthDiscordBotListApi(ctx.Client.CurrentUser.Id, configJson.TopGG_token);
                     bool voto = await DblApi.HasVoted(ctx.User.Id).ConfigureAwait(false);
                     */
-                    bool voto = false;
+                    bool voto = true;
                     if (!voto)
                     {
                         string url = "https://top.gg/bot/295182825521545218/vote";
@@ -521,6 +525,81 @@ namespace Discord_Bot
                 }
             }
             return elegido;
+        }
+
+        public async Task<Character> GetRandomCharacter(CommandContext ctx, int pag)
+        {
+            string name = "", imageUrl = "", siteUrl = "", titleMedia = "", siteUrlMedia = "";
+            int favoritos = 0;
+            string query = "query($pagina: Int){" +
+                        "   Page(page: $pagina, perPage: 1){" +
+                        "       characters(sort: FAVOURITES_DESC){" +
+                        "           name{" +
+                        "               full" +
+                        "           }," +
+                        "           image{" +
+                        "               large" +
+                        "           }" +
+                        "           siteUrl," +
+                        "           favourites," +
+                        "           media(sort: POPULARITY_DESC, perPage: 1){" +
+                        "               nodes{" +
+                        "                   title{" +
+                        "                       romaji" +
+                        "                   }," +
+                        "                   siteUrl" +
+                        "               }" +
+                        "           }" +
+                        "       }" +
+                        "   }" +
+                        "}";
+            var request = new GraphQLRequest
+            {
+                Query = query,
+                Variables = new
+                {
+                    pagina = pag
+                }
+            };
+            try
+            {
+                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                foreach (var x in data.Data.Page.characters)
+                {
+                    name = x.name.full;
+                    imageUrl = x.image.large;
+                    siteUrl = x.siteUrl;
+                    favoritos = x.favourites;
+                    foreach (var m in x.media.nodes)
+                    {
+                        titleMedia = m.title.romaji;
+                        siteUrlMedia = m.siteUrl;
+                    }
+                    return new Character()
+                    {
+                        NameFull = name,
+                        Image = imageUrl,
+                        SiteUrl = siteUrl,
+                        Favoritos = favoritos,
+                        AnimePrincipal = new Anime()
+                        {
+                            TitleRomaji = titleMedia,
+                            SiteUrl = siteUrlMedia
+                        }
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                DiscordMessage msg = ex.Message switch
+                {
+                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                };
+                await Task.Delay(3000);
+                await BorrarMensaje(ctx, msg.Id);
+                return null;
+            }
+            return null;
         }
     }
 }
