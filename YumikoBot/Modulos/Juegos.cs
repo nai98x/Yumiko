@@ -430,127 +430,33 @@ namespace Discord_Bot.Modulos
             SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity,false,true);
             if (settings.Ok)
             {
-                List<Anime> animeList = new List<Anime>();
-                DiscordMessage mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                settings.PorcentajeTag = 70;
+                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, false, true);
+                int cantidadAnimes = animeList.Count();
+                if (cantidadAnimes > 0)
                 {
-                    Title = $"Obteniendo animes...",
-                    Description = $"**Tag:** {settings.Tag}\n**Descripción:** {settings.TagDesc}",
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor()
-                }).ConfigureAwait(false);
-                int porcentajeTag = 70;
-                string query1 = "query($pagina : Int){" +
-                        "   Page(page: $pagina){" +
-                        "       media(type: ANIME, sort: POPULARITY_DESC, tag: \"" + settings.Tag + "\", minimumTagRank:" + porcentajeTag + ", isAdult:false){" +
-                        "           siteUrl," +
-                        "           favourites," +
-                        "           title{" +
-                        "               romaji," +
-                        "               english" +
-                        "           }," +
-                        "           coverImage{" +
-                        "               large" +
-                        "           }," +
-                        "           synonyms," +
-                        "           isAdult" +
-                        "       }," +
-                        "       pageInfo{" +
-                        "           hasNextPage" +
-                        "       }" +
-                        "   }" +
-                        "}";
-                int cont = 1;
-                int popularidad = 1;
-                bool seguir = true;
-                do
-                {
-                    var request1 = new GraphQLRequest
+                    if (cantidadAnimes < settings.Rondas)
                     {
-                        Query = query1,
-                        Variables = new
+                        settings.Rondas = cantidadAnimes;
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
-                            pagina = cont
-                        }
+                            Color = DiscordColor.Yellow,
+                            Title = $"Rondas reducidas",
+                            Description = $"Se han reducido el numero de rondas a {settings.Rondas} ya que esta es la cantidad de animes con al menos un {settings.PorcentajeTag}% de {settings.Tag}",
+                        }).ConfigureAwait(false);
+                    }
+                    SettingsJuego settings2 = new SettingsJuego()
+                    {
+                        Rondas = settings.Rondas,
+                        Dificultad = settings.Tag,
+                        Ok = true
                     };
-                    try
-                    {
-                        var data1 = await graphQLClient.SendQueryAsync<dynamic>(request1);
-                        string hasNextValue = data1.Data.Page.pageInfo.hasNextPage;
-                        if (hasNextValue.ToLower() == "false")
-                        {
-                            seguir = false;
-                        }
-                        foreach (var x in data1.Data.Page.media)
-                        {
-                            if (x.isAdult == "False")
-                            {
-                                string titleEnglish = x.title.english;
-                                string titleRomaji = x.title.romaji;
-                                Anime anim = new Anime()
-                                {
-                                    Image = x.coverImage.large,
-                                    TitleEnglish = funciones.QuitarCaracteresEspeciales(titleEnglish),
-                                    TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
-                                    SiteUrl = x.siteUrl,
-                                    Favoritos = x.favourites,
-                                    Sinonimos = new List<string>(),
-                                    Popularidad = popularidad
-                                };
-                                popularidad++;
-                                foreach (var syn in x.synonyms)
-                                {
-                                    string value = syn.Value;
-                                    string bien = funciones.QuitarCaracteresEspeciales(value);
-                                    anim.Sinonimos.Add(bien);
-                                }
-                                animeList.Add(anim);
-                            }
-                        }
-                        cont++;
-                    }
-                    catch (Exception)
-                    {
-                        // Grabar en log errores
-                        //DiscordMessage msg = ex.Message switch
-                        //{
-                        //    _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
-                        //};
-                        //await Task.Delay(3000);
-                        //await funciones.BorrarMensaje(ctx, msg.Id);
-                        settings.Ok = false;
-                        settings.MsgError = "Error inesperado";
-                        seguir = false;
-                    }
-                } while (seguir);
-                if (settings.Ok)
+                    await funcionesJuegos.Jugar(ctx, "tag", settings.Rondas, animeList, settings2, interactivity);
+                }
+                else
                 {
-                    await funciones.BorrarMensaje(ctx, mensaje.Id);
-                    int cantidadAnimes = animeList.Count();
-                    if (cantidadAnimes > 0)
-                    {
-                        if (cantidadAnimes < settings.Rondas)
-                        {
-                            settings.Rondas = cantidadAnimes;
-                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                            {
-                                Color = DiscordColor.Yellow,
-                                Title = $"Rondas reducidas",
-                                Description = $"Se han reducido el numero de rondas a {settings.Rondas} ya que esta es la cantidad de animes con al menos un {porcentajeTag}% de {settings.Tag}",
-                            }).ConfigureAwait(false);
-                        }
-                        SettingsJuego settingss = new SettingsJuego()
-                        {
-                            Rondas = settings.Rondas,
-                            Dificultad = settings.Tag,
-                            Ok = true
-                        };
-                        await funcionesJuegos.Jugar(ctx, "tag", settings.Rondas, animeList, settingss, interactivity);
-                    }
-                    else
-                    {
-                        settings.Ok = false;
-                        settings.MsgError = "No hay ningun anime con este tag con al menos 70%";
-                    }
+                    settings.Ok = false;
+                    settings.MsgError = "No hay ningun anime con este tag con al menos 70%";
                 }
             }
             if(!settings.Ok)
@@ -575,7 +481,7 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings.IterIni, settings.IterFin, false, true);
+                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, true, false);
                 await funcionesJuegos.Jugar(ctx, "estudio", settings.Rondas, animeList, settings, interactivity);
             }
             else
@@ -600,7 +506,7 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings.IterIni, settings.IterFin, true, false);
+                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false);
                 await funcionesJuegos.Jugar(ctx, "protagonista", settings.Rondas, animeList, settings, interactivity);
             }
             else

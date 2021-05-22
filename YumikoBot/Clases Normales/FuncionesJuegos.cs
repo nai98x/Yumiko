@@ -352,7 +352,7 @@ namespace Discord_Bot
                 };
             }
         }
-        
+
         public async Task Jugar(CommandContext ctx, string juego, int rondas, dynamic lista, SettingsJuego settings, InteractivityExtension interactivity)
         {
             List<UsuarioJuego> participantes = new List<UsuarioJuego>();
@@ -517,7 +517,7 @@ namespace Discord_Bot
             DiscordEmoji emoji;
             foreach (var jugador in res)
             {
-                if ((jugador.RondasTotales/jugador.PartidasTotales) >= 2)
+                if ((jugador.RondasTotales / jugador.PartidasTotales) >= 2)
                 {
                     long x = jugador.UserId;
                     ulong id = (ulong)x;
@@ -546,7 +546,7 @@ namespace Discord_Bot
                         }
                         lastScore = jugador.PorcentajeAciertos;
                     }
-                    catch (Exception){}
+                    catch (Exception) { }
                 }
             }
             return stats;
@@ -679,13 +679,18 @@ namespace Discord_Bot
             await leaderboard.EliminarEstadisticas(ctx, "protagonista");
         }
 
-        public async Task<List<Anime>> GetMedia(CommandContext ctx, string tipo, int iterIni, int iterFin, bool personajes, bool estudios)
+        public async Task<List<Anime>> GetMedia(CommandContext ctx, string tipo, SettingsJuego settings, bool personajes, bool estudios, bool tag)
         {
             List<Anime> animeList = new List<Anime>();
             DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo animes...").ConfigureAwait(false);
+            string mediaFiltros;
+            if (tag)
+                mediaFiltros = $"type: ANIME, sort: POPULARITY_DESC, tag: \"{settings.Tag}\", minimumTagRank:{settings.PorcentajeTag}, isAdult:false";
+            else
+                mediaFiltros = $"type: {tipo}, sort: FAVOURITES_DESC, isAdult:false";
             string query = "query($pagina : Int){" +
                     "   Page(page: $pagina){" +
-                   $"       media(type: {tipo}, sort: FAVOURITES_DESC, isAdult:false){{" +
+                   $"       media({mediaFiltros}){{" +
                     "           siteUrl," +
                     "           favourites," +
                     "           title{" +
@@ -715,15 +720,20 @@ namespace Discord_Bot
                     "                   isAnimationStudio" +
                     "               }" +
                     "           }" +
+                    "       }," +
+                    "       pageInfo{" +
+                    "           hasNextPage" +
                     "       }" +
                     "   }" +
                     "}";
             int popularidad;
-            if (iterIni == 1)
+            if (settings.IterIni == 1)
                 popularidad = 1;
             else
-                popularidad = iterIni * 50;
-            for (int i = iterIni; i <= iterFin; i++)
+                popularidad = settings.IterIni * 50;
+            int i = settings.IterIni;
+            string hasNextValue;
+            do
             {
                 var request = new GraphQLRequest
                 {
@@ -736,6 +746,7 @@ namespace Discord_Bot
                 try
                 {
                     var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                    hasNextValue = data.Data.Page.pageInfo.hasNextPage;
                     foreach (var x in data.Data.Page.media)
                     {
                         string titleEnglish = x.title.english;
@@ -796,7 +807,8 @@ namespace Discord_Bot
                     await funciones.BorrarMensaje(ctx, msg.Id);
                     return animeList;
                 }
-            }
+                i++;
+            } while (hasNextValue.ToLower() == "true" && (tag || (!tag && i <= settings.IterFin)));
             await funciones.BorrarMensaje(ctx, mensaje.Id);
             return animeList;
         }
