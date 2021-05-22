@@ -1,28 +1,28 @@
-﻿namespace Discord_Bot
-{
-    using DSharpPlus.CommandsNext;
-    using DSharpPlus.Entities;
-    using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
-    using System.Timers;
-    using System.Linq;
-    using YumikoBot;
-    using System.Globalization;
-    using DiscordBotsList.Api;
-    using DSharpPlus.Interactivity.Extensions;
-    using DSharpPlus;
-    using System.Configuration;
-    using Google.Cloud.Firestore;
-    using GraphQL;
-    using GraphQL.Client.Http;
-    using GraphQL.Client.Serializer.Newtonsoft;
-    using static DSharpPlus.Entities.DiscordEmbedBuilder;
+﻿using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Linq;
+using YumikoBot;
+using System.Globalization;
+using DiscordBotsList.Api;
+using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus;
+using System.Configuration;
+using Google.Cloud.Firestore;
+using GraphQL;
+using GraphQL.Client.Http;
+using GraphQL.Client.Serializer.Newtonsoft;
+using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
+namespace Discord_Bot
+{
     public class FuncionesAuxiliares
     {
         static Timer timer;

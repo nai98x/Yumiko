@@ -1,12 +1,12 @@
-﻿namespace YumikoBot.DAL
-{
-    using Discord_Bot;
-    using DSharpPlus.CommandsNext;
-    using Google.Cloud.Firestore;
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+﻿using Discord_Bot;
+using DSharpPlus.CommandsNext;
+using Google.Cloud.Firestore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
+namespace YumikoBot.DAL
+{
     public class UsuariosDiscord
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();

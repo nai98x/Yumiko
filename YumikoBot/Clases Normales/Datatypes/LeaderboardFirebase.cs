@@ -1,7 +1,7 @@
-﻿namespace YumikoBot.DAL
-{
-    using Google.Cloud.Firestore;
+﻿using Google.Cloud.Firestore;
 
+namespace YumikoBot.DAL
+{
     [FirestoreData]
     public class LeaderboardFirebase
     {

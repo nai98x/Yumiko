@@ -1,11 +1,11 @@
-﻿namespace Discord_Bot.Modulos
-{
-    using DSharpPlus.CommandsNext;
-    using DSharpPlus.CommandsNext.Attributes;
-    using DSharpPlus.Entities;
-    using System;
-    using System.Threading.Tasks;
+﻿using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
+using System;
+using System.Threading.Tasks;
 
+namespace Discord_Bot.Modulos
+{
     [RequireNsfw]
     public class NSFW : BaseCommandModule
     {

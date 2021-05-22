@@ -1,12 +1,18 @@
-﻿namespace Discord_Bot.Modulos
-{
-    using DSharpPlus.CommandsNext;
-    using DSharpPlus.CommandsNext.Converters;
-    using DSharpPlus.CommandsNext.Entities;
-    using DSharpPlus.Entities;
-    using System.Collections.Generic;
-    using System.Text;
+﻿using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.CommandsNext.Converters;
+using DSharpPlus.CommandsNext.Entities;
+using DSharpPlus.Entities;
+using GraphQL;
+using GraphQL.Language.AST;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace Discord_Bot.Modulos
+{
     public class CustomHelpFormatter : BaseHelpFormatter
     {
         protected DiscordEmbedBuilder _embed;

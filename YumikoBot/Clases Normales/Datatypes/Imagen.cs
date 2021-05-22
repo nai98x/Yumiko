@@ -1,7 +1,7 @@
-﻿namespace Discord_Bot
-{
-    using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 
+namespace Discord_Bot
+{
     public class Imagen
     {
         public string Url { get; set; }

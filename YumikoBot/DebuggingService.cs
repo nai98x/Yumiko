@@ -1,7 +1,7 @@
-﻿namespace YumikoBot
-{
-    using System.Diagnostics;
+﻿using System.Diagnostics;
 
+namespace YumikoBot
+{
     public interface IDebuggingService
     {
         bool RunningInDebugMode();

@@ -1,13 +1,18 @@
-﻿namespace Discord_Bot.Modulos
-{
-    using DSharpPlus.CommandsNext;
-    using DSharpPlus.CommandsNext.Attributes;
-    using System.Threading.Tasks;
-    using DSharpPlus.Entities;
-    using System;
-    using System.Configuration;
-    using DSharpPlus.Interactivity.Extensions;
+﻿using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using DSharpPlus.Entities;
+using System;
+using GraphQL.Client.Http;
+using GraphQL;
+using GraphQL.Client.Serializer.Newtonsoft;
+using System.Linq;
+using System.Configuration;
+using DSharpPlus.Interactivity.Extensions;
 
+namespace Discord_Bot.Modulos
+{
     public class Estadisticas : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();

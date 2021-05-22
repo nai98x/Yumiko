@@ -1,7 +1,10 @@
-﻿namespace Discord_Bot
-{
-    using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
+namespace Discord_Bot
+{
     public class Host
     {
         public string name { get; set; }
