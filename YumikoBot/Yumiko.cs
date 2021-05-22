@@ -27,8 +27,6 @@ namespace Discord_Bot
         public DiscordClient Client { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
 
-        private DiscordChannel LogChannelGeneral;
-
         private DiscordChannel LogChannelServers;
 
         private DiscordChannel LogChannelErrores;
@@ -113,13 +111,11 @@ namespace Discord_Bot
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             if (Debug)
             {
-                LogChannelGeneral = LogGuild.GetChannel(820711607796891658);
                 LogChannelServers = LogGuild.GetChannel(840440818921897985);
                 LogChannelErrores = LogGuild.GetChannel(840440877565739008);
             }
             else
             {
-                LogChannelGeneral = LogGuild.GetChannel(781679685838569502);
                 LogChannelServers = LogGuild.GetChannel(840437931847974932);
                 LogChannelErrores = LogGuild.GetChannel(840439731011452959);
             }
@@ -228,27 +224,7 @@ namespace Discord_Bot
         private Task Commands_CommandExecuted(CommandsNextExtension cm, CommandExecutionEventArgs e)
         {
             e.Handled = true;
-            //cm.Client.Logger.LogInformation($"Comando ejecutado: {e.Context.Message.Content} | Guild: {e.Context.Guild.Name} | Canal: {e.Context.Channel.Name}", DateTime.Now);
-            LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
-            {
-                Title = "Comando ejecutado",
-                Footer = new EmbedFooter()
-                {
-                    Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}",
-                    IconUrl = e.Context.User.AvatarUrl
-                },
-                Author = new EmbedAuthor()
-                {
-                    IconUrl = e.Context.Guild.IconUrl,
-                    Name = $"{e.Context.Guild.Name}"
-                },
-                Color = DiscordColor.Green
-            }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
-            .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
-            .AddField("Id Usuario", $"{e.Context.User.Id}", true)
-            .AddField("Canal", $"#{e.Context.Channel.Name}", false)
-            .AddField("Mensaje", $"{e.Context.Message.Content}", false)
-            );
+            cm.Client.Logger.LogInformation($"Comando ejecutado: {e.Context.Message.Content} | Guild: {e.Context.Guild.Name} | Canal: {e.Context.Channel.Name}", DateTime.Now);
             if (e.Context.Message != null)
                 funciones.BorrarMensaje(e.Context, e.Context.Message.Id).ConfigureAwait(false);
             return Task.CompletedTask;
@@ -260,27 +236,6 @@ namespace Discord_Bot
             string web = ConfigurationManager.AppSettings["Web"] + "#commands";
             if (e.Exception.Message == "Specified command was not found.")
             {
-                await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
-                {
-                    Title = "Comando no encontrado",
-                    Footer = new EmbedFooter()
-                    {
-                        IconUrl = e.Context.User.AvatarUrl,
-                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}"
-                    },
-                    Author = new EmbedAuthor()
-                    {
-                        IconUrl = e.Context.Guild.IconUrl,
-                        Name = $"{e.Context.Guild.Name}"
-                    },
-                    Color = DiscordColor.Yellow
-                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
-                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
-                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
-                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
-                .AddField("Mensaje", $"{e.Context.Message.Content}", false)
-                );
-
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
                 var embed = new DiscordEmbedBuilder
                 {
@@ -303,27 +258,6 @@ namespace Discord_Bot
             }
             else if (e.Exception.Message == "Could not find a suitable overload for the command.")
             {
-                await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
-                {
-                    Title = "Comando mal escrito",
-                    Footer = new EmbedFooter()
-                    {
-                        IconUrl = e.Context.User.AvatarUrl,
-                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}"
-                    },
-                    Author = new EmbedAuthor()
-                    {
-                        IconUrl = e.Context.Guild.IconUrl,
-                        Name = $"{e.Context.Guild.Name}"
-                    },
-                    Color = DiscordColor.Yellow
-                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
-                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
-                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
-                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
-                .AddField("Mensaje", $"{e.Context.Message.Content}", false)
-                );
-
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":warning:");
                 var embed = new DiscordEmbedBuilder
                 {
@@ -346,27 +280,6 @@ namespace Discord_Bot
             }
             else if (e.Exception.Message == "Unauthorized: 403")
             {
-                await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
-                {
-                    Title = "Permisos faltantes",
-                    Footer = new EmbedFooter()
-                    {
-                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}",
-                        IconUrl = e.Context.User.AvatarUrl
-                    },
-                    Author = new EmbedAuthor()
-                    {
-                        IconUrl = e.Context.Guild.IconUrl,
-                        Name = $"{e.Context.Guild.Name}"
-                    },
-                    Color = DiscordColor.Red
-                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
-                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
-                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
-                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
-                .AddField("Mensaje", $"{e.Context.Message.Content}", false)
-                );
-
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
                 var embed = new DiscordEmbedBuilder
                 {
@@ -413,6 +326,22 @@ namespace Discord_Bot
                             default:
                                 titulo = "Error inesperado";
                                 descripcion = "Ha ocurrido un error que no puedo manejar.";
+                                await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                {
+                                    Title = titulo,
+                                    Description = descripcion,
+                                    Footer = funciones.GetFooter(e.Context),
+                                    Author = new EmbedAuthor()
+                                    {
+                                        IconUrl = e.Context.Guild.IconUrl,
+                                        Name = $"{e.Context.Guild.Name}"
+                                    },
+                                    Color = DiscordColor.Yellow
+                                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
+                                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                                .AddField("Mensaje", $"{e.Context.Message.Content}", false));
                                 break;
                         }
                         var miembro = e.Context.Member;
@@ -429,26 +358,6 @@ namespace Discord_Bot
                             Footer = footer
                         });
                         mensajes.Add(msg.Result);
-                        await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Title = titulo,
-                            Description = descripcion,
-                            Footer = new EmbedFooter()
-                            {
-                                Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}",
-                                IconUrl = e.Context.User.AvatarUrl
-                            },
-                            Author = new EmbedAuthor()
-                            {
-                                IconUrl = e.Context.Guild.IconUrl,
-                                Name = $"{e.Context.Guild.Name}"
-                            },
-                            Color = DiscordColor.Yellow
-                        }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
-                        .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
-                        .AddField("Id Usuario", $"{e.Context.User.Id}", true)
-                        .AddField("Canal", $"#{e.Context.Channel.Name}", false)
-                        .AddField("Mensaje", $"{e.Context.Message.Content}", false));
                     }
                     await Task.Delay(3000);
                     if (e.Context.Message != null)
