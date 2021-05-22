@@ -353,11 +353,11 @@ namespace Discord_Bot
             }
         }
 
-        public async Task Jugar(CommandContext ctx, string juego, int rondas, dynamic lista, SettingsJuego settings, InteractivityExtension interactivity)
+        public async Task Jugar(CommandContext ctx, string juego, dynamic lista, SettingsJuego settings, InteractivityExtension interactivity)
         {
             List<UsuarioJuego> participantes = new List<UsuarioJuego>();
             int lastRonda;
-            for (int ronda = 1; ronda <= rondas; ronda++)
+            for (int ronda = 1; ronda <= settings.Rondas; ronda++)
             {
                 lastRonda = ronda;
                 int random = funciones.GetNumeroRandom(0, lista.Count - 1);
@@ -372,7 +372,7 @@ namespace Discord_Bot
                 {
                     Color = DiscordColor.Gold,
                     Title = $"Adivina el {juegoMostrar}",
-                    Description = $"Ronda {ronda} de {rondas}",
+                    Description = $"Ronda {ronda} de {settings.Rondas}",
                     ImageUrl = elegido.Image,
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {
@@ -504,7 +504,7 @@ namespace Discord_Bot
                 }
                 lista.Remove(lista[random]);
             }
-            await GetResultados(ctx, participantes, rondas, settings.Dificultad, juego);
+            await GetResultados(ctx, participantes, settings.Rondas, settings.Dificultad, juego);
         }
 
         public async Task<string> GetEstadisticasDificultad(CommandContext ctx, string tipoStats, string dificultad, string flag)

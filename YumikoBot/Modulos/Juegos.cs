@@ -118,16 +118,12 @@ namespace Discord_Bot.Modulos
             SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false);
             if (settings.Ok)
             {
-                int rondas = settings.Rondas;
-                string dificultadStr = settings.Dificultad;
-                int iterIni = settings.IterIni;
-                int iterFin = settings.IterFin;
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el personaje",
                     Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
-                }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
+                }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 List<Character> characterList = new List<Character>();
                 DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo personajes...").ConfigureAwait(false);
@@ -148,11 +144,11 @@ namespace Discord_Bot.Modulos
                         "   }" +
                         "}";
                 int popularidad;
-                if (iterIni == 1)
+                if (settings.IterIni == 1)
                     popularidad = 1;
                 else
-                    popularidad = iterIni * 50;
-                for (int i = iterIni; i <= iterFin; i++)
+                    popularidad = settings.IterIni * 50;
+                for (int i = settings.IterIni; i <= settings.IterFin; i++)
                 {
                     var request = new GraphQLRequest
                     {
@@ -192,7 +188,7 @@ namespace Discord_Bot.Modulos
                     }
                 }
                 await funciones.BorrarMensaje(ctx, mensaje.Id);
-                await funcionesJuegos.Jugar(ctx, "personaje", rondas, characterList, settings, interactivity);
+                await funcionesJuegos.Jugar(ctx, "personaje", characterList, settings, interactivity);
             }
             else
             {
@@ -209,16 +205,12 @@ namespace Discord_Bot.Modulos
             SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false);
             if (settings.Ok)
             {
-                int rondas = settings.Rondas;
-                string dificultadStr = settings.Dificultad;
-                int iterIni = settings.IterIni;
-                int iterFin = settings.IterFin;
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el anime",
                     Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
-                }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
+                }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo personajes...").ConfigureAwait(false);
                 var characterList = new List<Character>();
@@ -247,11 +239,11 @@ namespace Discord_Bot.Modulos
                         "   }" +
                         "}";
                 int popularidad;
-                if(iterIni == 1)
+                if(settings.IterIni == 1)
                     popularidad = 1;
                 else
-                    popularidad = iterIni * 50;
-                for (int i = iterIni; i <= iterFin; i++)
+                    popularidad = settings.IterIni * 50;
+                for (int i = settings.IterIni; i <= settings.IterFin; i++)
                 {
                     var request = new GraphQLRequest
                     {
@@ -313,7 +305,7 @@ namespace Discord_Bot.Modulos
                     }
                 }
                 await funciones.BorrarMensaje(ctx, mensaje.Id);
-                await funcionesJuegos.Jugar(ctx, "anime", rondas, characterList, settings, interactivity);
+                await funcionesJuegos.Jugar(ctx, "anime", characterList, settings, interactivity);
             }
             else
             {
@@ -330,90 +322,15 @@ namespace Discord_Bot.Modulos
             SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false);
             if (settings.Ok)
             {
-                int rondas = settings.Rondas;
-                string dificultadStr = settings.Dificultad;
-                int iterIni = settings.IterIni;
-                int iterFin = settings.IterFin;
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el manga",
                     Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
-                }.AddField("Rondas", $"{rondas}").AddField("Dificultad", $"{dificultadStr}");
+                }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                List<Anime> animeList = new List<Anime>();
-                DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo mangas...").ConfigureAwait(false);
-                string query = "query($pagina : Int){" +
-                        "   Page(page: $pagina){" +
-                        "       media(type: MANGA, sort: FAVOURITES_DESC, isAdult:false){" +
-                        "           siteUrl," +
-                        "           favourites," +
-                        "           title{" +
-                        "               romaji," +
-                        "               english" +
-                        "           }," +
-                        "           coverImage{" +
-                        "               large" +
-                        "           }," +
-                        "           synonyms" +
-                        "       }" +
-                        "   }" +
-                        "}";
-                int popularidad;
-                if (iterIni == 1)
-                    popularidad = 1;
-                else
-                    popularidad = iterIni * 50;
-                for (int i = iterIni; i <= iterFin; i++)
-                {
-                    var request = new GraphQLRequest
-                    {
-                        Query = query,
-                        Variables = new
-                        {
-                            pagina = i
-                        }
-                    };
-                    try
-                    {
-                        var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                        foreach (var x in data.Data.Page.media)
-                        {
-                            string titleEnglish = x.title.english;
-                            string titleRomaji = x.title.romaji;
-                            Anime anim = new Anime()
-                            {
-                                Image = x.coverImage.large,
-                                TitleEnglish = funciones.QuitarCaracteresEspeciales(titleEnglish),
-                                TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
-                                SiteUrl = x.siteUrl,
-                                Favoritos = x.favourites,
-                                Sinonimos = new List<string>(),
-                                Popularidad = popularidad
-                            };
-                            popularidad++;
-                            foreach (var syn in x.synonyms)
-                            {
-                                string value = syn.Value;
-                                string bien = funciones.QuitarCaracteresEspeciales(value);
-                                anim.Sinonimos.Add(bien);
-                            }
-                            animeList.Add(anim);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        DiscordMessage msg = ex.Message switch
-                        {
-                            _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
-                        };
-                        await Task.Delay(3000);
-                        await funciones.BorrarMensaje(ctx, msg.Id);
-                        return;
-                    }
-                }
-                await funciones.BorrarMensaje(ctx, mensaje.Id);
-                await funcionesJuegos.Jugar(ctx, "manga", rondas, animeList, settings, interactivity);
+                var animeList = await funcionesJuegos.GetMedia(ctx, "MANGA", settings, false, false, false);
+                await funcionesJuegos.Jugar(ctx, "manga", animeList, settings, interactivity);
             }
             else
             {
@@ -445,13 +362,8 @@ namespace Discord_Bot.Modulos
                             Description = $"Se han reducido el numero de rondas a {settings.Rondas} ya que esta es la cantidad de animes con al menos un {settings.PorcentajeTag}% de {settings.Tag}",
                         }).ConfigureAwait(false);
                     }
-                    SettingsJuego settings2 = new SettingsJuego()
-                    {
-                        Rondas = settings.Rondas,
-                        Dificultad = settings.Tag,
-                        Ok = true
-                    };
-                    await funcionesJuegos.Jugar(ctx, "tag", settings.Rondas, animeList, settings2, interactivity);
+                    settings.Dificultad = settings.Tag;
+                    await funcionesJuegos.Jugar(ctx, "tag", animeList, settings, interactivity);
                 }
                 else
                 {
@@ -482,7 +394,7 @@ namespace Discord_Bot.Modulos
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, true, false);
-                await funcionesJuegos.Jugar(ctx, "estudio", settings.Rondas, animeList, settings, interactivity);
+                await funcionesJuegos.Jugar(ctx, "estudio", animeList, settings, interactivity);
             }
             else
             {
@@ -507,7 +419,7 @@ namespace Discord_Bot.Modulos
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false);
-                await funcionesJuegos.Jugar(ctx, "protagonista", settings.Rondas, animeList, settings, interactivity);
+                await funcionesJuegos.Jugar(ctx, "protagonista", animeList, settings, interactivity);
             }
             else
             {
@@ -795,7 +707,6 @@ namespace Discord_Bot.Modulos
                         Color = DiscordColor.Green
                     }).ConfigureAwait(false);
                 }
-                //await funcionesJuegos.GetResultados(ctx, participantes, rondas, dificultadStr, "ahorcadoc");
             }
         }
     }
