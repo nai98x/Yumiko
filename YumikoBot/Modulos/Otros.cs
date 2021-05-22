@@ -306,9 +306,9 @@ namespace Discord_Bot.Modulos
                                 var links = await animeflv.GetLinks(elegido.href, elegido.name);
                                 await funciones.BorrarMensaje(ctx, mensajeLinks.Id);
                                 Dictionary<string, Stream> dic = new Dictionary<string, Stream>
-                            {
-                                {"descargaLinks.txt",  (FileStream)funciones.CrearArchivoMonoschinos(links)}
-                            };
+                                {
+                                    {"descargaLinks.txt",  (FileStream)funciones.CrearArchivo(links)}
+                                };
                                 await ctx.Channel.SendMessageAsync(new DiscordMessageBuilder
                                 {
                                     Content = $"{ctx.User.Mention}, aquí tienes los links para descargar **{elegido.name}**",

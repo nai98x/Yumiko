@@ -71,6 +71,14 @@ namespace Discord_Bot.Modulos
             await funciones.ChequearVotoTopGG(ctx);
         }
 
+        //[Command("rankingaP"), Aliases("statsaP", "leaderboardaP"), Description("Estadisticas del ahorcado con personajes."), RequireGuild]
+        //public async Task EstadisticasAhorcadoPersonaje(CommandContext ctx, string flag = null)
+        //{
+        //    var builder = await funcionesJuegos.GetEstadisticas(ctx, "ahorcadoc", flag);
+        //    await ctx.Channel.SendMessageAsync(embed: builder);
+        //    await funciones.ChequearVotoTopGG(ctx);
+        //}
+
         [Command("eliminarestadisticas"), Description("Elimina las estadisticas de todos los juegos del servidor."), RequireGuild]
         public async Task EliminarEstadisticas(CommandContext ctx)
         {

@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using System;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Modulos
@@ -32,6 +33,16 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+        }
+
+        [Command("cum"), Description("Te vienes")]
+        public async Task Cum(CommandContext ctx, [Description("El usuario al que le quieres acabar")] DiscordUser usuario = null)
+        {
+            Random rnd = new Random();
+            if (rnd.NextDouble() >= 0.5)
+                await GCum(ctx, usuario);
+            else
+                await BCum(ctx, usuario);
         }
 
         [Command("gcum"), Description("Te vienes (vagina)")]
@@ -110,6 +121,16 @@ namespace Discord_Bot.Modulos
             }
         }
 
+        [Command("masturbate"), Description("Te masturbas")]
+        public async Task Masturbate(CommandContext ctx, [Description("El usuario al que quieres masturbar")] DiscordUser usuario = null)
+        {
+            Random rnd = new Random();
+            if (rnd.NextDouble() >= 0.5)
+                await GMasturbate(ctx, usuario);
+            else
+                await BMasturbate(ctx, usuario);
+        }
+
         [Command("gmasturbate"), Description("Te masturbas (vagina)")]
         public async Task GMasturbate(CommandContext ctx, [Description("El usuario al que quieres masturbar")] DiscordUser usuario = null)
         {
@@ -160,6 +181,16 @@ namespace Discord_Bot.Modulos
                     ImageUrl = elegida.Url
                 });
             }
+        }
+
+        [Command("suck"), Description("Se la chupas a alguien")]
+        public async Task Suck(CommandContext ctx, [Description("El usuario que se la quieres chupar")] DiscordUser usuario = null)
+        {
+            Random rnd = new Random();
+            if (rnd.NextDouble() >= 0.5)
+                await GSuck(ctx, usuario);
+            else
+                await BSuck(ctx, usuario);
         }
 
         [Command("gsuck"), Description("Se la chupas a alguien (con vagina)")]

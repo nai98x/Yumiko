@@ -191,8 +191,7 @@ namespace Discord_Bot
                 Title = "Bye-bye servidor",
                 Description =
                 $"   **Id**: {e.Guild.Id}\n" +
-                $"   **Miembros**: {e.Guild.MemberCount - 1}\n" +
-                $"   **Owner**: {e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator}",
+                $"   **Miembros**: {e.Guild.MemberCount - 1}",
                 Footer = new EmbedFooter()
                 {
                     Text = $"{DateTimeOffset.Now}"
@@ -277,6 +276,7 @@ namespace Discord_Bot
                     Color = DiscordColor.Yellow
                 }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
                 .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
                 .AddField("Canal", $"#{e.Context.Channel.Name}", false)
                 .AddField("Mensaje", $"{e.Context.Message.Content}", false)
                 );
@@ -319,6 +319,7 @@ namespace Discord_Bot
                     Color = DiscordColor.Yellow
                 }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
                 .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
                 .AddField("Canal", $"#{e.Context.Channel.Name}", false)
                 .AddField("Mensaje", $"{e.Context.Message.Content}", false)
                 );
@@ -350,15 +351,18 @@ namespace Discord_Bot
                     Title = "Permisos faltantes",
                     Footer = new EmbedFooter()
                     {
-                        Text = $"{e.Context.Message.Timestamp}"
+                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}",
+                        IconUrl = e.Context.User.AvatarUrl
                     },
                     Author = new EmbedAuthor()
                     {
-                        IconUrl = e.Context.User.AvatarUrl,
-                        Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                        IconUrl = e.Context.Guild.IconUrl,
+                        Name = $"{e.Context.Guild.Name}"
                     },
                     Color = DiscordColor.Red
-                }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
                 .AddField("Canal", $"#{e.Context.Channel.Name}", false)
                 .AddField("Mensaje", $"{e.Context.Message.Content}", false)
                 );
@@ -425,20 +429,24 @@ namespace Discord_Bot
                             Footer = footer
                         });
                         mensajes.Add(msg.Result);
-                        await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder {
+                        await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder
+                        {
                             Title = titulo,
                             Description = descripcion,
                             Footer = new EmbedFooter()
                             {
-                                Text = $"{e.Context.Message.Timestamp}"
+                                Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}",
+                                IconUrl = e.Context.User.AvatarUrl
                             },
                             Author = new EmbedAuthor()
                             {
-                                IconUrl = e.Context.User.AvatarUrl,
-                                Name = $"{e.Context.User.Username}#{e.Context.User.Discriminator}"
+                                IconUrl = e.Context.Guild.IconUrl,
+                                Name = $"{e.Context.Guild.Name}"
                             },
                             Color = DiscordColor.Yellow
-                        }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                        }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                        .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                        .AddField("Id Usuario", $"{e.Context.User.Id}", true)
                         .AddField("Canal", $"#{e.Context.Channel.Name}", false)
                         .AddField("Mensaje", $"{e.Context.Message.Content}", false));
                     }
@@ -463,7 +471,12 @@ namespace Discord_Bot
                         Title = "Error desconocido",
                         Description = "Ha ocurrido un error que no puedo manejar",
                         Color = new DiscordColor(0xFF0000),
-                        Footer = footer
+                        Footer = footer,
+                        Author = new EmbedAuthor()
+                        {
+                            IconUrl = e.Context.Guild.IconUrl,
+                            Name = $"{e.Context.Guild.Name}"
+                        },
                     });
                     await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
@@ -471,7 +484,9 @@ namespace Discord_Bot
                         Description = $"{e.Exception.Message}",
                         Color = DiscordColor.Red,
                         Footer = footer
-                    }.AddField("Servidor", $"{e.Context.Guild.Name}", false)
+                    }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                    .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                    .AddField("Id Usuario", $"{e.Context.User.Id}", true)
                     .AddField("Canal", $"#{e.Context.Channel.Name}", false)
                     .AddField("Mensaje", $"{e.Context.Message.Content}", false));
                     await Task.Delay(3000);

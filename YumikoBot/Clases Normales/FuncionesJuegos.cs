@@ -2,9 +2,13 @@
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
+using GraphQL;
+using GraphQL.Client.Http;
+using GraphQL.Client.Serializer.Newtonsoft;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
 using YumikoBot.DAL;
 
@@ -14,6 +18,7 @@ namespace Discord_Bot
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
         private readonly LeaderboardoGeneral leaderboard = new LeaderboardoGeneral();
+        private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas, string dificultad, string juego)
         {
@@ -54,9 +59,14 @@ namespace Discord_Bot
                 await leaderboard.AddRegistro(ctx, long.Parse(uj.Usuario.Id.ToString()), dificultad, uj.Puntaje, rondas, juego);
             }
             resultados += $"\n**Total ({tot}/{rondas})**";
+            string titulo;
+            if (juego.Contains("ahorcado"))
+                titulo = "Ahorcado";
+            else
+                titulo = $"Adivina el {juego}";
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
-                Title = $"Resultados - Adivina el {juego}",
+                Title = $"Resultados - {titulo}",
                 Description = resultados,
                 Color = funciones.GetColor(),
                 Footer = funciones.GetFooter(ctx)
@@ -404,7 +414,12 @@ namespace Discord_Bot
             string dificil = await GetEstadisticasDificultad(ctx, juego, "Dificil", flag);
             string extremo = await GetEstadisticasDificultad(ctx, juego, "Extremo", flag);
 
-            var builder = CrearEmbedStats(ctx, $"Estadisticas - Adivina el {juego}", facil, media, dificil, extremo, flag);
+            string titulo;
+            if (juego.Contains("ahorcado"))
+                titulo = "Ahorcado";
+            else
+                titulo = $"Adivina el {juego}";
+            var builder = CrearEmbedStats(ctx, $"Estadisticas - {titulo}", facil, media, dificil, extremo, flag);
             return builder;
         }
 
@@ -517,6 +532,128 @@ namespace Discord_Bot
             await leaderboard.EliminarEstadisticasTag(ctx);
             await leaderboard.EliminarEstadisticas(ctx, "estudio");
             await leaderboard.EliminarEstadisticas(ctx, "protagonista");
+        }
+
+        public async Task<List<Anime>> GetMedia(CommandContext ctx, string tipo, int iterIni, int iterFin, bool personajes, bool estudios)
+        {
+            List<Anime> animeList = new List<Anime>();
+            DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo animes...").ConfigureAwait(false);
+            string query = "query($pagina : Int){" +
+                    "   Page(page: $pagina){" +
+                   $"       media(type: {tipo}, sort: FAVOURITES_DESC, isAdult:false){{" +
+                    "           siteUrl," +
+                    "           favourites," +
+                    "           title{" +
+                    "               romaji," +
+                    "               english" +
+                    "           }," +
+                    "           synonyms," +
+                    "           coverImage{" +
+                    "               large" +
+                    "           }," +
+                    "           characters(role: MAIN){" +
+                    "               nodes{" +
+                    "                   name{" +
+                    "                       first," +
+                    "                       last," +
+                    "                       full" +
+                    "                   }," +
+                    "                   siteUrl," +
+                    "                   favourites," +
+                    "               }" +
+                    "           }," +
+                    "           studios{" +
+                    "               nodes{" +
+                    "                   name," +
+                    "                   siteUrl," +
+                    "                   favourites," +
+                    "                   isAnimationStudio" +
+                    "               }" +
+                    "           }" +
+                    "       }" +
+                    "   }" +
+                    "}";
+            int popularidad;
+            if (iterIni == 1)
+                popularidad = 1;
+            else
+                popularidad = iterIni * 50;
+            for (int i = iterIni; i <= iterFin; i++)
+            {
+                var request = new GraphQLRequest
+                {
+                    Query = query,
+                    Variables = new
+                    {
+                        pagina = i
+                    }
+                };
+                try
+                {
+                    var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                    foreach (var x in data.Data.Page.media)
+                    {
+                        string titleEnglish = x.title.english;
+                        string titleRomaji = x.title.romaji;
+                        Anime anim = new Anime()
+                        {
+                            Image = x.coverImage.large,
+                            TitleEnglish = funciones.QuitarCaracteresEspeciales(titleEnglish),
+                            TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
+                            SiteUrl = x.siteUrl,
+                            Favoritos = x.favourites,
+                            Popularidad = popularidad,
+                            Estudios = new List<Estudio>()
+                        };
+                        if (personajes)
+                        {
+                            foreach (var character in x.characters.nodes)
+                            {
+                                anim.Personajes.Add(new Character()
+                                {
+                                    NameFull = character.name.full,
+                                    NameFirst = character.name.first,
+                                    NameLast = character.name.last,
+                                    SiteUrl = character.siteUrl,
+                                    Favoritos = character.favourites
+                                });
+                            }
+                        }
+                        if (estudios)
+                        {
+                            foreach (var estudio in x.studios.nodes)
+                            {
+                                if (estudio.isAnimationStudio == "true")
+                                {
+                                    anim.Estudios.Add(new Estudio()
+                                    {
+                                        Nombre = estudio.name,
+                                        SiteUrl = estudio.siteUrl,
+                                        Favoritos = estudio.favourites
+                                    });
+                                }
+                            }
+                        }
+                        popularidad++;
+                        if (anim.Estudios.Count() > 0)
+                        {
+                            animeList.Add(anim);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DiscordMessage msg = ex.Message switch
+                    {
+                        _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                    };
+                    await Task.Delay(3000);
+                    await funciones.BorrarMensaje(ctx, msg.Id);
+                    return animeList;
+                }
+            }
+            await funciones.BorrarMensaje(ctx, mensaje.Id);
+            return animeList;
         }
     }
 }

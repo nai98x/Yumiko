@@ -68,19 +68,23 @@ namespace Discord_Bot
                 {
                     var tdArray = tr.Descendants("td").ToArray();
                     string href = tdArray[2].Descendants("a").First().Attributes[1].Value;
+                    string nomServer = href.Replace("https://", "");
+                    int index = nomServer.IndexOf("/");
+                    if (index > 0)
+                        nomServer = nomServer.Substring(0, index);
 
-                    if (!result.hosts.Exists(h => h.name == episodeNumber.ToString()))
+                    if (!result.hosts.Exists(h => h.name == nomServer))
                     {
                         result.hosts.Add(
                             new Host()
                             {
-                                name = episodeNumber.ToString(),
+                                name = nomServer,
                                 links = new List<Link>()
                             }
                         );
                     }
 
-                    result.hosts.Where(h => h.name == episodeNumber.ToString()).First().links.Add(
+                    result.hosts.Where(h => h.name == nomServer).First().links.Add(
                         new Link()
                         {
                             number = episodeNumber,
