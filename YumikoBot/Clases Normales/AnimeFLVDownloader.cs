@@ -1,13 +1,13 @@
-﻿using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace Discord_Bot
+﻿namespace Discord_Bot
 {
+    using HtmlAgilityPack;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+
     public class AnimeFLVDownloader
     {
         const string baseUrl = "https://www3.animeflv.net";

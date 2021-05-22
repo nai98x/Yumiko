@@ -1,16 +1,15 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Modulos
+﻿namespace Discord_Bot.Modulos
 {
+    using DSharpPlus.CommandsNext;
+    using DSharpPlus.CommandsNext.Attributes;
+    using DSharpPlus.Entities;
+    using DSharpPlus.Interactivity.Extensions;
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public class Interactuar : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
@@ -33,9 +32,13 @@ namespace Discord_Bot.Modulos
                 {
                     mensaje = msgAnimeInter.Result.Content;
                     if (msgAnime != null)
+                    {
                         await funciones.BorrarMensaje(ctx, msgAnime.Id);
+                    }
                     if (msgAnimeInter.Result != null)
+                    {
                         await funciones.BorrarMensaje(ctx, msgAnimeInter.Result.Id);
+                    }
                 }
                 else
                 {
@@ -48,9 +51,13 @@ namespace Discord_Bot.Modulos
                     });
                     await Task.Delay(3000);
                     if (msgError != null)
+                    {
                         await funciones.BorrarMensaje(ctx, msgError.Id);
+                    }
                     if (msgAnime != null)
+                    {
                         await funciones.BorrarMensaje(ctx, msgAnime.Id);
+                    }
                     return;
                 }
             }
@@ -299,21 +306,37 @@ namespace Discord_Bot.Modulos
             if ((user2 == null && user1.Id != ctx.Member.Id) || (user2 != null && user1.Id != user2.Id))
             {
                 if (porcentajeAmor == 0)
+                {
                     descripcion += "¡Aléjense ya! Ustedes dos se van a matar.\n";
+                }
                 else if (porcentajeAmor > 0 && porcentajeAmor <= 10)
+                {
                     descripcion += "Se odiarán mutuamente, no son para nada compatibles.\n";
+                }
                 else if (porcentajeAmor > 10 && porcentajeAmor <= 25)
+                {
                     descripcion += "Lo mejor es que se alejen uno del otro, no encajan.\n";
+                }
                 else if (porcentajeAmor > 25 && porcentajeAmor <= 50)
+                {
                     descripcion += "Serán buenos amigos, pero veo dificil el amor.\n";
+                }
                 else if (porcentajeAmor > 50 && porcentajeAmor <= 75)
+                {
                     descripcion += "Lo más probable es que sean mejores amigos y con suerte algo más.\n";
+                }
                 else if (porcentajeAmor > 75 && porcentajeAmor <= 90)
+                {
                     descripcion += "Tienen mucha química, tienen que darse una oportunidad.\n";
+                }
                 else if (porcentajeAmor > 90 && porcentajeAmor <= 99)
+                {
                     descripcion += "Ustedes dos están destinados a estar juntos.\n";
+                }
                 else
+                {
                     descripcion += "¡Relación perfecta! Se casarán y tendran muchos hijos.\n";
+                }
             }
             if (porcentajeAmor <= 25)
                 imagenUrl = "https://i.imgur.com/BOxbruw.png";

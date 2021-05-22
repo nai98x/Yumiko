@@ -1,13 +1,13 @@
-﻿using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace Discord_Bot
+﻿namespace Discord_Bot
 {
+    using HtmlAgilityPack;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+
     public class MonoschinosDownloader
     {
         const string baseUrl = "https://monoschinos2.com/";
@@ -47,7 +47,7 @@ namespace Discord_Bot
 
         public async Task<AnimeLinks> GetLinks(string url, string name)
         {
-            url = url.Replace("-sub-espanol", "");
+            url = url.Replace("-sub-espanol", String.Empty);
             url = baseUrl + "ver" + url + "-episodio-";
             int episodeNumber = 1;
             bool nextEpisode = true;
@@ -68,7 +68,7 @@ namespace Discord_Bot
                 {
                     var tdArray = tr.Descendants("td").ToArray();
                     string href = tdArray[2].Descendants("a").First().Attributes[1].Value;
-                    string nomServer = href.Replace("https://", "");
+                    string nomServer = href.Replace("https://", String.Empty);
                     int index = nomServer.IndexOf("/");
                     if (index > 0)
                         nomServer = nomServer.Substring(0, index);

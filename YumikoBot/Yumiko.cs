@@ -1,27 +1,25 @@
-﻿using Discord_Bot.Modulos;
-using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Exceptions;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.Extensions;
-using DSharpPlus.VoiceNext;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YumikoBot;
-using YumikoBot.DAL;
-using static DSharpPlus.Entities.DiscordEmbedBuilder;
-
-namespace Discord_Bot
+﻿namespace Discord_Bot
 {
+    using Discord_Bot.Modulos;
+    using DSharpPlus;
+    using DSharpPlus.CommandsNext;
+    using DSharpPlus.CommandsNext.Exceptions;
+    using DSharpPlus.Entities;
+    using DSharpPlus.EventArgs;
+    using DSharpPlus.Interactivity;
+    using DSharpPlus.Interactivity.Extensions;
+    using DSharpPlus.VoiceNext;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.IO;
+    using System.Text;
+    using System.Threading.Tasks;
+    using YumikoBot;
+    using static DSharpPlus.Entities.DiscordEmbedBuilder;
+
     public class Yumiko
     {
         public DiscordClient Client { get; private set; }

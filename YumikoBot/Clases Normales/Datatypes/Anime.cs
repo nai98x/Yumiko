@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Discord_Bot
+﻿namespace Discord_Bot
 {
+    using System.Collections.Generic;
+
     public class Anime
     {
         public string TitleRomaji { get; set; }

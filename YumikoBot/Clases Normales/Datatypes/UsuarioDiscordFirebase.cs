@@ -1,8 +1,8 @@
-﻿using Google.Cloud.Firestore;
-using System;
-
-namespace YumikoBot.DAL
+﻿namespace YumikoBot.DAL
 {
+    using Google.Cloud.Firestore;
+    using System;
+
     [FirestoreData]
     public class UsuarioDiscordFirebase
     {

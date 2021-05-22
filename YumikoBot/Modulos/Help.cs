@@ -1,15 +1,14 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-using GraphQL;
-using GraphQL.Language.AST;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Discord_Bot.Modulos
+﻿namespace Discord_Bot.Modulos
 {
+    using DSharpPlus.CommandsNext;
+    using DSharpPlus.CommandsNext.Attributes;
+    using DSharpPlus.Entities;
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     [RequireBotPermissions(DSharpPlus.Permissions.SendMessages)]
     public class Help : BaseCommandModule
     {
@@ -27,7 +26,7 @@ namespace Discord_Bot.Modulos
                                     group com by com.Module.ModuleType.Name;
             if (comando == null)
             {
-                string comandosDesc = "";
+                string comandosDesc = string.Empty;
                 var builder = new DiscordEmbedBuilder
                 {
                     Title = "Comandos disponibles",
@@ -72,38 +71,46 @@ namespace Discord_Bot.Modulos
                     string modulo = comandoEncontrado.Module.ModuleType.Name;
                     var aliases = comandoEncontrado.Aliases;
                     string descripcion = comandoEncontrado.Description;
-                    if(modulo != null)
+                    if (modulo != null)
                         builder.AddField("Modulo", modulo, false);
-                    if(aliases.Count > 0)
+                    if (aliases.Count > 0)
                     {
                         List<string> listaAliases = new List<string>();
-                        foreach(string a in aliases)
+                        foreach (string a in aliases)
                         {
                             listaAliases.Add($"`{a}`");
                         }
                         string aliasesC = string.Join(", ", listaAliases);
                         builder.AddField("Aliases", aliasesC, false);
                     }
-                    if(descripcion != null)
+                    if (descripcion != null)
                         builder.AddField("Descripcion", descripcion, false);
                     foreach (var overload in comandoEncontrado.Overloads) 
                     {
-                        string parametros = "";
+                        string parametros = string.Empty;
                         foreach (var argument in overload.Arguments)
                         {
                             if(argument.Description != null)
                             {
-                                if(argument.IsOptional)
+                                if (argument.IsOptional)
+                                {
                                     parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Obligatorio: **No**\n";
+                                }
                                 else
+                                {
                                     parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Obligatorio: **Si**\n";
+                                }
                             }
                             else
                             {
-                                if(argument.IsOptional)
+                                if (argument.IsOptional)
+                                {
                                     parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **No**\n";
+                                }
                                 else
+                                {
                                     parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **Si**\n";
+                                }
                             }  
                         }
                         if(!string.IsNullOrEmpty(parametros))
@@ -119,7 +126,7 @@ namespace Discord_Bot.Modulos
                     string categoria = keysList.Find(x => x.ToLower().Trim() == comando.ToLower().Trim());
                     if (categoria != null)
                     {
-                        string comandosDesc = "";
+                        string comandosDesc = string.Empty;
                         foreach (var grp in comandosFiltrados)
                         {
                             var grupo = grp.Distinct();
@@ -130,11 +137,15 @@ namespace Discord_Bot.Modulos
                                 foreach (var comando1 in grupo)
                                 {
                                     if (!comando1.IsHidden)
+                                    {
                                         listaComandos1.Add($"`{comando1.Name}`");
+                                    }
                                 }
                                 comandosDesc = string.Join(", ", listaComandos1);
                                 if (nomGrupo == "NSFW" && !ctx.Channel.IsNSFW)
+                                {
                                     comandosDesc = "`Para ver estos comandos ejecutalo en un canal NSFW`";
+                                }
                             }
                         }
                         await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder

@@ -1,20 +1,20 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using System.Threading.Tasks;
-using DSharpPlus.Entities;
-using System;
-using GraphQL.Client.Http;
-using GraphQL;
-using GraphQL.Client.Serializer.Newtonsoft;
-using GraphQL.Client.Abstractions.Utilities;
-using RestSharp;
-using System.Net;
-using Newtonsoft.Json;
-using System.Configuration;
-using DSharpPlus.Interactivity.Extensions;
-
-namespace Discord_Bot.Modulos
+﻿namespace Discord_Bot.Modulos
 {
+    using DSharpPlus.CommandsNext;
+    using DSharpPlus.CommandsNext.Attributes;
+    using System.Threading.Tasks;
+    using DSharpPlus.Entities;
+    using System;
+    using GraphQL.Client.Http;
+    using GraphQL;
+    using GraphQL.Client.Serializer.Newtonsoft;
+    using GraphQL.Client.Abstractions.Utilities;
+    using RestSharp;
+    using System.Net;
+    using Newtonsoft.Json;
+    using System.Configuration;
+    using DSharpPlus.Interactivity.Extensions;
+
     public class Anilist : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();

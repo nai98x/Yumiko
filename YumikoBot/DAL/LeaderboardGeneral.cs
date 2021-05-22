@@ -1,13 +1,11 @@
-﻿using Discord_Bot;
-using DSharpPlus.CommandsNext;
-using Google.Cloud.Firestore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace YumikoBot.DAL
+﻿namespace YumikoBot.DAL
 {
+    using Discord_Bot;
+    using DSharpPlus.CommandsNext;
+    using Google.Cloud.Firestore;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     public class LeaderboardoGeneral
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
@@ -123,6 +121,7 @@ namespace YumikoBot.DAL
             if (snapExtremo.Exists)
                 await docExtremo.DeleteAsync();
         }
+
         public async Task EliminarEstadisticasTag(CommandContext ctx)
         {
             FirestoreDb db = funciones.GetFirestoreClient();

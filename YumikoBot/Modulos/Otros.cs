@@ -1,21 +1,19 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-using DSharpPlus.Interactivity.Extensions;
-using Google.Cloud.Firestore;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using YumikoBot.DAL;
-using static DSharpPlus.Entities.DiscordEmbedBuilder;
-
-namespace Discord_Bot.Modulos
+﻿namespace Discord_Bot.Modulos
 {
+    using DSharpPlus.CommandsNext;
+    using DSharpPlus.CommandsNext.Attributes;
+    using DSharpPlus.Entities;
+    using DSharpPlus.Interactivity.Extensions;
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Threading.Tasks;
+    using static DSharpPlus.Entities.DiscordEmbedBuilder;
+
     public class Otros : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();

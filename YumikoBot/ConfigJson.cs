@@ -1,12 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace YumikoBot
+﻿namespace YumikoBot
 {
+    using Newtonsoft.Json;
+
     public struct ConfigJson
     {
         [JsonProperty("token_prod")]

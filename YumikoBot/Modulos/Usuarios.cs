@@ -1,21 +1,16 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using DSharpPlus.Entities;
-using System;
-using GraphQL.Client.Http;
-using GraphQL;
-using GraphQL.Client.Serializer.Newtonsoft;
-using System.Linq;
-using System.Configuration;
-using DSharpPlus.Interactivity.Extensions;
-using System.Globalization;
-using DSharpPlus;
-using YumikoBot.DAL;
-
-namespace Discord_Bot.Modulos
+﻿namespace Discord_Bot.Modulos
 {
+    using DSharpPlus.CommandsNext;
+    using DSharpPlus.CommandsNext.Attributes;
+    using System.Threading.Tasks;
+    using System.Collections.Generic;
+    using DSharpPlus.Entities;
+    using System;
+    using System.Configuration;
+    using DSharpPlus.Interactivity.Extensions;
+    using System.Globalization;
+    using YumikoBot.DAL;
+
     public class Usuarios : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
@@ -110,11 +105,17 @@ namespace Discord_Bot.Modulos
                     {
                         string content = msgOcultarInter.Result.Content.ToLower().Trim();
                         if (content == "1- si" || content == "si")
+                        {
                             await usuariosService.SetBirthday(ctx, fecha, true);
+                        }
                         else if (content == "2- no" || content == "no")
+                        {
                             await usuariosService.SetBirthday(ctx, fecha, false);
+                        }
                         else
+                        {
                             msgError = await ctx.Channel.SendMessageAsync("Ingresa bien la respuesta");
+                        }
                         await funciones.BorrarMensaje(ctx, msgOcultarInter.Result.Id);
                         await funciones.BorrarMensaje(ctx, msgOcultar.Id);
                     }

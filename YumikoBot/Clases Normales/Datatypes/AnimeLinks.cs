@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Discord_Bot
+﻿namespace Discord_Bot
 {
+    using System.Collections.Generic;
+
     public class AnimeLinks
     {
         public string name { get; set; }
