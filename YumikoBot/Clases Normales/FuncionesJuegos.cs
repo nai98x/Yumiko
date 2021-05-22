@@ -812,5 +812,112 @@ namespace Discord_Bot
             await funciones.BorrarMensaje(ctx, mensaje.Id);
             return animeList;
         }
+
+        public async Task<List<Character>> GetCharacters(CommandContext ctx, SettingsJuego settings, bool animes)
+        {
+            var characterList = new List<Character>();
+            DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo animes...").ConfigureAwait(false);
+            string query = "query($pagina : Int){" +
+                        "   Page(page: $pagina){" +
+                        "       characters(sort: FAVOURITES_DESC){" +
+                        "           siteUrl," +
+                        "           favourites," +
+                        "           name{" +
+                        "               first," +
+                        "               last," +
+                        "               full" +
+                        "           }," +
+                        "           image{" +
+                        "               large" +
+                        "           }," +
+                        "           media(type:ANIME){" +
+                        "               nodes{" +
+                        "                   title{" +
+                        "                       romaji," +
+                        "                       english" +
+                        "                   }," +
+                        "                   siteUrl," +
+                        "                   synonyms" +
+                        "               }" +
+                        "           }" +
+                        "       }" +
+                        "   }" +
+                        "}";
+            int popularidad;
+            if (settings.IterIni == 1)
+                popularidad = 1;
+            else
+                popularidad = settings.IterIni * 50;
+            int i = settings.IterIni;
+            string hasNextValue;
+            do
+            {
+                var request = new GraphQLRequest
+                {
+                    Query = query,
+                    Variables = new
+                    {
+                        pagina = i
+                    }
+                };
+                try
+                {
+                    var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                    hasNextValue = data.Data.Page.pageInfo.hasNextPage;
+                    foreach (var x in data.Data.Page.characters)
+                    {
+                        Character c = new Character()
+                        {
+                            Image = x.image.large,
+                            NameFull = x.name.full,
+                            SiteUrl = x.siteUrl,
+                            Favoritos = x.favourites,
+                            Animes = new List<Anime>(),
+                            Popularidad = popularidad
+                        };
+                        popularidad++;
+                        if (animes)
+                        {
+                            foreach (var y in x.media.nodes)
+                            {
+                                string titleEnglish = y.title.english;
+                                string titleRomaji = y.title.romaji;
+                                Anime anim = new Anime()
+                                {
+                                    TitleEnglish = funciones.QuitarCaracteresEspeciales(titleEnglish),
+                                    TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
+                                    SiteUrl = y.siteUrl,
+                                    Sinonimos = new List<string>()
+                                };
+                                foreach (var syn in y.synonyms)
+                                {
+                                    string value = syn.Value;
+                                    string bien = funciones.QuitarCaracteresEspeciales(value);
+                                    anim.Sinonimos.Add(bien);
+                                }
+                                c.Animes.Add(anim);
+                            }
+                        }
+                        if (!animes || (animes && c.Animes.Count() > 0))
+                        {
+                            characterList.Add(c);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DiscordMessage msg = ex.Message switch
+                    {
+                        _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                    };
+                    await Task.Delay(3000);
+                    await funciones.BorrarMensaje(ctx, msg.Id);
+                    return characterList;
+                }
+                i++;
+            } while (hasNextValue.ToLower() == "true" && i <= settings.IterFin);
+            await funciones.BorrarMensaje(ctx, mensaje.Id);
+            return characterList;
+        }
     }
 }
