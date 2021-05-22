@@ -36,7 +36,7 @@ namespace Discord_Bot.Modulos
                 lista = await usuariosService.GetBirthdays(ctx, true);
                 titulo = "Próximos cumpleaños en este mes";
             }
-            string desc = "";
+            string desc = string.Empty;
             foreach (var user in lista)
             {
                 try

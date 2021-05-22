@@ -27,7 +27,7 @@ namespace Discord_Bot.Modulos
                                     group com by com.Module.ModuleType.Name;
             if (comando == null)
             {
-                string comandosDesc = "";
+                string comandosDesc = string.Empty;
                 var builder = new DiscordEmbedBuilder
                 {
                     Title = "Comandos disponibles",
@@ -88,7 +88,7 @@ namespace Discord_Bot.Modulos
                         builder.AddField("Descripcion", descripcion, false);
                     foreach (var overload in comandoEncontrado.Overloads) 
                     {
-                        string parametros = "";
+                        string parametros = string.Empty;
                         foreach (var argument in overload.Arguments)
                         {
                             if(argument.Description != null)
@@ -119,7 +119,7 @@ namespace Discord_Bot.Modulos
                     string categoria = keysList.Find(x => x.ToLower().Trim() == comando.ToLower().Trim());
                     if (categoria != null)
                     {
-                        string comandosDesc = "";
+                        string comandosDesc = string.Empty;
                         foreach (var grp in comandosFiltrados)
                         {
                             var grupo = grp.Distinct();

@@ -200,7 +200,7 @@ namespace Discord_Bot
             }
             else
             {
-                texto = "";
+                texto = string.Empty;
             }
             return texto;
         }
@@ -506,7 +506,7 @@ namespace Discord_Bot
 
         public async Task<Character> GetRandomCharacter(CommandContext ctx, int pag)
         {
-            string name = "", imageUrl = "", siteUrl = "", titleMedia = "", siteUrlMedia = "";
+            string name = "", imageUrl = "", siteUrl = "", titleMedia = "", siteUrlMedia = string.Empty;
             int favoritos = 0;
             string query = "query($pagina: Int){" +
                         "   Page(page: $pagina, perPage: 1){" +

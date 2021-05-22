@@ -221,7 +221,7 @@ namespace Discord_Bot
                                 if (!msgTagInter.TimedOut)
                                 {
                                     int numTag = 0;
-                                    string tagResp = "";
+                                    string tagResp = string.Empty;
                                     List<Tag> tagsFiltrados = tags.Where(x => x.Nombre.ToLower().Trim().Contains(msgTagInter.Result.Content.ToLower().Trim())).ToList();
                                     if (tagsFiltrados.Count > 0)
                                     {
@@ -379,7 +379,7 @@ namespace Discord_Bot
                         Text = $"{elegido.Favoritos} {corazon} (nº {elegido.Popularidad} en popularidad)"
                     }
                 }).ConfigureAwait(false);
-                string desc = "";
+                string desc = string.Empty;
                 dynamic predicate = null;
                 switch (juego)
                 {
@@ -511,7 +511,7 @@ namespace Discord_Bot
         {
             bool global = !string.IsNullOrEmpty(flag) && flag == "-g";
             List<StatsJuego> res = await leaderboard.GetLeaderboard(ctx, dificultad, tipoStats, global);
-            string stats = "";
+            string stats = string.Empty;
             int pos = 0;
             int lastScore = 0;
             DiscordEmoji emoji;
@@ -570,12 +570,12 @@ namespace Discord_Bot
 
         public async Task<DiscordEmbedBuilder> GetEstadisticasTag(CommandContext ctx, string flag)
         {
-            string msgError = "";
+            string msgError = string.Empty;
             var interactivity = ctx.Client.GetInteractivity();
             List<string> tagsList = await leaderboard.GetTags(ctx);
             if (tagsList.Count > 0)
             {
-                string tags = "";
+                string tags = string.Empty;
                 int cont = 1;
                 foreach (string s in tagsList)
                 {

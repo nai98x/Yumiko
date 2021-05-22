@@ -148,27 +148,27 @@ namespace Discord_Bot.Modulos
                     string animeStats = $"Total: `{data.Data.User.statistics.anime.count}`\nEpisodios: `{data.Data.User.statistics.anime.episodesWatched}`\nPuntaje promedio: `{data.Data.User.statistics.anime.meanScore}`";
                     string mangaStats = $"Total: `{data.Data.User.statistics.manga.count}`\nLeído: `{data.Data.User.statistics.manga.chaptersRead}`\nPuntaje promedio: `{data.Data.User.statistics.manga.meanScore}`";
                     string options = $"Titulos: `{data.Data.User.options.titleLanguage}`\nNSFW: `{nsfw}`\nColor: `{data.Data.User.options.profileColor}`";
-                    string favoriteAnime = "";
+                    string favoriteAnime = string.Empty;
                     foreach (var anime in data.Data.User.favourites.anime.nodes)
                     {
                         favoriteAnime += $"[{anime.title.romaji}]({anime.siteUrl})\n";
                     }
-                    string favoriteManga = "";
+                    string favoriteManga = string.Empty;
                     foreach (var manga in data.Data.User.favourites.manga.nodes)
                     {
                         favoriteManga += $"[{manga.title.romaji}]({manga.siteUrl})\n";
                     }
-                    string favoriteCharacters = "";
+                    string favoriteCharacters = string.Empty;
                     foreach (var character in data.Data.User.favourites.characters.nodes)
                     {
                         favoriteCharacters += $"[{character.name.full}]({character.siteUrl})\n";
                     }
-                    string favoriteStaff = "";
+                    string favoriteStaff = string.Empty;
                     foreach (var staff in data.Data.User.favourites.staff.nodes)
                     {
                         favoriteStaff += $"[{staff.name.full}]({staff.siteUrl})\n";
                     }
-                    string favoriteStudios = "";
+                    string favoriteStudios = string.Empty;
                     foreach (var studio in data.Data.User.favourites.studios.nodes)
                     {
                         favoriteStudios += $"[{studio.name}]({studio.siteUrl})\n";
@@ -318,7 +318,7 @@ namespace Discord_Bot.Modulos
                 if (data.Data != null)
                 {
                     int cont = 0;
-                    string opc = "";
+                    string opc = string.Empty;
                     foreach (var animeP in data.Data.Page.media)
                     {
                         cont++;
@@ -339,7 +339,7 @@ namespace Discord_Bot.Modulos
                             string formato = datos.format;
                             string score = $"{datos.meanScore}/100";
                             string fechas;
-                            string generos = "";
+                            string generos = string.Empty;
                             foreach (var genero in datos.genres)
                             {
                                 generos += genero;
@@ -347,7 +347,7 @@ namespace Discord_Bot.Modulos
                             }
                             if (generos.Length >= 2)
                                 generos = generos.Remove(generos.Length - 2);
-                            string tags = "";
+                            string tags = string.Empty;
                             foreach (var tag in datos.tags)
                             {
                                 if (tag.isMediaSpoiler == "false")
@@ -362,14 +362,14 @@ namespace Discord_Bot.Modulos
                             }
                             if (tags.Length >= 2)
                                 tags = tags.Remove(tags.Length - 2);
-                            string titulos = "";
+                            string titulos = string.Empty;
                             foreach (var title in datos.synonyms)
                             {
                                 titulos += $"`{title}`, ";
                             }
                             if (titulos.Length >= 2)
                                 titulos = titulos.Remove(titulos.Length - 2);
-                            string estudios = "";
+                            string estudios = string.Empty;
                             var nodos = datos.studios.nodes;
                             if (nodos.HasValues)
                             {
@@ -380,7 +380,7 @@ namespace Discord_Bot.Modulos
                             }
                             if (estudios.Length >= 2)
                                 estudios = estudios.Remove(estudios.Length - 2);
-                            string linksExternos = "";
+                            string linksExternos = string.Empty;
                             foreach (var external in datos.externalLinks)
                             {
                                 linksExternos += $"[{external.site}]({external.url}), ";
@@ -558,7 +558,7 @@ namespace Discord_Bot.Modulos
                 if (data.Data != null)
                 {
                     int cont = 0;
-                    string opc = "";
+                    string opc = string.Empty;
                     foreach (var animeP in data.Data.Page.media)
                     {
                         cont++;
@@ -578,7 +578,7 @@ namespace Discord_Bot.Modulos
                             string formato = datos.format;
                             string score = $"{datos.meanScore}/100";
                             string fechas;
-                            string generos = "";
+                            string generos = string.Empty;
                             foreach (var genero in datos.genres)
                             {
                                 generos += genero;
@@ -586,7 +586,7 @@ namespace Discord_Bot.Modulos
                             }
                             if (generos.Length >= 2)
                                 generos = generos.Remove(generos.Length - 2);
-                            string tags = "";
+                            string tags = string.Empty;
                             foreach (var tag in datos.tags)
                             {
                                 if (tag.isMediaSpoiler == "false")
@@ -601,7 +601,7 @@ namespace Discord_Bot.Modulos
                             }
                             if (tags.Length >= 2)
                                 tags = tags.Remove(tags.Length - 2);
-                            string titulos = "";
+                            string titulos = string.Empty;
                             foreach (var title in datos.synonyms)
                             {
                                 titulos += $"`{title}`, ";
@@ -768,7 +768,7 @@ namespace Discord_Bot.Modulos
                 if (data.Data != null)
                 {
                     int cont = 0;
-                    string opc = "";
+                    string opc = string.Empty;
                     foreach (var animeP in data.Data.Page.characters)
                     {
                         cont++;
@@ -785,12 +785,12 @@ namespace Discord_Bot.Modulos
                         string nombre = datos.name.full;
                         string imagen = datos.image.large;
                         string urlAnilist = datos.siteUrl;
-                        string animes = "";
+                        string animes = string.Empty;
                         foreach (var anime in datos.animes.nodes)
                         {
                             animes += $"[{anime.title.romaji}]({anime.siteUrl})\n";
                         }
-                        string mangas = "";
+                        string mangas = string.Empty;
                         foreach (var manga in datos.mangas.nodes)
                         {
                             mangas += $"[{manga.title.romaji}]({manga.siteUrl})\n";
@@ -895,7 +895,7 @@ namespace Discord_Bot.Modulos
                         {
                             case HttpStatusCode.OK:
                                 var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
-                                string resultados = "";
+                                string resultados = string.Empty;
                                 string titulo = "El posible anime de la imagen es:";
                                 bool encontro = false;
                                 foreach (var resultado in resp.docs)

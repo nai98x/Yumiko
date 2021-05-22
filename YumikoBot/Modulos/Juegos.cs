@@ -629,7 +629,7 @@ namespace Discord_Bot.Modulos
                                 }
                             }
                             letras += "`\n\n";
-                            string desc = "";
+                            string desc = string.Empty;
                             desc += letras;
                             switch (errores)
                             {

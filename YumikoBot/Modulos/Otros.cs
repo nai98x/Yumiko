@@ -31,7 +31,7 @@ namespace Discord_Bot.Modulos
         {
             bool fechaPuesta = DateTime.TryParse(texto, CultureInfo.CreateSpecificCulture("es-ES"), DateTimeStyles.None, out DateTime timeUtc);
             bool ok = true;
-            string error = "";
+            string error = string.Empty;
             if (!fechaPuesta)
             {
                 var interactivity = ctx.Client.GetInteractivity();
@@ -188,7 +188,7 @@ namespace Discord_Bot.Modulos
             var guildsdesordenadas = ctx.Client.Guilds.Values;
             var lista = guildsdesordenadas.ToList();
             lista.Sort((x, y) => x.JoinedAt.CompareTo(y.JoinedAt));
-            string servers = "";
+            string servers = string.Empty;
             int cont = 1;
             int usuarios = 0;
             int miembros;
@@ -203,7 +203,7 @@ namespace Discord_Bot.Modulos
                         Color = funciones.GetColor()
                     });
                     cont = 1;
-                    servers = "";
+                    servers = string.Empty;
                 }
                 miembros = guild.MemberCount - 1;
                 servers +=
@@ -270,7 +270,7 @@ namespace Discord_Bot.Modulos
                 var resBusqueda = await animeflv.Search(buscar);
                 if (resBusqueda.Count > 0)
                 {
-                    string resultados = "";
+                    string resultados = string.Empty;
                     int cont = 1;
                     foreach (var res in resBusqueda)
                     {
