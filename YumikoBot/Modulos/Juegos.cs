@@ -653,12 +653,11 @@ namespace Discord_Bot.Modulos
                 do
                 {
                     dynamic predicate = new Func<DiscordMessage, bool>(
-                        xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
-                        ((xm.Content.ToLower().Trim().Length == 1) &&
-                        (letrasUsadas.Find(x => x == xm.Content.ToLower().Trim()) == null)) ||
-                        (xm.Content.ToLower().Trim() == personaje.NameFull.ToLower().Trim()) ||
-                        (xm.Content.ToLower().Trim() == "cancelar")
-                        );
+                        xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) && 
+                        ((xm.Content.ToLower().Trim() == "cancelar") ||
+                        ((xm.Content.ToLower().Trim().Length == 1) && (letrasUsadas.Find(x => x == xm.Content.ToLower().Trim()) == null)) ||
+                        (xm.Content.ToLower().Trim() == personaje.NameFull.ToLower().Trim())
+                        ));
                     var msg = await interactivity.WaitForMessageAsync(predicate, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                     if (!msg.TimedOut)
                     {

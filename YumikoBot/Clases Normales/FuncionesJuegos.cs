@@ -91,7 +91,6 @@ namespace Discord_Bot
                     {
                         if (elegirDificultad)
                         {
-
                             DiscordEmoji emojiDado = DiscordEmoji.FromName(ctx.Client, ":game_die:");
                             var msgDificultad = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                             {
