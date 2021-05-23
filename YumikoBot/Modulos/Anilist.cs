@@ -18,6 +18,7 @@ namespace Discord_Bot.Modulos
     public class Anilist : BaseCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly FuncionesAnilist funcionesAnilist = new FuncionesAnilist();
         private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         [Command("anilist"), Aliases("user"), Description("Busca un perfil de AniList.")]
@@ -201,62 +202,9 @@ namespace Discord_Bot.Modulos
             }
             if (!String.IsNullOrEmpty(anime))
             {
-                var request = new GraphQLRequest
-                {
-                    Query =
-                "query($nombre : String){" +
-                "   Page(perPage:10){" +
-                "       media(type: ANIME, search: $nombre){" +
-                "           title{" +
-                "               romaji" +
-                "           }," +
-                "           coverImage{" +
-                "               large" +
-                "           }," +
-                "           siteUrl," +
-                "           description," +
-                "           format," +
-                "           episodes" +
-                "           status," +
-                "           meanScore," +
-                "           startDate{" +
-                "               year," +
-                "               month," +
-                "               day" +
-                "           }," +
-                "           endDate{" +
-                "               year," +
-                "               month," +
-                "               day" +
-                "           }," +
-                "           genres," +
-                "           tags{" +
-                "               name," +
-                "               isMediaSpoiler" +
-                "           }," +
-                "           synonyms," +
-                "           studios{" +
-                "               nodes{" +
-                "                   name," +
-                "                   siteUrl" +
-                "               }" +
-                "           }," +
-                "           externalLinks{" +
-                "               site," +
-                "               url" +
-                "           }," +
-                "           isAdult" +
-                "       }" +
-                "   }" +
-                "}",
-                    Variables = new
-                    {
-                        nombre = anime
-                    }
-                };
                 try
                 {
-                    var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                    var data = await funcionesAnilist.GetAnilistMedia(ctx, anime, "anime");
                     if (data.Data != null)
                     {
                         int cont = 0;
@@ -422,52 +370,9 @@ namespace Discord_Bot.Modulos
             }
             if (!String.IsNullOrEmpty(manga))
             {
-                var request = new GraphQLRequest
-                {
-                    Query =
-                "query($nombre : String){" +
-                "   Page(perPage:10){" +
-                "       media(type: MANGA, search: $nombre){" +
-                "           title{" +
-                "               romaji" +
-                "           }," +
-                "           coverImage{" +
-                "               large" +
-                "           }," +
-                "           siteUrl," +
-                "           description," +
-                "           format," +
-                "           chapters" +
-                "           status," +
-                "           meanScore," +
-                "           startDate{" +
-                "               year," +
-                "               month," +
-                "               day" +
-                "           }," +
-                "           endDate{" +
-                "               year," +
-                "               month," +
-                "               day" +
-                "           }," +
-                "           genres," +
-                "           tags{" +
-                "               name," +
-                "               isMediaSpoiler" +
-                "           }," +
-                "           synonyms," +
-                "           isAdult" +
-                "       }" +
-                "   }" +
-                "}",
-                    Variables = new
-                    {
-                        nombre = manga
-                    }
-                };
                 try
                 {
-                    var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                    var data = await funcionesAnilist.GetAnilistMedia(ctx, manga, "manga");
                     if (data.Data != null)
                     {
                         int cont = 0;
@@ -843,64 +748,6 @@ namespace Discord_Bot.Modulos
                 await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsdown:")).ConfigureAwait(false);
                 await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":question:")).ConfigureAwait(false);
             }
-        }
-
-        [Command("recomendacion"), Description("Personaje aleatorio."), Aliases("recomendaciones", "recommendation", "recommendations"), Hidden]
-        public async Task Recommendation(CommandContext ctx, string anime = null)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            var msgAnime = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-            {
-                Title = "Escribe el nombre del anime",
-                Description = "Ejemplo: Grisaia no Kajitsu",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor(),
-            });
-            var msgAnimeInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-            if (!msgAnimeInter.TimedOut)
-            {
-                anime = msgAnimeInter.Result.Content;
-                if (msgAnime != null)
-                    await funciones.BorrarMensaje(ctx, msgAnime.Id);
-                if (msgAnimeInter.Result != null)
-                    await funciones.BorrarMensaje(ctx, msgAnimeInter.Result.Id);
-            }
-            else
-            {
-                var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Error",
-                    Description = "Tiempo agotado esperando el usuario de AniList",
-                    Footer = funciones.GetFooter(ctx),
-                    Color = DiscordColor.Red,
-                });
-                await Task.Delay(3000);
-                if (msgError != null)
-                    await funciones.BorrarMensaje(ctx, msgError.Id);
-                if (msgAnime != null)
-                    await funciones.BorrarMensaje(ctx, msgAnime.Id);
-                return;
-            }
-            var request = new GraphQLRequest
-            {
-                Query =
-                "query($nombre : String){" +
-                "   Page(perPage:10){" +
-                "       media(type: ANIME, search: $nombre){" +
-                "           id," +
-                "           title{" +
-                "               romaji" +
-                "           }," +
-                "           siteUrl," +
-                "           isAdult" +
-                "       }" +
-                "   }" +
-                "}",
-                Variables = new
-                {
-                    nombre = anime
-                }
-            };
         }
     }
 }

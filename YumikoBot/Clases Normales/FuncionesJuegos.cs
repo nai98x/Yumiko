@@ -685,9 +685,9 @@ namespace Discord_Bot
             DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo {tipo.ToLower()}s...").ConfigureAwait(false);
             string mediaFiltros;
             if (tag)
-                mediaFiltros = $"type: ANIME, sort: POPULARITY_DESC, tag: \"{settings.Tag}\", minimumTagRank:{settings.PorcentajeTag}, isAdult:false";
+                mediaFiltros = $"type: ANIME, sort: POPULARITY_DESC, tag: \"{settings.Tag}\", minimumTagRank:{settings.PorcentajeTag}, isAdult:false, format_not_in:[MUSIC]";
             else
-                mediaFiltros = $"type: {tipo}, sort: FAVOURITES_DESC, isAdult:false";
+                mediaFiltros = $"type: {tipo}, sort: FAVOURITES_DESC, isAdult:false, format_not_in:[MUSIC]";
             string query = "query($pagina : Int){" +
                     "   Page(page: $pagina){" +
                    $"       media({mediaFiltros}){{" +
