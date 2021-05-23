@@ -304,7 +304,7 @@ namespace Discord_Bot.Modulos
                 List<UsuarioJuego> participantes = new List<UsuarioJuego>();
                 await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
-                    Title = "Ahorcado (Peronajes de anime)",
+                    Title = "Ahorcado (Personajes)",
                     Description = "¡Escribe una letra!\n\nPuedes terminar la partida en cualquier momento escribiendo `cancelar`",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()

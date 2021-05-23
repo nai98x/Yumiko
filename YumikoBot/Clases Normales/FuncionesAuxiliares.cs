@@ -578,5 +578,31 @@ namespace Discord_Bot
             }
             return null;
         }
+
+        public async Task GrabarLogError(CommandContext ctx, string descripcion)
+        {
+            var Guild = await ctx.Client.GetGuildAsync(713809173573271613);
+            if(Guild != null)
+            {
+                var ChannelErrores = Guild.GetChannel(840440877565739008);
+                if(ChannelErrores != null)
+                {
+                    await ChannelErrores.SendMessageAsync(new DiscordEmbedBuilder { 
+                        Title = "Error no controlado",
+                        Description = descripcion,
+                        Color = DiscordColor.Red,
+                        Footer = GetFooter(ctx),
+                        Author= new EmbedAuthor
+                        {
+                            IconUrl = ctx.Guild.IconUrl,
+                            Name = ctx.Guild.Name
+                        },
+                    }.AddField("Id Servidor", $"{ctx.Guild.Id}", true)
+                    .AddField("Id Canal", $"{ctx.Channel.Id}", true)
+                    .AddField("Canal", $"#{ctx.Channel.Name}", false)
+                    .AddField("Mensaje", $"{ctx.Message.Content}", false));
+                }
+            }
+        }
     }
 }

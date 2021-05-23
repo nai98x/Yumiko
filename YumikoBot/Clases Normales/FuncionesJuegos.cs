@@ -388,8 +388,8 @@ namespace Discord_Bot
                         Character elegidoP = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
-                            (xm.Content.ToLower().Trim() == elegidoP.NameFull.ToLower().Trim()) ||
-                            (xm.Content.ToLower().Trim() == elegidoP.NameFirst.ToLower().Trim()) ||
+                            (elegidoP.NameFull != null && xm.Content.ToLower().Trim() == elegidoP.NameFull.ToLower().Trim()) ||
+                            (elegidoP.NameFirst != null && xm.Content.ToLower().Trim() == elegidoP.NameFirst.ToLower().Trim()) ||
                             (elegidoP.NameLast != null && xm.Content.ToLower().Trim() == elegidoP.NameLast.ToLower().Trim())
                             ));
                         break;
@@ -454,7 +454,7 @@ namespace Discord_Bot
                             ));
                         break;
                     default:
-                        // Grabar log
+                        await funciones.GrabarLogError(ctx, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
                         return;
                 }
                 var msg = await interactivity.WaitForMessageAsync(predicate, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
@@ -682,7 +682,7 @@ namespace Discord_Bot
         public async Task<List<Anime>> GetMedia(CommandContext ctx, string tipo, SettingsJuego settings, bool personajes, bool estudios, bool tag)
         {
             List<Anime> animeList = new List<Anime>();
-            DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo animes...").ConfigureAwait(false);
+            DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo {tipo.ToLower()}s...").ConfigureAwait(false);
             string mediaFiltros;
             if (tag)
                 mediaFiltros = $"type: ANIME, sort: POPULARITY_DESC, tag: \"{settings.Tag}\", minimumTagRank:{settings.PorcentajeTag}, isAdult:false";
@@ -759,8 +759,16 @@ namespace Discord_Bot
                             SiteUrl = x.siteUrl,
                             Favoritos = x.favourites,
                             Popularidad = popularidad,
-                            Estudios = new List<Estudio>()
+                            Estudios = new List<Estudio>(),
+                            Sinonimos = new List<string>(),
+                            Personajes = new List<Character>()
                         };
+                        foreach (var syn in x.synonyms)
+                        {
+                            string value = syn.Value;
+                            string bien = funciones.QuitarCaracteresEspeciales(value);
+                            anim.Sinonimos.Add(bien);
+                        }
                         if (personajes)
                         {
                             foreach (var character in x.characters.nodes)
@@ -791,7 +799,7 @@ namespace Discord_Bot
                             }
                         }
                         popularidad++;
-                        if (anim.Estudios.Count() > 0)
+                        if ((!estudios) || (estudios && anim.Estudios.Count() > 0))
                         {
                             animeList.Add(anim);
                         }
@@ -799,6 +807,7 @@ namespace Discord_Bot
                 }
                 catch (Exception ex)
                 {
+                    await funciones.GrabarLogError(ctx, $"{ex.Message}");
                     DiscordMessage msg = ex.Message switch
                     {
                         _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
@@ -816,7 +825,7 @@ namespace Discord_Bot
         public async Task<List<Character>> GetCharacters(CommandContext ctx, SettingsJuego settings, bool animes)
         {
             var characterList = new List<Character>();
-            DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo animes...").ConfigureAwait(false);
+            DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo personajes...").ConfigureAwait(false);
             string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
                         "       characters(sort: FAVOURITES_DESC){" +
@@ -840,6 +849,9 @@ namespace Discord_Bot
                         "                   synonyms" +
                         "               }" +
                         "           }" +
+                        "       }," +
+                        "       pageInfo{" +
+                        "           hasNextPage" +
                         "       }" +
                         "   }" +
                         "}";
@@ -869,6 +881,8 @@ namespace Discord_Bot
                         Character c = new Character()
                         {
                             Image = x.image.large,
+                            NameFirst = x.name.first,
+                            NameLast = x.name.last,
                             NameFull = x.name.full,
                             SiteUrl = x.siteUrl,
                             Favoritos = x.favourites,
@@ -906,6 +920,7 @@ namespace Discord_Bot
                 }
                 catch (Exception ex)
                 {
+                    await funciones.GrabarLogError(ctx, $"{ex.Message}");
                     DiscordMessage msg = ex.Message switch
                     {
                         _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
