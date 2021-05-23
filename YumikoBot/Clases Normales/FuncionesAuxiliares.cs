@@ -604,5 +604,42 @@ namespace Discord_Bot
                 }
             }
         }
+
+        public async Task<string> GetStringInteractivity(CommandContext ctx, string tituloBusqueda, string descBusqueda, string descError)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            var msgUsuario = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = tituloBusqueda,
+                Description = descBusqueda,
+                Footer = GetFooter(ctx),
+                Color = GetColor(),
+            });
+            var msgUserInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+            if (!msgUserInter.TimedOut)
+            {
+                if (msgUsuario != null)
+                    await BorrarMensaje(ctx, msgUsuario.Id);
+                if (msgUserInter.Result != null)
+                    await BorrarMensaje(ctx, msgUserInter.Result.Id);
+                return msgUserInter.Result.Content;
+            }
+            else
+            {
+                var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Error",
+                    Description = descError,
+                    Footer = GetFooter(ctx),
+                    Color = DiscordColor.Red,
+                });
+                await Task.Delay(3000);
+                if (msgError != null)
+                    await BorrarMensaje(ctx, msgError.Id);
+                if (msgUsuario != null)
+                    await BorrarMensaje(ctx, msgUsuario.Id);
+                return string.Empty;
+            }
+        }
     }
 }

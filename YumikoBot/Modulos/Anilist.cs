@@ -25,42 +25,13 @@ namespace Discord_Bot.Modulos
         {
             if (String.IsNullOrEmpty(usuario))
             {
-                var interactivity = ctx.Client.GetInteractivity();
-                var msgUsuario = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Escribe un nombre de usuario de AniList",
-                    Description = "Ejemplo: Josh",
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor(),
-                });
-                var msgUserInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                if (!msgUserInter.TimedOut)
-                {
-                    usuario = msgUserInter.Result.Content;
-                    if (msgUsuario != null)
-                        await funciones.BorrarMensaje(ctx, msgUsuario.Id);
-                    if (msgUserInter.Result != null)
-                        await funciones.BorrarMensaje(ctx, msgUserInter.Result.Id);
-                }
-                else
-                {
-                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder { 
-                        Title = "Error",
-                        Description = "Tiempo agotado esperando el usuario de AniList",
-                        Footer = funciones.GetFooter(ctx),
-                        Color = DiscordColor.Red,
-                    });
-                    await Task.Delay(3000);
-                    if (msgError != null)
-                        await funciones.BorrarMensaje(ctx, msgError.Id);
-                    if (msgUsuario != null)
-                        await funciones.BorrarMensaje(ctx, msgUsuario.Id);
-                    return;
-                }
+                usuario = await funciones.GetStringInteractivity(ctx, "Escriba un nombre de usuario de AniList", "Ejemplo: Josh", "Tiempo agotado esperando el usuario de AniList");
             }
-            var request = new GraphQLRequest
+            if (!String.IsNullOrEmpty(usuario))
             {
-                Query =
+                var request = new GraphQLRequest
+                {
+                    Query =
                 "query($nombre : String){" +
                 "   User(search: $nombre){" +
                 "       id," +
@@ -129,94 +100,95 @@ namespace Discord_Bot.Modulos
                 "       }" +
                 "   }" +
                 "}",
-                Variables = new
-                {
-                    nombre = usuario
-                }
-            };
-            try
-            {
-                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                if (data.Data != null)
-                {
-                    string nsfw1 = data.Data.User.options.displayAdultContent;
-                    string nsfw;
-                    if (nsfw1 == "True")
-                        nsfw = "Si";
-                    else
-                        nsfw = "No";
-                    string animeStats = $"Total: `{data.Data.User.statistics.anime.count}`\nEpisodios: `{data.Data.User.statistics.anime.episodesWatched}`\nPuntaje promedio: `{data.Data.User.statistics.anime.meanScore}`";
-                    string mangaStats = $"Total: `{data.Data.User.statistics.manga.count}`\nLeído: `{data.Data.User.statistics.manga.chaptersRead}`\nPuntaje promedio: `{data.Data.User.statistics.manga.meanScore}`";
-                    string options = $"Titulos: `{data.Data.User.options.titleLanguage}`\nNSFW: `{nsfw}`\nColor: `{data.Data.User.options.profileColor}`";
-                    string favoriteAnime = string.Empty;
-                    foreach (var anime in data.Data.User.favourites.anime.nodes)
+                    Variables = new
                     {
-                        favoriteAnime += $"[{anime.title.romaji}]({anime.siteUrl})\n";
+                        nombre = usuario
                     }
-                    string favoriteManga = string.Empty;
-                    foreach (var manga in data.Data.User.favourites.manga.nodes)
-                    {
-                        favoriteManga += $"[{manga.title.romaji}]({manga.siteUrl})\n";
-                    }
-                    string favoriteCharacters = string.Empty;
-                    foreach (var character in data.Data.User.favourites.characters.nodes)
-                    {
-                        favoriteCharacters += $"[{character.name.full}]({character.siteUrl})\n";
-                    }
-                    string favoriteStaff = string.Empty;
-                    foreach (var staff in data.Data.User.favourites.staff.nodes)
-                    {
-                        favoriteStaff += $"[{staff.name.full}]({staff.siteUrl})\n";
-                    }
-                    string favoriteStudios = string.Empty;
-                    foreach (var studio in data.Data.User.favourites.studios.nodes)
-                    {
-                        favoriteStudios += $"[{studio.name}]({studio.siteUrl})\n";
-                    }
-                    string nombre = data.Data.User.name;
-                    string avatar = data.Data.User.avatar.medium;
-                    string siteurl = data.Data.User.siteUrl;
-                    var builder = new DiscordEmbedBuilder
-                    {
-                        Author = funciones.GetAuthor(nombre, avatar, siteurl),
-                        Footer = funciones.GetFooter(ctx),
-                        Color = funciones.GetColor(),
-                        ImageUrl = data.Data.User.bannerImage
-                    };
-                    builder.AddField("Estadisticas - Anime", animeStats, true);
-                    builder.AddField("Estadisticas - Manga", mangaStats, true);
-                    builder.AddField("Opciones", options, true);
-                    if (favoriteAnime != "")
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes favoritos", favoriteAnime, true);
-                    if (favoriteManga != "")
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas favoritos", favoriteManga, true);
-                    if (favoriteCharacters != "")
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":bust_in_silhouette:")} Personajes favoritos", favoriteCharacters, true);
-                    if (favoriteStaff != "")
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":man_artist:")} Staff favoritos", favoriteStaff, true);
-                    if (favoriteStudios != "")
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios favoritos", favoriteStudios, true);
-                    await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
-                }
-                else
-                {
-                    foreach (var x in data.Errors)
-                    {
-                        var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
-                        await Task.Delay(3000);
-                        await funciones.BorrarMensaje(ctx, msg.Id);
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                DiscordMessage msg = ex.Message switch
-                {
-                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado al usuario de anilist `{usuario}`").ConfigureAwait(false),
-                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
                 };
-                await Task.Delay(3000);
-                await funciones.BorrarMensaje(ctx, msg.Id);
+                try
+                {
+                    var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                    if (data.Data != null)
+                    {
+                        string nsfw1 = data.Data.User.options.displayAdultContent;
+                        string nsfw;
+                        if (nsfw1 == "True")
+                            nsfw = "Si";
+                        else
+                            nsfw = "No";
+                        string animeStats = $"Total: `{data.Data.User.statistics.anime.count}`\nEpisodios: `{data.Data.User.statistics.anime.episodesWatched}`\nPuntaje promedio: `{data.Data.User.statistics.anime.meanScore}`";
+                        string mangaStats = $"Total: `{data.Data.User.statistics.manga.count}`\nLeído: `{data.Data.User.statistics.manga.chaptersRead}`\nPuntaje promedio: `{data.Data.User.statistics.manga.meanScore}`";
+                        string options = $"Titulos: `{data.Data.User.options.titleLanguage}`\nNSFW: `{nsfw}`\nColor: `{data.Data.User.options.profileColor}`";
+                        string favoriteAnime = string.Empty;
+                        foreach (var anime in data.Data.User.favourites.anime.nodes)
+                        {
+                            favoriteAnime += $"[{anime.title.romaji}]({anime.siteUrl})\n";
+                        }
+                        string favoriteManga = string.Empty;
+                        foreach (var manga in data.Data.User.favourites.manga.nodes)
+                        {
+                            favoriteManga += $"[{manga.title.romaji}]({manga.siteUrl})\n";
+                        }
+                        string favoriteCharacters = string.Empty;
+                        foreach (var character in data.Data.User.favourites.characters.nodes)
+                        {
+                            favoriteCharacters += $"[{character.name.full}]({character.siteUrl})\n";
+                        }
+                        string favoriteStaff = string.Empty;
+                        foreach (var staff in data.Data.User.favourites.staff.nodes)
+                        {
+                            favoriteStaff += $"[{staff.name.full}]({staff.siteUrl})\n";
+                        }
+                        string favoriteStudios = string.Empty;
+                        foreach (var studio in data.Data.User.favourites.studios.nodes)
+                        {
+                            favoriteStudios += $"[{studio.name}]({studio.siteUrl})\n";
+                        }
+                        string nombre = data.Data.User.name;
+                        string avatar = data.Data.User.avatar.medium;
+                        string siteurl = data.Data.User.siteUrl;
+                        var builder = new DiscordEmbedBuilder
+                        {
+                            Author = funciones.GetAuthor(nombre, avatar, siteurl),
+                            Footer = funciones.GetFooter(ctx),
+                            Color = funciones.GetColor(),
+                            ImageUrl = data.Data.User.bannerImage
+                        };
+                        builder.AddField("Estadisticas - Anime", animeStats, true);
+                        builder.AddField("Estadisticas - Manga", mangaStats, true);
+                        builder.AddField("Opciones", options, true);
+                        if (favoriteAnime != "")
+                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes favoritos", favoriteAnime, true);
+                        if (favoriteManga != "")
+                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas favoritos", favoriteManga, true);
+                        if (favoriteCharacters != "")
+                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":bust_in_silhouette:")} Personajes favoritos", favoriteCharacters, true);
+                        if (favoriteStaff != "")
+                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":man_artist:")} Staff favoritos", favoriteStaff, true);
+                        if (favoriteStudios != "")
+                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios favoritos", favoriteStudios, true);
+                        await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        foreach (var x in data.Errors)
+                        {
+                            var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
+                            await Task.Delay(3000);
+                            await funciones.BorrarMensaje(ctx, msg.Id);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DiscordMessage msg = ex.Message switch
+                    {
+                        "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado al usuario de anilist `{usuario}`").ConfigureAwait(false),
+                        _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
+                    };
+                    await Task.Delay(3000);
+                    await funciones.BorrarMensaje(ctx, msg.Id);
+                }
             }
         }
 
@@ -225,43 +197,13 @@ namespace Discord_Bot.Modulos
         {
             if (String.IsNullOrEmpty(anime))
             {
-                var interactivity = ctx.Client.GetInteractivity();
-                var msgAnime = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Escribe el nombre del anime",
-                    Description = "Ejemplo: Grisaia no Kajitsu",
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor(),
-                });
-                var msgAnimeInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                if (!msgAnimeInter.TimedOut)
-                {
-                    anime = msgAnimeInter.Result.Content;
-                    if (msgAnime != null)
-                        await funciones.BorrarMensaje(ctx, msgAnime.Id);
-                    if (msgAnimeInter.Result != null)
-                        await funciones.BorrarMensaje(ctx, msgAnimeInter.Result.Id);
-                }
-                else
-                {
-                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Title = "Error",
-                        Description = "Tiempo agotado esperando el usuario de AniList",
-                        Footer = funciones.GetFooter(ctx),
-                        Color = DiscordColor.Red,
-                    });
-                    await Task.Delay(3000);
-                    if (msgError != null)
-                        await funciones.BorrarMensaje(ctx, msgError.Id);
-                    if (msgAnime != null)
-                        await funciones.BorrarMensaje(ctx, msgAnime.Id);
-                    return;
-                }
+                anime = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del anime", "Ejemplo: Grisaia no Kajitsu", "Tiempo agotado esperando el nombre del anime");
             }
-            var request = new GraphQLRequest
+            if (!String.IsNullOrEmpty(anime))
             {
-                Query =
+                var request = new GraphQLRequest
+                {
+                    Query =
                 "query($nombre : String){" +
                 "   Page(perPage:10){" +
                 "       media(type: ANIME, search: $nombre){" +
@@ -307,166 +249,167 @@ namespace Discord_Bot.Modulos
                 "       }" +
                 "   }" +
                 "}",
-                Variables = new
-                {
-                    nombre = anime
-                }
-            };
-            try
-            {
-                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                if (data.Data != null)
-                {
-                    int cont = 0;
-                    string opc = string.Empty;
-                    foreach (var animeP in data.Data.Page.media)
+                    Variables = new
                     {
-                        cont++;
-                        opc += $"{cont} - {animeP.title.romaji}\n";
+                        nombre = anime
                     }
-                    var elegido = await funciones.GetElegido(ctx, opc, cont);
-                    if (elegido > 0)
+                };
+                try
+                {
+                    var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                    if (data.Data != null)
                     {
-                        var datos = data.Data.Page.media[elegido - 1];
-                        if ((datos.isAdult == "false") || (datos.isAdult == true && ctx.Channel.IsNSFW))
+                        int cont = 0;
+                        string opc = string.Empty;
+                        foreach (var animeP in data.Data.Page.media)
                         {
-                            string descripcion = datos.description;
-                            descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
-                            if (descripcion == "")
-                                descripcion = "(Sin descripción)";
-                            string estado = datos.status;
-                            string episodios = datos.episodes;
-                            string formato = datos.format;
-                            string score = $"{datos.meanScore}/100";
-                            string fechas;
-                            string generos = string.Empty;
-                            foreach (var genero in datos.genres)
+                            cont++;
+                            opc += $"{cont} - {animeP.title.romaji}\n";
+                        }
+                        var elegido = await funciones.GetElegido(ctx, opc, cont);
+                        if (elegido > 0)
+                        {
+                            var datos = data.Data.Page.media[elegido - 1];
+                            if ((datos.isAdult == "false") || (datos.isAdult == true && ctx.Channel.IsNSFW))
                             {
-                                generos += genero;
-                                generos += ", ";
-                            }
-                            if (generos.Length >= 2)
-                                generos = generos.Remove(generos.Length - 2);
-                            string tags = string.Empty;
-                            foreach (var tag in datos.tags)
-                            {
-                                if (tag.isMediaSpoiler == "false")
+                                string descripcion = datos.description;
+                                descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
+                                if (descripcion == "")
+                                    descripcion = "(Sin descripción)";
+                                string estado = datos.status;
+                                string episodios = datos.episodes;
+                                string formato = datos.format;
+                                string score = $"{datos.meanScore}/100";
+                                string fechas;
+                                string generos = string.Empty;
+                                foreach (var genero in datos.genres)
                                 {
-                                    tags += tag.name;
+                                    generos += genero;
+                                    generos += ", ";
+                                }
+                                if (generos.Length >= 2)
+                                    generos = generos.Remove(generos.Length - 2);
+                                string tags = string.Empty;
+                                foreach (var tag in datos.tags)
+                                {
+                                    if (tag.isMediaSpoiler == "false")
+                                    {
+                                        tags += tag.name;
+                                    }
+                                    else
+                                    {
+                                        tags += $"||{tag.name}||";
+                                    }
+                                    tags += ", ";
+                                }
+                                if (tags.Length >= 2)
+                                    tags = tags.Remove(tags.Length - 2);
+                                string titulos = string.Empty;
+                                foreach (var title in datos.synonyms)
+                                {
+                                    titulos += $"`{title}`, ";
+                                }
+                                if (titulos.Length >= 2)
+                                    titulos = titulos.Remove(titulos.Length - 2);
+                                string estudios = string.Empty;
+                                var nodos = datos.studios.nodes;
+                                if (nodos.HasValues)
+                                {
+                                    foreach (var studio in datos.studios.nodes)
+                                    {
+                                        estudios += $"[{studio.name}]({studio.siteUrl}), ";
+                                    }
+                                }
+                                if (estudios.Length >= 2)
+                                    estudios = estudios.Remove(estudios.Length - 2);
+                                string linksExternos = string.Empty;
+                                foreach (var external in datos.externalLinks)
+                                {
+                                    linksExternos += $"[{external.site}]({external.url}), ";
+                                }
+                                if (linksExternos.Length >= 2)
+                                    linksExternos = linksExternos.Remove(linksExternos.Length - 2);
+                                if (datos.startDate.day != null)
+                                {
+                                    if (datos.endDate.day != null)
+                                        fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
+                                    else
+                                        fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
                                 }
                                 else
                                 {
-                                    tags += $"||{tag.name}||";
+                                    fechas = $"Este anime no tiene fecha de emisión";
                                 }
-                                tags += ", ";
-                            }
-                            if (tags.Length >= 2)
-                                tags = tags.Remove(tags.Length - 2);
-                            string titulos = string.Empty;
-                            foreach (var title in datos.synonyms)
-                            {
-                                titulos += $"`{title}`, ";
-                            }
-                            if (titulos.Length >= 2)
-                                titulos = titulos.Remove(titulos.Length - 2);
-                            string estudios = string.Empty;
-                            var nodos = datos.studios.nodes;
-                            if (nodos.HasValues)
-                            {
-                                foreach (var studio in datos.studios.nodes)
+                                string titulo = datos.title.romaji;
+                                string urlAnilist = datos.siteUrl;
+                                var builder = new DiscordEmbedBuilder
                                 {
-                                    estudios += $"[{studio.name}]({studio.siteUrl}), ";
-                                }
-                            }
-                            if (estudios.Length >= 2)
-                                estudios = estudios.Remove(estudios.Length - 2);
-                            string linksExternos = string.Empty;
-                            foreach (var external in datos.externalLinks)
-                            {
-                                linksExternos += $"[{external.site}]({external.url}), ";
-                            }
-                            if (linksExternos.Length >= 2)
-                                linksExternos = linksExternos.Remove(linksExternos.Length - 2);
-                            if (datos.startDate.day != null)
-                            {
-                                if (datos.endDate.day != null)
-                                    fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
-                                else
-                                    fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
+                                    Title = titulo,
+                                    Url = urlAnilist,
+                                    Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
+                                    {
+                                        Url = datos.coverImage.large
+                                    },
+                                    Footer = funciones.GetFooter(ctx),
+                                    Color = funciones.GetColor(),
+                                    Description = descripcion
+                                };
+                                if (episodios.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} Episodios", funciones.NormalizarField(episodios), true);
+                                if (formato.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(formato), true);
+                                if (estado.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
+                                if (score.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), false);
+                                if (fechas.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha emisión", funciones.NormalizarField(fechas), false);
+                                if (generos.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(generos), false);
+                                if (tags.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(tags), false);
+                                if (titulos.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(titulos), false);
+                                if (estudios.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios", funciones.NormalizarField(estudios), false);
+                                if (linksExternos.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} Links externos", funciones.NormalizarField(linksExternos), false);
+                                await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
                             }
                             else
                             {
-                                fechas = $"Este anime no tiene fecha de emisión";
-                            }
-                            string titulo = datos.title.romaji;
-                            string urlAnilist = datos.siteUrl;
-                            var builder = new DiscordEmbedBuilder
-                            {
-                                Title = titulo,
-                                Url = urlAnilist,
-                                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
+                                DiscordMessage msg = await ctx.Channel.SendMessageAsync("", embed: new DiscordEmbedBuilder
                                 {
-                                    Url = datos.coverImage.large
-                                },
-                                Footer = funciones.GetFooter(ctx),
-                                Color = funciones.GetColor(),
-                                Description = descripcion
-                            };
-                            if (episodios.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} Episodios", funciones.NormalizarField(episodios), true);
-                            if (formato.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(formato), true);
-                            if (estado.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
-                            if (score.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), false);
-                            if (fechas.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha emisión", funciones.NormalizarField(fechas), false);
-                            if (generos.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(generos), false);
-                            if (tags.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(tags), false);
-                            if (titulos.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(titulos), false);
-                            if (estudios.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios", funciones.NormalizarField(estudios), false);
-                            if (linksExternos.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} Links externos", funciones.NormalizarField(linksExternos), false);
-                            await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+                                    Title = "Requiere NSFW",
+                                    Description = "Este comando debe ser invocado en un canal NSFW.",
+                                    Color = new DiscordColor(0xFF0000),
+                                    Footer = funciones.GetFooter(ctx)
+                                });
+                                await Task.Delay(3000);
+                                await funciones.BorrarMensaje(ctx, msg.Id);
+                            }
                         }
-                        else
+                    }
+                    else
+                    {
+                        foreach (var x in data.Errors)
                         {
-                            DiscordMessage msg = await ctx.Channel.SendMessageAsync("", embed: new DiscordEmbedBuilder
-                            {
-                                Title = "Requiere NSFW",
-                                Description = "Este comando debe ser invocado en un canal NSFW.",
-                                Color = new DiscordColor(0xFF0000),
-                                Footer = funciones.GetFooter(ctx)
-                            });
+                            var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
                             await Task.Delay(3000);
                             await funciones.BorrarMensaje(ctx, msg.Id);
                         }
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    foreach (var x in data.Errors)
+                    DiscordMessage msg = ex.Message switch
                     {
-                        var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
-                        await Task.Delay(3000);
-                        await funciones.BorrarMensaje(ctx, msg.Id);
-                    }
+                        "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false),
+                        _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
+                    };
+                    await Task.Delay(3000);
+                    await funciones.BorrarMensaje(ctx, msg.Id);
                 }
-            }
-            catch (Exception ex)
-            {
-                DiscordMessage msg = ex.Message switch
-                {
-                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false),
-                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
-                };
-                await Task.Delay(3000);
-                await funciones.BorrarMensaje(ctx, msg.Id);
             }
         }
 
@@ -475,43 +418,13 @@ namespace Discord_Bot.Modulos
         {
             if (String.IsNullOrEmpty(manga))
             {
-                var interactivity = ctx.Client.GetInteractivity();
-                var msgAnime = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Escribe un nombre del manga",
-                    Description = "Ejemplo: Berserk",
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor(),
-                });
-                var msgAnimeInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                if (!msgAnimeInter.TimedOut)
-                {
-                    manga = msgAnimeInter.Result.Content;
-                    if (msgAnime != null)
-                        await funciones.BorrarMensaje(ctx, msgAnime.Id);
-                    if (msgAnimeInter.Result != null)
-                        await funciones.BorrarMensaje(ctx, msgAnimeInter.Result.Id);
-                }
-                else
-                {
-                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Title = "Error",
-                        Description = "Tiempo agotado esperando el usuario de AniList",
-                        Footer = funciones.GetFooter(ctx),
-                        Color = DiscordColor.Red,
-                    });
-                    await Task.Delay(3000);
-                    if (msgError != null)
-                        await funciones.BorrarMensaje(ctx, msgError.Id);
-                    if (msgAnime != null)
-                        await funciones.BorrarMensaje(ctx, msgAnime.Id);
-                    return;
-                }
+                manga = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del manga", "Ejemplo: Berserk", "Tiempo agotado esperando el nombre del manga");
             }
-            var request = new GraphQLRequest
+            if (!String.IsNullOrEmpty(manga))
             {
-                Query =
+                var request = new GraphQLRequest
+                {
+                    Query =
                 "query($nombre : String){" +
                 "   Page(perPage:10){" +
                 "       media(type: MANGA, search: $nombre){" +
@@ -547,141 +460,142 @@ namespace Discord_Bot.Modulos
                 "       }" +
                 "   }" +
                 "}",
-                Variables = new
-                {
-                    nombre = manga
-                }
-            };
-            try
-            {
-                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                if (data.Data != null)
-                {
-                    int cont = 0;
-                    string opc = string.Empty;
-                    foreach (var animeP in data.Data.Page.media)
+                    Variables = new
                     {
-                        cont++;
-                        opc += $"{cont} - {animeP.title.romaji}\n";
+                        nombre = manga
                     }
-                    var elegido = await funciones.GetElegido(ctx, opc, cont);
-                    if (elegido > 0)
+                };
+                try
+                {
+                    var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                    if (data.Data != null)
                     {
-                        var datos = data.Data.Page.media[elegido - 1];
-                        if ((datos.isAdult == "false") || (datos.isAdult == true && ctx.Channel.IsNSFW))
+                        int cont = 0;
+                        string opc = string.Empty;
+                        foreach (var animeP in data.Data.Page.media)
                         {
-                            string descripcion = datos.description;
-                            descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
-                            if (descripcion == "")
-                                descripcion = "(Sin descripción)";
-                            string estado = datos.status;
-                            string formato = datos.format;
-                            string score = $"{datos.meanScore}/100";
-                            string fechas;
-                            string generos = string.Empty;
-                            foreach (var genero in datos.genres)
+                            cont++;
+                            opc += $"{cont} - {animeP.title.romaji}\n";
+                        }
+                        var elegido = await funciones.GetElegido(ctx, opc, cont);
+                        if (elegido > 0)
+                        {
+                            var datos = data.Data.Page.media[elegido - 1];
+                            if ((datos.isAdult == "false") || (datos.isAdult == true && ctx.Channel.IsNSFW))
                             {
-                                generos += genero;
-                                generos += ", ";
-                            }
-                            if (generos.Length >= 2)
-                                generos = generos.Remove(generos.Length - 2);
-                            string tags = string.Empty;
-                            foreach (var tag in datos.tags)
-                            {
-                                if (tag.isMediaSpoiler == "false")
+                                string descripcion = datos.description;
+                                descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
+                                if (descripcion == "")
+                                    descripcion = "(Sin descripción)";
+                                string estado = datos.status;
+                                string formato = datos.format;
+                                string score = $"{datos.meanScore}/100";
+                                string fechas;
+                                string generos = string.Empty;
+                                foreach (var genero in datos.genres)
                                 {
-                                    tags += tag.name;
+                                    generos += genero;
+                                    generos += ", ";
+                                }
+                                if (generos.Length >= 2)
+                                    generos = generos.Remove(generos.Length - 2);
+                                string tags = string.Empty;
+                                foreach (var tag in datos.tags)
+                                {
+                                    if (tag.isMediaSpoiler == "false")
+                                    {
+                                        tags += tag.name;
+                                    }
+                                    else
+                                    {
+                                        tags += $"||{tag.name}||";
+                                    }
+                                    tags += ", ";
+                                }
+                                if (tags.Length >= 2)
+                                    tags = tags.Remove(tags.Length - 2);
+                                string titulos = string.Empty;
+                                foreach (var title in datos.synonyms)
+                                {
+                                    titulos += $"`{title}`, ";
+                                }
+                                if (titulos.Length >= 2)
+                                    titulos = titulos.Remove(titulos.Length - 2);
+                                if (datos.startDate.day != null)
+                                {
+                                    if (datos.endDate.day != null)
+                                        fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
+                                    else
+                                        fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
                                 }
                                 else
                                 {
-                                    tags += $"||{tag.name}||";
+                                    fechas = $"Este manga no tiene fecha de emisión";
                                 }
-                                tags += ", ";
-                            }
-                            if (tags.Length >= 2)
-                                tags = tags.Remove(tags.Length - 2);
-                            string titulos = string.Empty;
-                            foreach (var title in datos.synonyms)
-                            {
-                                titulos += $"`{title}`, ";
-                            }
-                            if (titulos.Length >= 2)
-                                titulos = titulos.Remove(titulos.Length - 2);
-                            if (datos.startDate.day != null)
-                            {
-                                if (datos.endDate.day != null)
-                                    fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
-                                else
-                                    fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
+                                string titulo = datos.title.romaji;
+                                string urlAnilist = datos.siteUrl;
+                                var builder = new DiscordEmbedBuilder
+                                {
+                                    Title = titulo,
+                                    Url = urlAnilist,
+                                    Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
+                                    {
+                                        Url = datos.coverImage.large
+                                    },
+                                    Footer = funciones.GetFooter(ctx),
+                                    Color = funciones.GetColor(),
+                                    Description = descripcion
+                                };
+                                if (formato.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(formato), true);
+                                if (estado.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
+                                if (score.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), true);
+                                if (fechas.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha de publicación", funciones.NormalizarField(fechas), false);
+                                if (generos.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(generos), false);
+                                if (tags.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(tags), false);
+                                if (titulos.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(titulos), false);
+                                await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
                             }
                             else
                             {
-                                fechas = $"Este manga no tiene fecha de emisión";
-                            }
-                            string titulo = datos.title.romaji;
-                            string urlAnilist = datos.siteUrl;
-                            var builder = new DiscordEmbedBuilder
-                            {
-                                Title = titulo,
-                                Url = urlAnilist,
-                                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
+                                DiscordMessage msg = await ctx.Channel.SendMessageAsync("", embed: new DiscordEmbedBuilder
                                 {
-                                    Url = datos.coverImage.large
-                                },
-                                Footer = funciones.GetFooter(ctx),
-                                Color = funciones.GetColor(),
-                                Description = descripcion
-                            };
-                            if (formato.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(formato), true);
-                            if (estado.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
-                            if (score.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), true);
-                            if (fechas.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha de publicación", funciones.NormalizarField(fechas), false);
-                            if (generos.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(generos), false);
-                            if (tags.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(tags), false);
-                            if (titulos.Length > 0)
-                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(titulos), false);
-                            await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+                                    Title = "Requiere NSFW",
+                                    Description = "Este comando debe ser invocado en un canal NSFW.",
+                                    Color = new DiscordColor(0xFF0000),
+                                    Footer = funciones.GetFooter(ctx)
+                                });
+                                await Task.Delay(3000);
+                                await funciones.BorrarMensaje(ctx, msg.Id);
+                            }
                         }
-                        else
+                    }
+                    else
+                    {
+                        foreach (var x in data.Errors)
                         {
-                            DiscordMessage msg = await ctx.Channel.SendMessageAsync("", embed: new DiscordEmbedBuilder
-                            {
-                                Title = "Requiere NSFW",
-                                Description = "Este comando debe ser invocado en un canal NSFW.",
-                                Color = new DiscordColor(0xFF0000),
-                                Footer = funciones.GetFooter(ctx)
-                            });
+                            var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
                             await Task.Delay(3000);
                             await funciones.BorrarMensaje(ctx, msg.Id);
                         }
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    foreach (var x in data.Errors)
+                    DiscordMessage msg = ex.Message switch
                     {
-                        var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
-                        await Task.Delay(3000);
-                        await funciones.BorrarMensaje(ctx, msg.Id);
-                    }
+                        "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el anime `{manga}`").ConfigureAwait(false),
+                        _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
+                    };
+                    await Task.Delay(3000);
+                    await funciones.BorrarMensaje(ctx, msg.Id);
                 }
-            }
-            catch (Exception ex)
-            {
-                DiscordMessage msg = ex.Message switch
-                {
-                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el anime `{manga}`").ConfigureAwait(false),
-                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
-                };
-                await Task.Delay(3000);
-                await funciones.BorrarMensaje(ctx, msg.Id);
             }
         }
 
@@ -690,43 +604,13 @@ namespace Discord_Bot.Modulos
         {
             if (String.IsNullOrEmpty(personaje))
             {
-                var interactivity = ctx.Client.GetInteractivity();
-                var msgCharacter = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Escribe el nombre de un personaje",
-                    Description = "Ejemplo: Yumiko Sakaki",
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor(),
-                });
-                var msgCharacterInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                if (!msgCharacterInter.TimedOut)
-                {
-                    personaje = msgCharacterInter.Result.Content;
-                    if (msgCharacter != null)
-                        await funciones.BorrarMensaje(ctx, msgCharacter.Id);
-                    if (msgCharacterInter.Result != null)
-                        await funciones.BorrarMensaje(ctx, msgCharacterInter.Result.Id);
-                }
-                else
-                {
-                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Title = "Error",
-                        Description = "Tiempo agotado esperando el usuario de AniList",
-                        Footer = funciones.GetFooter(ctx),
-                        Color = DiscordColor.Red,
-                    });
-                    await Task.Delay(3000);
-                    if (msgError != null)
-                        await funciones.BorrarMensaje(ctx, msgError.Id);
-                    if (msgCharacter != null)
-                        await funciones.BorrarMensaje(ctx, msgCharacter.Id);
-                    return;
-                }
+                personaje = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del personaje", "Ejemplo: Yumiko Sakaki", "Tiempo agotado esperando el nombre");
             }
-            var request = new GraphQLRequest
+            if (!String.IsNullOrEmpty(personaje))
             {
-                Query =
+                var request = new GraphQLRequest
+                {
+                    Query =
                 "query($nombre : String){" +
                 "   Page(perPage:10){" +
                 "       characters(search: $nombre){" +
@@ -757,82 +641,83 @@ namespace Discord_Bot.Modulos
                 "       }" +
                 "   }" +
                 "}",
-                Variables = new
-                {
-                    nombre = personaje
-                }
-            };
-            try
-            {
-                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                if (data.Data != null)
-                {
-                    int cont = 0;
-                    string opc = string.Empty;
-                    foreach (var animeP in data.Data.Page.characters)
+                    Variables = new
                     {
-                        cont++;
-                        opc += $"{cont} - {animeP.name.full}\n";
+                        nombre = personaje
                     }
-                    var elegido = await funciones.GetElegido(ctx, opc, cont);
-                    if (elegido > 0)
-                    {
-                        var datos = data.Data.Page.characters[elegido - 1];
-                        string descripcion = datos.description;
-                        descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
-                        if (descripcion == "")
-                            descripcion = "(Sin descripción)";
-                        string nombre = datos.name.full;
-                        string imagen = datos.image.large;
-                        string urlAnilist = datos.siteUrl;
-                        string animes = string.Empty;
-                        foreach (var anime in datos.animes.nodes)
-                        {
-                            animes += $"[{anime.title.romaji}]({anime.siteUrl})\n";
-                        }
-                        string mangas = string.Empty;
-                        foreach (var manga in datos.mangas.nodes)
-                        {
-                            mangas += $"[{manga.title.romaji}]({manga.siteUrl})\n";
-                        }
-                        var builder = new DiscordEmbedBuilder
-                        {
-                            Title = nombre,
-                            Url = urlAnilist,
-                            Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
-                            {
-                                Url = imagen
-                            },
-                            Footer = funciones.GetFooter(ctx),
-                            Color = funciones.GetColor(),
-                            Description = descripcion
-                        };
-                        if (animes.Length > 0)
-                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes", funciones.NormalizarField(animes), false);
-                        if (mangas.Length > 0)
-                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas", funciones.NormalizarField(mangas), false);
-                        await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    foreach (var x in data.Errors)
-                    {
-                        var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
-                        await Task.Delay(3000);
-                        await funciones.BorrarMensaje(ctx, msg.Id);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                DiscordMessage msg = ex.Message switch
-                {
-                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el personaje `{personaje}`").ConfigureAwait(false),
-                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado, mensaje: [{ex.Message}").ConfigureAwait(false),
                 };
-                await Task.Delay(5000);
-                await funciones.BorrarMensaje(ctx, msg.Id);
+                try
+                {
+                    var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                    if (data.Data != null)
+                    {
+                        int cont = 0;
+                        string opc = string.Empty;
+                        foreach (var animeP in data.Data.Page.characters)
+                        {
+                            cont++;
+                            opc += $"{cont} - {animeP.name.full}\n";
+                        }
+                        var elegido = await funciones.GetElegido(ctx, opc, cont);
+                        if (elegido > 0)
+                        {
+                            var datos = data.Data.Page.characters[elegido - 1];
+                            string descripcion = datos.description;
+                            descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
+                            if (descripcion == "")
+                                descripcion = "(Sin descripción)";
+                            string nombre = datos.name.full;
+                            string imagen = datos.image.large;
+                            string urlAnilist = datos.siteUrl;
+                            string animes = string.Empty;
+                            foreach (var anime in datos.animes.nodes)
+                            {
+                                animes += $"[{anime.title.romaji}]({anime.siteUrl})\n";
+                            }
+                            string mangas = string.Empty;
+                            foreach (var manga in datos.mangas.nodes)
+                            {
+                                mangas += $"[{manga.title.romaji}]({manga.siteUrl})\n";
+                            }
+                            var builder = new DiscordEmbedBuilder
+                            {
+                                Title = nombre,
+                                Url = urlAnilist,
+                                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
+                                {
+                                    Url = imagen
+                                },
+                                Footer = funciones.GetFooter(ctx),
+                                Color = funciones.GetColor(),
+                                Description = descripcion
+                            };
+                            if (animes.Length > 0)
+                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes", funciones.NormalizarField(animes), false);
+                            if (mangas.Length > 0)
+                                builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas", funciones.NormalizarField(mangas), false);
+                            await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var x in data.Errors)
+                        {
+                            var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
+                            await Task.Delay(3000);
+                            await funciones.BorrarMensaje(ctx, msg.Id);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DiscordMessage msg = ex.Message switch
+                    {
+                        "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el personaje `{personaje}`").ConfigureAwait(false),
+                        _ => await ctx.Channel.SendMessageAsync($"Error inesperado, mensaje: [{ex.Message}").ConfigureAwait(false),
+                    };
+                    await Task.Delay(5000);
+                    await funciones.BorrarMensaje(ctx, msg.Id);
+                }
             }
         }
         
@@ -843,126 +728,97 @@ namespace Discord_Bot.Modulos
         {
             if (String.IsNullOrEmpty(url))
             {
-                var interactivity = ctx.Client.GetInteractivity();
-                var msgAnime = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Pon el link de una imagen",
-                    Description = "La imagen debe ser JPG, PNG o JPEG",
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor(),
-                });
-                var msgAnimeInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                if (!msgAnimeInter.TimedOut)
-                {
-                    url = msgAnimeInter.Result.Content;
-                    if (msgAnime != null)
-                        await funciones.BorrarMensaje(ctx, msgAnime.Id);
-                    if (msgAnimeInter.Result != null)
-                        await funciones.BorrarMensaje(ctx, msgAnimeInter.Result.Id);
-                }
-                else
-                {
-                    var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Title = "Error",
-                        Description = "Tiempo agotado esperando el link de la imagen",
-                        Footer = funciones.GetFooter(ctx),
-                        Color = DiscordColor.Red,
-                    });
-                    await Task.Delay(3000);
-                    if (msgError != null)
-                        await funciones.BorrarMensaje(ctx, msgError.Id);
-                    if (msgAnime != null)
-                        await funciones.BorrarMensaje(ctx, msgAnime.Id);
-                    return;
-                }
+                url = await funciones.GetStringInteractivity(ctx, "Escriba un link de una imagen", "La imagen debe ser JPG, PNG o JPEG", "Tiempo agotado esperando el link de la imagen");
             }
-            string msg = "OK";
-            if (url.Length > 0)
+            if (!String.IsNullOrEmpty(url))
             {
-                if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                string msg = "OK";
+                if (url.Length > 0)
                 {
-                    string extension = url[^4..];
-                    if (extension == ".jpg" || extension == ".png" || extension == "jpeg")
+                    if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                     {
-                        var client = new RestClient("https://trace.moe/api/search?url=" + url);
-                        var request = new RestRequest(Method.GET);
-                        request.AddHeader("content-type", "application/json");
-                        var procesando = await ctx.Channel.SendMessageAsync("Procesando imagen..").ConfigureAwait(false);
-                        IRestResponse response = client.Execute(request);
-                        await funciones.BorrarMensaje(ctx, procesando.Id);
-                        switch (response.StatusCode)
+                        string extension = url[^4..];
+                        if (extension == ".jpg" || extension == ".png" || extension == "jpeg")
                         {
-                            case HttpStatusCode.OK:
-                                var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
-                                string resultados = string.Empty;
-                                string titulo = "El posible anime de la imagen es:";
-                                bool encontro = false;
-                                foreach (var resultado in resp.docs)
-                                {
-                                    string enlace = "https://anilist.co/anime/";
-                                    int similaridad = resultado.similarity * 100;
-                                    if (similaridad >= 87)
+                            var client = new RestClient("https://trace.moe/api/search?url=" + url);
+                            var request = new RestRequest(Method.GET);
+                            request.AddHeader("content-type", "application/json");
+                            var procesando = await ctx.Channel.SendMessageAsync("Procesando imagen..").ConfigureAwait(false);
+                            IRestResponse response = client.Execute(request);
+                            await funciones.BorrarMensaje(ctx, procesando.Id);
+                            switch (response.StatusCode)
+                            {
+                                case HttpStatusCode.OK:
+                                    var resp = JsonConvert.DeserializeObject<dynamic>(response.Content);
+                                    string resultados = string.Empty;
+                                    string titulo = "El posible anime de la imagen es:";
+                                    bool encontro = false;
+                                    foreach (var resultado in resp.docs)
                                     {
-                                        encontro = true;
-                                        int segundo = resultado.at;
-                                        TimeSpan time = TimeSpan.FromSeconds(segundo);
-                                        string at = time.ToString(@"mm\:ss");
-                                        resultados =
-                                            $"Nombre:    [{resultado.title_romaji}]({enlace += resultado.anilist_id})\n" +
-                                            $"Similitud: {similaridad}%\n" +
-                                            $"Episodio:  {resultado.episode} (Minuto: {at})\n";
-                                        break;
+                                        string enlace = "https://anilist.co/anime/";
+                                        int similaridad = resultado.similarity * 100;
+                                        if (similaridad >= 87)
+                                        {
+                                            encontro = true;
+                                            int segundo = resultado.at;
+                                            TimeSpan time = TimeSpan.FromSeconds(segundo);
+                                            string at = time.ToString(@"mm\:ss");
+                                            resultados =
+                                                $"Nombre:    [{resultado.title_romaji}]({enlace += resultado.anilist_id})\n" +
+                                                $"Similitud: {similaridad}%\n" +
+                                                $"Episodio:  {resultado.episode} (Minuto: {at})\n";
+                                            break;
+                                        }
                                     }
-                                }
-                                if (!encontro)
-                                {
-                                    titulo = "No se han encontrado resultados para esta imagen";
-                                    resultados = "Recuerda que solamente funciona con imágenes que sean partes de un episodio";
-                                }
-                                var embed = new DiscordEmbedBuilder
-                                {
-                                    Footer = funciones.GetFooter(ctx),
-                                    Color = funciones.GetColor(),
-                                    Title = "Sauce (Trace.moe)",
-                                    ImageUrl = url
-                                };
-                                embed.AddField(titulo, resultados);
-                                await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
-                                break;
-                            case HttpStatusCode.BadRequest:
-                                msg = "Debes ingresar un link";
-                                break;
-                            case HttpStatusCode.Forbidden:
-                                msg = "Acceso denegado";
-                                break;
-                            case HttpStatusCode.TooManyRequests:
-                                msg = "Ratelimit excedido";
-                                break;
-                            case HttpStatusCode.InternalServerError:
-                            case HttpStatusCode.ServiceUnavailable:
-                                msg = "Error interno en el servidor de Trace.moe";
-                                break;
-                            default:
-                                msg = "Error inesperado";
-                                break;
+                                    if (!encontro)
+                                    {
+                                        titulo = "No se han encontrado resultados para esta imagen";
+                                        resultados = "Recuerda que solamente funciona con imágenes que sean partes de un episodio";
+                                    }
+                                    var embed = new DiscordEmbedBuilder
+                                    {
+                                        Footer = funciones.GetFooter(ctx),
+                                        Color = funciones.GetColor(),
+                                        Title = "Sauce (Trace.moe)",
+                                        ImageUrl = url
+                                    };
+                                    embed.AddField(titulo, resultados);
+                                    await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+                                    break;
+                                case HttpStatusCode.BadRequest:
+                                    msg = "Debes ingresar un link";
+                                    break;
+                                case HttpStatusCode.Forbidden:
+                                    msg = "Acceso denegado";
+                                    break;
+                                case HttpStatusCode.TooManyRequests:
+                                    msg = "Ratelimit excedido";
+                                    break;
+                                case HttpStatusCode.InternalServerError:
+                                case HttpStatusCode.ServiceUnavailable:
+                                    msg = "Error interno en el servidor de Trace.moe";
+                                    break;
+                                default:
+                                    msg = "Error inesperado";
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            msg = "La imagen debe ser JPG, PNG o JPEG";
                         }
                     }
                     else
                     {
-                        msg = "La imagen debe ser JPG, PNG o JPEG";
+                        msg = "Debes ingresar el link de una imagen";
                     }
                 }
-                else
+                if (msg != "OK")
                 {
-                    msg = "Debes ingresar el link de una imagen";
+                    DiscordMessage msgError = await ctx.Channel.SendMessageAsync(msg).ConfigureAwait(false);
+                    await Task.Delay(3000);
+                    await funciones.BorrarMensaje(ctx, msgError.Id);
                 }
-            }
-            if (msg != "OK")
-            {
-                DiscordMessage msgError = await ctx.Channel.SendMessageAsync(msg).ConfigureAwait(false);
-                await Task.Delay(3000);
-                await funciones.BorrarMensaje(ctx, msgError.Id);
             }
         }
 
