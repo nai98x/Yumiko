@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using YumikoBot.DAL;
 
@@ -76,85 +77,196 @@ namespace Discord_Bot
 
         public async Task<SettingsJuego> InicializarJuego(CommandContext ctx, InteractivityExtension interactivity, bool elegirDificultad, bool elegirTag)
         {
-            var msgCntRondas = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            DiscordButtonComponent button10 = new DiscordButtonComponent(ButtonStyle.Primary, "10", "10");
+            DiscordButtonComponent button20 = new DiscordButtonComponent(ButtonStyle.Primary, "20", "20");
+            DiscordButtonComponent button50 = new DiscordButtonComponent(ButtonStyle.Primary, "50", "50");
+            DiscordButtonComponent button75 = new DiscordButtonComponent(ButtonStyle.Primary, "75", "75");
+            DiscordButtonComponent button100 = new DiscordButtonComponent(ButtonStyle.Primary, "100", "100");
+
+            DiscordMessageBuilder mensajeRondas = new DiscordMessageBuilder()
             {
-                Title = "Elige la cantidad de rondas (máximo 100)",
-                Description = "Por ejemplo: 10"
-            });
-            var msgRondasInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                Embed = new DiscordEmbedBuilder
+                {
+                    Title = "Elige la cantidad de rondas",
+                    Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
+                }
+            };
+
+            mensajeRondas.AddComponents(button10, button20, button50, button75, button100);
+
+            DiscordMessage msgCntRondas = await mensajeRondas.SendAsync(ctx.Channel);
+            var msgRondasInter = await interactivity.WaitForButtonAsync(msgCntRondas, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
             if (!msgRondasInter.TimedOut)
             {
-                bool result = int.TryParse(msgRondasInter.Result.Content, out int rondas);
-                if (result)
+                var resultRondas = msgRondasInter.Result;
+                int rondas = int.Parse(resultRondas.Id);
+                if (msgCntRondas != null)
+                    await funciones.BorrarMensaje(ctx, msgCntRondas.Id);
+                if (elegirDificultad)
                 {
-                    if (rondas > 0 && rondas <= 100)
+                    DiscordComponentEmoji emote = new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
+                    DiscordButtonComponent buttonAleatorio = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
+                    DiscordButtonComponent buttonFacil = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Fácil");
+                    DiscordButtonComponent buttonMedia = new DiscordButtonComponent(ButtonStyle.Primary, "2", "Media");
+                    DiscordButtonComponent buttonDificil = new DiscordButtonComponent(ButtonStyle.Primary, "3", "Dificil");
+                    DiscordButtonComponent buttonExtremo = new DiscordButtonComponent(ButtonStyle.Primary, "4", "Extremo");
+
+                    DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
                     {
-                        if (elegirDificultad)
+                        Embed = new DiscordEmbedBuilder
                         {
-                            DiscordEmoji emojiDado = DiscordEmoji.FromName(ctx.Client, ":game_die:");
-                            var msgDificultad = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                            Title = "Elije la dificultad",
+                            Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
+                        }
+                    };
+
+                    mensaje.AddComponents(buttonAleatorio, buttonFacil, buttonMedia, buttonDificil, buttonExtremo);
+
+                    DiscordMessage msg = await mensaje.SendAsync(ctx.Channel);
+                    var interDificultad = await interactivity.WaitForButtonAsync(msg, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                    if (!interDificultad.TimedOut)
+                    {
+                        var resultDifiicultad = interDificultad.Result;
+                        string dificultad = resultDifiicultad.Id;
+                        if (dificultad == "0")
+                        {
+                            var dificultadNum = funciones.GetNumeroRandom(1, 4);
+                            dificultad = dificultadNum.ToString();
+                        }
+                        int iterIni;
+                        int iterFin;
+                        string dificultadStr;
+                        switch (dificultad)
+                        {
+                            case "1":
+                                iterIni = 1;
+                                iterFin = 10;
+                                dificultadStr = "Fácil";
+                                break;
+                            case "2":
+                                iterIni = 10;
+                                iterFin = 30;
+                                dificultadStr = "Media";
+                                break;
+                            case "3":
+                                iterIni = 30;
+                                iterFin = 60;
+                                dificultadStr = "Dificil";
+                                break;
+                            case "4":
+                                iterIni = 60;
+                                iterFin = 100;
+                                dificultadStr = "Extremo";
+                                break;
+                            default:
+                                iterIni = 10;
+                                iterFin = 30;
+                                dificultadStr = "Media";
+                                break;
+                        }
+                        if (mensaje != null)
+                            await funciones.BorrarMensaje(ctx, msg.Id);
+                        if (!elegirTag)
+                        {
+                            return new SettingsJuego()
                             {
-                                Title = "Elije la dificultad",
-                                Description = $"0- Aleatorio {emojiDado}\n1- Fácil\n2- Media\n3- Dificil\n4- Extremo"
-                            });
-                            var msgDificultadInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-                            if (!msgDificultadInter.TimedOut)
+                                Ok = true,
+                                Rondas = rondas,
+                                IterIni = iterIni,
+                                IterFin = iterFin,
+                                Dificultad = dificultadStr
+                            };
+                        }
+                    }
+                    else
+                    {
+                        if (mensaje != null)
+                            await funciones.BorrarMensaje(ctx, msg.Id);
+                        return new SettingsJuego()
+                        {
+                            Ok = false,
+                            MsgError = "Tiempo agotado esperando la dificultad"
+                        };
+                    }
+                }
+                if (elegirTag)
+                {
+                    string query =
+                    "query{" +
+                    "   MediaTagCollection{" +
+                    "       name," +
+                    "       description," +
+                    "       isAdult" +
+                    "   }" +
+                    "}";
+                    var request = new GraphQLRequest
+                    {
+                        Query = query
+                    };
+                    try
+                    {
+                        var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                        List<Tag> tags = new List<Tag>();
+                        foreach (var x in data.Data.MediaTagCollection)
+                        {
+                            if ((x.isAdult == "false") || (x.isAdult == true && ctx.Channel.IsNSFW))
                             {
-                                result = int.TryParse(msgDificultadInter.Result.Content, out int dificultad);
-                                if (result)
+                                string nombre = x.name;
+                                string descripcion = x.description;
+                                tags.Add(new Tag()
                                 {
-                                    string dificultadStr;
-                                    if (dificultad >= 0 && dificultad <= 4)
+                                    Nombre = nombre,
+                                    Descripcion = descripcion
+                                });
+                            }
+                        }
+                        var preguntaTag = await ctx.Channel.SendMessageAsync("Escribe un tag");
+                        var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                        if (!msgTagInter.TimedOut)
+                        {
+                            int numTag = 0;
+                            string tagResp = string.Empty;
+                            List<Tag> tagsFiltrados = tags.Where(x => x.Nombre.ToLower().Trim().Contains(msgTagInter.Result.Content.ToLower().Trim())).ToList();
+                            if (tagsFiltrados.Count > 0)
+                            {
+                                foreach (Tag t in tagsFiltrados)
+                                {
+                                    numTag++;
+                                    tagResp += $"{numTag} - {t.Nombre}\n";
+                                }
+                                var msgOpciones = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                {
+                                    Footer = funciones.GetFooter(ctx),
+                                    Color = funciones.GetColor(),
+                                    Title = "Elije el tag escribiendo su número",
+                                    Description = tagResp
+                                });
+                                var msgElegirTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                                if (!msgElegirTagInter.TimedOut)
+                                {
+                                    bool resultTag = int.TryParse(msgElegirTagInter.Result.Content, out int numTagElegir);
+                                    if (resultTag)
                                     {
-                                        if (dificultad == 0)
-                                            dificultad = funciones.GetNumeroRandom(1, 4);
-                                        int iterIni;
-                                        int iterFin;
-                                        switch (dificultad)
+                                        if (numTagElegir > 0 && (numTagElegir <= tagsFiltrados.Count))
                                         {
-                                            case 1:
-                                                iterIni = 1;
-                                                iterFin = 10;
-                                                dificultadStr = "Fácil";
-                                                break;
-                                            case 2:
-                                                iterIni = 10;
-                                                iterFin = 30;
-                                                dificultadStr = "Media";
-                                                break;
-                                            case 3:
-                                                iterIni = 30;
-                                                iterFin = 60;
-                                                dificultadStr = "Dificil";
-                                                break;
-                                            case 4:
-                                                iterIni = 60;
-                                                iterFin = 100;
-                                                dificultadStr = "Extremo";
-                                                break;
-                                            default:
-                                                iterIni = 6;
-                                                iterFin = 20;
-                                                dificultadStr = "Medio";
-                                                break;
+                                            await funciones.BorrarMensaje(ctx, preguntaTag.Id);
+                                            await funciones.BorrarMensaje(ctx, msgTagInter.Result.Id);
+                                            await funciones.BorrarMensaje(ctx, msgOpciones.Id);
+                                            await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
+                                            return new SettingsJuego()
+                                            {
+                                                Rondas = rondas,
+                                                Tag = tagsFiltrados[numTagElegir - 1].Nombre,
+                                                TagDesc = tagsFiltrados[numTagElegir - 1].Descripcion,
+                                                Ok = true
+                                            };
                                         }
-                                        if (msgCntRondas != null)
-                                            await funciones.BorrarMensaje(ctx, msgCntRondas.Id);
-                                        if (msgRondasInter.Result != null)
-                                            await funciones.BorrarMensaje(ctx, msgRondasInter.Result.Id);
-                                        if (msgDificultad != null)
-                                            await funciones.BorrarMensaje(ctx, msgDificultad.Id);
-                                        if (msgDificultadInter.Result != null)
-                                            await funciones.BorrarMensaje(ctx, msgDificultadInter.Result.Id);
-                                        if (!elegirTag)
+                                        else
                                         {
                                             return new SettingsJuego()
                                             {
-                                                Ok = true,
-                                                Rondas = rondas,
-                                                IterIni = iterIni,
-                                                IterFin = iterFin,
-                                                Dificultad = dificultadStr
+                                                Ok = false,
+                                                MsgError = "El numero indicado del tag debe ser válido"
                                             };
                                         }
                                     }
@@ -163,7 +275,7 @@ namespace Discord_Bot
                                         return new SettingsJuego()
                                         {
                                             Ok = false,
-                                            MsgError = "La dificultad debe ser 0, 1, 2, 3 o 4"
+                                            MsgError = "Debes indicar un numero para elegir el tag"
                                         };
                                     }
                                 }
@@ -172,7 +284,7 @@ namespace Discord_Bot
                                     return new SettingsJuego()
                                     {
                                         Ok = false,
-                                        MsgError = "La dificultad debe ser un número (0, 1, 2, 3 o 4)"
+                                        MsgError = "Tiempo agotado esperando la elección del tag"
                                     };
                                 }
                             }
@@ -181,138 +293,7 @@ namespace Discord_Bot
                                 return new SettingsJuego()
                                 {
                                     Ok = false,
-                                    MsgError = "Tiempo agotado esperando la dificultad"
-                                };
-                            }
-                        }
-                        if (elegirTag)
-                        {
-                            string query =
-                            "query{" +
-                            "   MediaTagCollection{" +
-                            "       name," +
-                            "       description," +
-                            "       isAdult" +
-                            "   }" +
-                            "}";
-                            var request = new GraphQLRequest
-                            {
-                                Query = query
-                            };
-                            try
-                            {
-                                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                                List<Tag> tags = new List<Tag>();
-                                foreach (var x in data.Data.MediaTagCollection)
-                                {
-                                    if ((x.isAdult == "false") || (x.isAdult == true && ctx.Channel.IsNSFW))
-                                    {
-                                        string nombre = x.name;
-                                        string descripcion = x.description;
-                                        tags.Add(new Tag()
-                                        {
-                                            Nombre = nombre,
-                                            Descripcion = descripcion
-                                        });
-                                    }
-                                }
-                                var preguntaTag = await ctx.Channel.SendMessageAsync("Escribe un tag");
-                                var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-                                if (!msgTagInter.TimedOut)
-                                {
-                                    int numTag = 0;
-                                    string tagResp = string.Empty;
-                                    List<Tag> tagsFiltrados = tags.Where(x => x.Nombre.ToLower().Trim().Contains(msgTagInter.Result.Content.ToLower().Trim())).ToList();
-                                    if (tagsFiltrados.Count > 0)
-                                    {
-                                        foreach (Tag t in tagsFiltrados)
-                                        {
-                                            numTag++;
-                                            tagResp += $"{numTag} - {t.Nombre}\n";
-                                        }
-                                        var msgOpciones = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                                        {
-                                            Footer = funciones.GetFooter(ctx),
-                                            Color = funciones.GetColor(),
-                                            Title = "Elije el tag escribiendo su número",
-                                            Description = tagResp
-                                        });
-                                        var msgElegirTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-                                        if (!msgElegirTagInter.TimedOut)
-                                        {
-                                            bool resultTag = int.TryParse(msgElegirTagInter.Result.Content, out int numTagElegir);
-                                            if (resultTag)
-                                            {
-                                                if (numTagElegir > 0 && (numTagElegir <= tagsFiltrados.Count))
-                                                {
-                                                    await funciones.BorrarMensaje(ctx, preguntaTag.Id);
-                                                    await funciones.BorrarMensaje(ctx, msgTagInter.Result.Id);
-                                                    await funciones.BorrarMensaje(ctx, msgOpciones.Id);
-                                                    await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
-                                                    return new SettingsJuego()
-                                                    {
-                                                        Rondas = rondas,
-                                                        Tag = tagsFiltrados[numTagElegir - 1].Nombre,
-                                                        TagDesc = tagsFiltrados[numTagElegir - 1].Descripcion,
-                                                        Ok = true
-                                                    };
-                                                }
-                                                else
-                                                {
-                                                    return new SettingsJuego()
-                                                    {
-                                                        Ok = false,
-                                                        MsgError = "El numero indicado del tag debe ser válido"
-                                                    };
-                                                }
-                                            }
-                                            else
-                                            {
-                                                return new SettingsJuego()
-                                                {
-                                                    Ok = false,
-                                                    MsgError = "Debes indicar un numero para elegir el tag"
-                                                };
-                                            }
-                                        }
-                                        else
-                                        {
-                                            return new SettingsJuego()
-                                            {
-                                                Ok = false,
-                                                MsgError = "Tiempo agotado esperando la elección del tag"
-                                            };
-                                        }
-                                    }
-                                    else
-                                    {
-                                        return new SettingsJuego()
-                                        {
-                                            Ok = false,
-                                            MsgError = "No se encontro ningun tag"
-                                        };
-                                    }
-                                }
-                                else
-                                {
-                                    return new SettingsJuego()
-                                    {
-                                        Ok = false,
-                                        MsgError = "Tiempo agotado esperando el tag"
-                                    };
-                                }
-                            }
-                            catch (Exception)
-                            {
-                                // Grabar en logerrores instead
-                                //DiscordMessage msg = ex.Message switch
-                                //{
-                                //    _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
-                                //};
-                                return new SettingsJuego()
-                                {
-                                    Ok = false,
-                                    MsgError = "Error inesperado eligiendo el tag"
+                                    MsgError = "No se encontro ningun tag"
                                 };
                             }
                         }
@@ -321,16 +302,21 @@ namespace Discord_Bot
                             return new SettingsJuego()
                             {
                                 Ok = false,
-                                MsgError = "Error de programación, se debe elegir el tag o las rondas"
+                                MsgError = "Tiempo agotado esperando el tag"
                             };
                         }
                     }
-                    else
+                    catch (Exception)
                     {
+                        // Grabar en logerrores instead
+                        //DiscordMessage msg = ex.Message switch
+                        //{
+                        //    _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                        //};
                         return new SettingsJuego()
                         {
                             Ok = false,
-                            MsgError = "La cantidad de rondas debe ser mayor a 0 y menor a 100"
+                            MsgError = "Error inesperado eligiendo el tag"
                         };
                     }
                 }
@@ -339,12 +325,14 @@ namespace Discord_Bot
                     return new SettingsJuego()
                     {
                         Ok = false,
-                        MsgError = "La cantidad de rondas debe ser un numero"
+                        MsgError = "Error de programación, se debe elegir el tag o las rondas"
                     };
                 }
             }
             else
             {
+                if (msgCntRondas != null)
+                    await funciones.BorrarMensaje(ctx, msgCntRondas.Id);
                 return new SettingsJuego()
                 {
                     Ok = false,
@@ -464,12 +452,11 @@ namespace Discord_Bot
                     {
                         await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
-                            Title = "¡Juego cancelado!",
+                            Title = $"¡Juego cancelado por {ctx.Member.Username}#{ctx.Member.Discriminator}!",
                             Description = desc,
                             Color = DiscordColor.Red
                         }).ConfigureAwait(false);
                         await GetResultados(ctx, participantes, lastRonda, settings.Dificultad, juego);
-                        await ctx.Channel.SendMessageAsync($"El juego ha sido **cancelado** por **{ctx.User.Username}#{ctx.User.Discriminator}**").ConfigureAwait(false);
                         return;
                     }
                     DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
@@ -933,6 +920,324 @@ namespace Discord_Bot
             } while (hasNextValue.ToLower() == "true" && i <= settings.IterFin);
             await funciones.BorrarMensaje(ctx, mensaje.Id);
             return characterList;
+        }
+
+        public async Task JugarAhorcado(CommandContext ctx, dynamic elegido, string juego)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            int errores = 0;
+            string nameFull = string.Empty;
+            switch (juego)
+            {
+                case "personaje":
+                    nameFull = elegido.NameFull.ToLower().Trim();
+                    break;
+                case "anime":
+                    nameFull = elegido.TitleRomaji.ToLower().Trim();
+                    break;
+                default:
+                    await funciones.GrabarLogError(ctx, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
+                    return;
+            }
+            string nameFullParsed = Regex.Replace(nameFull, @"\s+", " ");
+            char[] charsPj = nameFullParsed.ToCharArray();
+            var charsEsp = charsPj.Distinct();
+            var chars = charsEsp.ToList();
+            chars.Remove((char)32);
+            List<CaracterBool> caracteres = new List<CaracterBool>();
+            List<string> letrasUsadas = new List<string>();
+            foreach (char c in chars)
+            {
+                if (Char.IsLetter(c))
+                {
+                    caracteres.Add(new CaracterBool()
+                    {
+                        Caracter = c,
+                        Acertado = false
+                    });
+                }
+                else
+                {
+                    caracteres.Add(new CaracterBool()
+                    {
+                        Caracter = c,
+                        Acertado = true
+                    });
+                }
+            }
+            bool partidaTerminada = false;
+            List<UsuarioJuego> participantes = new List<UsuarioJuego>();
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            {
+                Title = "Ahorcado (Personajes)",
+                Description = "¡Escribe una letra!\n\nPuedes terminar la partida en cualquier momento escribiendo `cancelar`",
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor()
+            }).ConfigureAwait(false);
+            DiscordMember ganador = ctx.Member;
+            string titRonda;
+            DiscordColor colRonda;
+            int rondas = 0;
+            int rondasPerdidas = 0;
+            dynamic predicate;
+            string desc1 = string.Empty;
+            switch (juego)
+            {
+                case "personaje":
+                    desc1 = $"El personaje es [{elegido.NameFull}]({elegido.SiteUrl}) de [{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})";
+                    predicate = new Func<DiscordMessage, bool>(
+                        xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
+                        ((xm.Content.ToLower().Trim() == "cancelar") ||
+                        ((xm.Content.ToLower().Trim().Length == 1) && (xm.Content.ToLower().Trim().All(Char.IsLetter)) && (letrasUsadas.Find(x => x == xm.Content.ToLower().Trim()) == null)) ||
+                        (xm.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim())
+                        ));
+                    break;
+                case "anime":
+                    desc1 = $"El anime es [{elegido.TitleRomaji}]({elegido.SiteUrl})";
+                    predicate = new Func<DiscordMessage, bool>(
+                        xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
+                        ((xm.Content.ToLower().Trim() == "cancelar") ||
+                        ((xm.Content.ToLower().Trim().Length == 1) && (xm.Content.ToLower().Trim().All(Char.IsLetter)) && (letrasUsadas.Find(x => x == xm.Content.ToLower().Trim()) == null)) ||
+                        (elegido.TitleRomaji != null && elegido.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim())
+                        ));
+                    break;
+                default:
+                    await funciones.GrabarLogError(ctx, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
+                    return;
+            }
+            do
+            {
+                var msg = await interactivity.WaitForMessageAsync(predicate, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
+                if (!msg.TimedOut)
+                {
+                    DiscordMember acertador = await ctx.Guild.GetMemberAsync(msg.Result.Author.Id);
+                    if (msg.Result.Content.ToLower().Trim().Length == 1)
+                    {
+                        var acierto = caracteres.Find(x => x.Caracter.ToString() == msg.Result.Content.ToLower().Trim());
+                        if (acierto != null)
+                        {
+                            acierto.Acertado = true;
+                            titRonda = $"¡{acertador.DisplayName} ha acertado!";
+                            colRonda = DiscordColor.Green;
+                            UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
+                            if (usr != null)
+                            {
+                                usr.Puntaje++;
+                            }
+                            else
+                            {
+                                participantes.Add(new UsuarioJuego()
+                                {
+                                    Usuario = msg.Result.Author,
+                                    Puntaje = 1
+                                });
+                            }
+                        }
+                        else
+                        {
+                            errores++;
+                            rondasPerdidas++;
+                            titRonda = $"¡{acertador.DisplayName} le ha errado!";
+                            colRonda = DiscordColor.Red;
+                            UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
+                            if (usr == null)
+                            {
+                                participantes.Add(new UsuarioJuego()
+                                {
+                                    Usuario = msg.Result.Author,
+                                    Puntaje = 0
+                                });
+                            }
+                        }
+
+                        var letraUsada = letrasUsadas.Find(x => x.ToLower().Trim() == msg.Result.Content.ToLower().Trim());
+                        if (letraUsada == null)
+                        {
+                            letrasUsadas.Add(msg.Result.Content.ToLower().Trim());
+                        }
+                        string letras = "`";
+                        foreach (var c in charsPj)
+                        {
+                            var registro = caracteres.Find(x => x.Caracter == c);
+                            if (registro != null) // Por los espacios del string original
+                            {
+                                if (registro.Acertado)
+                                    letras += c + " ";
+                                else
+                                    letras += "_ ";
+                            }
+                            else
+                            {
+                                letras += "` `";
+                            }
+                        }
+                        letras += "`\n\n";
+                        string desc = string.Empty;
+                        desc += letras;
+                        switch (errores)
+                        {
+                            case 0:
+                                desc += ". ┌─────┐\n" +
+                                ".┃...............┋\n" +
+                                ".┃...............┋\n" +
+                                ".┃\n" +
+                                ".┃\n" +
+                                ".┃\n" +
+                                "/-\\" +
+                                "\n";
+                                break;
+                            case 1:
+                                desc += ". ┌─────┐\n" +
+                                ".┃...............┋\n" +
+                                ".┃...............┋\n" +
+                                ".┃.............:dizzy_face: \n" +
+                                ".┃\n" +
+                                ".┃\n" +
+                                "/-\\" +
+                                "\n";
+                                break;
+                            case 2:
+                                desc += ". ┌─────┐\n" +
+                                ".┃...............┋\n" +
+                                ".┃...............┋\n" +
+                                ".┃.............:dizzy_face: \n" +
+                                ".┃............./\n" +
+                                ".┃\n" +
+                                "/-\\" +
+                                "\n";
+                                break;
+                            case 3:
+                                desc += ". ┌─────┐\n" +
+                                ".┃...............┋\n" +
+                                ".┃...............┋\n" +
+                                ".┃.............:dizzy_face: \n" +
+                                ".┃............./ |\n" +
+                                ".┃\n" +
+                                "/-\\" +
+                                "\n";
+                                break;
+                            case 4:
+                                desc += ". ┌─────┐\n" +
+                                ".┃...............┋\n" +
+                                ".┃...............┋\n" +
+                                ".┃.............:dizzy_face: \n" +
+                                ".┃............./ | \\   \n" +
+                                ".┃\n" +
+                                "/-\\" +
+                                "\n";
+                                break;
+                            case 5:
+                                desc += ". ┌─────┐\n" +
+                                ".┃...............┋\n" +
+                                ".┃...............┋\n" +
+                                ".┃.............:dizzy_face: \n" +
+                                ".┃............./ | \\   \n" +
+                                ".┃............../\n" +
+                                "/-\\" +
+                                "\n";
+                                break;
+                            case 6:
+                                desc += ". ┌─────┐\n" +
+                                ".┃...............┋\n" +
+                                ".┃...............┋\n" +
+                                ".┃.............:dizzy_face: \n" +
+                                ".┃............./ | \\   \n" +
+                                ".┃............../\\ \n" +
+                                "/-\\" +
+                                "\n";
+                                break;
+                        }
+                        desc += "\n**Letras usadas:**\n";
+                        foreach (var cc in letrasUsadas)
+                        {
+                            desc += $"`{cc}` ";
+                        }
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                        {
+                            Title = titRonda,
+                            Description = desc,
+                            Color = colRonda
+                        }).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        if (msg.Result.Content.ToLower().Trim() == "cancelar")
+                        {
+                            errores = 6;
+                            partidaTerminada = true;
+                        }
+                        else
+                        {
+                            int aciertos = 0;
+                            foreach (var ccc in caracteres)
+                            {
+                                if (!ccc.Acertado)
+                                {
+                                    ccc.Acertado = true;
+                                    aciertos++;
+                                }
+                            }
+                            UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
+                            if (usr != null)
+                            {
+                                usr.Puntaje += aciertos;
+                            }
+                            else
+                            {
+                                participantes.Add(new UsuarioJuego()
+                                {
+                                    Usuario = msg.Result.Author,
+                                    Puntaje = aciertos
+                                });
+                            }
+                            partidaTerminada = true;
+                        }
+                    }
+                    if ((caracteres.Find(x => x.Acertado == false) == null) || (juego == "personaje" && msg.Result.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim() || juego == "anime" && msg.Result.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim()))
+                    {
+                        ganador = acertador;
+                        partidaTerminada = true;
+                    }
+                }
+                else
+                {
+                    errores++;
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                    {
+                        Title = "¡Nadie ha escrito!",
+                        Description = "Escribe una letra cualquiera para seguir con el juego.",
+                        Footer = funciones.GetFooter(ctx),
+                        Color = DiscordColor.Red
+                    }).ConfigureAwait(false);
+                }
+                rondas++;
+                if (errores >= 6 || (caracteres.Find(x => x.Acertado == false) == null))
+                    partidaTerminada = true;
+            } while (!partidaTerminada);
+
+            if (errores == 6)
+            {
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                {
+                    Title = "¡Derrota!",
+                    Description = $"{desc1}",
+                    ImageUrl = elegido.Image,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = DiscordColor.Red
+                }).ConfigureAwait(false);
+            }
+            else
+            {
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                {
+                    Title = "¡Victoria!",
+                    Description = $"{desc1}\n\n" +
+                    $"Ganador: {ganador.Mention}",
+                    ImageUrl = elegido.Image,
+                    Footer = funciones.GetFooter(ctx),
+                    Color = DiscordColor.Green
+                }).ConfigureAwait(false);
+            }
         }
     }
 }

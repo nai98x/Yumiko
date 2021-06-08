@@ -22,7 +22,7 @@ namespace Discord_Bot
         public async Task<dynamic> GetAnilistMedia(CommandContext ctx, string busqueda, string tipo)
         {
             string query = "query($busqueda : String){" +
-                "   Page(perPage:10){" +
+                "   Page(perPage:5){" +
                 "       media(type: " + tipo.ToUpper() + ", search: $busqueda){" +
                 "           title{" +
                 "               romaji" +

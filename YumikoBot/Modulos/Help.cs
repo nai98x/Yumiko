@@ -22,7 +22,7 @@ namespace Discord_Bot.Modulos
 
             var comandos = commandsNext.RegisteredCommands.Values;
             string web = ConfigurationManager.AppSettings["Web"] + "#commands";
-            string urlTopGG = "https://top.gg/bot/295182825521545218/";
+            //string urlTopGG = "https://top.gg/bot/295182825521545218/";
             var comandosFiltrados = from com in comandos
                                     group com by com.Module.ModuleType.Name;
             if (comando == null)

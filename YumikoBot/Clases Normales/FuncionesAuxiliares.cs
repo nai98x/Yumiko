@@ -459,39 +459,44 @@ namespace Discord_Bot
             return null;
         }
 
-        public async Task<int> GetElegido(CommandContext ctx, string opciones, int cantidadOpciones)
+        public async Task<int> GetElegido(CommandContext ctx, List<string> opciones)
         {
-            int elegido = -1;
+            int cantidadOpciones = opciones.Count;
             if (cantidadOpciones == 1)
-                elegido = cantidadOpciones;
+                return 1;
             if (cantidadOpciones > 1)
             {
-                DiscordMessage elegirMsg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                {
-                    Footer = GetFooter(ctx),
-                    Color = GetColor(),
-                    Title = "Elije la opcion escribiendo su número a continuación",
-                    Description = opciones
-                });
                 var interactivity = ctx.Client.GetInteractivity();
-                var msgElegir = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                if (!msgElegir.TimedOut)
+
+                DiscordMessageBuilder mensajeRondas = new DiscordMessageBuilder()
                 {
-                    bool result = int.TryParse(msgElegir.Result.Content, out elegido);
-                    if (result && elegido > 0)
+                    Embed = new DiscordEmbedBuilder
                     {
-                        await Task.Delay(3000);
-                        await BorrarMensaje(ctx, elegirMsg.Id);
-                        await BorrarMensaje(ctx, msgElegir.Result.Id);
+                        Footer = GetFooter(ctx),
+                        Color = GetColor(),
+                        Title = "Elije la opcion",
                     }
-                    else
-                    {
-                        var msg = await ctx.Channel.SendMessageAsync($"Debes escribir un numero válido").ConfigureAwait(false);
-                        await Task.Delay(3000);
-                        await BorrarMensaje(ctx, msg.Id);
-                        await BorrarMensaje(ctx, elegirMsg.Id);
-                        await BorrarMensaje(ctx, msgElegir.Result.Id);
-                    }
+                };
+                List<DiscordComponent> componentes = new List<DiscordComponent>();
+                int i = 0;
+                foreach(var opc in opciones)
+                {
+                    i++;
+                    DiscordButtonComponent button = new DiscordButtonComponent(ButtonStyle.Primary, $"{i}", $"{opc}");
+                    componentes.Add(button);
+                }
+
+                mensajeRondas.AddComponents(componentes);
+
+                DiscordMessage elegirMsg = await mensajeRondas.SendAsync(ctx.Channel);
+                var msgElegirInter = await interactivity.WaitForButtonAsync(elegirMsg, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+
+                if (!msgElegirInter.TimedOut)
+                {
+                    var resultElegir = msgElegirInter.Result;
+                    await Task.Delay(3000);
+                    await BorrarMensaje(ctx, elegirMsg.Id);
+                    return int.Parse(resultElegir.Id);
                 }
                 else
                 {
@@ -501,7 +506,7 @@ namespace Discord_Bot
                     await BorrarMensaje(ctx, elegirMsg.Id);
                 }
             }
-            return elegido;
+            return -1;
         }
 
         public async Task<Character> GetRandomCharacter(CommandContext ctx, int pag)
@@ -563,6 +568,64 @@ namespace Discord_Bot
                             TitleRomaji = titleMedia,
                             SiteUrl = siteUrlMedia
                         }
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                DiscordMessage msg = ex.Message switch
+                {
+                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                };
+                await Task.Delay(3000);
+                await BorrarMensaje(ctx, msg.Id);
+                return null;
+            }
+            return null;
+        }
+
+        public async Task<Anime> GetRandomMedia(CommandContext ctx, int pag, string tipo)
+        {
+            string query = "query($pagina: Int){" +
+                        "   Page(page: $pagina, perPage: 1){" +
+                        "       media(sort: FAVOURITES_DESC, isAdult: false, type:" + tipo.ToUpper() + "){" +
+                        "           title{" +
+                        "               romaji," +
+                        "               english" +
+                        "           }," +
+                        "           coverImage{" +
+                        "               large" +
+                        "           }," +
+                        "           siteUrl," +
+                        "           favourites" +
+                        "       }" +
+                        "   }" +
+                        "}";
+            var request = new GraphQLRequest
+            {
+                Query = query,
+                Variables = new
+                {
+                    pagina = pag
+                }
+            };
+            try
+            {
+                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                foreach (var x in data.Data.Page.media)
+                {
+                    string titleRomaji = x.title.romaji;
+                    string titleEnglish = x.title.english;
+                    string imageUrl = x.coverImage.large;
+                    string siteUrl = x.siteUrl;
+                    int favoritos = x.favourites;
+                    return new Anime()
+                    {
+                        TitleRomaji = titleRomaji,
+                        TitleEnglish = titleEnglish,
+                        Image = imageUrl,
+                        SiteUrl = siteUrl,
+                        Favoritos = favoritos,
                     };
                 }
             }

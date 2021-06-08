@@ -74,6 +74,10 @@ namespace Discord_Bot
             Client.GuildCreated += Client_GuildCreated;
             Client.GuildDeleted += Client_GuildDeleted;
             Client.Resumed += Client_Resumed;
+            Client.ComponentInteractionCreated += async (DiscordClient client, ComponentInteractionCreateEventArgs args) =>
+            {
+                await args.Interaction.CreateResponseAsync(InteractionResponseType.DefferedMessageUpdate);
+            };
 
             Client.UseInteractivity(new InteractivityConfiguration());
             Client.UseVoiceNext();
@@ -234,7 +238,7 @@ namespace Discord_Bot
             _ = Task.Run(async () =>
             {
                 cm.Client.Logger.LogInformation($"Comando ejecutado: {e.Context.Message.Content} | Guild: {e.Context.Guild.Name} | Canal: {e.Context.Channel.Name}", DateTime.Now);
-                if (e.Context.Message != null)
+                if (e.Context.Message != null && e.Command.Module.ModuleType.Name.ToLower() != "nsfw")
                     await funciones.BorrarMensaje(e.Context, e.Context.Message.Id).ConfigureAwait(false);
             });
             return Task.CompletedTask;
@@ -315,12 +319,14 @@ namespace Discord_Bot
                         foreach (var exep in ex.FailedChecks)
                         {
                             string exepcion = exep.ToString();
+                            dynamic obj = exep;
                             string titulo, descripcion;
                             switch (exepcion)
                             {
                                 case "DSharpPlus.CommandsNext.Attributes.CooldownAttribute":
+                                    var tiempo = obj.Reset;
                                     titulo = "Cooldown";
-                                    descripcion = "Debes esperar para volver a ejecutar este comando.";
+                                    descripcion = $"Este comando se puede ejecutar cada {tiempo.Minutes} minutos";
                                     break;
                                 case "DSharpPlus.CommandsNext.Attributes.RequirePermissions":
                                 case "DSharpPlus.CommandsNext.Attributes.RequirePermissionsAttribute":
@@ -337,7 +343,7 @@ namespace Discord_Bot
                                     break;
                                 default:
                                     titulo = "Error inesperado";
-                                    descripcion = "Ha ocurrido un error que no puedo manejar.";
+                                    descripcion = $"Ha ocurrido un error que no puedo manejar.\nExcepcion: {exepcion}";
                                     await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder
                                     {
                                         Title = titulo,
@@ -371,7 +377,7 @@ namespace Discord_Bot
                             });
                             mensajes.Add(msg.Result);
                         }
-                        await Task.Delay(3000);
+                        await Task.Delay(5000);
                         if (e.Context.Message != null)
                             await funciones.BorrarMensaje(e.Context, e.Context.Message.Id);
                         foreach (DiscordMessage mensaje in mensajes)
