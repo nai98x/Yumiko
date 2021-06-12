@@ -25,6 +25,8 @@ namespace Discord_Bot
         public DiscordClient Client { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
 
+        private DiscordChannel LogChannelGeneral;
+
         private DiscordChannel LogChannelServers;
 
         private DiscordChannel LogChannelErrores;
@@ -94,7 +96,6 @@ namespace Discord_Bot
             };
 
             Commands = Client.UseCommandsNext(commandsConfig);
-            Commands.SetHelpFormatter<CustomHelpFormatter>();
 
             Commands.CommandExecuted += Commands_CommandExecuted;
             Commands.CommandErrored += Commands_CommandErrored;
@@ -113,11 +114,13 @@ namespace Discord_Bot
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             if (Debug)
             {
+                LogChannelGeneral = LogGuild.GetChannel(820711607796891658);
                 LogChannelServers = LogGuild.GetChannel(840440818921897985);
                 LogChannelErrores = LogGuild.GetChannel(840440877565739008);
             }
             else
             {
+                LogChannelGeneral = LogGuild.GetChannel(781679685838569502);
                 LogChannelServers = LogGuild.GetChannel(840437931847974932);
                 LogChannelErrores = LogGuild.GetChannel(840439731011452959);
             }
@@ -238,6 +241,26 @@ namespace Discord_Bot
             _ = Task.Run(async () =>
             {
                 cm.Client.Logger.LogInformation($"Comando ejecutado: {e.Context.Message.Content} | Guild: {e.Context.Guild.Name} | Canal: {e.Context.Channel.Name}", DateTime.Now);
+                await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                {
+                    Title = "Comando ejecutado",
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Message.Timestamp}",
+                        IconUrl = e.Context.User.AvatarUrl
+                    },
+                    Author = new EmbedAuthor()
+                    {
+                        IconUrl = e.Context.Guild.IconUrl,
+                        Name = $"{e.Context.Guild.Name}"
+                    },
+                    Color = DiscordColor.Green
+                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
+                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                .AddField("Mensaje", $"{e.Context.Message.Content}", false)
+                );
                 if (e.Context.Message != null && e.Command.Module.ModuleType.Name.ToLower() != "nsfw")
                     await funciones.BorrarMensaje(e.Context, e.Context.Message.Id).ConfigureAwait(false);
             });

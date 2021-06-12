@@ -75,7 +75,7 @@ namespace Discord_Bot
             await funciones.ChequearVotoTopGG(ctx);
         }
 
-        public async Task<SettingsJuego> InicializarJuego(CommandContext ctx, InteractivityExtension interactivity, bool elegirDificultad, bool elegirTag)
+        public async Task<SettingsJuego> InicializarJuego(CommandContext ctx, InteractivityExtension interactivity, bool elegirDificultad, bool elegirTag, bool elegirGenero)
         {
             DiscordButtonComponent button10 = new DiscordButtonComponent(ButtonStyle.Primary, "10", "10");
             DiscordButtonComponent button20 = new DiscordButtonComponent(ButtonStyle.Primary, "20", "20");
@@ -306,13 +306,9 @@ namespace Discord_Bot
                             };
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // Grabar en logerrores instead
-                        //DiscordMessage msg = ex.Message switch
-                        //{
-                        //    _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
-                        //};
+                        await funciones.GrabarLogError(ctx, $"{ex.Message}");
                         return new SettingsJuego()
                         {
                             Ok = false,
@@ -320,14 +316,15 @@ namespace Discord_Bot
                         };
                     }
                 }
-                else
+                if (elegirGenero)
                 {
-                    return new SettingsJuego()
-                    {
-                        Ok = false,
-                        MsgError = "Error de programación, se debe elegir el tag o las rondas"
-                    };
+
                 }
+                return new SettingsJuego()
+                {
+                    Ok = false,
+                    MsgError = "Error de programación, se debe elegir el tag o las rondas"
+                };
             }
             else
             {

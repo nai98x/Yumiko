@@ -115,7 +115,7 @@ namespace Discord_Bot.Modulos
         public async Task QuizCharactersGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false);
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false, false);
             if (settings.Ok)
             {
                 DiscordEmbed embebido = new DiscordEmbedBuilder
@@ -140,7 +140,7 @@ namespace Discord_Bot.Modulos
         public async Task QuizAnimeGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false);
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false, false);
             if (settings.Ok)
             {
                 DiscordEmbed embebido = new DiscordEmbedBuilder
@@ -165,7 +165,7 @@ namespace Discord_Bot.Modulos
         public async Task QuizMangaGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false);
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false, false);
             if (settings.Ok)
             {
                 DiscordEmbed embebido = new DiscordEmbedBuilder
@@ -190,7 +190,7 @@ namespace Discord_Bot.Modulos
         public async Task QuizAnimeTagGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity,false,true);
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity,false,true, false);
             if (settings.Ok)
             {
                 settings.PorcentajeTag = 70;
@@ -229,7 +229,7 @@ namespace Discord_Bot.Modulos
         public async Task QuizStudioGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false);
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false, false);
             if (settings.Ok)
             {
                 DiscordEmbed embebido = new DiscordEmbedBuilder
@@ -254,7 +254,7 @@ namespace Discord_Bot.Modulos
         public async Task QuizProtagonistGlobal(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false);
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, true, false, false);
             if (settings.Ok)
             {
                 DiscordEmbed embebido = new DiscordEmbedBuilder
@@ -266,6 +266,31 @@ namespace Discord_Bot.Modulos
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false);
                 await funcionesJuegos.Jugar(ctx, "protagonista", animeList, settings, interactivity);
+            }
+            else
+            {
+                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
+                await Task.Delay(5000);
+                await funciones.BorrarMensaje(ctx, error.Id);
+            }
+        }
+
+        [Command("quizG"), Aliases("adivinaelgenero"), Description("Empieza el juego de adivina el género."), RequireGuild, Hidden, RequireOwner]
+        public async Task QuizGenreGlobal(CommandContext ctx)
+        {
+            var interactivity = ctx.Client.GetInteractivity(); // seguir, falta elegir generos antes
+            SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, false, false, true);
+            if (settings.Ok)
+            {
+                DiscordEmbed embebido = new DiscordEmbedBuilder
+                {
+                    Title = "Adivina el ",
+                    Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
+                    Color = funciones.GetColor()
+                }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
+                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
+                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false);
+                await funcionesJuegos.Jugar(ctx, "genero", animeList, settings, interactivity);
             }
             else
             {

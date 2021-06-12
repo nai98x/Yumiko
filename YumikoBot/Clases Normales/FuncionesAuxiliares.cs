@@ -150,7 +150,7 @@ namespace Discord_Bot
 
         public DiscordColor GetColor()
         {
-            return new DiscordColor(78, 63, 96);
+            return DiscordColor.Blurple;
         }
 
         public void ScheduleAction(DiscordChannel canal, DiscordMember miembro, DateTime scheduledTime)

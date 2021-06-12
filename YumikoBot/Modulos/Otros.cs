@@ -1,6 +1,8 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.Extensions;
 using Google.Cloud.Firestore;
 using System;
@@ -23,31 +25,7 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
-            var interactivity = ctx.Client.GetInteractivity();
-            string web = ConfigurationManager.AppSettings["Web"];
-
-            DiscordButtonComponent button = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Prueba");
-            DiscordLinkButtonComponent btnLink = new DiscordLinkButtonComponent(web, "Sitio web");
-
-            DiscordMessageBuilder mensaje = new DiscordMessageBuilder() {
-                Content = "Test"
-            };
-
-            mensaje.AddComponents(btnLink, button);
-
-            DiscordMessage msg = await mensaje.SendAsync(ctx.Channel);
-            var inter = await interactivity.WaitForButtonAsync(msg, ctx.User);
-
-            if (!inter.TimedOut)
-            {
-                var result = inter.Result;
-                // fijarse segun el id del result para saber que boton se presiono
-                await ctx.Channel.SendMessageAsync("boton presionado!");
-            }
-            else
-            {
-                await ctx.Channel.SendMessageAsync("timeout boton!");
-            }
+            await ctx.Channel.SendMessageAsync("uwu!");
         }
 
         [Command("horarios"), Aliases("recordatorios", "horario", "recordatorio"), Description("Horarios para diversos paises.")]
@@ -238,7 +216,7 @@ namespace Discord_Bot.Modulos
                 usuarios += miembros;
                 cont++;
             }
-            if(cont != 1)
+            if (cont != 1)
             {
                 await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
