@@ -24,73 +24,64 @@ namespace Discord_Bot.Modulos
         public async Task Quiz(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            string opcion;
-            string juegos =
-                $"**1-** Adivina el personaje\n" +
-                $"**2-** Adivina el anime\n" +
-                $"**3-** Adivina el manga\n" +
-                $"**4-** Adivina el tag\n" +
-                $"**5-** Adivina el estudio\n" +
-                $"**6-** Adivina el protagonista\n";
-            var msgElegir = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+
+            DiscordComponentEmoji emote = new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
+            DiscordButtonComponent buttonAleatorio = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
+            DiscordButtonComponent buttonPersonaje = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Personaje");
+            DiscordButtonComponent buttonAnime = new DiscordButtonComponent(ButtonStyle.Primary, "2", "Anime");
+            DiscordButtonComponent buttonManga = new DiscordButtonComponent(ButtonStyle.Primary, "3", "Manga");
+            DiscordButtonComponent buttonTag = new DiscordButtonComponent(ButtonStyle.Primary, "4", "Tag");
+            DiscordButtonComponent buttonEstudio = new DiscordButtonComponent(ButtonStyle.Primary, "5", "Estudio");
+            DiscordButtonComponent buttonProtagonista = new DiscordButtonComponent(ButtonStyle.Primary, "6", "Protagonista");
+            DiscordButtonComponent buttonGenero = new DiscordButtonComponent(ButtonStyle.Primary, "7", "Genero");
+
+            DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
             {
-                Title = "Elige el juego",
-                Description = juegos,
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor(),
-            });
-            var msgElegirInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-            if (!msgElegirInter.TimedOut)
+                Embed = new DiscordEmbedBuilder
+                {
+                    Title = "Elije el tipo de juego",
+                    Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
+                }
+            };
+
+            mensaje.AddComponents(buttonAleatorio, buttonPersonaje, buttonAnime, buttonManga);
+            mensaje.AddComponents(buttonTag, buttonEstudio, buttonProtagonista, buttonGenero);
+
+            DiscordMessage msgElegir = await mensaje.SendAsync(ctx.Channel);
+            var interJuego = await interactivity.WaitForButtonAsync(msgElegir, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+            if (!interJuego.TimedOut)
             {
-                opcion = msgElegirInter.Result.Content;
+                var resultJuego = interJuego.Result;
+                string juego = resultJuego.Id;
+                if (juego == "0")
+                {
+                    var dificultadNum = funciones.GetNumeroRandom(1, 7);
+                    juego = dificultadNum.ToString();
+                }
                 if (msgElegir != null)
                     await funciones.BorrarMensaje(ctx, msgElegir.Id);
-                if (msgElegirInter.Result != null)
-                    await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
-                opcion = opcion.ToLower();
-                switch (opcion)
+                switch (juego)
                 {
                     case "1":
-                    case "1- adivina el personaje":
-                    case "adivina el personaje":
                         await QuizCharactersGlobal(ctx);
                         break;
                     case "2":
-                    case "2- adivina el anime":
-                    case "adivina el anime":
                         await QuizAnimeGlobal(ctx);
                         break;
                     case "3":
-                    case "3- adivina el manga":
-                    case "adivina el manga":
                         await QuizMangaGlobal(ctx);
                         break;
                     case "4":
-                    case "4- adivina el tag":
-                    case "adivina el tag":
                         await QuizAnimeTagGlobal(ctx);
                         break;
                     case "5":
-                    case "5- adivina el estudio":
-                    case "adivina el estudio":
                         await QuizStudioGlobal(ctx);
                         break;
                     case "6":
-                    case "6- adivina el protagonista":
-                    case "adivina el protagonista":
                         await QuizProtagonistGlobal(ctx);
                         break;
-                    default:
-                        var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Title = "Error",
-                            Description = "Opcion de juego incorrecta",
-                            Footer = funciones.GetFooter(ctx),
-                            Color = DiscordColor.Red,
-                        });
-                        await Task.Delay(3000);
-                        if (msgError != null)
-                            await funciones.BorrarMensaje(ctx, msgError.Id);
+                    case "7":
+                        await QuizGenreGlobal(ctx);
                         break;
                 }
             }
@@ -175,7 +166,7 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await funcionesJuegos.GetMedia(ctx, "MANGA", settings, false, false, false);
+                var animeList = await funcionesJuegos.GetMedia(ctx, "MANGA", settings, false, false, false, false);
                 await funcionesJuegos.Jugar(ctx, "manga", animeList, settings, interactivity);
             }
             else
@@ -194,7 +185,7 @@ namespace Discord_Bot.Modulos
             if (settings.Ok)
             {
                 settings.PorcentajeTag = 70;
-                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, false, true);
+                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, false, true, false);
                 int cantidadAnimes = animeList.Count();
                 if (cantidadAnimes > 0)
                 {
@@ -239,7 +230,7 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, true, false);
+                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, true, false, false);
                 await funcionesJuegos.Jugar(ctx, "estudio", animeList, settings, interactivity);
             }
             else
@@ -264,7 +255,7 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false);
+                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false, false);
                 await funcionesJuegos.Jugar(ctx, "protagonista", animeList, settings, interactivity);
             }
             else
@@ -275,21 +266,21 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("quizG"), Aliases("adivinaelgenero"), Description("Empieza el juego de adivina el género."), RequireGuild, Hidden, RequireOwner]
+        [Command("quizG"), Aliases("adivinaelgenero"), Description("Empieza el juego de adivina el género."), RequireGuild]
         public async Task QuizGenreGlobal(CommandContext ctx)
         {
-            var interactivity = ctx.Client.GetInteractivity(); // seguir, falta elegir generos antes
+            var interactivity = ctx.Client.GetInteractivity();
             SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity, false, false, true);
             if (settings.Ok)
             {
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
-                    Title = "Adivina el ",
+                    Title = $"Adivina el {settings.Genero}",
                     Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
                     Color = funciones.GetColor()
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false);
+                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false, true);
                 await funcionesJuegos.Jugar(ctx, "genero", animeList, settings, interactivity);
             }
             else

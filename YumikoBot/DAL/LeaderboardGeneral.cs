@@ -67,7 +67,7 @@ namespace YumikoBot.DAL
             }
         }
 
-        public async Task<List<StatsJuego>> GetLeaderboard(CommandContext ctx, string dificultad, string juego, bool global)
+        public async Task<List<StatsJuego>> GetLeaderboard(CommandContext ctx, string dificultad, string juego)
         {
             List<StatsJuego> lista = new List<StatsJuego>();
             var listaFirebase = await GetLeaderboardFirebase((long)ctx.Guild.Id, juego, dificultad);

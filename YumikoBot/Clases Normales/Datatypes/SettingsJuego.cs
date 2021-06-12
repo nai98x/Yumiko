@@ -15,5 +15,6 @@ namespace Discord_Bot
         public string Tag { get; set; }
         public string TagDesc { get; set; }
         public int PorcentajeTag { get; set; }
+        public string Genero { get; set; }
     }
 }

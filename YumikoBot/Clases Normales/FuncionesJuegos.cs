@@ -24,7 +24,7 @@ namespace Discord_Bot
         public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas, string dificultad, string juego)
         {
             string resultados;
-            if (juego == "tag")
+            if (juego == "tag" || juego == "genero")
                 resultados = $"Tag: **{dificultad}**\n\n";
             else
                 resultados = $"Dificultad: **{dificultad}**\n\n";
@@ -164,7 +164,7 @@ namespace Discord_Bot
                                 dificultadStr = "Media";
                                 break;
                         }
-                        if (mensaje != null)
+                        if (msg != null)
                             await funciones.BorrarMensaje(ctx, msg.Id);
                         if (!elegirTag)
                         {
@@ -180,7 +180,7 @@ namespace Discord_Bot
                     }
                     else
                     {
-                        if (mensaje != null)
+                        if (msg != null)
                             await funciones.BorrarMensaje(ctx, msg.Id);
                         return new SettingsJuego()
                         {
@@ -318,12 +318,104 @@ namespace Discord_Bot
                 }
                 if (elegirGenero)
                 {
+                    string query =
+                    "query{" +
+                    "   GenreCollection" +
+                    "}";
+                    var request = new GraphQLRequest
+                    {
+                        Query = query
+                    };
+                    List<string> generos = new List<string>();
+                    try
+                    {
+                        var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                        foreach (var x in data.Data.GenreCollection)
+                        {
+                            string nombre = x;
+                            if(ctx.Channel.IsNSFW || (!ctx.Channel.IsNSFW && nombre.ToLower().Trim() != "hentai"))
+                            {
+                                generos.Add(nombre);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await funciones.GrabarLogError(ctx, $"{ex.Message}");
+                        return new SettingsJuego()
+                        {
+                            Ok = false,
+                            MsgError = "Error inesperado eligiendo el genero"
+                        };
+                    }
+                    DiscordButtonComponent buttonGenero = new DiscordButtonComponent(ButtonStyle.Primary, "4", "Extremo");
 
+                    DiscordMessageBuilder mensajeBuild = new DiscordMessageBuilder()
+                    {
+                        Embed = new DiscordEmbedBuilder
+                        {
+                            Title = "Elije el genero",
+                            Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
+                        }
+                    };
+                    int iterInterna = 0;
+                    int iterReal = 0;
+                    List<DiscordComponent> componentes = new List<DiscordComponent>();
+                    foreach (var nomGenero in generos)
+                    {
+                        iterInterna++;
+                        iterReal++;
+                        if (iterInterna > 5)
+                        {
+                            mensajeBuild.AddComponents(componentes);
+                            iterInterna = 0;
+                            componentes.Clear();
+                        }
+                        else
+                        {
+                            DiscordButtonComponent button = new DiscordButtonComponent(ButtonStyle.Primary, $"{iterReal}", $"{nomGenero}");
+                            componentes.Add(button);
+                        }
+                    }
+                    if(componentes.Count > 0)
+                    {
+                        mensajeBuild.AddComponents(componentes);
+                    }
+
+                    DiscordMessage msgGenero = await mensajeBuild.SendAsync(ctx.Channel);
+                    var interGenero = await interactivity.WaitForButtonAsync(msgGenero, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                    if (!interGenero.TimedOut)
+                    {
+                        var resultado = interGenero.Result;
+                        int id = int.Parse(resultado.Id);
+                        string generoElegido = generos[id-1];
+                        if (msgGenero != null)
+                            await funciones.BorrarMensaje(ctx, msgGenero.Id);
+                        return new SettingsJuego()
+                        {
+                            Rondas = rondas,
+                            Genero = generoElegido,
+                            Dificultad = generoElegido,
+                            Ok = true
+                        };
+                    }
+                    else
+                    {
+                        if (msgGenero != null)
+                            await funciones.BorrarMensaje(ctx, msgGenero.Id);
+                        return new SettingsJuego()
+                        {
+                            Ok = false,
+                            MsgError = "Tiempo agotado esperando el genero"
+                        };
+                    }
                 }
+                string mensajeErr = "Error de programación, se debe elegir el tag o las rondas";
+                await funciones.GrabarLogError(ctx, $"{mensajeErr}");
                 return new SettingsJuego()
                 {
                     Ok = false,
-                    MsgError = "Error de programación, se debe elegir el tag o las rondas"
+                    MsgError = mensajeErr
                 };
             }
             else
@@ -349,7 +441,7 @@ namespace Discord_Bot
                 dynamic elegido = lista[random];
                 DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
                 string juegoMostrar;
-                if (juego == "tag")
+                if (juego == "tag" || juego == "genero")
                     juegoMostrar = settings.Dificultad;
                 else
                     juegoMostrar = juego;
@@ -438,6 +530,15 @@ namespace Discord_Bot
                             (elegidoPr.Personajes.Find(x => x.NameLast != null && x.NameLast.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                             ));
                         break;
+                    case "genero":
+                        desc = $"El nombre es: [{elegido.TitleRomaji}]({elegido.SiteUrl})";
+                        Anime elegidoG = elegido;
+                        predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
+                            ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                            (elegido.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
+                            (elegidoG.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
+                            ));
+                        break;
                     default:
                         await funciones.GrabarLogError(ctx, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
                         return;
@@ -491,10 +592,9 @@ namespace Discord_Bot
             await GetResultados(ctx, participantes, settings.Rondas, settings.Dificultad, juego);
         }
 
-        public async Task<string> GetEstadisticasDificultad(CommandContext ctx, string tipoStats, string dificultad, string flag)
+        public async Task<string> GetEstadisticasDificultad(CommandContext ctx, string tipoStats, string dificultad)
         {
-            bool global = !string.IsNullOrEmpty(flag) && flag == "-g";
-            List<StatsJuego> res = await leaderboard.GetLeaderboard(ctx, dificultad, tipoStats, global);
+            List<StatsJuego> res = await leaderboard.GetLeaderboard(ctx, dificultad, tipoStats);
             string stats = string.Empty;
             int pos = 0;
             int lastScore = 0;
@@ -536,23 +636,23 @@ namespace Discord_Bot
             return stats;
         }
 
-        public async Task<DiscordEmbedBuilder> GetEstadisticas(CommandContext ctx, string juego, string flag)
+        public async Task<DiscordEmbedBuilder> GetEstadisticas(CommandContext ctx, string juego)
         {
-            string facil = await GetEstadisticasDificultad(ctx, juego, "Fácil", flag);
-            string media = await GetEstadisticasDificultad(ctx, juego, "Media", flag);
-            string dificil = await GetEstadisticasDificultad(ctx, juego, "Dificil", flag);
-            string extremo = await GetEstadisticasDificultad(ctx, juego, "Extremo", flag);
+            string facil = await GetEstadisticasDificultad(ctx, juego, "Fácil");
+            string media = await GetEstadisticasDificultad(ctx, juego, "Media");
+            string dificil = await GetEstadisticasDificultad(ctx, juego, "Dificil");
+            string extremo = await GetEstadisticasDificultad(ctx, juego, "Extremo");
 
             string titulo;
             if (juego.Contains("ahorcado"))
                 titulo = "Ahorcado";
             else
                 titulo = $"Adivina el {juego}";
-            var builder = CrearEmbedStats(ctx, $"Estadisticas - {titulo}", facil, media, dificil, extremo, flag);
+            var builder = CrearEmbedStats(ctx, $"Estadisticas - {titulo}", facil, media, dificil, extremo);
             return builder;
         }
 
-        public async Task<DiscordEmbedBuilder> GetEstadisticasTag(CommandContext ctx, string flag)
+        public async Task<DiscordEmbedBuilder> GetEstadisticasTag(CommandContext ctx)
         {
             string msgError = string.Empty;
             var interactivity = ctx.Client.GetInteractivity();
@@ -585,7 +685,7 @@ namespace Discord_Bot
                             await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
                             List<Anime> animeList = new List<Anime>();
                             string elegido = tagsList[numTagElegir - 1];
-                            string stats = await GetEstadisticasDificultad(ctx, "tag", elegido, flag);
+                            string stats = await GetEstadisticasDificultad(ctx, "tag", elegido);
                             return new DiscordEmbedBuilder
                             {
                                 Title = $"Estadisticas - Adivina el {elegido}",
@@ -630,7 +730,7 @@ namespace Discord_Bot
             }
         }
 
-        public DiscordEmbedBuilder CrearEmbedStats(CommandContext ctx, string titulo, string facil, string media, string dificil, string extremo, string flag)
+        public DiscordEmbedBuilder CrearEmbedStats(CommandContext ctx, string titulo, string facil, string media, string dificil, string extremo)
         {
             var builder = new DiscordEmbedBuilder
             {
@@ -646,14 +746,10 @@ namespace Discord_Bot
                 builder.AddField("Dificultad Dificil", dificil);
             if (!String.IsNullOrEmpty(extremo))
                 builder.AddField("Dificultad Extremo", extremo);
-            /* Comentado hasta unificar ranking de un usr en varios servidores
-            if (string.IsNullOrEmpty(flag) || flag != "-g")
-                builder.AddField("Tip", "Si agregas ` -g` al final del comando, veras las puntuaciones globales.");
-            */
             return builder;
         }
 
-        public async Task ElimianrEstadisticas(CommandContext ctx)
+        public async Task EliminarEstadisticas(CommandContext ctx)
         {
             await leaderboard.EliminarEstadisticas(ctx, "personaje");
             await leaderboard.EliminarEstadisticas(ctx, "anime");
@@ -663,15 +759,45 @@ namespace Discord_Bot
             await leaderboard.EliminarEstadisticas(ctx, "protagonista");
         }
 
-        public async Task<List<Anime>> GetMedia(CommandContext ctx, string tipo, SettingsJuego settings, bool personajes, bool estudios, bool tag)
+        public async Task<List<Anime>> GetMedia(CommandContext ctx, string tipo, SettingsJuego settings, bool personajes, bool estudios, bool tag, bool genero)
         {
             List<Anime> animeList = new List<Anime>();
             DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo {tipo.ToLower()}s...").ConfigureAwait(false);
             string mediaFiltros;
             if (tag)
-                mediaFiltros = $"type: ANIME, sort: POPULARITY_DESC, tag: \"{settings.Tag}\", minimumTagRank:{settings.PorcentajeTag}, isAdult:false, format_not_in:[MUSIC]";
+            {
+                if (ctx.Channel.IsNSFW)
+                {
+                    mediaFiltros = $"type: ANIME, sort: POPULARITY_DESC, tag: \"{settings.Tag}\", minimumTagRank:{settings.PorcentajeTag}, format_not_in:[MUSIC]";
+                }
+                else
+                {
+                    mediaFiltros = $"type: ANIME, sort: POPULARITY_DESC, tag: \"{settings.Tag}\", minimumTagRank:{settings.PorcentajeTag}, isAdult:false, format_not_in:[MUSIC]";
+                }
+            }
+            else if (genero)
+            {
+                if (ctx.Channel.IsNSFW)
+                {
+                    mediaFiltros = $"type: ANIME, sort: POPULARITY_DESC, genre: \"{settings.Genero}\", format_not_in:[MUSIC]";
+                }
+                else
+                {
+                    mediaFiltros = $"type: ANIME, sort: POPULARITY_DESC, genre: \"{settings.Genero}\", isAdult:false, format_not_in:[MUSIC]";
+                }
+            }
             else
-                mediaFiltros = $"type: {tipo}, sort: FAVOURITES_DESC, isAdult:false, format_not_in:[MUSIC]";
+            {
+                if (ctx.Channel.IsNSFW)
+                {
+                    mediaFiltros = $"type: {tipo}, sort: FAVOURITES_DESC, format_not_in:[MUSIC]";
+                }
+                else
+                {
+                    mediaFiltros = $"type: {tipo}, sort: FAVOURITES_DESC, isAdult:false, format_not_in:[MUSIC]";
+                }
+            }
+                
             string query = "query($pagina : Int){" +
                     "   Page(page: $pagina){" +
                    $"       media({mediaFiltros}){{" +
@@ -717,6 +843,7 @@ namespace Discord_Bot
                 popularidad = settings.IterIni * 50;
             int i = settings.IterIni;
             string hasNextValue;
+            int iter = 0;
             do
             {
                 var request = new GraphQLRequest
@@ -730,6 +857,7 @@ namespace Discord_Bot
                 try
                 {
                     var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                    iter++;
                     hasNextValue = data.Data.Page.pageInfo.hasNextPage;
                     foreach (var x in data.Data.Page.media)
                     {
@@ -801,7 +929,7 @@ namespace Discord_Bot
                     return animeList;
                 }
                 i++;
-            } while (hasNextValue.ToLower() == "true" && (tag || (!tag && i <= settings.IterFin)));
+            } while (hasNextValue.ToLower() == "true" && (((tag || genero) && iter < 10) || (!tag && !genero && i <= settings.IterFin)));
             await funciones.BorrarMensaje(ctx, mensaje.Id);
             return animeList;
         }

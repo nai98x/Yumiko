@@ -19,33 +19,33 @@ namespace Discord_Bot.Modulos
         private readonly FuncionesJuegos funcionesJuegos = new FuncionesJuegos();
 
         [Command("rankingC"), Aliases("statsC", "leaderboardC"), Description("Estadisticas de adivina el personaje."), RequireGuild]
-        public async Task EstadisticasAdivinaPersonaje(CommandContext ctx, string flag = null)
+        public async Task EstadisticasAdivinaPersonaje(CommandContext ctx)
         {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "personaje", flag);
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "personaje");
             await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }
 
         [Command("rankingA"), Aliases("statsA", "leaderboardA"), Description("Estadisticas de adivina el anime."), RequireGuild]
-        public async Task EstadisticasAdivinaAnime(CommandContext ctx, string flag = null)
+        public async Task EstadisticasAdivinaAnime(CommandContext ctx)
         {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "anime", flag);
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "anime");
             await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }
 
         [Command("rankingM"), Aliases("statsM", "leaderboardM"), Description("Estadisticas de adivina el anime."), RequireGuild]
-        public async Task EstadisticasAdivinaManga(CommandContext ctx, string flag = null)
+        public async Task EstadisticasAdivinaManga(CommandContext ctx)
         {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "manga", flag);
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "manga");
             await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }
 
         [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el anime."), RequireGuild]
-        public async Task EstadisticasAdivinaTag(CommandContext ctx, string flag = null)
+        public async Task EstadisticasAdivinaTag(CommandContext ctx)
         {
-            var builder = await funcionesJuegos.GetEstadisticasTag(ctx, flag);
+            var builder = await funcionesJuegos.GetEstadisticasTag(ctx);
             var msg = await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
             if (builder.Title == "Error")
@@ -56,22 +56,22 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("rankingS"), Aliases("statsS", "leaderboardS"), Description("Estadisticas de adivina el estudio."), RequireGuild]
-        public async Task EstadisticasAdivinaEstudio(CommandContext ctx, string flag = null)
+        public async Task EstadisticasAdivinaEstudio(CommandContext ctx)
         {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "estudio", flag);
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "estudio");
             await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }
 
         [Command("rankingP"), Aliases("statsP", "leaderboardP"), Description("Estadisticas de adivina el protagonista."), RequireGuild]
-        public async Task EstadisticasAdivinaProtagonista(CommandContext ctx, string flag = null)
+        public async Task EstadisticasAdivinaProtagonista(CommandContext ctx)
         {
-            var builder = await funcionesJuegos.GetEstadisticas(ctx, "protagonista", flag);
+            var builder = await funcionesJuegos.GetEstadisticas(ctx, "protagonista");
             await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
         }
 
-        [Command("eliminarestadisticas"), Description("Elimina las estadisticas de todos los juegos del servidor."), RequireGuild]
+        [Command("eliminarestadisticas"), Description("Elimina las estadisticas de todos los juegos del servidor."), RequireGuild] // AGREGARLE BOTONES
         public async Task EliminarEstadisticas(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
@@ -101,7 +101,7 @@ namespace Discord_Bot.Modulos
                     case "1":
                     case "1- si":
                     case "si":
-                        await funcionesJuegos.ElimianrEstadisticas(ctx);
+                        await funcionesJuegos.EliminarEstadisticas(ctx);
                         break;
                     case "2":
                     case "2- no":
