@@ -146,6 +146,7 @@ namespace Discord_Bot.Modulos
         {
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
+                Title = "Latencia",
                 Description = "🏓 Pong! `" + ctx.Client.Ping.ToString() + " ms" + "`",
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor()
@@ -155,33 +156,46 @@ namespace Discord_Bot.Modulos
         [Command("invite"), Aliases("invitar"), Description("Muestra el link para invitar a Yumiko a un servidor.")]
         public async Task Invite(CommandContext ctx)
         {
-            await ctx.Channel.SendMessageAsync("Puedes invitarme a un servidor con este link:\n" + ConfigurationManager.AppSettings["Invite"]);
+            DiscordLinkButtonComponent button = new DiscordLinkButtonComponent(ConfigurationManager.AppSettings["Invite"], "Invitación");
+            DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
+            {
+                Content = "Puedes invitarme a un servidor haciendo click en el botón."
+            };
+            mensaje.AddComponents(button);
+            await mensaje.SendAsync(ctx.Channel);
         }
 
         [Command("contactar"), Aliases("sugerencia", "contact"), Description("Envia una sugerencia o peticion de contacto al desarrollador del bot.")]
         public async Task Contact(CommandContext ctx, [RemainingText]string texto)
         {
-            var LogGuild = await ctx.Client.GetGuildAsync(713809173573271613);
-            var canalContacto = LogGuild.GetChannel(844384175925624852);
-            await canalContacto.SendMessageAsync(embed: new DiscordEmbedBuilder
+            if (String.IsNullOrEmpty(texto))
             {
-                Title = "Nuevo feedback",
-                Footer = new EmbedFooter()
+                texto = await funciones.GetStringInteractivity(ctx, "Escribe tu mensaje", "Ejemplo: Hola! Encontre un bug en el juego de adivina el anime.", "Tiempo agotado esperando el texto");
+            }
+            if (!String.IsNullOrEmpty(texto))
+            {
+                var LogGuild = await ctx.Client.GetGuildAsync(713809173573271613);
+                var canalContacto = LogGuild.GetChannel(844384175925624852);
+                await canalContacto.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
-                    Text = $"{ctx.User.Username}#{ctx.User.Discriminator} - {ctx.Message.Timestamp}",
-                    IconUrl = ctx.User.AvatarUrl
-                },
-                Author = new EmbedAuthor()
-                {
-                    IconUrl = ctx.Guild.IconUrl,
-                    Name = $"{ctx.Guild.Name}"
-                },
-                Color = DiscordColor.Green
-            }.AddField("Id Servidor", $"{ctx.Guild.Id}", true)
-            .AddField("Id Canal", $"{ctx.Channel.Id}", true)
-            .AddField("Id Usuario", $"{ctx.User.Id}", true)
-            .AddField("Canal", $"#{ctx.Channel.Name}", false)
-            .AddField("Mensaje", $"{texto}", false));
+                    Title = "Nuevo feedback",
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{ctx.User.Username}#{ctx.User.Discriminator} - {ctx.Message.Timestamp}",
+                        IconUrl = ctx.User.AvatarUrl
+                    },
+                    Author = new EmbedAuthor()
+                    {
+                        IconUrl = ctx.Guild.IconUrl,
+                        Name = $"{ctx.Guild.Name}"
+                    },
+                    Color = DiscordColor.Green
+                }.AddField("Id Servidor", $"{ctx.Guild.Id}", true)
+                .AddField("Id Canal", $"{ctx.Channel.Id}", true)
+                .AddField("Id Usuario", $"{ctx.User.Id}", true)
+                .AddField("Canal", $"#{ctx.Channel.Name}", false)
+                .AddField("Mensaje", $"{texto}", false));
+            }
         }
 
         [Command("servers"), Description("Muestra los servidores en los que esta Yumiko."), RequireOwner]
@@ -277,64 +291,79 @@ namespace Discord_Bot.Modulos
                 ctx.Guild.Id == 724784732923232286 // Haze
                 )
             {
-                MonoschinosDownloader animeflv = new MonoschinosDownloader();
-                var interactivity = ctx.Client.GetInteractivity();
-                var msgBusqueda = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                if (String.IsNullOrEmpty(buscar))
                 {
-                    Title = "Buscando animes...",
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor()
-                });
-                var resBusqueda = await animeflv.Search(buscar);
-                if (resBusqueda.Count > 0)
+                    buscar = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del anime a descargar", "Ejemplo: Grisaia no Kajitsu", "Tiempo agotado esperando el nombre del anime");
+                }
+                if (!String.IsNullOrEmpty(buscar))
                 {
-                    string resultados = string.Empty;
-                    int cont = 1;
-                    foreach (var res in resBusqueda)
+                    MonoschinosDownloader animeflv = new MonoschinosDownloader();
+                    var interactivity = ctx.Client.GetInteractivity();
+                    var msgBusqueda = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
-                        resultados += $"{cont} - **{res.name}** ({res.type})\n";
-                        cont++;
-                    }
-                    await funciones.BorrarMensaje(ctx, msgBusqueda.Id);
-                    var elegirRes = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Title = "Elije con un número el anime deseado",
-                        Description = resultados,
+                        Title = "Buscando animes...",
                         Footer = funciones.GetFooter(ctx),
                         Color = funciones.GetColor()
                     });
-                    var msgElegirInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                    if (!msgElegirInter.TimedOut)
+                    var resBusqueda = await animeflv.Search(buscar);
+                    if (resBusqueda.Count > 0)
                     {
-                        bool result = int.TryParse(msgElegirInter.Result.Content, out int numElegir);
-                        if (result)
+                        string resultados = string.Empty;
+                        int cont = 1;
+                        foreach (var res in resBusqueda)
                         {
-                            if (numElegir > 0 && (numElegir <= resBusqueda.Count))
+                            resultados += $"{cont} - **{res.name}** ({res.type})\n";
+                            cont++;
+                        }
+                        await funciones.BorrarMensaje(ctx, msgBusqueda.Id);
+                        var elegirRes = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                        {
+                            Title = "Elije con un número el anime deseado",
+                            Description = resultados,
+                            Footer = funciones.GetFooter(ctx),
+                            Color = funciones.GetColor()
+                        });
+                        var msgElegirInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+                        if (!msgElegirInter.TimedOut)
+                        {
+                            bool result = int.TryParse(msgElegirInter.Result.Content, out int numElegir);
+                            if (result)
                             {
-                                await funciones.BorrarMensaje(ctx, elegirRes.Id);
-                                await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
-                                var elegido = resBusqueda[numElegir - 1];
-                                var mensajeLinks = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                if (numElegir > 0 && (numElegir <= resBusqueda.Count))
                                 {
-                                    Title = "Descargar anime",
-                                    Description = $"Procesando links para **{elegido.name}**",
-                                    Footer = funciones.GetFooter(ctx),
-                                    Color = funciones.GetColor()
-                                });
-                                var links = await animeflv.GetLinks(elegido.href, elegido.name);
-                                await funciones.BorrarMensaje(ctx, mensajeLinks.Id);
-                                Dictionary<string, Stream> dic = new Dictionary<string, Stream>
+                                    await funciones.BorrarMensaje(ctx, elegirRes.Id);
+                                    await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
+                                    var elegido = resBusqueda[numElegir - 1];
+                                    var mensajeLinks = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                    {
+                                        Title = "Descargar anime",
+                                        Description = $"Procesando links para **{elegido.name}**",
+                                        Footer = funciones.GetFooter(ctx),
+                                        Color = funciones.GetColor()
+                                    });
+                                    var links = await animeflv.GetLinks(elegido.href, elegido.name);
+                                    await funciones.BorrarMensaje(ctx, mensajeLinks.Id);
+                                    Dictionary<string, Stream> dic = new Dictionary<string, Stream>
                                 {
                                     {"descargaLinks.txt",  (FileStream)funciones.CrearArchivo(links)}
                                 };
-                                await ctx.Channel.SendMessageAsync(new DiscordMessageBuilder
+                                    await ctx.Channel.SendMessageAsync(new DiscordMessageBuilder
+                                    {
+                                        Content = $"{ctx.User.Mention}, aquí tienes los links para descargar **{elegido.name}**",
+                                    }.WithFiles(dic));
+                                }
+                                else
                                 {
-                                    Content = $"{ctx.User.Mention}, aquí tienes los links para descargar **{elegido.name}**",
-                                }.WithFiles(dic));
+                                    var msg = await ctx.Channel.SendMessageAsync($"El número indicado debe ser valido");
+                                    await Task.Delay(5000);
+                                    await funciones.BorrarMensaje(ctx, msg.Id);
+                                    await funciones.BorrarMensaje(ctx, elegirRes.Id);
+                                    await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
+                                }
                             }
                             else
                             {
-                                var msg = await ctx.Channel.SendMessageAsync($"El número indicado debe ser valido");
+                                var msg = await ctx.Channel.SendMessageAsync($"La eleccion debe ser indicada con un numero");
                                 await Task.Delay(5000);
                                 await funciones.BorrarMensaje(ctx, msg.Id);
                                 await funciones.BorrarMensaje(ctx, elegirRes.Id);
@@ -343,7 +372,7 @@ namespace Discord_Bot.Modulos
                         }
                         else
                         {
-                            var msg = await ctx.Channel.SendMessageAsync($"La eleccion debe ser indicada con un numero");
+                            var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando eleccion de anime");
                             await Task.Delay(5000);
                             await funciones.BorrarMensaje(ctx, msg.Id);
                             await funciones.BorrarMensaje(ctx, elegirRes.Id);
@@ -352,19 +381,11 @@ namespace Discord_Bot.Modulos
                     }
                     else
                     {
-                        var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando eleccion de anime");
+                        var msg = await ctx.Channel.SendMessageAsync($"No se encontraron resultados para {buscar}");
                         await Task.Delay(5000);
                         await funciones.BorrarMensaje(ctx, msg.Id);
-                        await funciones.BorrarMensaje(ctx, elegirRes.Id);
-                        await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
+                        await funciones.BorrarMensaje(ctx, msgBusqueda.Id);
                     }
-                }
-                else
-                {
-                    var msg = await ctx.Channel.SendMessageAsync($"No se encontraron resultados para {buscar}");
-                    await Task.Delay(5000);
-                    await funciones.BorrarMensaje(ctx, msg.Id);
-                    await funciones.BorrarMensaje(ctx, msgBusqueda.Id);
                 }
             }
             else

@@ -666,13 +666,14 @@ namespace Discord_Bot
                     tags += $"{cont} - {s}\n";
                     cont++;
                 }
-                var msgOpciones = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                var embed = new DiscordEmbedBuilder
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
-                    Title = "Elije el tag escribiendo su número",
-                    Description = tags
-                });
+                    Title = "Elije el tag escribiendo su número"
+                };
+                var pages = interactivity.GeneratePagesInEmbed(tags, DSharpPlus.Interactivity.Enums.SplitType.Line, embed);
+                _ = ctx.Channel.SendPaginatedMessageAsync(ctx.User, pages).ConfigureAwait(false);
                 var msgElegirTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
                 if (!msgElegirTagInter.TimedOut)
                 {
@@ -681,7 +682,7 @@ namespace Discord_Bot
                     {
                         if (numTagElegir > 0 && (numTagElegir <= tagsList.Count))
                         {
-                            await funciones.BorrarMensaje(ctx, msgOpciones.Id);
+                            //await funciones.BorrarMensaje(ctx, msgOpciones.Id);
                             await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
                             List<Anime> animeList = new List<Anime>();
                             string elegido = tagsList[numTagElegir - 1];
@@ -708,7 +709,7 @@ namespace Discord_Bot
                 {
                     msgError = "Tiempo agotado esperando el tag";
                 }
-                await funciones.BorrarMensaje(ctx, msgOpciones.Id);
+                //await funciones.BorrarMensaje(ctx, msgOpciones.Id);
                 await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
                 return new DiscordEmbedBuilder
                 {
