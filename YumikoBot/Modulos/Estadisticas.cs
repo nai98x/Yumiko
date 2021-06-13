@@ -42,7 +42,7 @@ namespace Discord_Bot.Modulos
             await funciones.ChequearVotoTopGG(ctx);
         }
 
-        [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el anime."), RequireGuild]
+        [Command("rankingT"), Aliases("statsT", "leaderboardT"), Description("Estadisticas de adivina el tag."), RequireGuild]
         public async Task EstadisticasAdivinaTag(CommandContext ctx)
         {
             var builder = await funcionesJuegos.GetEstadisticasTag(ctx);
@@ -69,6 +69,19 @@ namespace Discord_Bot.Modulos
             var builder = await funcionesJuegos.GetEstadisticas(ctx, "protagonista");
             await ctx.Channel.SendMessageAsync(embed: builder);
             await funciones.ChequearVotoTopGG(ctx);
+        }
+
+        [Command("rankingG"), Aliases("statsG", "leaderboardG"), Description("Estadisticas de adivina el genero."), RequireGuild]
+        public async Task EstadisticasAdivinaGenero(CommandContext ctx)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            var respuesta = await funcionesJuegos.ElegirGenero(ctx, interactivity);
+            if (respuesta.Ok)
+            {
+                var builder = await funcionesJuegos.GetEstadisticasGenero(ctx, respuesta.Genero);
+                var msg = await ctx.Channel.SendMessageAsync(embed: builder);
+                await funciones.ChequearVotoTopGG(ctx);
+            }
         }
 
         [Command("eliminarestadisticas"), Description("Elimina las estadisticas de todos los juegos del servidor."), RequireGuild] // AGREGARLE BOTONES

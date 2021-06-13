@@ -25,7 +25,7 @@ namespace Discord_Bot
         {
             string resultados;
             if (juego == "tag" || juego == "genero")
-                resultados = $"Tag: **{dificultad}**\n\n";
+                resultados = $"{funciones.UppercaseFirst(juego)}: **{dificultad}**\n\n";
             else
                 resultados = $"Dificultad: **{dificultad}**\n\n";
             participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
@@ -318,96 +318,20 @@ namespace Discord_Bot
                 }
                 if (elegirGenero)
                 {
-                    string query =
-                    "query{" +
-                    "   GenreCollection" +
-                    "}";
-                    var request = new GraphQLRequest
+                    var respuesta = await ElegirGenero(ctx, interactivity);
+                    if (respuesta.Ok)
                     {
-                        Query = query
-                    };
-                    List<string> generos = new List<string>();
-                    try
-                    {
-                        var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                        foreach (var x in data.Data.GenreCollection)
-                        {
-                            string nombre = x;
-                            if(ctx.Channel.IsNSFW || (!ctx.Channel.IsNSFW && nombre.ToLower().Trim() != "hentai"))
-                            {
-                                generos.Add(nombre);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        await funciones.GrabarLogError(ctx, $"{ex.Message}");
-                        return new SettingsJuego()
-                        {
-                            Ok = false,
-                            MsgError = "Error inesperado eligiendo el genero"
-                        };
-                    }
-                    DiscordButtonComponent buttonGenero = new DiscordButtonComponent(ButtonStyle.Primary, "4", "Extremo");
-
-                    DiscordMessageBuilder mensajeBuild = new DiscordMessageBuilder()
-                    {
-                        Embed = new DiscordEmbedBuilder
-                        {
-                            Title = "Elije el genero",
-                            Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
-                        }
-                    };
-                    int iterInterna = 0;
-                    int iterReal = 0;
-                    List<DiscordComponent> componentes = new List<DiscordComponent>();
-                    foreach (var nomGenero in generos)
-                    {
-                        iterInterna++;
-                        iterReal++;
-                        if (iterInterna > 5)
-                        {
-                            mensajeBuild.AddComponents(componentes);
-                            iterInterna = 0;
-                            componentes.Clear();
-                        }
-                        else
-                        {
-                            DiscordButtonComponent button = new DiscordButtonComponent(ButtonStyle.Primary, $"{iterReal}", $"{nomGenero}");
-                            componentes.Add(button);
-                        }
-                    }
-                    if(componentes.Count > 0)
-                    {
-                        mensajeBuild.AddComponents(componentes);
-                    }
-
-                    DiscordMessage msgGenero = await mensajeBuild.SendAsync(ctx.Channel);
-                    var interGenero = await interactivity.WaitForButtonAsync(msgGenero, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-                    if (!interGenero.TimedOut)
-                    {
-                        var resultado = interGenero.Result;
-                        int id = int.Parse(resultado.Id);
-                        string generoElegido = generos[id-1];
-                        if (msgGenero != null)
-                            await funciones.BorrarMensaje(ctx, msgGenero.Id);
                         return new SettingsJuego()
                         {
                             Rondas = rondas,
-                            Genero = generoElegido,
-                            Dificultad = generoElegido,
+                            Genero = respuesta.Genero,
+                            Dificultad = respuesta.Genero,
                             Ok = true
                         };
                     }
                     else
                     {
-                        if (msgGenero != null)
-                            await funciones.BorrarMensaje(ctx, msgGenero.Id);
-                        return new SettingsJuego()
-                        {
-                            Ok = false,
-                            MsgError = "Tiempo agotado esperando el genero"
-                        };
+                        return respuesta;
                     }
                 }
                 string mensajeErr = "Error de programación, se debe elegir el tag o las rondas";
@@ -729,6 +653,18 @@ namespace Discord_Bot
                     Description = "No se encontró ninguna partida de adivina el tag, juega partidas para consultar las estadísticas."
                 };
             }
+        }
+
+        public async Task<DiscordEmbedBuilder> GetEstadisticasGenero(CommandContext ctx, string genero)
+        {
+            string stats = await GetEstadisticasDificultad(ctx, "genero", genero);
+            return new DiscordEmbedBuilder
+            {
+                Title = $"Estadisticas - Adivina el {genero}",
+                Footer = funciones.GetFooter(ctx),
+                Color = funciones.GetColor(),
+                Description = stats
+            };
         }
 
         public DiscordEmbedBuilder CrearEmbedStats(CommandContext ctx, string titulo, string facil, string media, string dificil, string extremo)
@@ -1095,7 +1031,7 @@ namespace Discord_Bot
             List<UsuarioJuego> participantes = new List<UsuarioJuego>();
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
-                Title = "Ahorcado (Personajes)",
+                Title = $"Ahorcado ({juego}s)",
                 Description = "¡Escribe una letra!\n\nPuedes terminar la partida en cualquier momento escribiendo `cancelar`",
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor()
@@ -1363,6 +1299,98 @@ namespace Discord_Bot
                     Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Green
                 }).ConfigureAwait(false);
+            }
+        }
+
+        public async Task<SettingsJuego> ElegirGenero(CommandContext ctx, InteractivityExtension interactivity)
+        {
+            string query =
+                    "query{" +
+                    "   GenreCollection" +
+                    "}";
+            var request = new GraphQLRequest
+            {
+                Query = query
+            };
+            List<string> generos = new List<string>();
+            try
+            {
+                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                foreach (var x in data.Data.GenreCollection)
+                {
+                    string nombre = x;
+                    if (ctx.Channel.IsNSFW || (!ctx.Channel.IsNSFW && nombre.ToLower().Trim() != "hentai"))
+                    {
+                        generos.Add(nombre);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await funciones.GrabarLogError(ctx, $"{ex.Message}");
+                return new SettingsJuego()
+                {
+                    Ok = false,
+                    MsgError = "Error inesperado eligiendo el genero"
+                };
+            }
+
+            DiscordMessageBuilder mensajeBuild = new DiscordMessageBuilder()
+            {
+                Embed = new DiscordEmbedBuilder
+                {
+                    Title = "Elije el genero",
+                    Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
+                }
+            };
+            int iterInterna = 0;
+            int iterReal = 0;
+            List<DiscordComponent> componentes = new List<DiscordComponent>();
+            foreach (var nomGenero in generos)
+            {
+                iterInterna++;
+                iterReal++;
+                if (iterInterna > 5)
+                {
+                    mensajeBuild.AddComponents(componentes);
+                    iterInterna = 0;
+                    componentes.Clear();
+                }
+                else
+                {
+                    DiscordButtonComponent button = new DiscordButtonComponent(ButtonStyle.Primary, $"{iterReal}", $"{nomGenero}");
+                    componentes.Add(button);
+                }
+            }
+            if (componentes.Count > 0)
+            {
+                mensajeBuild.AddComponents(componentes);
+            }
+
+            DiscordMessage msgGenero = await mensajeBuild.SendAsync(ctx.Channel);
+            var interGenero = await interactivity.WaitForButtonAsync(msgGenero, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+            if (!interGenero.TimedOut)
+            {
+                var resultado = interGenero.Result;
+                int id = int.Parse(resultado.Id);
+                string generoElegido = generos[id - 1];
+                if (msgGenero != null)
+                    await funciones.BorrarMensaje(ctx, msgGenero.Id);
+                return new SettingsJuego()
+                {
+                    Genero = generoElegido,
+                    Ok = true
+                };
+            }
+            else
+            {
+                if (msgGenero != null)
+                    await funciones.BorrarMensaje(ctx, msgGenero.Id);
+                return new SettingsJuego()
+                {
+                    Ok = false,
+                    MsgError = "Tiempo agotado esperando el genero"
+                };
             }
         }
     }

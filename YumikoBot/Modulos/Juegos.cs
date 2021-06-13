@@ -295,49 +295,44 @@ namespace Discord_Bot.Modulos
         public async Task Ahorcado(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            string opcion;
-            string juegos =
-                $"**1-** Personaje\n" +
-                $"**2-** Anime\n";
-            var msgElegir = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+
+            DiscordComponentEmoji emote = new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
+            DiscordButtonComponent buttonAleatorio = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
+            DiscordButtonComponent buttonPersonaje = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Personaje");
+            DiscordButtonComponent buttonAnime = new DiscordButtonComponent(ButtonStyle.Primary, "2", "Anime");
+
+            DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
             {
-                Title = "Elige el tipo de juego para el ahorcado",
-                Description = juegos,
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor(),
-            });
-            var msgElegirInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-            if (!msgElegirInter.TimedOut)
+                Embed = new DiscordEmbedBuilder
+                {
+                    Title = "Elije el tipo de juego",
+                    Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
+                }
+            };
+
+            mensaje.AddComponents(buttonAleatorio, buttonPersonaje, buttonAnime);
+
+            DiscordMessage msgElegir = await mensaje.SendAsync(ctx.Channel);
+            var interGame = await interactivity.WaitForButtonAsync(msgElegir, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+            if (!interGame.TimedOut)
             {
-                opcion = msgElegirInter.Result.Content;
+                var resultGame = interGame.Result;
+                string game = resultGame.Id;
+                if (game == "0")
+                {
+                    Random rnd = new Random();
+                    int random = rnd.Next(2);
+                    game = random.ToString();
+                }
                 if (msgElegir != null)
                     await funciones.BorrarMensaje(ctx, msgElegir.Id);
-                if (msgElegirInter.Result != null)
-                    await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
-                opcion = opcion.ToLower();
-                switch (opcion)
+                switch (game)
                 {
-                    case "1":
-                    case "1- Personaje":
-                    case "Personaje":
+                    case "0":
                         await AhorcadoPersonaje(ctx);
                         break;
-                    case "2":
-                    case "2- Anime":
-                    case "Anime":
+                    case "1":
                         await AhorcadoAnime(ctx);
-                        break;
-                    default:
-                        var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Title = "Error",
-                            Description = "Opcion de juego incorrecta",
-                            Footer = funciones.GetFooter(ctx),
-                            Color = DiscordColor.Red,
-                        });
-                        await Task.Delay(3000);
-                        if (msgError != null)
-                            await funciones.BorrarMensaje(ctx, msgError.Id);
                         break;
                 }
             }
