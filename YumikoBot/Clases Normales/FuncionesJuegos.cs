@@ -1264,7 +1264,7 @@ namespace Discord_Bot
                             partidaTerminada = true;
                         }
                     }
-                    if ((caracteres.Find(x => x.Acertado == false) == null) || (juego == "personaje" && msg.Result.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim() || juego == "anime" && msg.Result.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim()))
+                    if ((caracteres.Find(x => x.Acertado == false) == null) || ((juego == "personaje" && msg.Result.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim()) || (juego == "anime" && msg.Result.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())))
                     {
                         ganador = acertador;
                         partidaTerminada = true;
