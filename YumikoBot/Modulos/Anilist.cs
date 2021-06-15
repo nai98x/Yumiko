@@ -220,110 +220,41 @@ namespace Discord_Bot.Modulos
                         if (elegido > 0)
                         {
                             var datos = data.Data.Page.media[elegido - 1];
+                            Media media = funcionesAnilist.DecodeMedia(datos);
                             if ((datos.isAdult == "false") || (datos.isAdult == true && ctx.Channel.IsNSFW))
                             {
-                                string descripcion = datos.description;
-                                descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
-                                if (descripcion == "")
-                                    descripcion = "(Sin descripción)";
-                                string estado = datos.status;
-                                string episodios = datos.episodes;
-                                string formato = datos.format;
-                                string score = $"{datos.meanScore}/100";
-                                string fechas;
-                                string generos = string.Empty;
-                                foreach (var genero in datos.genres)
-                                {
-                                    generos += genero;
-                                    generos += ", ";
-                                }
-                                if (generos.Length >= 2)
-                                    generos = generos.Remove(generos.Length - 2);
-                                string tags = string.Empty;
-                                foreach (var tag in datos.tags)
-                                {
-                                    if (tag.isMediaSpoiler == "false")
-                                    {
-                                        tags += tag.name;
-                                    }
-                                    else
-                                    {
-                                        tags += $"||{tag.name}||";
-                                    }
-                                    tags += ", ";
-                                }
-                                if (tags.Length >= 2)
-                                    tags = tags.Remove(tags.Length - 2);
-                                string titulos = string.Empty;
-                                foreach (var title in datos.synonyms)
-                                {
-                                    titulos += $"`{title}`, ";
-                                }
-                                if (titulos.Length >= 2)
-                                    titulos = titulos.Remove(titulos.Length - 2);
-                                string estudios = string.Empty;
-                                var nodos = datos.studios.nodes;
-                                if (nodos.HasValues)
-                                {
-                                    foreach (var studio in datos.studios.nodes)
-                                    {
-                                        estudios += $"[{studio.name}]({studio.siteUrl}), ";
-                                    }
-                                }
-                                if (estudios.Length >= 2)
-                                    estudios = estudios.Remove(estudios.Length - 2);
-                                string linksExternos = string.Empty;
-                                foreach (var external in datos.externalLinks)
-                                {
-                                    linksExternos += $"[{external.site}]({external.url}), ";
-                                }
-                                if (linksExternos.Length >= 2)
-                                    linksExternos = linksExternos.Remove(linksExternos.Length - 2);
-                                if (datos.startDate.day != null)
-                                {
-                                    if (datos.endDate.day != null)
-                                        fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
-                                    else
-                                        fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
-                                }
-                                else
-                                {
-                                    fechas = $"Este anime no tiene fecha de emisión";
-                                }
-                                string titulo = datos.title.romaji;
-                                string urlAnilist = datos.siteUrl;
                                 var builder = new DiscordEmbedBuilder
                                 {
-                                    Title = titulo,
-                                    Url = urlAnilist,
+                                    Title = media.Titulo,
+                                    Url = media.UrlAnilist,
                                     Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
                                     {
                                         Url = datos.coverImage.large
                                     },
                                     Footer = funciones.GetFooter(ctx),
                                     Color = funciones.GetColor(),
-                                    Description = descripcion
+                                    Description = media.Descripcion
                                 };
-                                if (episodios!= null && episodios.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} Episodios", funciones.NormalizarField(episodios), true);
-                                if (formato != null && formato.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(formato), true);
-                                if (estado != null && estado.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
-                                if (score != null && score.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), false);
-                                if (fechas != null && fechas.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha emisión", funciones.NormalizarField(fechas), false);
-                                if (generos != null && generos.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(generos), false);
-                                if (tags != null && tags.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(tags), false);
-                                if (titulos != null && titulos.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(titulos), false);
-                                if (estudios != null && estudios.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios", funciones.NormalizarField(estudios), false);
-                                if (linksExternos != null && linksExternos.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} Links externos", funciones.NormalizarField(linksExternos), false);
+                                if (media.Episodios!= null && media.Episodios.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} Episodios", funciones.NormalizarField(media.Episodios), true);
+                                if (media.Formato != null && media.Formato.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(media.Formato), true);
+                                if (media.Estado != null && media.Estado.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(media.Estado.ToLower().ToUpperFirst()), true);
+                                if (media.Score != null && media.Score.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(media.Score), false);
+                                if (media.Fechas != null && media.Fechas.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha emisión", funciones.NormalizarField(media.Fechas), false);
+                                if (media.Generos != null && media.Generos.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(media.Generos), false);
+                                if (media.Tags != null && media.Tags.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(media.Tags), false);
+                                if (media.Titulos != null && media.Titulos.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(media.Titulos), false);
+                                if (media.Estudios != null && media.Estudios.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios", funciones.NormalizarField(media.Estudios), false);
+                                if (media.LinksExternos != null && media.LinksExternos.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} Links externos", funciones.NormalizarField(media.LinksExternos), false);
                                 await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
                             }
                             else
@@ -389,85 +320,35 @@ namespace Discord_Bot.Modulos
                         if (elegido > 0)
                         {
                             var datos = data.Data.Page.media[elegido - 1];
+                            Media media = funcionesAnilist.DecodeMedia(datos);
                             if ((datos.isAdult == "false") || (datos.isAdult == true && ctx.Channel.IsNSFW))
                             {
-                                string descripcion = datos.description;
-                                descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
-                                if (descripcion == "")
-                                    descripcion = "(Sin descripción)";
-                                string estado = datos.status;
-                                string formato = datos.format;
-                                string score = $"{datos.meanScore}/100";
-                                string fechas;
-                                string generos = string.Empty;
-                                foreach (var genero in datos.genres)
-                                {
-                                    generos += genero;
-                                    generos += ", ";
-                                }
-                                if (generos.Length >= 2)
-                                    generos = generos.Remove(generos.Length - 2);
-                                string tags = string.Empty;
-                                foreach (var tag in datos.tags)
-                                {
-                                    if (tag.isMediaSpoiler == "false")
-                                    {
-                                        tags += tag.name;
-                                    }
-                                    else
-                                    {
-                                        tags += $"||{tag.name}||";
-                                    }
-                                    tags += ", ";
-                                }
-                                if (tags.Length >= 2)
-                                    tags = tags.Remove(tags.Length - 2);
-                                string titulos = string.Empty;
-                                foreach (var title in datos.synonyms)
-                                {
-                                    titulos += $"`{title}`, ";
-                                }
-                                if (titulos.Length >= 2)
-                                    titulos = titulos.Remove(titulos.Length - 2);
-                                if (datos.startDate.day != null)
-                                {
-                                    if (datos.endDate.day != null)
-                                        fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
-                                    else
-                                        fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
-                                }
-                                else
-                                {
-                                    fechas = $"Este manga no tiene fecha de emisión";
-                                }
-                                string titulo = datos.title.romaji;
-                                string urlAnilist = datos.siteUrl;
                                 var builder = new DiscordEmbedBuilder
                                 {
-                                    Title = titulo,
-                                    Url = urlAnilist,
+                                    Title = media.Titulo,
+                                    Url = media.UrlAnilist,
                                     Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
                                     {
                                         Url = datos.coverImage.large
                                     },
                                     Footer = funciones.GetFooter(ctx),
                                     Color = funciones.GetColor(),
-                                    Description = descripcion
+                                    Description = media.Descripcion
                                 };
-                                if (formato != null && formato.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(formato), true);
-                                if (estado != null && estado.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(estado.ToLower().ToUpperFirst()), true);
-                                if (score != null && score.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(score), true);
-                                if (fechas != null && fechas.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha de publicación", funciones.NormalizarField(fechas), false);
-                                if (generos != null && generos.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(generos), false);
-                                if (tags != null && tags.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(tags), false);
-                                if (titulos != null && titulos.Length > 0)
-                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(titulos), false);
+                                if (media.Formato != null && media.Formato.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Formato", funciones.NormalizarField(media.Formato), true);
+                                if (media.Estado != null && media.Estado.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Estado", funciones.NormalizarField(media.Estado.ToLower().ToUpperFirst()), true);
+                                if (media.Score != null && media.Score.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Puntuación", funciones.NormalizarField(media.Score), true);
+                                if (media.Fechas != null && media.Fechas.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Fecha de publicación", funciones.NormalizarField(media.Fechas), false);
+                                if (media.Generos != null && media.Generos.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Generos", funciones.NormalizarField(media.Generos), false);
+                                if (media.Tags != null && media.Tags.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(media.Tags), false);
+                                if (media.Titulos != null && media.Titulos.Length > 0)
+                                    builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(media.Titulos), false);
                                 await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
                             }
                             else
