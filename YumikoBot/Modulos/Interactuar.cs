@@ -176,19 +176,18 @@ namespace Discord_Bot.Modulos
                     .AddField("Animado", $"{animado}", true)
                     .AddField("Fecha de creación", $"{funciones.UppercaseFirst(dia)} {emote.CreationTimestamp.Day} de {mes} del {emote.CreationTimestamp.Year}")
                     );
-
-            }
-            else
+                }
+                else
                 {
                     await ctx.Channel.SendMessageAsync(emote).ConfigureAwait(false);
                 }
-        }
+            }
             else
-            {
+                {
                 DiscordMessage msgError = await ctx.Channel.SendMessageAsync("Debes pasar un emote").ConfigureAwait(false);
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msgError.Id);
-    }
+            }
 }
 
 [Command("avatar"), Description("Muestra el avatar de un usuario."), RequireGuild]

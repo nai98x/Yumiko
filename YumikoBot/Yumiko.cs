@@ -17,8 +17,8 @@ using System.Text;
 using System.Threading.Tasks;
 using YumikoBot;
 using DSharpPlus.SlashCommands;
-using static DSharpPlus.Entities.DiscordEmbedBuilder;
 using YumikoBot.Modulos;
+using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
 {

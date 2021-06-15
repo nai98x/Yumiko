@@ -69,6 +69,5 @@ namespace YumikoBot.Modulos
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(option));
         }
-
     }
 }
