@@ -14,7 +14,8 @@ using System.Text.RegularExpressions;
 
 namespace Discord_Bot.Modulos
 {
-    public class Juegos : BaseCommandModule
+    [Cooldown(1, 60, CooldownBucketType.Guild)]
+    public class Juegos : BaseCommandModule 
     {
         private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
         private readonly FuncionesJuegos funcionesJuegos = new FuncionesJuegos();

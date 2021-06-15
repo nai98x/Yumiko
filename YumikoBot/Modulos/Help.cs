@@ -44,8 +44,15 @@ namespace Discord_Bot.Modulos
                     List<string> listaComandos = new List<string>();
                     foreach (var comando1 in grupo)
                     {
-                        if(!comando1.IsHidden)
-                            listaComandos.Add($"`{comando1.Name}`");
+                        if (!comando1.IsHidden)
+                        {
+                            string nomComando = comando1.Name;
+                            bool anilistEsp = ctx.Guild.Id == 701813281718927441;
+                            if (anilistEsp || (!anilistEsp && nomComando != "ooc" && nomComando != "bestgirl"))
+                            {
+                                listaComandos.Add($"`{nomComando}`");
+                            }
+                        } 
                     }
                     comandosDesc = string.Join(", ", listaComandos);
                     if (nomGrupo == "NSFW" && !ctx.Channel.IsNSFW)

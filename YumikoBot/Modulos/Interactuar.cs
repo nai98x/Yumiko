@@ -1,11 +1,11 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -157,28 +157,41 @@ namespace Discord_Bot.Modulos
             {
                 if (emote.Id != 0)
                 {
+                    string animado = emote.IsAnimated switch
+                    {
+                        true => "Si",
+                        false => "No",
+                    };
+                    string dia = emote.CreationTimestamp.ToString("dddd", CultureInfo.CreateSpecificCulture("es"));
+                    string mes = emote.CreationTimestamp.ToString("MMMM", CultureInfo.CreateSpecificCulture("es"));
+
                     await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
                         Footer = funciones.GetFooter(ctx),
                         Color = funciones.GetColor(),
-                        Title = emote.Name,
+                        Title = "Emote",
                         ImageUrl = emote.Url
-                    });
-                }
-                else
+                    }.AddField("Nombre", $"{emote.Name}", true)
+                    .AddField("Identificador", $"{emote.Id}", true)
+                    .AddField("Animado", $"{animado}", true)
+                    .AddField("Fecha de creación", $"{funciones.UppercaseFirst(dia)} {emote.CreationTimestamp.Day} de {mes} del {emote.CreationTimestamp.Year}")
+                    );
+
+            }
+            else
                 {
                     await ctx.Channel.SendMessageAsync(emote).ConfigureAwait(false);
                 }
-            }
+        }
             else
             {
                 DiscordMessage msgError = await ctx.Channel.SendMessageAsync("Debes pasar un emote").ConfigureAwait(false);
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msgError.Id);
-            }
-        }
+    }
+}
 
-        [Command("avatar"), Description("Muestra el avatar de un usuario."), RequireGuild]
+[Command("avatar"), Description("Muestra el avatar de un usuario."), RequireGuild]
         public async Task Avatar(CommandContext ctx, DiscordMember usuario = null)
         {
             if (usuario == null)

@@ -77,7 +77,12 @@ namespace Discord_Bot
 
         public async Task<SettingsJuego> InicializarJuego(CommandContext ctx, InteractivityExtension interactivity, bool elegirDificultad, bool elegirTag, bool elegirGenero)
         {
+            DiscordComponentEmoji emote = new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
+
+            DiscordButtonComponent buttonRandom = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
+            DiscordButtonComponent button5 = new DiscordButtonComponent(ButtonStyle.Primary, "5", "5");
             DiscordButtonComponent button10 = new DiscordButtonComponent(ButtonStyle.Primary, "10", "10");
+            DiscordButtonComponent button15 = new DiscordButtonComponent(ButtonStyle.Primary, "15", "15");
             DiscordButtonComponent button20 = new DiscordButtonComponent(ButtonStyle.Primary, "20", "20");
             DiscordButtonComponent button50 = new DiscordButtonComponent(ButtonStyle.Primary, "50", "50");
             DiscordButtonComponent button75 = new DiscordButtonComponent(ButtonStyle.Primary, "75", "75");
@@ -92,7 +97,8 @@ namespace Discord_Bot
                 }
             };
 
-            mensajeRondas.AddComponents(button10, button20, button50, button75, button100);
+            mensajeRondas.AddComponents(buttonRandom, button5, button10, button15);
+            mensajeRondas.AddComponents(button20, button50, button75, button100);
 
             DiscordMessage msgCntRondas = await mensajeRondas.SendAsync(ctx.Channel);
             var msgRondasInter = await interactivity.WaitForButtonAsync(msgCntRondas, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
@@ -100,11 +106,14 @@ namespace Discord_Bot
             {
                 var resultRondas = msgRondasInter.Result;
                 int rondas = int.Parse(resultRondas.Id);
+                if(rondas == 0)
+                {
+                    rondas = funciones.GetNumeroRandom(3, 100);
+                }
                 if (msgCntRondas != null)
                     await funciones.BorrarMensaje(ctx, msgCntRondas.Id);
                 if (elegirDificultad)
                 {
-                    DiscordComponentEmoji emote = new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
                     DiscordButtonComponent buttonAleatorio = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
                     DiscordButtonComponent buttonFacil = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Fácil");
                     DiscordButtonComponent buttonMedia = new DiscordButtonComponent(ButtonStyle.Primary, "2", "Media");
@@ -1350,16 +1359,15 @@ namespace Discord_Bot
             {
                 iterInterna++;
                 iterReal++;
-                if (iterInterna > 5)
+
+                DiscordButtonComponent button = new DiscordButtonComponent(ButtonStyle.Primary, $"{iterReal}", $"{nomGenero}");
+                componentes.Add(button);
+
+                if (iterInterna == 5)
                 {
                     mensajeBuild.AddComponents(componentes);
                     iterInterna = 0;
                     componentes.Clear();
-                }
-                else
-                {
-                    DiscordButtonComponent button = new DiscordButtonComponent(ButtonStyle.Primary, $"{iterReal}", $"{nomGenero}");
-                    componentes.Add(button);
                 }
             }
             if (componentes.Count > 0)

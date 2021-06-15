@@ -1,7 +1,9 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity.Extensions;
 using System;
+using System.Configuration;
 using System.Threading.Tasks;
 
 namespace Discord_Bot.Modulos
@@ -575,6 +577,116 @@ namespace Discord_Bot.Modulos
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
                 });
+            }
+        }
+
+        [Command("fakensfw"), Description("Fake NSFW"), RequireOwner, Hidden]
+        public async Task FakeNSFW(CommandContext ctx, [Description("Usuario fake")] DiscordMember usuarioFake, [Description("Usuario destinatario")] DiscordMember usuario)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+
+            DiscordComponentEmoji emote = new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
+            DiscordButtonComponent button0 = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
+            DiscordButtonComponent button1 = new DiscordButtonComponent(ButtonStyle.Primary, "1", "fuck");
+            DiscordButtonComponent button2 = new DiscordButtonComponent(ButtonStyle.Primary, "2", "gcum");
+            DiscordButtonComponent button3 = new DiscordButtonComponent(ButtonStyle.Primary, "3", "bcum");
+            DiscordButtonComponent button4 = new DiscordButtonComponent(ButtonStyle.Primary, "4", "boobjob");
+            DiscordButtonComponent button5 = new DiscordButtonComponent(ButtonStyle.Primary, "5", "gmasturbate");
+            DiscordButtonComponent button6 = new DiscordButtonComponent(ButtonStyle.Primary, "6", "bmasturbate");
+            DiscordButtonComponent button7 = new DiscordButtonComponent(ButtonStyle.Primary, "7", "gsuck");
+            DiscordButtonComponent button8 = new DiscordButtonComponent(ButtonStyle.Primary, "8", "bsuck");
+            DiscordButtonComponent button9 = new DiscordButtonComponent(ButtonStyle.Primary, "9", "yaoi");
+            DiscordButtonComponent button10 = new DiscordButtonComponent(ButtonStyle.Primary, "10", "yuri");
+            DiscordButtonComponent button11 = new DiscordButtonComponent(ButtonStyle.Primary, "11", "futa");
+            DiscordButtonComponent button12 = new DiscordButtonComponent(ButtonStyle.Primary, "12", "bdsm");
+            DiscordButtonComponent button13 = new DiscordButtonComponent(ButtonStyle.Primary, "13", "azotes");
+            DiscordButtonComponent button14 = new DiscordButtonComponent(ButtonStyle.Primary, "14", "pisar");
+            DiscordButtonComponent button15 = new DiscordButtonComponent(ButtonStyle.Primary, "15", "footjob");
+            DiscordButtonComponent button16 = new DiscordButtonComponent(ButtonStyle.Primary, "16", "erection");
+            DiscordButtonComponent button17 = new DiscordButtonComponent(ButtonStyle.Primary, "17", "cosplay");
+
+            DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
+            {
+                Embed = new DiscordEmbedBuilder
+                {
+                    Title = "Elije el tipo de juego",
+                    Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
+                }
+            };
+
+            mensaje.AddComponents(button0, button1, button2, button3, button4);
+            mensaje.AddComponents(button5, button6, button7, button8, button9);
+            mensaje.AddComponents(button10, button11, button12, button13, button14);
+            mensaje.AddComponents(button15, button16, button17);
+
+            DiscordMessage msgElegir = await mensaje.SendAsync(ctx.Channel);
+            var interComando = await interactivity.WaitForButtonAsync(msgElegir, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+            await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
+            await msgElegir.DeleteAsync("Auto borrado de Yumiko");
+            if (!interComando.TimedOut)
+            {
+                var resultComando = interComando.Result;
+                string comando = resultComando.Id;
+                if (comando == "0")
+                {
+                    var dificultadNum = funciones.GetNumeroRandom(1, 17);
+                    comando = dificultadNum.ToString();
+                }
+                var cNext = ctx.Client.GetCommandsNext();
+                switch (comando)
+                {
+                    case "1":
+                        await Fuck(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("fuck", out _)), usuario);
+                        break;
+                    case "2":
+                        await GCum(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("gcum", out _)), usuario);
+                        break;
+                    case "3":
+                        await BCum(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("bcum", out _)), usuario);
+                        break;
+                    case "4":
+                        await Boobjob(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("boobjob", out _)), usuario);
+                        break;
+                    case "5":
+                        await GMasturbate(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("gmasturbate", out _)), usuario);
+                        break;
+                    case "6":
+                        await BMasturbate(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("bmasturbate", out _)), usuario);
+                        break;
+                    case "7":
+                        await GSuck(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("gsuck", out _)), usuario);
+                        break;
+                    case "8":
+                        await BSuck(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("bsuck", out _)), usuario);
+                        break;
+                    case "9":
+                        await Yaoi(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("yaoi", out _)), usuario);
+                        break;
+                    case "10":
+                        await Yuri(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("yuri", out _)), usuario);
+                        break;
+                    case "11":
+                        await Futa(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("futa", out _)), usuario);
+                        break;
+                    case "12":
+                        await Bdsm(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("bdsm", out _)), usuario);
+                        break;
+                    case "13":
+                        await Azotes(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("azotes", out _)), usuario);
+                        break;
+                    case "14":
+                        await Pisotones(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("pisotones", out _)), usuario);
+                        break;
+                    case "15":
+                        await Footjob(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("footjob", out _)), usuario);
+                        break;
+                    case "16":
+                        await Erection(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("erection", out _)), usuario);
+                        break;
+                    case "17":
+                        await Cosplay(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("cosplay", out _)), usuario);
+                        break;
+                }
             }
         }
     }
