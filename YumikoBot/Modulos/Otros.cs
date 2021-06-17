@@ -401,5 +401,54 @@ namespace Discord_Bot.Modulos
                 await funciones.BorrarMensaje(ctx, msg.Id);   
             }
         }
+
+        [Command("serverso"), Description("Servers con el mismo owner."), RequireOwner, Hidden]
+        public async Task ServersO(CommandContext ctx, int limite)
+        {
+            bool encontro = false;
+            var guildsdesordenadas = ctx.Client.Guilds.Values;
+            var lista = guildsdesordenadas.ToList();
+            var guildsFiltrados = from com in lista
+                                  group com by com.OwnerId;
+            foreach(var guild in guildsFiltrados)
+            {
+                var cantidad = guild.Count();
+                if(cantidad >= limite)
+                {
+                    encontro = true;
+                    var owner = await ctx.Client.GetUserAsync(guild.Key);
+                    string guilds = string.Empty;
+                    foreach(var g in guild)
+                    {
+                        guilds +=
+                            $"**{g.Name}**\n" +
+                            $"  - **Id**: {g.Id}\n" +
+                            $"  - **Fecha que entró Yumiko**: {g.JoinedAt}\n" +
+                            $"  - **Miembros**: {g.MemberCount}\n\n";
+                    }
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder {
+                        Author = new EmbedAuthor
+                        {
+                            Name = $"{owner.Username}#{owner.Discriminator}",
+                            IconUrl = owner.AvatarUrl
+                        },
+                        Title = $"Owner con {cantidad} servidores",
+                        Description = $"{guilds}",
+                        Color = funciones.GetColor(),
+                        Footer = funciones.GetFooter(ctx)
+                    });
+                }
+            }
+            if (!encontro)
+            {
+                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = $"Todo en orden!",
+                    Description = $"No hay ningún owner con más de {limite} servidores",
+                    Color = funciones.GetColor(),
+                    Footer = funciones.GetFooter(ctx)
+                });
+            }
+        }
     }
 }

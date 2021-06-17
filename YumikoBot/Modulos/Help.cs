@@ -47,11 +47,7 @@ namespace Discord_Bot.Modulos
                         if (!comando1.IsHidden)
                         {
                             string nomComando = comando1.Name;
-                            bool anilistEsp = ctx.Guild.Id == 701813281718927441;
-                            if (anilistEsp || (!anilistEsp && nomComando != "ooc" && nomComando != "bestgirl"))
-                            {
-                                listaComandos.Add($"`{nomComando}`");
-                            }
+                            listaComandos.Add($"`{nomComando}`");
                         } 
                     }
                     comandosDesc = string.Join(", ", listaComandos);

@@ -127,12 +127,14 @@ namespace Discord_Bot
 
             Commands.RegisterCommands<Interactuar>();
             Commands.RegisterCommands<Anilist>();
-            Commands.RegisterCommands<Juegos>();
+            Commands.RegisterCommands<Quiz>();
+            Commands.RegisterCommands<Ahorcado>();
             Commands.RegisterCommands<Estadisticas>();
             Commands.RegisterCommands<NSFW>();
-            Commands.RegisterCommands<Usuarios>();
             Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
+
+            Commands.RegisterConverter(new MemberConverter());
 
             await Client.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = prefix + "help | yumiko.uwu.ai" }, UserStatus.Online);
 
@@ -380,6 +382,10 @@ namespace Discord_Bot
                                 case "DSharpPlus.CommandsNext.Attributes.RequirePermissionsAttribute":
                                     titulo = "Acceso denegado";
                                     descripcion = "No tienes los suficientes permisos para ejecutar este comando.";
+                                    break;
+                                case "DSharpPlus.CommandsNext.Attributes.RequireUserPermissionsAttribute":
+                                    titulo = "Permisos insuficientes";
+                                    descripcion = "Yumiko no tiene los suficientes permisos para ejecutar este comando.";
                                     break;
                                 case "DSharpPlus.CommandsNext.Attributes.RequireOwnerAttribute":
                                     titulo = "Acceso denegado";
