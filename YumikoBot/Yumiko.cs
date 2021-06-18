@@ -17,7 +17,6 @@ using System.Text;
 using System.Threading.Tasks;
 using YumikoBot;
 using DSharpPlus.SlashCommands;
-using YumikoBot.Modulos;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
@@ -85,29 +84,6 @@ namespace Discord_Bot
             };
 
             Client.UseInteractivity(new InteractivityConfiguration());
-
-            try
-            {
-                SlashCommands = Client.UseSlashCommands();
-
-                SlashCommands.RegisterCommands<SlashCommands>();
-            }
-            catch (Exception e)
-            {
-                _ = Task.Run(async () =>
-                {
-                    await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder()
-                    {
-                        Title = "Ha ocurrido una excepcion iniciando SlashCommands",
-                        Footer = new EmbedFooter()
-                        {
-                            Text = $"{DateTimeOffset.Now}"
-                        },
-                        Color = DiscordColor.Red
-                    }.AddField("Mensaje", $"{e.Message}", false)
-                    );
-                });
-            }
 
             var commandsConfig = new CommandsNextConfiguration
             {

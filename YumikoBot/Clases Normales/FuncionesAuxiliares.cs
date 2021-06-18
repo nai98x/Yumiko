@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Linq;
 using YumikoBot;
-using System.Globalization;
 using DiscordBotsList.Api;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus;
@@ -25,7 +24,6 @@ namespace Discord_Bot
 {
     public class FuncionesAuxiliares
     {
-        static Timer timer;
         private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         public FirestoreDb GetFirestoreClient()
@@ -153,28 +151,6 @@ namespace Discord_Bot
             return DiscordColor.Blurple;
         }
 
-        public void ScheduleAction(DiscordChannel canal, DiscordMember miembro, DateTime scheduledTime)
-        {
-            DateTime nowTime = DateTime.Now;
-            if (nowTime > scheduledTime)
-                return;
-            double tickTime = (double)(scheduledTime - DateTime.Now).TotalMilliseconds;
-            timer = new Timer(tickTime);
-            timer.Elapsed += async (sender, e) => await Timer_Elapsed(e, canal, miembro);
-            timer.Start();
-        }
-
-        static async Task Timer_Elapsed(ElapsedEventArgs e, DiscordChannel canal, DiscordMember miembro)
-        {
-            await canal.SendMessageAsync(embed: new DiscordEmbedBuilder
-            {
-                Title = $"Feliz cumpleaños {miembro.DisplayName}!",
-                Description = $"Todos denle un gran saludo a {miembro.Mention}",
-                ImageUrl = "https://data.whicdn.com/images/299405277/original.gif"
-            });
-            timer.Stop();
-        }
-
         public string QuitarCaracteresEspeciales(string str)
         {
             if(str != null)
@@ -270,7 +246,8 @@ namespace Discord_Bot
                     bool voto = await DblApi.HasVoted(ctx.User.Id).ConfigureAwait(false);
                     */
                     bool voto = true;
-                    if (!voto)
+
+                    if (voto)
                     {
                         string url = "https://top.gg/bot/295182825521545218/vote";
                         var mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
@@ -299,164 +276,6 @@ namespace Discord_Bot
             AuthDiscordBotListApi DblApi = new AuthDiscordBotListApi(c.CurrentUser.Id, configJson.TopGG_token);
             var guilds = c.Guilds.Count;
             await DblApi.UpdateStats(guildCount: c.Guilds.Count);
-        }
-
-        public async Task<DateTime?> CrearDate(CommandContext ctx)
-        {
-            DiscordMessage msgDia, msgMes, msgAnio, error;
-            DSharpPlus.Interactivity.InteractivityResult<DiscordMessage> msgDiaInter, msgMesInter, msgAnioInter;
-            var interactivity = ctx.Client.GetInteractivity();
-            msgDia = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-            {
-                Title = "Escribe el dia tu fecha de nacimiento",
-                Description = "Ejemplo: 30"
-            });
-            msgDiaInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(60));
-            if (!msgDiaInter.TimedOut)
-            {
-                bool resultDia = int.TryParse(msgDiaInter.Result.Content, out int dia);
-                if (resultDia)
-                {
-                    msgMes = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Title = "Escribe el mes tu fecha de nacimiento",
-                        Description = "Ejemplo: 1"
-                    });
-                    msgMesInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(60));
-                    if (!msgMesInter.TimedOut)
-                    {
-                        bool resultMes = int.TryParse(msgMesInter.Result.Content, out int mes);
-                        if (resultMes)
-                        {
-                            msgAnio = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                            {
-                                Title = "Escribe el año tu fecha de nacimiento",
-                                Description = "Ejemplo: 2000"
-                            });
-                            msgAnioInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(60));
-                            if (!msgAnioInter.TimedOut)
-                            {
-                                bool resultAnio = int.TryParse(msgAnioInter.Result.Content, out int anio);
-                                if (resultAnio)
-                                {
-                                    bool result = DateTime.TryParse($"{dia}/{mes}/{anio}", CultureInfo.CreateSpecificCulture("es-ES"), DateTimeStyles.None, out DateTime fecha);
-                                    if (result)
-                                    {
-                                        if(fecha < DateTime.Today)
-                                        {
-                                            await BorrarMensaje(ctx, msgDia.Id);
-                                            await BorrarMensaje(ctx, msgDiaInter.Result.Id);
-                                            await BorrarMensaje(ctx, msgMes.Id);
-                                            await BorrarMensaje(ctx, msgMesInter.Result.Id);
-                                            await BorrarMensaje(ctx, msgAnio.Id);
-                                            await BorrarMensaje(ctx, msgAnioInter.Result.Id);
-                                            return fecha;
-                                        }
-                                        else
-                                        {
-                                            error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                                            {
-                                                Title = "Error",
-                                                Description = "La fecha de cumpleaños no puede ser posterior a la actual",
-                                                Footer = GetFooter(ctx),
-                                                Color = GetColor()
-                                            });
-                                        }
-                                    }
-                                    else
-                                    {
-                                        error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                                        {
-                                            Title = "Error",
-                                            Description = $"La fecha `{dia}/{mes}/{anio}` no es real",
-                                            Footer = GetFooter(ctx),
-                                            Color = GetColor()
-                                        });
-                                    }
-                                }
-                                else
-                                {
-                                    error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                                    {
-                                        Title = "Error",
-                                        Description = "El año debe ser un numero",
-                                        Footer = GetFooter(ctx),
-                                        Color = GetColor()
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                                {
-                                    Title = "Error",
-                                    Description = "Tiempo agotado esperando el año",
-                                    Footer = GetFooter(ctx),
-                                    Color = GetColor()
-                                });
-                            }
-                            if (msgAnio != null)
-                                await BorrarMensaje(ctx, msgAnio.Id);
-                            if (msgAnioInter.Result != null)
-                                await BorrarMensaje(ctx, msgAnioInter.Result.Id);
-                        }
-                        else
-                        {
-                            error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                            {
-                                Title = "Error",
-                                Description = "El mes debe ser un numero",
-                                Footer = GetFooter(ctx),
-                                Color = GetColor()
-                            });
-                        }
-                    }
-                    else
-                    {
-                        error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Title = "Error",
-                            Description = "Tiempo agotado esperando el mes",
-                            Footer = GetFooter(ctx),
-                            Color = GetColor()
-                        });
-                    }
-                    if (msgMes != null)
-                        await BorrarMensaje(ctx, msgMes.Id);
-                    if (msgMesInter.Result != null)
-                        await BorrarMensaje(ctx, msgMesInter.Result.Id);
-                }
-                else
-                {
-                    error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Title = "Error",
-                        Description = "El dia debe ser un numero",
-                        Footer = GetFooter(ctx),
-                        Color = GetColor()
-                    });
-                }
-            }
-            else
-            {
-                error = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Error",
-                    Description = "Tiempo agotado esperando el dia",
-                    Footer = GetFooter(ctx),
-                    Color = GetColor()
-                });
-            }
-            if(msgDia != null)
-                await BorrarMensaje(ctx, msgDia.Id);
-            if(msgDiaInter.Result != null)
-                await BorrarMensaje(ctx, msgDiaInter.Result.Id);
-            if (error != null)
-            {
-                await Task.Delay(5000);
-                await BorrarMensaje(ctx, error.Id);
-            }
-            return null;
         }
 
         public async Task<int> GetElegido(CommandContext ctx, List<string> opciones)
