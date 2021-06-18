@@ -102,9 +102,7 @@ namespace Discord_Bot
 
             Commands.RegisterCommands<Interactuar>();
             Commands.RegisterCommands<Anilist>();
-            Commands.RegisterCommands<Quiz>();
-            Commands.RegisterCommands<Ahorcado>();
-            Commands.RegisterCommands<Estadisticas>();
+            Commands.RegisterCommands<Juegos>();
             Commands.RegisterCommands<NSFW>();
             Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
