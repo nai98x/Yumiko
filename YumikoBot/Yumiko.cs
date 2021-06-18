@@ -6,7 +6,6 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
-using DSharpPlus.VoiceNext;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -312,12 +311,14 @@ namespace Discord_Bot
                             IconUrl = e.Context.Member.AvatarUrl
                         }
                     };
-                    var mensajeErr = e.Context.Channel.SendMessageAsync(embed: embed);
-                    if (e.Context.Message != null && mensajeErr != null)
+                    var mensajeErr = await e.Context.Channel.SendMessageAsync(embed: embed);
+                    var commandDesc = await funciones.GetInfoComando(e.Context, e.Command);
+                    if (e.Context.Message != null && mensajeErr != null && commandDesc != null)
                     {
                         await Task.Delay(7000);
                         await funciones.BorrarMensaje(e.Context, e.Context.Message.Id);
-                        await funciones.BorrarMensaje(e.Context, mensajeErr.Result.Id);
+                        await funciones.BorrarMensaje(e.Context, mensajeErr.Id);
+                        await funciones.BorrarMensaje(e.Context, commandDesc.Id);
                     }
                 }
                 else if (e.Exception.Message == "Unauthorized: 403")

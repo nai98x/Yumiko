@@ -523,5 +523,59 @@ namespace Discord_Bot
                 return string.Empty;
             }
         }
+
+        public async Task<DiscordMessage> GetInfoComando(CommandContext ctx, Command comando)
+        {
+            string web = ConfigurationManager.AppSettings["Web"] + "#commands";
+            string nomComando = comando.Name;
+            var builder = new DiscordEmbedBuilder
+            {
+                Title = $"Comando {nomComando}",
+                Url = web,
+                Footer = GetFooter(ctx),
+                Color = GetColor()
+            };
+            string modulo = comando.Module.ModuleType.Name;
+            var aliases = comando.Aliases;
+            string descripcion = comando.Description;
+            if (modulo != null)
+                builder.AddField("Modulo", modulo, false);
+            if (aliases.Count > 0)
+            {
+                List<string> listaAliases = new List<string>();
+                foreach (string a in aliases)
+                {
+                    listaAliases.Add($"`{a}`");
+                }
+                string aliasesC = string.Join(", ", listaAliases);
+                builder.AddField("Aliases", aliasesC, false);
+            }
+            if (descripcion != null)
+                builder.AddField("Descripcion", descripcion, false);
+            foreach (var overload in comando.Overloads)
+            {
+                string parametros = string.Empty;
+                foreach (var argument in overload.Arguments)
+                {
+                    if (argument.Description != null)
+                    {
+                        if (argument.IsOptional)
+                            parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Obligatorio: **No**\n";
+                        else
+                            parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Obligatorio: **Si**\n";
+                    }
+                    else
+                    {
+                        if (argument.IsOptional)
+                            parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **No**\n";
+                        else
+                            parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **Si**\n";
+                    }
+                }
+                if (!string.IsNullOrEmpty(parametros))
+                    builder.AddField("Parametros", parametros, false);
+            }
+            return await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+        }
     }
 }

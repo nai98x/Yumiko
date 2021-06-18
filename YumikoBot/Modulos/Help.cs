@@ -22,7 +22,7 @@ namespace Discord_Bot.Modulos
 
             var comandos = commandsNext.RegisteredCommands.Values;
             string web = ConfigurationManager.AppSettings["Web"] + "#commands";
-            //string urlTopGG = "https://top.gg/bot/295182825521545218/";
+            string urlTopGG = "https://top.gg/bot/295182825521545218/";
             var comandosFiltrados = from com in comandos
                                     group com by com.Module.ModuleType.Name;
             if (comando == null)
@@ -31,8 +31,8 @@ namespace Discord_Bot.Modulos
                 var builder = new DiscordEmbedBuilder
                 {
                     Title = "Comandos disponibles",
-                    Description = $"Puedes llamarme con `{ctx.Prefix}` o con {ctx.Client.CurrentUser.Mention}.\n" +
-                    $"[Ejemplos de comandos]({web})",
+                    Description = $"Puedes llamarme con `{ctx.Prefix}` o con {ctx.Client.CurrentUser.Mention}\n" +
+                    $"[Ejemplos de comandos]({web}) | [¡Vótame!]({urlTopGG})",
                     Url = web,
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
@@ -64,55 +64,7 @@ namespace Discord_Bot.Modulos
                 Command comandoEncontrado = listaComandos.Find(x => x.Name == comando || x.Aliases.Contains(comando));
                 if(comandoEncontrado != null && !comandoEncontrado.IsHidden)
                 {
-                    string nomComando = comandoEncontrado.Name;
-                    var builder = new DiscordEmbedBuilder
-                    {
-                        Title = $"Comando {nomComando}",
-                        Url = web,
-                        Footer = funciones.GetFooter(ctx),
-                        Color = funciones.GetColor()
-                    };
-                    string modulo = comandoEncontrado.Module.ModuleType.Name;
-                    var aliases = comandoEncontrado.Aliases;
-                    string descripcion = comandoEncontrado.Description;
-                    if(modulo != null)
-                        builder.AddField("Modulo", modulo, false);
-                    if(aliases.Count > 0)
-                    {
-                        List<string> listaAliases = new List<string>();
-                        foreach(string a in aliases)
-                        {
-                            listaAliases.Add($"`{a}`");
-                        }
-                        string aliasesC = string.Join(", ", listaAliases);
-                        builder.AddField("Aliases", aliasesC, false);
-                    }
-                    if(descripcion != null)
-                        builder.AddField("Descripcion", descripcion, false);
-                    foreach (var overload in comandoEncontrado.Overloads) 
-                    {
-                        string parametros = string.Empty;
-                        foreach (var argument in overload.Arguments)
-                        {
-                            if(argument.Description != null)
-                            {
-                                if(argument.IsOptional)
-                                    parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Obligatorio: **No**\n";
-                                else
-                                    parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Obligatorio: **Si**\n";
-                            }
-                            else
-                            {
-                                if(argument.IsOptional)
-                                    parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **No**\n";
-                                else
-                                    parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **Si**\n";
-                            }  
-                        }
-                        if(!string.IsNullOrEmpty(parametros))
-                            builder.AddField("Parametros", parametros, false);
-                    }
-                    await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+                    _ = await funciones.GetInfoComando(ctx, comandoEncontrado);
                 }
                 else
                 {
