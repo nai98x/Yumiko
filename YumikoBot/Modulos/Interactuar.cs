@@ -13,7 +13,7 @@ namespace Discord_Bot.Modulos
 {
     public class Interactuar : BaseCommandModule
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly FuncionesAuxiliares funciones = new();
 
         [Command("say"), Aliases("s"), Description("Yumiko habla en el chat.")]
         public async Task Say(CommandContext ctx, [Description("Mensaje para replicar")][RemainingText] string mensaje = null)
@@ -91,7 +91,7 @@ namespace Discord_Bot.Modulos
         [Command("pregunta"), Aliases("p", "question", "siono"), Description("Responde con SI O NO.")]
         public async Task Sisonon(CommandContext ctx, [Description("La pregunta que le quieres hacer")][RemainingText] string pregunta)
         {
-            Random rnd = new Random();
+            Random rnd = new();
             int random = rnd.Next(2);
             switch (random)
             {
@@ -124,10 +124,10 @@ namespace Discord_Bot.Modulos
             var msg = await interactivity.WaitForMessageAsync(xm => xm.Author == ctx.User, TimeSpan.FromSeconds(60));
             if (!msg.TimedOut)
             {
-                List<string> opciones = new List<string>();
+                List<string> opciones = new();
                 string msgResponse = msg.Result.Content;
                 opciones = msgResponse.Split(',').ToList();
-                Random rnd = new Random();
+                Random rnd = new();
                 int random = rnd.Next(opciones.Count);
                 string options = "**Opciones:**";
                 foreach (string msj in opciones)

@@ -9,8 +9,8 @@ namespace Discord_Bot
 {
     public class FuncionesAnilist
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-        private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
+        private readonly FuncionesAuxiliares funciones = new();
+        private readonly GraphQLHttpClient graphQLClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         public async Task<dynamic> GetAnilistMedia(CommandContext ctx, string busqueda, string tipo)
         {
@@ -67,7 +67,7 @@ namespace Discord_Bot
                 Query = query,
                 Variables = new
                 {
-                    busqueda = busqueda
+                    busqueda
                 }
             };
             try
@@ -90,7 +90,7 @@ namespace Discord_Bot
         {
             if(datos != null)
             {
-                Media media = new Media();
+                Media media = new();
 
                 media.IsAdult = datos.isAdult;
                 media.Descripcion = datos.description;

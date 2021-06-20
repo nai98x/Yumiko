@@ -13,26 +13,25 @@ namespace Discord_Bot.Modulos
 {
     public class Juegos : BaseCommandModule 
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-        private readonly FuncionesJuegos funcionesJuegos = new FuncionesJuegos();
-        private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
+        private readonly FuncionesAuxiliares funciones = new();
+        private readonly FuncionesJuegos funcionesJuegos = new();
 
         [Command("quiz"), Description("Empieza el juego de adivinar algo relacionado con el anime."), RequireGuild, Cooldown(1, 60, CooldownBucketType.Guild)]
         public async Task QuizGeneral(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
 
-            DiscordComponentEmoji emote = new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
-            DiscordButtonComponent buttonAleatorio = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
-            DiscordButtonComponent buttonPersonaje = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Personaje");
-            DiscordButtonComponent buttonAnime = new DiscordButtonComponent(ButtonStyle.Primary, "2", "Anime");
-            DiscordButtonComponent buttonManga = new DiscordButtonComponent(ButtonStyle.Primary, "3", "Manga");
-            DiscordButtonComponent buttonTag = new DiscordButtonComponent(ButtonStyle.Primary, "4", "Tag");
-            DiscordButtonComponent buttonEstudio = new DiscordButtonComponent(ButtonStyle.Primary, "5", "Estudio");
-            DiscordButtonComponent buttonProtagonista = new DiscordButtonComponent(ButtonStyle.Primary, "6", "Protagonista");
-            DiscordButtonComponent buttonGenero = new DiscordButtonComponent(ButtonStyle.Primary, "7", "Genero");
+            DiscordComponentEmoji emote = new(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
+            DiscordButtonComponent buttonAleatorio = new(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
+            DiscordButtonComponent buttonPersonaje = new(ButtonStyle.Primary, "1", "Personaje");
+            DiscordButtonComponent buttonAnime = new(ButtonStyle.Primary, "2", "Anime");
+            DiscordButtonComponent buttonManga = new(ButtonStyle.Primary, "3", "Manga");
+            DiscordButtonComponent buttonTag = new(ButtonStyle.Primary, "4", "Tag");
+            DiscordButtonComponent buttonEstudio = new(ButtonStyle.Primary, "5", "Estudio");
+            DiscordButtonComponent buttonProtagonista = new(ButtonStyle.Primary, "6", "Protagonista");
+            DiscordButtonComponent buttonGenero = new(ButtonStyle.Primary, "7", "Genero");
 
-            DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
+            DiscordMessageBuilder mensaje = new()
             {
                 Embed = new DiscordEmbedBuilder
                 {
@@ -179,7 +178,7 @@ namespace Discord_Bot.Modulos
             {
                 settings.PorcentajeTag = 70;
                 var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, false, true, false);
-                int cantidadAnimes = animeList.Count();
+                int cantidadAnimes = animeList.Count;
                 if (cantidadAnimes > 0)
                 {
                     if (cantidadAnimes < settings.Rondas)
@@ -286,12 +285,12 @@ namespace Discord_Bot.Modulos
         {
             var interactivity = ctx.Client.GetInteractivity();
 
-            DiscordComponentEmoji emote = new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
-            DiscordButtonComponent buttonAleatorio = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
-            DiscordButtonComponent buttonPersonaje = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Personaje");
-            DiscordButtonComponent buttonAnime = new DiscordButtonComponent(ButtonStyle.Primary, "2", "Anime");
+            DiscordComponentEmoji emote = new(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
+            DiscordButtonComponent buttonAleatorio = new(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
+            DiscordButtonComponent buttonPersonaje = new(ButtonStyle.Primary, "1", "Personaje");
+            DiscordButtonComponent buttonAnime = new(ButtonStyle.Primary, "2", "Anime");
 
-            DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
+            DiscordMessageBuilder mensaje = new()
             {
                 Embed = new DiscordEmbedBuilder
                 {
@@ -310,8 +309,7 @@ namespace Discord_Bot.Modulos
                 string game = resultGame.Id;
                 if (game == "0")
                 {
-                    Random rnd = new Random();
-                    int random = rnd.Next(2);
+                    int random = funciones.GetNumeroRandom(1,2);
                     game = random.ToString();
                 }
                 if (msgElegir != null)
@@ -319,7 +317,7 @@ namespace Discord_Bot.Modulos
                 int pag;
                 switch (game)
                 {
-                    case "0":
+                    case "1":
                         pag = funciones.GetNumeroRandom(1, 5000);
                         Character personaje = await funciones.GetRandomCharacter(ctx, pag);
                         if (personaje != null)
@@ -327,7 +325,7 @@ namespace Discord_Bot.Modulos
                             await funcionesJuegos.JugarAhorcado(ctx, personaje, "personaje");
                         }
                         break;
-                    case "1":
+                    case "2":
                         pag = funciones.GetNumeroRandom(1, 5000);
                         Anime anime = await funciones.GetRandomMedia(ctx, pag, "anime");
                         if (anime != null)
@@ -359,15 +357,15 @@ namespace Discord_Bot.Modulos
         {
             var interactivity = ctx.Client.GetInteractivity();
 
-            DiscordButtonComponent buttonPersonaje = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Personaje");
-            DiscordButtonComponent buttonAnime = new DiscordButtonComponent(ButtonStyle.Primary, "2", "Anime");
-            DiscordButtonComponent buttonManga = new DiscordButtonComponent(ButtonStyle.Primary, "3", "Manga");
-            DiscordButtonComponent buttonTag = new DiscordButtonComponent(ButtonStyle.Primary, "4", "Tag");
-            DiscordButtonComponent buttonEstudio = new DiscordButtonComponent(ButtonStyle.Primary, "5", "Estudio");
-            DiscordButtonComponent buttonProtagonista = new DiscordButtonComponent(ButtonStyle.Primary, "6", "Protagonista");
-            DiscordButtonComponent buttonGenero = new DiscordButtonComponent(ButtonStyle.Primary, "7", "Genero");
+            DiscordButtonComponent buttonPersonaje = new(ButtonStyle.Primary, "1", "Personaje");
+            DiscordButtonComponent buttonAnime = new(ButtonStyle.Primary, "2", "Anime");
+            DiscordButtonComponent buttonManga = new(ButtonStyle.Primary, "3", "Manga");
+            DiscordButtonComponent buttonTag = new(ButtonStyle.Primary, "4", "Tag");
+            DiscordButtonComponent buttonEstudio = new(ButtonStyle.Primary, "5", "Estudio");
+            DiscordButtonComponent buttonProtagonista = new(ButtonStyle.Primary, "6", "Protagonista");
+            DiscordButtonComponent buttonGenero = new(ButtonStyle.Primary, "7", "Genero");
 
-            DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
+            DiscordMessageBuilder mensaje = new()
             {
                 Embed = new DiscordEmbedBuilder
                 {

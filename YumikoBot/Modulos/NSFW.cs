@@ -11,7 +11,7 @@ namespace Discord_Bot.Modulos
     [RequireNsfw]
     public class NSFW : BaseCommandModule
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly FuncionesAuxiliares funciones = new();
 
         [Command("fuck"), Description("Tienes sexo con alguien")]
         public async Task Fuck(CommandContext ctx, [Description("El usuario que te quieres follar")] DiscordMember usuario = null)
@@ -42,7 +42,7 @@ namespace Discord_Bot.Modulos
         [Command("cum"), Description("Te vienes")]
         public async Task Cum(CommandContext ctx, [Description("El usuario al que le quieres acabar")] DiscordMember usuario = null)
         {
-            Random rnd = new Random();
+            Random rnd = new();
             if (rnd.NextDouble() >= 0.5)
                 await GCum(ctx, usuario);
             else
@@ -132,7 +132,7 @@ namespace Discord_Bot.Modulos
         [Command("masturbate"), Description("Te masturbas")]
         public async Task Masturbate(CommandContext ctx, [Description("El usuario al que quieres masturbar")] DiscordMember usuario = null)
         {
-            Random rnd = new Random();
+            Random rnd = new();
             if (rnd.NextDouble() >= 0.5)
                 await GMasturbate(ctx, usuario);
             else
@@ -198,7 +198,7 @@ namespace Discord_Bot.Modulos
         [Command("suck"), Description("Se la chupas a alguien")]
         public async Task Suck(CommandContext ctx, [Description("El usuario que se la quieres chupar")] DiscordMember usuario = null)
         {
-            Random rnd = new Random();
+            Random rnd = new();
             if (rnd.NextDouble() >= 0.5)
                 await GSuck(ctx, usuario);
             else
@@ -585,27 +585,27 @@ namespace Discord_Bot.Modulos
         {
             var interactivity = ctx.Client.GetInteractivity();
 
-            DiscordComponentEmoji emote = new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
-            DiscordButtonComponent button0 = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
-            DiscordButtonComponent button1 = new DiscordButtonComponent(ButtonStyle.Primary, "1", "fuck");
-            DiscordButtonComponent button2 = new DiscordButtonComponent(ButtonStyle.Primary, "2", "gcum");
-            DiscordButtonComponent button3 = new DiscordButtonComponent(ButtonStyle.Primary, "3", "bcum");
-            DiscordButtonComponent button4 = new DiscordButtonComponent(ButtonStyle.Primary, "4", "boobjob");
-            DiscordButtonComponent button5 = new DiscordButtonComponent(ButtonStyle.Primary, "5", "gmasturbate");
-            DiscordButtonComponent button6 = new DiscordButtonComponent(ButtonStyle.Primary, "6", "bmasturbate");
-            DiscordButtonComponent button7 = new DiscordButtonComponent(ButtonStyle.Primary, "7", "gsuck");
-            DiscordButtonComponent button8 = new DiscordButtonComponent(ButtonStyle.Primary, "8", "bsuck");
-            DiscordButtonComponent button9 = new DiscordButtonComponent(ButtonStyle.Primary, "9", "yaoi");
-            DiscordButtonComponent button10 = new DiscordButtonComponent(ButtonStyle.Primary, "10", "yuri");
-            DiscordButtonComponent button11 = new DiscordButtonComponent(ButtonStyle.Primary, "11", "futa");
-            DiscordButtonComponent button12 = new DiscordButtonComponent(ButtonStyle.Primary, "12", "bdsm");
-            DiscordButtonComponent button13 = new DiscordButtonComponent(ButtonStyle.Primary, "13", "azotes");
-            DiscordButtonComponent button14 = new DiscordButtonComponent(ButtonStyle.Primary, "14", "pisar");
-            DiscordButtonComponent button15 = new DiscordButtonComponent(ButtonStyle.Primary, "15", "footjob");
-            DiscordButtonComponent button16 = new DiscordButtonComponent(ButtonStyle.Primary, "16", "erection");
-            DiscordButtonComponent button17 = new DiscordButtonComponent(ButtonStyle.Primary, "17", "cosplay");
+            DiscordComponentEmoji emote = new(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
+            DiscordButtonComponent button0 = new(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
+            DiscordButtonComponent button1 = new(ButtonStyle.Primary, "1", "fuck");
+            DiscordButtonComponent button2 = new(ButtonStyle.Primary, "2", "gcum");
+            DiscordButtonComponent button3 = new(ButtonStyle.Primary, "3", "bcum");
+            DiscordButtonComponent button4 = new(ButtonStyle.Primary, "4", "boobjob");
+            DiscordButtonComponent button5 = new(ButtonStyle.Primary, "5", "gmasturbate");
+            DiscordButtonComponent button6 = new(ButtonStyle.Primary, "6", "bmasturbate");
+            DiscordButtonComponent button7 = new(ButtonStyle.Primary, "7", "gsuck");
+            DiscordButtonComponent button8 = new(ButtonStyle.Primary, "8", "bsuck");
+            DiscordButtonComponent button9 = new(ButtonStyle.Primary, "9", "yaoi");
+            DiscordButtonComponent button10 = new(ButtonStyle.Primary, "10", "yuri");
+            DiscordButtonComponent button11 = new(ButtonStyle.Primary, "11", "futa");
+            DiscordButtonComponent button12 = new(ButtonStyle.Primary, "12", "bdsm");
+            DiscordButtonComponent button13 = new(ButtonStyle.Primary, "13", "azotes");
+            DiscordButtonComponent button14 = new(ButtonStyle.Primary, "14", "pisar");
+            DiscordButtonComponent button15 = new(ButtonStyle.Primary, "15", "footjob");
+            DiscordButtonComponent button16 = new(ButtonStyle.Primary, "16", "erection");
+            DiscordButtonComponent button17 = new(ButtonStyle.Primary, "17", "cosplay");
 
-            DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
+            DiscordMessageBuilder mensaje = new()
             {
                 Embed = new DiscordEmbedBuilder
                 {

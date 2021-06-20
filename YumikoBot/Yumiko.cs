@@ -32,7 +32,7 @@ namespace Discord_Bot
 
         private DiscordChannel LogChannelErrores;
 
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly FuncionesAuxiliares funciones = new();
 
         private bool Debug;
 
@@ -340,7 +340,7 @@ namespace Discord_Bot
                 {
                     if (e.Exception is ChecksFailedException ex)
                     {
-                        List<DiscordMessage> mensajes = new List<DiscordMessage>();
+                        List<DiscordMessage> mensajes = new();
                         foreach (var exep in ex.FailedChecks)
                         {
                             string exepcion = exep.ToString();
@@ -392,7 +392,7 @@ namespace Discord_Bot
                                     break;
                             }
                             var miembro = e.Context.Member;
-                            EmbedFooter footer = new EmbedFooter()
+                            EmbedFooter footer = new()
                             {
                                 Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
                                 IconUrl = miembro.AvatarUrl
@@ -417,7 +417,7 @@ namespace Discord_Bot
                     else
                     {
                         var miembro = e.Context.Member;
-                        EmbedFooter footer = new EmbedFooter()
+                        EmbedFooter footer = new()
                         {
                             Text = "Invocado por " + miembro.DisplayName + " (" + miembro.Username + "#" + miembro.Discriminator + ")",
                             IconUrl = miembro.AvatarUrl

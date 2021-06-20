@@ -10,7 +10,7 @@ namespace YumikoBot.DAL
 {
     public class LeaderboardoGeneral
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly FuncionesAuxiliares funciones = new();
 
         public async Task<List<LeaderboardFirebase>> GetLeaderboardFirebase(long guildId, string juego, string dificultad)
         {
@@ -43,7 +43,7 @@ namespace YumikoBot.DAL
                 registro.partidasJugadas++;
                 registro.rondasAcertadas += rondasAcertadas;
                 registro.rondasTotales += rondasTotales;
-                Dictionary<string, object> data = new Dictionary<string, object>()
+                Dictionary<string, object> data = new()
                 {
                     {"user_id", registro.user_id},
                     {"partidasJugadas", registro.partidasJugadas},
@@ -55,7 +55,7 @@ namespace YumikoBot.DAL
             }
             else
             {
-                Dictionary<string, object> data = new Dictionary<string, object>()
+                Dictionary<string, object> data = new()
                 {
                     {"user_id", userId},
                     {"partidasJugadas", 1},
@@ -69,7 +69,7 @@ namespace YumikoBot.DAL
 
         public async Task<List<StatsJuego>> GetLeaderboard(CommandContext ctx, string dificultad, string juego)
         {
-            List<StatsJuego> lista = new List<StatsJuego>();
+            List<StatsJuego> lista = new();
             var listaFirebase = await GetLeaderboardFirebase((long)ctx.Guild.Id, juego, dificultad);
             listaFirebase.ForEach(x =>
             {
@@ -87,7 +87,7 @@ namespace YumikoBot.DAL
         
         public async Task<List<string>> GetTags(CommandContext ctx)
         {
-            List<string> ret = new List<string>();
+            List<string> ret = new();
             FirestoreDb db = funciones.GetFirestoreClient();
 
             CollectionReference estadisticasRef = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document("tag").Collection("Dificultad");

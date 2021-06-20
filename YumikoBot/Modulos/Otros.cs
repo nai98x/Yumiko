@@ -20,7 +20,7 @@ namespace Discord_Bot.Modulos
 {
     public class Otros : BaseCommandModule
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
+        private readonly FuncionesAuxiliares funciones = new();
 
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
@@ -43,8 +43,8 @@ namespace Discord_Bot.Modulos
         [Command("invite"), Aliases("invitar"), Description("Muestra el link para invitar a Yumiko a un servidor.")]
         public async Task Invite(CommandContext ctx)
         {
-            DiscordLinkButtonComponent button = new DiscordLinkButtonComponent(ConfigurationManager.AppSettings["Invite"], "Invitación");
-            DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
+            DiscordLinkButtonComponent button = new(ConfigurationManager.AppSettings["Invite"], "Invitación");
+            DiscordMessageBuilder mensaje = new()
             {
                 Content = "Puedes invitarme a un servidor haciendo click en el botón."
             };
@@ -57,7 +57,7 @@ namespace Discord_Bot.Modulos
         {
             if (String.IsNullOrEmpty(texto))
             {
-                texto = await funciones.GetStringInteractivity(ctx, "Escribe tu mensaje", "Ejemplo: Hola! Encontre un bug en el juego de adivina el anime.", "Tiempo agotado esperando el texto");
+                texto = await funciones.GetStringInteractivity(ctx, "Escribe tu mensaje", "Ejemplo: Hola! Encontre un bug en el juego de adivina el anime.", "Tiempo agotado esperando el texto", Convert.ToInt32(ConfigurationManager.AppSettings["TimeoutGeneral"]));
             }
             if (!String.IsNullOrEmpty(texto))
             {
@@ -180,11 +180,11 @@ namespace Discord_Bot.Modulos
             {
                 if (String.IsNullOrEmpty(buscar))
                 {
-                    buscar = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del anime a descargar", "Ejemplo: Grisaia no Kajitsu", "Tiempo agotado esperando el nombre del anime");
+                    buscar = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del anime a descargar", "Ejemplo: Grisaia no Kajitsu", "Tiempo agotado esperando el nombre del anime", Convert.ToInt32(ConfigurationManager.AppSettings["TimeoutGeneral"]));
                 }
                 if (!String.IsNullOrEmpty(buscar))
                 {
-                    MonoschinosDownloader animeflv = new MonoschinosDownloader();
+                    MonoschinosDownloader animeflv = new();
                     var interactivity = ctx.Client.GetInteractivity();
                     var msgBusqueda = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
@@ -230,8 +230,8 @@ namespace Discord_Bot.Modulos
                                     });
                                     var links = await animeflv.GetLinks(elegido.href, elegido.name);
                                     await funciones.BorrarMensaje(ctx, mensajeLinks.Id);
-                                    Dictionary<string, Stream> dic = new Dictionary<string, Stream>
-                                {
+                                    Dictionary<string, Stream> dic = new()
+                                    {
                                     {"descargaLinks.txt",  (FileStream)funciones.CrearArchivo(links)}
                                 };
                                     await ctx.Channel.SendMessageAsync(new DiscordMessageBuilder

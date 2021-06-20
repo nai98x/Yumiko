@@ -7,7 +7,6 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Linq;
 using YumikoBot;
 using DiscordBotsList.Api;
@@ -24,7 +23,7 @@ namespace Discord_Bot
 {
     public class FuncionesAuxiliares
     {
-        private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
+        private readonly GraphQLHttpClient graphQLClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         public FirestoreDb GetFirestoreClient()
         {
@@ -49,13 +48,13 @@ namespace Discord_Bot
             }
             IReadOnlyList<DiscordMessage> mensajes = await channel.GetMessagesAsync();
             List<DiscordMessage> msgs = mensajes.ToList();
-            int cntMensajes = msgs.Count();
+            int cntMensajes = msgs.Count;
             DiscordMessage last = msgs.LastOrDefault();
             while (cntMensajes == 100)
             {
                 var mensajesAux = await channel.GetMessagesBeforeAsync(last.Id);
 
-                cntMensajes = mensajesAux.Count();
+                cntMensajes = mensajesAux.Count;
                 last = mensajesAux.LastOrDefault();
 
                 foreach (DiscordMessage mensaje in mensajesAux)
@@ -63,7 +62,7 @@ namespace Discord_Bot
                     msgs.Add(mensaje);
                 }
             }
-            List<Imagen> opciones = new List<Imagen>();
+            List<Imagen> opciones = new();
             foreach (DiscordMessage msg in msgs)
             {
                 var att = msg.Attachments.FirstOrDefault();
@@ -84,7 +83,7 @@ namespace Discord_Bot
         {
             if (min <= 0 && max <= 0)
                 return 0;
-            Random rnd = new Random();
+            Random rnd = new();
             return rnd.Next(minValue: min, maxValue: max);
         }
 
@@ -127,14 +126,11 @@ namespace Discord_Bot
             return new string(a);
         }
 
-        public EmbedFooter GetFooter(CommandContext ctx)
+        public EmbedFooter GetFooter(CommandContext ctx) => new()
         {
-            return  new EmbedFooter()
-            {
-                Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator}) | {ctx.Prefix}{ctx.Command.Name}",
-                IconUrl = ctx.Member.AvatarUrl
-            };
-        }
+            Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator}) | {ctx.Prefix}{ctx.Command.Name}",
+            IconUrl = ctx.Member.AvatarUrl
+        };
 
         public EmbedAuthor GetAuthor(string nombre, string avatar, string url)
         {
@@ -146,12 +142,9 @@ namespace Discord_Bot
             };
         }
 
-        public DiscordColor GetColor()
-        {
-            return DiscordColor.Blurple;
-        }
+        public DiscordColor GetColor() => DiscordColor.Blurple;
 
-        public string QuitarCaracteresEspeciales(string str)
+        public static string QuitarCaracteresEspeciales(string str)
         {
             if(str != null)
                 return Regex.Replace(str, @"[^a-zA-Z0-9]+", " ").Trim();
@@ -206,7 +199,7 @@ namespace Discord_Bot
 
         public bool ChequearPermisoYumiko(CommandContext ctx, DSharpPlus.Permissions permiso)
         {
-            return DSharpPlus.PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), permiso);
+            return PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), permiso);
         }
 
         public async Task BorrarMensaje(CommandContext ctx, ulong msgId)
@@ -273,8 +266,7 @@ namespace Discord_Bot
             }
             var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
 
-            AuthDiscordBotListApi DblApi = new AuthDiscordBotListApi(c.CurrentUser.Id, configJson.TopGG_token);
-            var guilds = c.Guilds.Count;
+            AuthDiscordBotListApi DblApi = new(c.CurrentUser.Id, configJson.TopGG_token);
             await DblApi.UpdateStats(guildCount: c.Guilds.Count);
         }
 
@@ -287,7 +279,7 @@ namespace Discord_Bot
             {
                 var interactivity = ctx.Client.GetInteractivity();
 
-                DiscordMessageBuilder mensajeRondas = new DiscordMessageBuilder()
+                DiscordMessageBuilder mensajeRondas = new()
                 {
                     Embed = new DiscordEmbedBuilder
                     {
@@ -296,12 +288,12 @@ namespace Discord_Bot
                         Title = "Elije la opcion",
                     }
                 };
-                List<DiscordComponent> componentes = new List<DiscordComponent>();
+                List<DiscordComponent> componentes = new();
                 int i = 0;
                 foreach(var opc in opciones)
                 {
                     i++;
-                    DiscordButtonComponent button = new DiscordButtonComponent(ButtonStyle.Primary, $"{i}", $"{opc}");
+                    DiscordButtonComponent button = new(ButtonStyle.Primary, $"{i}", $"{opc}");
                     componentes.Add(button);
                 }
 
@@ -330,8 +322,7 @@ namespace Discord_Bot
 
         public async Task<Character> GetRandomCharacter(CommandContext ctx, int pag)
         {
-            string name = "", imageUrl = "", siteUrl = "", titleMedia = "", siteUrlMedia = string.Empty;
-            int favoritos = 0;
+            string titleMedia = "", siteUrlMedia = string.Empty;
             string query = "query($pagina: Int){" +
                         "   Page(page: $pagina, perPage: 1){" +
                         "       characters(sort: FAVOURITES_DESC){" +
@@ -367,10 +358,10 @@ namespace Discord_Bot
                 var data = await graphQLClient.SendQueryAsync<dynamic>(request);
                 foreach (var x in data.Data.Page.characters)
                 {
-                    name = x.name.full;
-                    imageUrl = x.image.large;
-                    siteUrl = x.siteUrl;
-                    favoritos = x.favourites;
+                    string name = x.name.full;
+                    string imageUrl = x.image.large;
+                    string siteUrl = x.siteUrl;
+                    int favoritos = x.favourites;
                     foreach (var m in x.media.nodes)
                     {
                         titleMedia = m.title.romaji;
@@ -487,7 +478,7 @@ namespace Discord_Bot
             }
         }
 
-        public async Task<string> GetStringInteractivity(CommandContext ctx, string tituloBusqueda, string descBusqueda, string descError)
+        public async Task<string> GetStringInteractivity(CommandContext ctx, string tituloBusqueda, string descBusqueda, string descError, int timeoutSegundos)
         {
             var interactivity = ctx.Client.GetInteractivity();
             var msgUsuario = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
@@ -497,7 +488,7 @@ namespace Discord_Bot
                 Footer = GetFooter(ctx),
                 Color = GetColor(),
             });
-            var msgUserInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+            var msgUserInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(timeoutSegundos));
             if (!msgUserInter.TimedOut)
             {
                 if (msgUsuario != null)
@@ -542,7 +533,7 @@ namespace Discord_Bot
                 builder.AddField("Modulo", modulo, false);
             if (aliases.Count > 0)
             {
-                List<string> listaAliases = new List<string>();
+                List<string> listaAliases = new();
                 foreach (string a in aliases)
                 {
                     listaAliases.Add($"`{a}`");

@@ -17,9 +17,9 @@ namespace Discord_Bot
 {
     public class FuncionesJuegos
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-        private readonly LeaderboardoGeneral leaderboard = new LeaderboardoGeneral();
-        private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
+        private readonly FuncionesAuxiliares funciones = new();
+        private readonly LeaderboardoGeneral leaderboard = new();
+        private readonly GraphQLHttpClient graphQLClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         public async Task GetResultados(CommandContext ctx, List<UsuarioJuego> participantes, int rondas, string dificultad, string juego)
         {
@@ -77,18 +77,18 @@ namespace Discord_Bot
 
         public async Task<SettingsJuego> InicializarJuego(CommandContext ctx, InteractivityExtension interactivity, bool elegirDificultad, bool elegirTag, bool elegirGenero)
         {
-            DiscordComponentEmoji emote = new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
+            DiscordComponentEmoji emote = new(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
 
-            DiscordButtonComponent buttonRandom = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
-            DiscordButtonComponent button5 = new DiscordButtonComponent(ButtonStyle.Primary, "5", "5");
-            DiscordButtonComponent button10 = new DiscordButtonComponent(ButtonStyle.Primary, "10", "10");
-            DiscordButtonComponent button15 = new DiscordButtonComponent(ButtonStyle.Primary, "15", "15");
-            DiscordButtonComponent button20 = new DiscordButtonComponent(ButtonStyle.Primary, "20", "20");
-            DiscordButtonComponent button50 = new DiscordButtonComponent(ButtonStyle.Primary, "50", "50");
-            DiscordButtonComponent button75 = new DiscordButtonComponent(ButtonStyle.Primary, "75", "75");
-            DiscordButtonComponent button100 = new DiscordButtonComponent(ButtonStyle.Primary, "100", "100");
+            DiscordButtonComponent buttonRandom = new(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
+            DiscordButtonComponent button5 = new(ButtonStyle.Primary, "5", "5");
+            DiscordButtonComponent button10 = new(ButtonStyle.Primary, "10", "10");
+            DiscordButtonComponent button15 = new(ButtonStyle.Primary, "15", "15");
+            DiscordButtonComponent button20 = new(ButtonStyle.Primary, "20", "20");
+            DiscordButtonComponent button50 = new(ButtonStyle.Primary, "50", "50");
+            DiscordButtonComponent button75 = new(ButtonStyle.Primary, "75", "75");
+            DiscordButtonComponent button100 = new(ButtonStyle.Primary, "100", "100");
 
-            DiscordMessageBuilder mensajeRondas = new DiscordMessageBuilder()
+            DiscordMessageBuilder mensajeRondas = new()
             {
                 Embed = new DiscordEmbedBuilder
                 {
@@ -114,13 +114,13 @@ namespace Discord_Bot
                     await funciones.BorrarMensaje(ctx, msgCntRondas.Id);
                 if (elegirDificultad)
                 {
-                    DiscordButtonComponent buttonAleatorio = new DiscordButtonComponent(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
-                    DiscordButtonComponent buttonFacil = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Fácil");
-                    DiscordButtonComponent buttonMedia = new DiscordButtonComponent(ButtonStyle.Primary, "2", "Media");
-                    DiscordButtonComponent buttonDificil = new DiscordButtonComponent(ButtonStyle.Primary, "3", "Dificil");
-                    DiscordButtonComponent buttonExtremo = new DiscordButtonComponent(ButtonStyle.Primary, "4", "Extremo");
+                    DiscordButtonComponent buttonAleatorio = new(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
+                    DiscordButtonComponent buttonFacil = new(ButtonStyle.Primary, "1", "Fácil");
+                    DiscordButtonComponent buttonMedia = new(ButtonStyle.Primary, "2", "Media");
+                    DiscordButtonComponent buttonDificil = new(ButtonStyle.Primary, "3", "Dificil");
+                    DiscordButtonComponent buttonExtremo = new(ButtonStyle.Primary, "4", "Extremo");
 
-                    DiscordMessageBuilder mensaje = new DiscordMessageBuilder()
+                    DiscordMessageBuilder mensaje = new()
                     {
                         Embed = new DiscordEmbedBuilder
                         {
@@ -215,7 +215,7 @@ namespace Discord_Bot
                     try
                     {
                         var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                        List<Tag> tags = new List<Tag>();
+                        List<Tag> tags = new();
                         foreach (var x in data.Data.MediaTagCollection)
                         {
                             if ((x.isAdult == "false") || (x.isAdult == true && ctx.Channel.IsNSFW))
@@ -365,7 +365,7 @@ namespace Discord_Bot
 
         public async Task Jugar(CommandContext ctx, string juego, dynamic lista, SettingsJuego settings, InteractivityExtension interactivity)
         {
-            List<UsuarioJuego> participantes = new List<UsuarioJuego>();
+            List<UsuarioJuego> participantes = new();
             int lastRonda;
             for (int ronda = 1; ronda <= settings.Rondas; ronda++)
             {
@@ -617,7 +617,7 @@ namespace Discord_Bot
                         {
                             //await funciones.BorrarMensaje(ctx, msgOpciones.Id);
                             await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
-                            List<Anime> animeList = new List<Anime>();
+                            List<Anime> animeList = new();
                             string elegido = tagsList[numTagElegir - 1];
                             string stats = await GetEstadisticasDificultad(ctx, "tag", elegido);
                             return new DiscordEmbedBuilder
@@ -707,7 +707,7 @@ namespace Discord_Bot
 
         public async Task<List<Anime>> GetMedia(CommandContext ctx, string tipo, SettingsJuego settings, bool personajes, bool estudios, bool tag, bool genero)
         {
-            List<Anime> animeList = new List<Anime>();
+            List<Anime> animeList = new();
             DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo {tipo.ToLower()}s...").ConfigureAwait(false);
             string mediaFiltros;
             if (tag)
@@ -809,11 +809,11 @@ namespace Discord_Bot
                     {
                         string titleEnglish = x.title.english;
                         string titleRomaji = x.title.romaji;
-                        Anime anim = new Anime()
+                        Anime anim = new()
                         {
                             Image = x.coverImage.large,
-                            TitleEnglish = funciones.QuitarCaracteresEspeciales(titleEnglish),
-                            TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
+                            TitleEnglish = FuncionesAuxiliares.QuitarCaracteresEspeciales(titleEnglish),
+                            TitleRomaji = FuncionesAuxiliares.QuitarCaracteresEspeciales(titleRomaji),
                             SiteUrl = x.siteUrl,
                             Favoritos = x.favourites,
                             Popularidad = popularidad,
@@ -824,7 +824,7 @@ namespace Discord_Bot
                         foreach (var syn in x.synonyms)
                         {
                             string value = syn.Value;
-                            string bien = funciones.QuitarCaracteresEspeciales(value);
+                            string bien = FuncionesAuxiliares.QuitarCaracteresEspeciales(value);
                             anim.Sinonimos.Add(bien);
                         }
                         if (personajes)
@@ -857,7 +857,7 @@ namespace Discord_Bot
                             }
                         }
                         popularidad++;
-                        if ((!estudios) || (estudios && anim.Estudios.Count() > 0))
+                        if ((!estudios) || (estudios && anim.Estudios.Count > 0))
                         {
                             animeList.Add(anim);
                         }
@@ -936,7 +936,7 @@ namespace Discord_Bot
                     hasNextValue = data.Data.Page.pageInfo.hasNextPage;
                     foreach (var x in data.Data.Page.characters)
                     {
-                        Character c = new Character()
+                        Character c = new()
                         {
                             Image = x.image.large,
                             NameFirst = x.name.first,
@@ -954,23 +954,23 @@ namespace Discord_Bot
                             {
                                 string titleEnglish = y.title.english;
                                 string titleRomaji = y.title.romaji;
-                                Anime anim = new Anime()
+                                Anime anim = new()
                                 {
-                                    TitleEnglish = funciones.QuitarCaracteresEspeciales(titleEnglish),
-                                    TitleRomaji = funciones.QuitarCaracteresEspeciales(titleRomaji),
+                                    TitleEnglish = FuncionesAuxiliares.QuitarCaracteresEspeciales(titleEnglish),
+                                    TitleRomaji = FuncionesAuxiliares.QuitarCaracteresEspeciales(titleRomaji),
                                     SiteUrl = y.siteUrl,
                                     Sinonimos = new List<string>()
                                 };
                                 foreach (var syn in y.synonyms)
                                 {
                                     string value = syn.Value;
-                                    string bien = funciones.QuitarCaracteresEspeciales(value);
+                                    string bien = FuncionesAuxiliares.QuitarCaracteresEspeciales(value);
                                     anim.Sinonimos.Add(bien);
                                 }
                                 c.Animes.Add(anim);
                             }
                         }
-                        if (!animes || (animes && c.Animes.Count() > 0))
+                        if (!animes || (animes && c.Animes.Count > 0))
                         {
                             characterList.Add(c);
                         }
@@ -1015,8 +1015,8 @@ namespace Discord_Bot
             var charsEsp = charsPj.Distinct();
             var chars = charsEsp.ToList();
             chars.Remove((char)32);
-            List<CaracterBool> caracteres = new List<CaracterBool>();
-            List<string> letrasUsadas = new List<string>();
+            List<CaracterBool> caracteres = new();
+            List<string> letrasUsadas = new();
             foreach (char c in chars)
             {
                 if (Char.IsLetter(c))
@@ -1037,7 +1037,7 @@ namespace Discord_Bot
                 }
             }
             bool partidaTerminada = false;
-            List<UsuarioJuego> participantes = new List<UsuarioJuego>();
+            List<UsuarioJuego> participantes = new();
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
                 Title = $"Ahorcado ({juego}s)",
@@ -1321,7 +1321,7 @@ namespace Discord_Bot
             {
                 Query = query
             };
-            List<string> generos = new List<string>();
+            List<string> generos = new();
             try
             {
                 var data = await graphQLClient.SendQueryAsync<dynamic>(request);
@@ -1344,7 +1344,7 @@ namespace Discord_Bot
                 };
             }
 
-            DiscordMessageBuilder mensajeBuild = new DiscordMessageBuilder()
+            DiscordMessageBuilder mensajeBuild = new()
             {
                 Embed = new DiscordEmbedBuilder
                 {
@@ -1354,13 +1354,13 @@ namespace Discord_Bot
             };
             int iterInterna = 0;
             int iterReal = 0;
-            List<DiscordComponent> componentes = new List<DiscordComponent>();
+            List<DiscordComponent> componentes = new();
             foreach (var nomGenero in generos)
             {
                 iterInterna++;
                 iterReal++;
 
-                DiscordButtonComponent button = new DiscordButtonComponent(ButtonStyle.Primary, $"{iterReal}", $"{nomGenero}");
+                DiscordButtonComponent button = new(ButtonStyle.Primary, $"{iterReal}", $"{nomGenero}");
                 componentes.Add(button);
 
                 if (iterInterna == 5)

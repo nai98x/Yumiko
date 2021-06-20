@@ -18,16 +18,16 @@ namespace Discord_Bot.Modulos
 {
     public class Anilist : BaseCommandModule
     {
-        private readonly FuncionesAuxiliares funciones = new FuncionesAuxiliares();
-        private readonly FuncionesAnilist funcionesAnilist = new FuncionesAnilist();
-        private readonly GraphQLHttpClient graphQLClient = new GraphQLHttpClient("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
+        private readonly FuncionesAuxiliares funciones = new();
+        private readonly FuncionesAnilist funcionesAnilist = new();
+        private readonly GraphQLHttpClient graphQLClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
         [Command("anilist"), Aliases("user"), Description("Busca un perfil de AniList.")]
         public async Task Profile(CommandContext ctx, [Description("El nick del perfil de AniList")]string usuario = null)
         {
             if (String.IsNullOrEmpty(usuario))
             {
-                usuario = await funciones.GetStringInteractivity(ctx, "Escriba un nombre de usuario de AniList", "Ejemplo: Josh", "Tiempo agotado esperando el usuario de AniList");
+                usuario = await funciones.GetStringInteractivity(ctx, "Escriba un nombre de usuario de AniList", "Ejemplo: Josh", "Tiempo agotado esperando el usuario de AniList", Convert.ToInt32(ConfigurationManager.AppSettings["TimeoutGeneral"]));
             }
             if (!String.IsNullOrEmpty(usuario))
             {
@@ -199,7 +199,7 @@ namespace Discord_Bot.Modulos
         {
             if (String.IsNullOrEmpty(anime))
             {
-                anime = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del anime", "Ejemplo: Grisaia no Kajitsu", "Tiempo agotado esperando el nombre del anime");
+                anime = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del anime", "Ejemplo: Grisaia no Kajitsu", "Tiempo agotado esperando el nombre del anime", Convert.ToInt32(ConfigurationManager.AppSettings["TimeoutGeneral"]));
             }
             if (!String.IsNullOrEmpty(anime))
             {
@@ -209,7 +209,7 @@ namespace Discord_Bot.Modulos
                     if (data.Data != null)
                     {
                         int cont = 0;
-                        List<string> opc = new List<string>();
+                        List<string> opc = new();
                         foreach (var animeP in data.Data.Page.media)
                         {
                             cont++;
@@ -299,7 +299,7 @@ namespace Discord_Bot.Modulos
         {
             if (String.IsNullOrEmpty(manga))
             {
-                manga = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del manga", "Ejemplo: Berserk", "Tiempo agotado esperando el nombre del manga");
+                manga = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del manga", "Ejemplo: Berserk", "Tiempo agotado esperando el nombre del manga", Convert.ToInt32(ConfigurationManager.AppSettings["TimeoutGeneral"]));
             }
             if (!String.IsNullOrEmpty(manga))
             {
@@ -309,7 +309,7 @@ namespace Discord_Bot.Modulos
                     if (data.Data != null)
                     {
                         int cont = 0;
-                        List<string> opc = new List<string>();
+                        List<string> opc = new();
                         foreach (var animeP in data.Data.Page.media)
                         {
                             cont++;
@@ -393,7 +393,7 @@ namespace Discord_Bot.Modulos
         {
             if (String.IsNullOrEmpty(personaje))
             {
-                personaje = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del personaje", "Ejemplo: Yumiko Sakaki", "Tiempo agotado esperando el nombre");
+                personaje = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del personaje", "Ejemplo: Yumiko Sakaki", "Tiempo agotado esperando el nombre", Convert.ToInt32(ConfigurationManager.AppSettings["TimeoutGeneral"]));
             }
             if (!String.IsNullOrEmpty(personaje))
             {
@@ -441,7 +441,7 @@ namespace Discord_Bot.Modulos
                     if (data.Data != null)
                     {
                         int cont = 0;
-                        List<string> opc = new List<string>();
+                        List<string> opc = new();
                         foreach (var animeP in data.Data.Page.characters)
                         {
                             cont++;
@@ -518,7 +518,7 @@ namespace Discord_Bot.Modulos
         {
             if (String.IsNullOrEmpty(url))
             {
-                url = await funciones.GetStringInteractivity(ctx, "Escriba un link de una imagen", "La imagen debe ser JPG, PNG o JPEG", "Tiempo agotado esperando el link de la imagen");
+                url = await funciones.GetStringInteractivity(ctx, "Escriba un link de una imagen", "La imagen debe ser JPG, PNG o JPEG", "Tiempo agotado esperando el link de la imagen", Convert.ToInt32(ConfigurationManager.AppSettings["TimeoutGeneral"]));
             }
             if (!String.IsNullOrEmpty(url))
             {
@@ -633,6 +633,189 @@ namespace Discord_Bot.Modulos
                 await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsdown:")).ConfigureAwait(false);
                 await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":question:")).ConfigureAwait(false);
             }
+        }
+
+        [Command("AWCRuntime"), Description("Calcula los minutos totales entre animes para AWC.")]
+        public async Task AWCRuntime(CommandContext ctx)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            bool terminar = false;
+            int minutosTotales = 0;
+            string animes = string.Empty;
+            string titulo = "Minutos totales entre animes (AWC)";
+            string descBase = $"{ctx.Member.Mention}, presiona un botón para continuar.";
+
+            var builder = new DiscordEmbedBuilder
+            {
+                Title = titulo,
+                Description = descBase,
+                Color = funciones.GetColor(),
+                Footer = funciones.GetFooter(ctx)
+            };
+
+            DiscordButtonComponent buttonSi = new(ButtonStyle.Success, "true", "Ingresar nombre de anime");
+            DiscordButtonComponent buttonNo = new(ButtonStyle.Danger, "terminar", "Terminar");
+
+            DiscordMessageBuilder msgPrincipalBuilder = new() {
+                Embed = builder
+            };
+
+            msgPrincipalBuilder.AddComponents(buttonSi, buttonNo);
+
+            DiscordMessage msgPrincipal = await msgPrincipalBuilder.SendAsync(ctx.Channel);
+
+            do
+            {
+                var msgInter = await interactivity.WaitForButtonAsync(msgPrincipal, ctx.User, TimeSpan.FromSeconds(60));
+                if (!msgInter.TimedOut)
+                {
+                    string resultBoton = msgInter.Result.Id;
+                    if(resultBoton != "terminar")
+                    {
+                        string animeName = await funciones.GetStringInteractivity(ctx, "Ingrese un nombre de un anime", "Ejemplo: Naruto", "Tiempo agotado esperando la respuesta", 60);
+                        if (!String.IsNullOrEmpty(animeName))
+                        {
+                            var request = new GraphQLRequest
+                            {
+                                Query =
+                                    "query($nombre : String){" +
+                                    "   Media(search: $nombre, type:ANIME){" +
+                                    "       title {" +
+                                    "           romaji" +
+                                    "       }" +
+                                    "       episodes," +
+                                    "       duration," +
+                                    "       status," +
+                                    "       nextAiringEpisode {" +
+                                    "           episode" +
+                                    "       }" +
+                                    "   }" +
+                                    "}",
+                                Variables = new
+                                {
+                                    nombre = animeName
+                                }
+                            };
+                            try
+                            {
+                                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                                if (data.Data != null)
+                                {
+                                    string title = data.Data.Media.title.romaji;
+                                    string episodes = data.Data.Media.episodes;
+                                    string duration = data.Data.Media.duration;
+                                    string status = data.Data.Media.status;
+
+                                    if (status != "NOT_YET_RELEASED")
+                                    {
+                                        if (duration != null)
+                                        {
+                                            int minutosAnime;
+                                            if (episodes != null)
+                                            {
+                                                minutosAnime = int.Parse(episodes) * int.Parse(duration);
+                                            }
+                                            else
+                                            {
+                                                string nextEpisode = data.Data.Media.nextAiringEpisode.episode;
+                                                minutosAnime = (int.Parse(nextEpisode) - 1) * int.Parse(duration);
+                                            }
+                                            minutosTotales += minutosAnime;
+
+                                            animes += $"**Anime:** {title} | **Minutos:** {minutosAnime}\n";
+
+                                            builder = new DiscordEmbedBuilder
+                                            {
+                                                Title = titulo,
+                                                Description = $"**Animes ingresados:**\n\n{animes}\n**Minutos totales:** {minutosTotales}",
+                                                Color = funciones.GetColor(),
+                                                Footer = funciones.GetFooter(ctx)
+                                            };
+
+                                            msgPrincipalBuilder = new DiscordMessageBuilder()
+                                            {
+                                                Embed = builder
+                                            };
+                                            msgPrincipalBuilder.AddComponents(buttonSi, buttonNo);
+
+                                            if(msgPrincipal != null)
+                                            {
+                                                await msgPrincipal.DeleteAsync("Auto borrado de Yumiko");
+                                            }
+                                            msgPrincipal = await msgPrincipalBuilder.SendAsync(ctx.Channel);
+                                        }
+                                        else
+                                        {
+                                            var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                            {
+                                                Title = "Anime incorrecto",
+                                                Description = $"{ctx.Member.Mention}, no se pueden ingresar animes que no tengan la duración capitulos definida",
+                                                Color = DiscordColor.Red,
+                                                Footer = funciones.GetFooter(ctx)
+                                            });
+                                            await Task.Delay(3000);
+                                            await funciones.BorrarMensaje(ctx, msgError.Id);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                        {
+                                            Title = "Anime incorrecto",
+                                            Description = $"{ctx.Member.Mention}, no se pueden ingresar animes que no hayan sido emitidos",
+                                            Color = DiscordColor.Red,
+                                            Footer = funciones.GetFooter(ctx)
+                                        });
+                                        await Task.Delay(3000);
+                                        await funciones.BorrarMensaje(ctx, msgError.Id);
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (var x in data.Errors)
+                                    {
+                                        var msg = await ctx.Channel.SendMessageAsync($"Error: {x.Message}").ConfigureAwait(false);
+                                        await Task.Delay(3000);
+                                        await funciones.BorrarMensaje(ctx, msg.Id);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                DiscordMessage msg = ex.Message switch
+                                {
+                                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado al anime `{animeName}`").ConfigureAwait(false),
+                                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
+                                };
+                                await Task.Delay(5000);
+                                await funciones.BorrarMensaje(ctx, msg.Id);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        terminar = true;
+                    }
+                }
+                else
+                {
+                    terminar = true;
+                }
+            } while (!terminar);
+            builder = new DiscordEmbedBuilder
+            {
+                Title = titulo,
+                Description = $"**Animes ingresados:**\n\n{animes}\n**Minutos totales:** {minutosTotales}",
+                Color = funciones.GetColor(),
+                Footer = funciones.GetFooter(ctx)
+            };
+
+            msgPrincipalBuilder = new DiscordMessageBuilder()
+            {
+                Embed = builder
+            };
+
+            await msgPrincipal.ModifyAsync(msgPrincipalBuilder);
         }
     }
 }
