@@ -6,6 +6,8 @@ namespace Discord_Bot
     {
         public string TitleRomaji { get; set; }
         public string TitleEnglish { get; set; }
+        public string TitleRomajiFormatted { get; set; }
+        public string TitleEnglishFormatted { get; set; }
         public string Image { get; set; }
         public string SiteUrl { get; set; }
         public int Favoritos { get; set; }

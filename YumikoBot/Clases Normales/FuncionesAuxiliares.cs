@@ -17,6 +17,7 @@ using Google.Cloud.Firestore;
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
+using DSharpPlus.Interactivity;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
@@ -65,7 +66,7 @@ namespace Discord_Bot
             List<Imagen> opciones = new();
             foreach (DiscordMessage msg in msgs)
             {
-                var att = msg.Attachments.FirstOrDefault();
+                var att = msg.Attachments[0];
                 if (att != null && att.Url != null)
                 {
                     opciones.Add(new Imagen
@@ -144,7 +145,7 @@ namespace Discord_Bot
 
         public DiscordColor GetColor() => DiscordColor.Blurple;
 
-        public static string QuitarCaracteresEspeciales(string str)
+        public string QuitarCaracteresEspeciales(string str)
         {
             if(str != null)
                 return Regex.Replace(str, @"[^a-zA-Z0-9]+", " ").Trim();
@@ -567,6 +568,27 @@ namespace Discord_Bot
                     builder.AddField("Parametros", parametros, false);
             }
             return await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+        }
+
+        public async Task GetPaginatedButtons(CommandContext ctx, InteractivityExtension interactivity, List<string> opciones, DiscordEmbedBuilder embedBase)
+        {
+            List<DiscordButtonComponent> botones = new();
+            int iter = 0;
+            foreach(var opc in opciones)
+            {
+                iter++;
+                botones.Add(new DiscordButtonComponent(ButtonStyle.Primary, iter.ToString(), opc));
+            }
+
+            DiscordMessageBuilder mensaje = new()
+            {
+                Embed = embedBase
+            };
+
+            //mensaje.AddComponents(buttonAleatorio, buttonPersonaje, buttonAnime, buttonManga);
+
+            DiscordMessage msgElegir = await mensaje.SendAsync(ctx.Channel);
+            var interJuego = await interactivity.WaitForButtonAsync(msgElegir, ctx.User, TimeSpan.FromSeconds(120));
         }
     }
 }

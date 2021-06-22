@@ -407,13 +407,15 @@ namespace Discord_Bot
                         desc = $"Los animes de [{elegido.NameFull}]({elegido.SiteUrl}) son:\n\n";
                         foreach (Anime anim in elegido.Animes)
                         {
-                            desc += $"- [{anim.TitleRomaji}]({anim.SiteUrl})\n";
+                            desc += $"- [{anim.TitleRomajiFormatted}]({anim.SiteUrl})\n";
                         }
                         Character elegidoC = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                             (elegidoC.Animes.Find(x => x.TitleEnglish != null && x.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                             (elegidoC.Animes.Find(x => x.TitleRomaji != null && x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
+                            (elegidoC.Animes.Find(x => x.TitleEnglishFormatted != null && x.TitleEnglishFormatted.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
+                            (elegidoC.Animes.Find(x => x.TitleRomajiFormatted != null && x.TitleRomajiFormatted.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                             (elegidoC.Animes.Find(x => x.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) != null)
                             ));
                         break;
@@ -422,7 +424,8 @@ namespace Discord_Bot
                         Anime elegidoM = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
-                            (elegidoM.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
+                            (elegido.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
+                            (elegido.TitleRomajiFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleRomajiFormatted.ToLower().Trim())) || (elegido.TitleEnglishFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglishFormatted.ToLower().Trim())) ||
                             (elegidoM.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                             ));
                         break;
@@ -432,6 +435,7 @@ namespace Discord_Bot
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                             (elegido.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
+                            (elegido.TitleRomajiFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleRomajiFormatted.ToLower().Trim())) || (elegido.TitleEnglishFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglishFormatted.ToLower().Trim())) ||
                             (elegidoT.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                             ));
                         break;
@@ -464,11 +468,12 @@ namespace Discord_Bot
                             ));
                         break;
                     case "genero":
-                        desc = $"El nombre es: [{elegido.TitleRomaji}]({elegido.SiteUrl})";
+                        desc = $"El nombre es: [{elegido.TitleRomajiFormatted}]({elegido.SiteUrl})";
                         Anime elegidoG = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
                             ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
                             (elegido.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
+                            (elegido.TitleRomajiFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleRomajiFormatted.ToLower().Trim())) || (elegido.TitleEnglishFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglishFormatted.ToLower().Trim())) ||
                             (elegidoG.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                             ));
                         break;
@@ -476,6 +481,7 @@ namespace Discord_Bot
                         await funciones.GrabarLogError(ctx, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
                         return;
                 }
+                desc = funciones.NormalizarDescription(desc);
                 var msg = await interactivity.WaitForMessageAsync(predicate, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                 if (!msg.TimedOut)
                 {
@@ -812,8 +818,10 @@ namespace Discord_Bot
                         Anime anim = new()
                         {
                             Image = x.coverImage.large,
-                            TitleEnglish = FuncionesAuxiliares.QuitarCaracteresEspeciales(titleEnglish),
-                            TitleRomaji = FuncionesAuxiliares.QuitarCaracteresEspeciales(titleRomaji),
+                            TitleEnglish = titleEnglish,
+                            TitleRomaji = titleRomaji,
+                            TitleEnglishFormatted = funciones.QuitarCaracteresEspeciales(titleEnglish),
+                            TitleRomajiFormatted = funciones.QuitarCaracteresEspeciales(titleRomaji),
                             SiteUrl = x.siteUrl,
                             Favoritos = x.favourites,
                             Popularidad = popularidad,
@@ -824,7 +832,7 @@ namespace Discord_Bot
                         foreach (var syn in x.synonyms)
                         {
                             string value = syn.Value;
-                            string bien = FuncionesAuxiliares.QuitarCaracteresEspeciales(value);
+                            string bien = funciones.QuitarCaracteresEspeciales(value);
                             anim.Sinonimos.Add(bien);
                         }
                         if (personajes)
@@ -956,15 +964,17 @@ namespace Discord_Bot
                                 string titleRomaji = y.title.romaji;
                                 Anime anim = new()
                                 {
-                                    TitleEnglish = FuncionesAuxiliares.QuitarCaracteresEspeciales(titleEnglish),
-                                    TitleRomaji = FuncionesAuxiliares.QuitarCaracteresEspeciales(titleRomaji),
+                                    TitleEnglish = titleEnglish,
+                                    TitleRomaji = titleRomaji,
+                                    TitleEnglishFormatted = funciones.QuitarCaracteresEspeciales(titleEnglish),
+                                    TitleRomajiFormatted = funciones.QuitarCaracteresEspeciales(titleRomaji),
                                     SiteUrl = y.siteUrl,
                                     Sinonimos = new List<string>()
                                 };
                                 foreach (var syn in y.synonyms)
                                 {
                                     string value = syn.Value;
-                                    string bien = FuncionesAuxiliares.QuitarCaracteresEspeciales(value);
+                                    string bien = funciones.QuitarCaracteresEspeciales(value);
                                     anim.Sinonimos.Add(bien);
                                 }
                                 c.Animes.Add(anim);
