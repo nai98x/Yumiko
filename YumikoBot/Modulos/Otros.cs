@@ -52,6 +52,19 @@ namespace Discord_Bot.Modulos
             await mensaje.SendAsync(ctx.Channel);
         }
 
+        [Command("vote"), Aliases("votar"), Description("Muestra el link para votar a Yumiko.")]
+        public async Task Vote(CommandContext ctx)
+        {
+            string url = "https://top.gg/bot/295182825521545218/vote";
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            {
+                Title = $"¡Votame en Top.gg!",
+                Description = $"Puedes ayudarme votando en [este sitio web]({url}). ¡Gracias!",
+                Color = funciones.GetColor(),
+                Footer = funciones.GetFooter(ctx)
+            }).ConfigureAwait(false);
+        }
+
         [Command("contactar"), Aliases("sugerencia", "contact"), Description("Envia una sugerencia o peticion de contacto al desarrollador del bot.")]
         public async Task Contact(CommandContext ctx, [RemainingText]string texto)
         {
@@ -88,6 +101,7 @@ namespace Discord_Bot.Modulos
         [Command("servers"), Description("Muestra los servidores en los que esta Yumiko."), RequireOwner, Hidden]
         public async Task Servers(CommandContext ctx)
         {
+            List<Page> pages = new();
             var guildsdesordenadas = ctx.Client.Guilds.Values;
             var lista = guildsdesordenadas.ToList();
             lista.Sort((x, y) => x.JoinedAt.CompareTo(y.JoinedAt));
@@ -99,11 +113,17 @@ namespace Discord_Bot.Modulos
             {
                 if (cont >= 10)
                 {
-                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                    {
-                        Description = servers,
-                        Footer = funciones.GetFooter(ctx),
-                        Color = funciones.GetColor()
+                    pages.Add(new Page() { 
+                        Embed = new DiscordEmbedBuilder
+                        {
+                            Title = "Servidores de Yumiko",
+                            Description = servers,
+                            Footer = new() { 
+                                IconUrl = ctx.User.AvatarUrl,
+                                Text = $"Página {pages.Count + 1} | Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator}) | {ctx.Prefix}{ctx.Command.Name}"
+                            },
+                            Color = funciones.GetColor()
+                        }
                     });
                     cont = 1;
                     servers = string.Empty;
@@ -119,18 +139,28 @@ namespace Discord_Bot.Modulos
             }
             if (cont != 1)
             {
-                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                pages.Add(new Page()
                 {
-                    Description = servers,
-                    Footer = funciones.GetFooter(ctx),
-                    Color = funciones.GetColor()
+                    Embed = new DiscordEmbedBuilder
+                    {
+                        Title = "Servidores de Yumiko",
+                        Description = servers,
+                        Footer = new()
+                        {
+                            IconUrl = ctx.User.AvatarUrl,
+                            Text = $"Página {pages.Count + 1} | Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator}) | {ctx.Prefix}{ctx.Command.Name}"
+                        },
+                        Color = funciones.GetColor()
+                    }
                 });
             }
+
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "Servidores de Yumiko",
                 Description = $"Cantidad: {ctx.Client.Guilds.Count}\nTotal de usuarios: {usuarios}",
             });
+            _ = ctx.Channel.SendPaginatedMessageAsync(ctx.User, pages).ConfigureAwait(false);
         }
 
         [Command("eliminarmensaje"), Description("Elimina un mensaje de Yumiko."), RequireOwner, Hidden]

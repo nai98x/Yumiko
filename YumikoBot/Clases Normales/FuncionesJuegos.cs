@@ -317,7 +317,7 @@ namespace Discord_Bot
                     }
                     catch (Exception ex)
                     {
-                        await funciones.GrabarLogError(ctx, $"{ex.Message}");
+                        await funciones.GrabarLogError(ctx, $"Error inesperado en InicializarJuego eligiendo tag - {ex.Message}");
                         return new SettingsJuego()
                         {
                             Ok = false,
@@ -876,7 +876,7 @@ namespace Discord_Bot
                     await funciones.GrabarLogError(ctx, $"{ex.Message}");
                     DiscordMessage msg = ex.Message switch
                     {
-                        _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                        _ => await ctx.Channel.SendMessageAsync($"Error inesperado en GetMedia: {ex.Message}").ConfigureAwait(false),
                     };
                     await Task.Delay(3000);
                     await funciones.BorrarMensaje(ctx, msg.Id);
@@ -988,7 +988,7 @@ namespace Discord_Bot
                 }
                 catch (Exception ex)
                 {
-                    await funciones.GrabarLogError(ctx, $"{ex.Message}");
+                    await funciones.GrabarLogError(ctx, $"Error inesperado en GetCharacters: {ex.Message}");
                     DiscordMessage msg = ex.Message switch
                     {
                         _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),

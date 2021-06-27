@@ -384,6 +384,7 @@ namespace Discord_Bot
             }
             catch (Exception ex)
             {
+                await GrabarLogError(ctx, $"Error inesperado en  GetRandomCharacter");
                 DiscordMessage msg = ex.Message switch
                 {
                     _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
@@ -442,6 +443,7 @@ namespace Discord_Bot
             }
             catch (Exception ex)
             {
+                await GrabarLogError(ctx, $"Error inesperado en  GetRandomMedia");
                 DiscordMessage msg = ex.Message switch
                 {
                     _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
