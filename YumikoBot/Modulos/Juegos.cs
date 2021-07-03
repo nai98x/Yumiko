@@ -3,11 +3,9 @@ using DSharpPlus.CommandsNext.Attributes;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using System;
-using GraphQL.Client.Http;
-using GraphQL.Client.Serializer.Newtonsoft;
-using System.Linq;
 using System.Configuration;
 using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus;
 
 namespace Discord_Bot.Modulos
 {

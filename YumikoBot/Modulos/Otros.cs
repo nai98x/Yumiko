@@ -25,6 +25,24 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
+            DiscordMessageBuilder builder = new DiscordMessageBuilder()
+                .WithContent("prueba")
+                .AddComponents(new DiscordSelectComponent("dropdown", "Placeholder", new DiscordSelectComponentOption[]
+                {
+                    new DiscordSelectComponentOption("Label", "1", "Description", true, null),
+                    new DiscordSelectComponentOption("Label2", "2", "Description2", false, null)
+                },false,1 ,1));
+
+            var msg = await ctx.RespondAsync(builder);
+
+            var bt = await msg.WaitForSelectAsync("dropdown");
+
+            if (!bt.TimedOut)
+            {
+                //var result = bt.Result;
+                //int i = 0;
+            }
+
             await ctx.Channel.SendMessageAsync("uwu!");
         }
 
@@ -63,6 +81,22 @@ namespace Discord_Bot.Modulos
                 Color = funciones.GetColor(),
                 Footer = funciones.GetFooter(ctx)
             }).ConfigureAwait(false);
+        }
+
+        [Command("info"), Description("Muestra la información de Yumiko.")]
+        public async Task Info(CommandContext ctx)
+        {
+            var owner = ctx.Client.CurrentApplication.Owners.ElementAt(0);
+            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Información de Yumiko",
+                Description = $"Bot de Discord creado por **{owner.Username}#{owner.Discriminator}**",
+                Color = funciones.GetColor(),
+                Footer = funciones.GetFooter(ctx)
+            }.AddField("Version DSharpPlus", $"{ctx.Client.VersionString}", true)
+            .AddField("Version API de Discord", $"V{ctx.Client.GatewayVersion}", true)
+            .AddField("Version .NET Core", $"{Environment.Version}", true)
+            ).ConfigureAwait(false);
         }
 
         [Command("contactar"), Aliases("sugerencia", "contact"), Description("Envia una sugerencia o peticion de contacto al desarrollador del bot.")]

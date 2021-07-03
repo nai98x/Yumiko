@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System.Configuration;
 using DSharpPlus.Interactivity.Extensions;
 using System.Collections.Generic;
+using DSharpPlus;
 
 namespace Discord_Bot.Modulos
 {

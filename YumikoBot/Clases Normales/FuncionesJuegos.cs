@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
@@ -229,8 +230,69 @@ namespace Discord_Bot
                                 });
                             }
                         }
-                        var preguntaTag = await ctx.Channel.SendMessageAsync("Escribe un tag");
-                        var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+
+                        if(funciones.ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
+                        {
+                            int porPagina = 20;
+                            int ultPagina = tags.Count / porPagina;
+                            int iterInterna = 0;
+                            int iter = 0;
+                            string tagsStr = string.Empty;
+                            List<Page> pages = new();
+                            foreach (var tag in tags)
+                            {
+                                tagsStr += $"{tag.Nombre}\n";
+                                iterInterna++;
+                                iter++;
+
+                                if (iterInterna == porPagina)
+                                {
+                                    pages.Add(new()
+                                    {
+                                        Embed = new DiscordEmbedBuilder
+                                        {
+                                            Title = "Escribe un tag",
+                                            Description = tagsStr,
+                                            Color = funciones.GetColor(),
+                                            Footer = new DiscordEmbedBuilder.EmbedFooter
+                                            {
+                                                Text = $"Página {pages.Count}/{ultPagina}"
+                                            }
+                                        }
+                                    });
+                                    tagsStr = string.Empty;
+                                    iterInterna = 0;
+                                }
+                            }
+                            if (iterInterna > 0)
+                            {
+                                pages.Add(new()
+                                {
+                                    Embed = new DiscordEmbedBuilder
+                                    {
+                                        Title = "Escribe un tag",
+                                        Description = tagsStr,
+                                        Color = funciones.GetColor(),
+                                        Footer = new DiscordEmbedBuilder.EmbedFooter
+                                        {
+                                            Text = $"Página {pages.Count}/{ultPagina}"
+                                        }
+                                    }
+                                });
+                            }
+                            _ = ctx.Channel.SendPaginatedMessageAsync(ctx.User, pages).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                            {
+                                Title = "Escriber un tag!",
+                                Description = "Para ver los tags dispibles habilita a Yumiko el permiso de `Gestionar Mensajes` y vuelve a ejecutar el comando.",
+                                Color = funciones.GetColor()
+                            });
+                        }
+                        
+                        var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(120));
                         if (!msgTagInter.TimedOut)
                         {
                             int numTag = 0;
@@ -238,6 +300,17 @@ namespace Discord_Bot
                             List<Tag> tagsFiltrados = tags.Where(x => x.Nombre.ToLower().Trim().Contains(msgTagInter.Result.Content.ToLower().Trim())).ToList();
                             if (tagsFiltrados.Count > 0)
                             {
+                                if(tagsFiltrados.Count == 1)
+                                {
+                                    return new SettingsJuego()
+                                    {
+                                        Rondas = rondas,
+                                        Tag = tagsFiltrados[0].Nombre,
+                                        TagDesc = tagsFiltrados[0].Descripcion,
+                                        Ok = true
+                                    };
+                                }
+
                                 foreach (Tag t in tagsFiltrados)
                                 {
                                     numTag++;
@@ -258,7 +331,6 @@ namespace Discord_Bot
                                     {
                                         if (numTagElegir > 0 && (numTagElegir <= tagsFiltrados.Count))
                                         {
-                                            await funciones.BorrarMensaje(ctx, preguntaTag.Id);
                                             await funciones.BorrarMensaje(ctx, msgTagInter.Result.Id);
                                             await funciones.BorrarMensaje(ctx, msgOpciones.Id);
                                             await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);

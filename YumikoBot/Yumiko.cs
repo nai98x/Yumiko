@@ -78,10 +78,7 @@ namespace Discord_Bot
             Client.GuildCreated += Client_GuildCreated;
             Client.GuildDeleted += Client_GuildDeleted;
             Client.Resumed += Client_Resumed;
-            Client.ComponentInteractionCreated += async (DiscordClient client, ComponentInteractionCreateEventArgs args) =>
-            {
-                await args.Interaction.CreateResponseAsync(InteractionResponseType.DefferedMessageUpdate);
-            };
+            Client.ComponentInteractionCreated += Client_ComponentInteractionCreated;
 
             Client.UseInteractivity(new InteractivityConfiguration());
 
@@ -232,6 +229,15 @@ namespace Discord_Bot
                     .AddField("Evento", $"{e.EventName}", false)
                     );
                 }
+            });
+            return Task.CompletedTask;
+        }
+
+        private Task Client_ComponentInteractionCreated(DiscordClient sender, ComponentInteractionCreateEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                await e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
             });
             return Task.CompletedTask;
         }

@@ -104,9 +104,9 @@ namespace Discord_Bot
 
         public string NormalizarDescription(string s)
         {
-            if (s.Length > 2048)
+            if (s.Length > 4096)
             {
-                string aux = s.Remove(2048);
+                string aux = s.Remove(4096);
                 int index = aux.LastIndexOf('[');
                 if(index != -1)
                     return aux.Remove(aux.LastIndexOf('[')) + "...";
