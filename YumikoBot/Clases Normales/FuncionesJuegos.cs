@@ -233,7 +233,7 @@ namespace Discord_Bot
 
                         if(funciones.ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
                         {
-                            int porPagina = 20;
+                            int porPagina = 30;
                             int ultPagina = tags.Count / porPagina;
                             int iterInterna = 0;
                             int iter = 0;
@@ -256,7 +256,8 @@ namespace Discord_Bot
                                             Color = funciones.GetColor(),
                                             Footer = new DiscordEmbedBuilder.EmbedFooter
                                             {
-                                                Text = $"Página {pages.Count}/{ultPagina}"
+                                                Text = $"Obtenido desde AniList | Página {pages.Count + 1}/{ultPagina + 1}",
+                                                IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"]
                                             }
                                         }
                                     });
@@ -275,7 +276,8 @@ namespace Discord_Bot
                                         Color = funciones.GetColor(),
                                         Footer = new DiscordEmbedBuilder.EmbedFooter
                                         {
-                                            Text = $"Página {pages.Count}/{ultPagina}"
+                                            Text = $"Obtenido desde AniList | Página {pages.Count + 1}/{ultPagina + 1}",
+                                            IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"]
                                         }
                                     }
                                 });
@@ -786,7 +788,17 @@ namespace Discord_Bot
         public async Task<List<Anime>> GetMedia(CommandContext ctx, string tipo, SettingsJuego settings, bool personajes, bool estudios, bool tag, bool genero)
         {
             List<Anime> animeList = new();
-            DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo {tipo.ToLower()}s...").ConfigureAwait(false);
+            DiscordMessage mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = $"Obteniendo {tipo.ToLower()}s",
+                Description = "Por favor espera mientras se prepara todo",
+                Color = funciones.GetColor(),
+                Footer = new DiscordEmbedBuilder.EmbedFooter
+                {
+                    IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"],
+                    Text = "Obtenido desde AniList"
+                }
+            }).ConfigureAwait(false);
             string mediaFiltros;
             if (tag)
             {
@@ -963,7 +975,16 @@ namespace Discord_Bot
         public async Task<List<Character>> GetCharacters(CommandContext ctx, SettingsJuego settings, bool animes)
         {
             var characterList = new List<Character>();
-            DiscordMessage mensaje = await ctx.Channel.SendMessageAsync($"Obteniendo personajes...").ConfigureAwait(false);
+            DiscordMessage mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder{ 
+                Title = "Obteniendo personajes",
+                Description = "Por favor espera mientras se prepara todo",
+                Color = funciones.GetColor(),
+                Footer = new DiscordEmbedBuilder.EmbedFooter
+                {
+                    IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"],
+                    Text = "Obtenido desde AniList"
+                }
+            }).ConfigureAwait(false);
             string query = "query($pagina : Int){" +
                         "   Page(page: $pagina){" +
                         "       characters(sort: FAVOURITES_DESC){" +

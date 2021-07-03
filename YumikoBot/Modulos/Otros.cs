@@ -39,6 +39,12 @@ namespace Discord_Bot.Modulos
 
             if (!bt.TimedOut)
             {
+                await bt.Result.Interaction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder()
+                {
+                   Content = "prueba",
+                   IsEphemeral = true
+                });
+
                 //var result = bt.Result;
                 //int i = 0;
             }
@@ -87,15 +93,20 @@ namespace Discord_Bot.Modulos
         public async Task Info(CommandContext ctx)
         {
             var owner = ctx.Client.CurrentApplication.Owners.ElementAt(0);
+            var guild = await ctx.Client.GetGuildAsync(713809173573271613);
+            var emoteNetCore = await guild.GetEmojiAsync(860762219637243924);
+            var emoteDiscord = await guild.GetEmojiAsync(860763925720072222);
+            var emoteDSharp = await guild.GetEmojiAsync(860762219150835712);
+
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Title = "Información de Yumiko",
+                Title = $"Información de {ctx.Client.CurrentUser.Username}",
                 Description = $"Bot de Discord creado por **{owner.Username}#{owner.Discriminator}**",
                 Color = funciones.GetColor(),
                 Footer = funciones.GetFooter(ctx)
-            }.AddField("Version DSharpPlus", $"{ctx.Client.VersionString}", true)
-            .AddField("Version API de Discord", $"V{ctx.Client.GatewayVersion}", true)
-            .AddField("Version .NET Core", $"{Environment.Version}", true)
+            }.AddField("Version DSharpPlus", $"{emoteDSharp} {ctx.Client.VersionString}", true)
+            .AddField("Version API de Discord", $"{emoteDiscord} V{ctx.Client.GatewayVersion}", true)
+            .AddField("Version .NET Core", $"{emoteNetCore} {Environment.Version}", true)
             ).ConfigureAwait(false);
         }
 

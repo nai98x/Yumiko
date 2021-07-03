@@ -247,7 +247,6 @@ namespace Discord_Bot
             e.Handled = true;
             _ = Task.Run(async () =>
             {
-                cm.Client.Logger.LogInformation($"Comando ejecutado: {e.Context.Message.Content} | Guild: {e.Context.Guild.Name} | Canal: {e.Context.Channel.Name}", DateTime.Now);
                 await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
                     Title = "Comando ejecutado",

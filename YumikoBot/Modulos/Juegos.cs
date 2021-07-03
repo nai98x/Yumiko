@@ -105,8 +105,9 @@ namespace Discord_Bot.Modulos
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el personaje",
-                    Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
-                    Color = funciones.GetColor()
+                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
+                    Color = funciones.GetColor(),
+                    Footer = funciones.GetFooter(ctx)
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 var characterList = await funcionesJuegos.GetCharacters(ctx, settings, false);
@@ -129,8 +130,9 @@ namespace Discord_Bot.Modulos
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el anime",
-                    Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
-                    Color = funciones.GetColor()
+                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
+                    Color = funciones.GetColor(),
+                    Footer = funciones.GetFooter(ctx)
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 var characterList = await funcionesJuegos.GetCharacters(ctx, settings, true);
@@ -153,8 +155,9 @@ namespace Discord_Bot.Modulos
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el manga",
-                    Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
-                    Color = funciones.GetColor()
+                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
+                    Color = funciones.GetColor(),
+                    Footer = funciones.GetFooter(ctx)
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 var animeList = await funcionesJuegos.GetMedia(ctx, "MANGA", settings, false, false, false, false);
@@ -174,6 +177,14 @@ namespace Discord_Bot.Modulos
             SettingsJuego settings = await funcionesJuegos.InicializarJuego(ctx, interactivity,false,true, false);
             if (settings.Ok)
             {
+                DiscordEmbed embebido = new DiscordEmbedBuilder
+                {
+                    Title = $"Adivina el tag",
+                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
+                    Color = funciones.GetColor(),
+                    Footer = funciones.GetFooter(ctx)
+                }.AddField("Rondas", $"{settings.Rondas}").AddField("Tag", $"{settings.Tag}");
+                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 settings.PorcentajeTag = 70;
                 var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, false, true, false);
                 int cantidadAnimes = animeList.Count;
@@ -215,8 +226,9 @@ namespace Discord_Bot.Modulos
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el estudio del anime",
-                    Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
-                    Color = funciones.GetColor()
+                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
+                    Color = funciones.GetColor(),
+                    Footer = funciones.GetFooter(ctx)
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, true, false, false);
@@ -239,8 +251,9 @@ namespace Discord_Bot.Modulos
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = "Adivina el protagonista del anime",
-                    Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
-                    Color = funciones.GetColor()
+                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
+                    Color = funciones.GetColor(),
+                    Footer = funciones.GetFooter(ctx)
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false, false);
@@ -263,8 +276,9 @@ namespace Discord_Bot.Modulos
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
                     Title = $"Adivina el {settings.Genero}",
-                    Description = $"Sesión iniciada por {ctx.User.Mention}\n\nPuedes escribir `cancelar` en cualquiera de las rondas para terminar la partida.",
-                    Color = funciones.GetColor()
+                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
+                    Color = funciones.GetColor(),
+                    Footer = funciones.GetFooter(ctx)
                 }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
                 var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false, true);
