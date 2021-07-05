@@ -275,13 +275,13 @@ namespace Discord_Bot.Modulos
             {
                 DiscordEmbed embebido = new DiscordEmbedBuilder
                 {
-                    Title = $"Adivina el {settings.Genero}",
+                    Title = $"Adivina el género",
                     Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
                     Color = funciones.GetColor(),
                     Footer = funciones.GetFooter(ctx)
-                }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
+                }.AddField("Rondas", $"{settings.Rondas}").AddField("Género", $"{settings.Dificultad}");
                 await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, true, false, false, true);
+                var animeList = await funcionesJuegos.GetMedia(ctx, "ANIME", settings, false, false, false, true);
                 await funcionesJuegos.Jugar(ctx, "genero", animeList, settings, interactivity);
             }
             else

@@ -949,7 +949,7 @@ namespace Discord_Bot
                             }
                         }
                         popularidad++;
-                        if ((!estudios) || (estudios && anim.Estudios.Count > 0))
+                        if ((!estudios && !personajes) || (estudios && anim.Estudios.Count > 0) || (personajes && anim.Personajes.Count > 0))
                         {
                             animeList.Add(anim);
                         }
