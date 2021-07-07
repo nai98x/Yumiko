@@ -201,37 +201,10 @@ namespace Discord_Bot
                 }
                 if (elegirTag)
                 {
-                    string query =
-                    "query{" +
-                    "   MediaTagCollection{" +
-                    "       name," +
-                    "       description," +
-                    "       isAdult" +
-                    "   }" +
-                    "}";
-                    var request = new GraphQLRequest
+                    var tags = await funciones.GetTags(ctx);
+                    if(tags.Count > 0)
                     {
-                        Query = query
-                    };
-                    try
-                    {
-                        var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                        List<Tag> tags = new();
-                        foreach (var x in data.Data.MediaTagCollection)
-                        {
-                            if ((x.isAdult == "false") || (x.isAdult == true && ctx.Channel.IsNSFW))
-                            {
-                                string nombre = x.name;
-                                string descripcion = x.description;
-                                tags.Add(new Tag()
-                                {
-                                    Nombre = nombre,
-                                    Descripcion = descripcion
-                                });
-                            }
-                        }
-
-                        if(funciones.ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
+                        if (funciones.ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
                         {
                             int porPagina = 30;
                             int ultPagina = tags.Count / porPagina;
@@ -293,7 +266,7 @@ namespace Discord_Bot
                                 Color = funciones.GetColor()
                             });
                         }
-                        
+
                         var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(120));
                         if (!msgTagInter.TimedOut)
                         {
@@ -302,7 +275,7 @@ namespace Discord_Bot
                             List<Tag> tagsFiltrados = tags.Where(x => x.Nombre.ToLower().Trim().Contains(msgTagInter.Result.Content.ToLower().Trim())).ToList();
                             if (tagsFiltrados.Count > 0)
                             {
-                                if(tagsFiltrados.Count == 1)
+                                if (tagsFiltrados.Count == 1)
                                 {
                                     return new SettingsJuego()
                                     {
@@ -389,9 +362,9 @@ namespace Discord_Bot
                             };
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        await funciones.GrabarLogError(ctx, $"Error inesperado en InicializarJuego eligiendo tag - {ex.Message}");
+                        await funciones.GrabarLogError(ctx, $"Error inesperado en InicializarJuego eligiendo tag");
                         return new SettingsJuego()
                         {
                             Ok = false,

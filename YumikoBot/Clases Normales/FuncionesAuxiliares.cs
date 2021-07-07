@@ -592,5 +592,41 @@ namespace Discord_Bot
             DiscordMessage msgElegir = await mensaje.SendAsync(ctx.Channel);
             var interJuego = await interactivity.WaitForButtonAsync(msgElegir, ctx.User, TimeSpan.FromSeconds(120));
         }
+
+        public async Task<List<Tag>> GetTags(CommandContext ctx)
+        {
+            List<Tag> lista = new();
+            string query =
+                    "query{" +
+                    "   MediaTagCollection{" +
+                    "       name," +
+                    "       description," +
+                    "       isAdult" +
+                    "   }" +
+                    "}";
+            var request = new GraphQLRequest
+            {
+                Query = query
+            };
+            try
+            {
+                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                foreach (var x in data.Data.MediaTagCollection)
+                {
+                    if ((x.isAdult == "false") || (x.isAdult == true && ctx.Channel.IsNSFW))
+                    {
+                        string nombre = x.name;
+                        string descripcion = x.description;
+                        lista.Add(new Tag()
+                        {
+                            Nombre = nombre,
+                            Descripcion = descripcion
+                        });
+                    }
+                }
+            }
+            catch{  }
+            return lista;
+        }
     }
 }

@@ -207,7 +207,7 @@ namespace Discord_Bot.Modulos
                 try
                 {
                     var data = await funcionesAnilist.GetAnilistMedia(ctx, anime, "anime");
-                    if (data.Data != null)
+                    if (data != null && data.Data != null)
                     {
                         int cont = 0;
                         List<string> opc = new();
@@ -307,7 +307,7 @@ namespace Discord_Bot.Modulos
                 try
                 {
                     var data = await funcionesAnilist.GetAnilistMedia(ctx, manga, "manga");
-                    if (data.Data != null)
+                    if (data != null && data.Data != null)
                     {
                         int cont = 0;
                         List<string> opc = new();
@@ -439,7 +439,7 @@ namespace Discord_Bot.Modulos
                 try
                 {
                     var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                    if (data.Data != null)
+                    if (data != null && data.Data != null)
                     {
                         int cont = 0;
                         List<string> opc = new();

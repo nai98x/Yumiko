@@ -87,6 +87,7 @@ namespace YumikoBot.DAL
         
         public async Task<List<string>> GetTags(CommandContext ctx)
         {
+            var listaTags = await funciones.GetTags(ctx); // Tags Anilist
             List<string> ret = new();
             FirestoreDb db = funciones.GetFirestoreClient();
 
@@ -96,8 +97,13 @@ namespace YumikoBot.DAL
             while (await subcollectionsEnumerator.MoveNextAsync())
             {
                 DocumentReference subcollectionRef = subcollectionsEnumerator.Current;
-                ret.Add(subcollectionRef.Id);
+                string tag = subcollectionRef.Id;
+                if (listaTags.Where(x => x.Nombre == tag) != null)
+                {
+                    ret.Add(tag);
+                }
             }
+            
             return ret;
         }
 
