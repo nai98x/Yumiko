@@ -696,7 +696,7 @@ namespace Discord_Bot
                     msgError = "Tiempo agotado esperando el tag";
                 }
                 //await funciones.BorrarMensaje(ctx, msgOpciones.Id);
-                await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
+                
                 return new DiscordEmbedBuilder
                 {
                     Title = "Error",

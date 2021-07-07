@@ -98,7 +98,7 @@ namespace YumikoBot.DAL
             {
                 DocumentReference subcollectionRef = subcollectionsEnumerator.Current;
                 string tag = subcollectionRef.Id;
-                if (listaTags.Where(x => x.Nombre == tag) != null)
+                if (listaTags.Where(x => x.Nombre == tag).ToList().Count > 0)
                 {
                     ret.Add(tag);
                 }
