@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
@@ -12,6 +13,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using YumikoBot.DAL;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
@@ -25,6 +27,7 @@ namespace Discord_Bot.Modulos
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
+            /*
             DiscordMessageBuilder builder = new DiscordMessageBuilder()
                 .WithContent("prueba")
                 .AddComponents(new DiscordSelectComponent("dropdown", "Placeholder", new DiscordSelectComponentOption[]
@@ -35,7 +38,7 @@ namespace Discord_Bot.Modulos
 
             var msg = await ctx.RespondAsync(builder);
 
-            var bt = await msg.WaitForSelectAsync("dropdown");
+            var bt = await msg.WaitForSelectAsync("dropdown", timeoutOverride:null);
 
             if (!bt.TimedOut)
             {
@@ -47,7 +50,15 @@ namespace Discord_Bot.Modulos
 
                 //var result = bt.Result;
                 //int i = 0;
-            }
+            }*/
+
+            var lipsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tellus lectus, tristique at turpis nec, ultrices vestibulum mi. Praesent aliquam et neque sit amet suscipit. Nullam nec pulvinar leo. Integer pharetra mauris ac imperdiet vestibulum. Maecenas eu tellus at nisi bibendum pharetra a nec ligula. Curabitur euismod est sem, non tempus felis varius eu. Duis molestie quis ante sed elementum. Suspendisse in diam bibendum, cursus metus vel, imperdiet dolor. Etiam rutrum, justo sed vehicula ultrices, massa augue mollis odio, sed placerat diam orci in erat. Sed pulvinar felis eget lacus imperdiet fringilla. Nunc blandit, orci quis varius varius, nibh diam scelerisque dolor, a cursus ex dui non diam. Etiam a erat eros. Nulla porttitor venenatis ligula, ac tincidunt mauris auctor quis. Vivamus ut gravida urna, eu finibus enim. Quisque vitae vestibulum metus. Vestibulum non leo ut odio pharetra mattis." +
+                         "Donec volutpat condimentum velit. Aenean tincidunt massa eu malesuada aliquet. Suspendisse potenti. Nulla porttitor vel sem et pretium. Vestibulum tempus tortor lectus, aliquet tempus risus condimentum vel. Quisque ultricies dapibus lacus, nec mollis enim efficitur in. Aliquam laoreet ultricies lorem, quis hendrerit elit pellentesque at. Cras sit amet dignissim velit. Suspendisse vulputate aliquam faucibus. Morbi dictum magna gravida diam vehicula convallis. Sed egestas nulla lectus, id cursus libero pharetra id. Aliquam fermentum gravida dictum. Curabitur aliquam diam tortor.";
+
+            var interactivity = ctx.Client.GetInteractivity();
+            var embedPages = interactivity.GeneratePagesInEmbed(lipsum);
+
+            await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, embedPages, token: new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token);
 
             await ctx.Channel.SendMessageAsync("uwu!");
         }
@@ -146,6 +157,7 @@ namespace Discord_Bot.Modulos
         [Command("servers"), Description("Muestra los servidores en los que esta Yumiko."), RequireOwner, Hidden]
         public async Task Servers(CommandContext ctx)
         {
+            var interactivity = ctx.Client.GetInteractivity();
             List<Page> pages = new();
             var guildsdesordenadas = ctx.Client.Guilds.Values;
             var lista = guildsdesordenadas.ToList();
@@ -205,7 +217,8 @@ namespace Discord_Bot.Modulos
                 Title = "Servidores de Yumiko",
                 Description = $"Cantidad: {ctx.Client.Guilds.Count}\nTotal de usuarios: {usuarios}",
             });
-            _ = ctx.Channel.SendPaginatedMessageAsync(ctx.User, pages).ConfigureAwait(false);
+
+            await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, pages, token: new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token);
         }
 
         [Command("eliminarmensaje"), Description("Elimina un mensaje de Yumiko."), RequireOwner, Hidden]
@@ -250,7 +263,9 @@ namespace Discord_Bot.Modulos
                 ctx.Guild.Id == 741496210040553483 || // Maanhe
                 ctx.Guild.Id == 520398815103025156 || // Tomy
                 ctx.Guild.Id == 753023527623458916 || // Andrea
-                ctx.Guild.Id == 724784732923232286 // Haze
+                ctx.Guild.Id == 724784732923232286 || // Haze
+                ctx.Guild.Id == 862408834693070898 // Anilist ESP 2.0
+
                 )
             {
                 if (String.IsNullOrEmpty(buscar))

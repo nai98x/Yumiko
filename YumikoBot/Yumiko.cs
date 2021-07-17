@@ -219,6 +219,7 @@ namespace Discord_Bot
                     await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder()
                     {
                         Title = "Ha ocurrido una excepcion",
+                        Description = $"```{e.Exception.StackTrace}```",
                         Footer = new EmbedFooter()
                         {
                             Text = $"{DateTimeOffset.Now}"
@@ -445,7 +446,7 @@ namespace Discord_Bot
                         await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
                             Title = "Error desconocido",
-                            Description = $"{e.Exception.Message}",
+                            Description = $"{e.Exception.Message}```{e.Exception.StackTrace}```",
                             Color = DiscordColor.Red,
                             Footer = footer
                         }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
