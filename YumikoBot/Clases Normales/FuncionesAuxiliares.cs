@@ -19,6 +19,7 @@ using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using DSharpPlus.Interactivity;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
+using DSharpPlus.SlashCommands;
 
 namespace Discord_Bot
 {
@@ -126,10 +127,16 @@ namespace Discord_Bot
             a[0] = char.ToUpper(a[0]);
             return new string(a);
         }
-        // await ctx.RespondAsync(new DiscordEmbedBuilder() { Title = "Error", Description = $"Exception: {ex.Message}\n" + $"```\n" + $"{ex.StackTrace}\n" + $"```" });
+        
         public EmbedFooter GetFooter(CommandContext ctx) => new()
         {
             Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator}) | {ctx.Prefix}{ctx.Command.Name}",
+            IconUrl = ctx.Member.AvatarUrl
+        };
+
+        public EmbedFooter GetFooter(InteractionContext ctx) => new()
+        {
+            Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator})",
             IconUrl = ctx.Member.AvatarUrl
         };
 

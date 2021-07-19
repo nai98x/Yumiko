@@ -85,11 +85,9 @@ namespace Discord_Bot
             var commandsConfig = new CommandsNextConfiguration
             {
                 StringPrefixes = new string[] { prefix },
-                EnableMentionPrefix = true,
                 EnableDms = false,
                 DmHelp = false,
                 EnableDefaultHelp = false,
-                CaseSensitive = false,
                 IgnoreExtraArguments = true
             };
 
@@ -104,6 +102,9 @@ namespace Discord_Bot
             Commands.RegisterCommands<NSFW>();
             Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
+
+            SlashCommands = Client.UseSlashCommands();
+            SlashCommands.RegisterCommands<SlashCommands>();
 
             Commands.RegisterConverter(new MemberConverter());
 
@@ -122,7 +123,7 @@ namespace Discord_Bot
                 LogChannelServers = LogGuild.GetChannel(840437931847974932);
                 LogChannelErrores = LogGuild.GetChannel(840439731011452959);
             }
-                
+
             await RotarEstado(prefix);
         }
 
@@ -139,14 +140,12 @@ namespace Discord_Bot
 
         private Task OnClientReady(DiscordClient c, ReadyEventArgs e)
         {
-            e.Handled = true;
             c.Logger.LogInformation("El cliente esta listo para procesar eventos.", DateTime.Now);
             return Task.CompletedTask;
         }
 
         private Task Client_Resumed(DiscordClient c, ReadyEventArgs e)
         {
-            e.Handled = true;
             c.Logger.LogInformation("El cliente vuelve a estar listo para procesar eventos.", DateTime.Now);
             return Task.CompletedTask;
         }
