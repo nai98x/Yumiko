@@ -190,6 +190,36 @@ namespace Discord_Bot.Modulos
             }
         }
 
+        [Command("sticker"), Description("Muestra un sticker."), RequireGuild]
+        public async Task Sticker(CommandContext ctx)
+        {
+            int cantStickers = ctx.Message.Stickers.Count;
+            switch (cantStickers)
+            {
+                case 1:
+                    var sticker = ctx.Message.Stickers.ElementAt(0);
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = sticker.Name,
+                        Url = sticker.StickerUrl,
+                        ImageUrl = sticker.StickerUrl,
+                        Color = funciones.GetColor(),
+                        Footer = funciones.GetFooter(ctx)
+                    });
+                    break;
+                case 0:
+                    DiscordMessage msgError = await ctx.Channel.SendMessageAsync("Debes pasar un sticker").ConfigureAwait(false);
+                    await Task.Delay(3000);
+                    await funciones.BorrarMensaje(ctx, msgError.Id);
+                    break;
+                default:
+                    DiscordMessage msgError1 = await ctx.Channel.SendMessageAsync("Solo puedes pasar un sticker").ConfigureAwait(false);
+                    await Task.Delay(3000);
+                    await funciones.BorrarMensaje(ctx, msgError1.Id);
+                    break;
+            }
+        }
+
         [Command("avatar"), Description("Muestra el avatar de un usuario."), RequireGuild]
         public async Task Avatar(CommandContext ctx, DiscordMember usuario = null)
         {

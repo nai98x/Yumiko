@@ -104,7 +104,19 @@ namespace Discord_Bot
             Commands.RegisterCommands<Help>();
 
             SlashCommands = Client.UseSlashCommands();
-            SlashCommands.RegisterCommands<SlashCommands>();
+
+            SlashCommands.SlashCommandExecuted += SlashCommands_SlashCommandExecuted;
+            SlashCommands.SlashCommandErrored += SlashCommands_SlashCommandErrored;
+
+            if (Debug)
+            {
+                ulong idGuildTest = 713809173573271613;
+                SlashCommands.RegisterCommands<SlashCommands>(idGuildTest);
+            }
+            else
+            {
+                SlashCommands.RegisterCommands<SlashCommands>();
+            }
 
             Commands.RegisterConverter(new MemberConverter());
 
@@ -460,6 +472,40 @@ namespace Discord_Bot
                     }
                 }
             });
+            return Task.CompletedTask;
+        }
+
+        private Task SlashCommands_SlashCommandExecuted(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandExecutedEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                {
+                    Title = "Slash command ejecutado",
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Interaction.CreationTimestamp}",
+                        IconUrl = e.Context.User.AvatarUrl
+                    },
+                    Author = new EmbedAuthor()
+                    {
+                        IconUrl = e.Context.Guild.IconUrl,
+                        Name = $"{e.Context.Guild.Name}"
+                    },
+                    Color = DiscordColor.Green
+                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
+                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                .AddField("Comando", $"{e.Context.CommandName}", false)
+                );
+            });
+            return Task.CompletedTask;
+        }
+
+        private Task SlashCommands_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e)
+        {
+            
             return Task.CompletedTask;
         }
     }
