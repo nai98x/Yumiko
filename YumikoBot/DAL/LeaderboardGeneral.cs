@@ -31,10 +31,10 @@ namespace YumikoBot.DAL
             return ret;
         }
 
-        public async Task AddRegistro(CommandContext ctx, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)
+        public async Task AddRegistro(long guildId, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)
         {
             FirestoreDb db = funciones.GetFirestoreClient();
-            DocumentReference doc = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios").Document($"{userId}");
+            DocumentReference doc = db.Collection("Estadisticas").Document($"{guildId}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
             LeaderboardFirebase registro;
             if (snap.Exists)
@@ -67,7 +67,7 @@ namespace YumikoBot.DAL
             }
         }
 
-        public async Task<List<StatsJuego>> GetLeaderboard(CommandContext ctx, string dificultad, string juego)
+        public async Task<List<StatsJuego>> GetLeaderboard(Context ctx, string dificultad, string juego)
         {
             List<StatsJuego> lista = new();
             var listaFirebase = await GetLeaderboardFirebase((long)ctx.Guild.Id, juego, dificultad);
@@ -85,7 +85,7 @@ namespace YumikoBot.DAL
             return lista;
         }
         
-        public async Task<List<string>> GetTags(CommandContext ctx)
+        public async Task<List<string>> GetTags(Context ctx)
         {
             var listaTags = await funciones.GetTags(ctx); // Tags Anilist
             List<string> ret = new();

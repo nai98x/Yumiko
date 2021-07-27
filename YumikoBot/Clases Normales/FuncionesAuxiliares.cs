@@ -34,6 +34,34 @@ namespace Discord_Bot
             return FirestoreDb.Create(ConfigurationManager.AppSettings["NombreDbFirebase"]);
         }
 
+        public Context GetContext(CommandContext ctx)
+        {
+            return new()
+            {
+                Client = ctx.Client,
+                Command = ctx.Command,
+                Channel = ctx.Channel,
+                Guild = ctx.Guild,
+                Member = ctx.Member,
+                Message = ctx.Message,
+                Prefix = ctx.Prefix,
+                User = ctx.User
+            };
+        }
+
+        public Context GetContext(InteractionContext itx)
+        {
+            return new()
+            {
+                Client = itx.Client,
+                Channel = itx.Channel,
+                Guild = itx.Guild,
+                Member = itx.Member,
+                User = itx.User,
+                Interaction = itx.Interaction
+            };
+        }
+
         public async Task<Imagen> GetImagenDiscordYumiko(CommandContext ctx, ulong idChannel)
         {
             DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(713809173573271613);
@@ -140,6 +168,12 @@ namespace Discord_Bot
             IconUrl = ctx.Member.AvatarUrl
         };
 
+        public EmbedFooter GetFooter(Context ctx) => new()
+        {
+            Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator})",
+            IconUrl = ctx.Member.AvatarUrl
+        };
+
         public EmbedAuthor GetAuthor(string nombre, string avatar, string url)
         {
             return new EmbedAuthor()
@@ -205,7 +239,12 @@ namespace Discord_Bot
             return File.OpenRead(path);
         }
 
-        public bool ChequearPermisoYumiko(CommandContext ctx, DSharpPlus.Permissions permiso)
+        public bool ChequearPermisoYumiko(CommandContext ctx, Permissions permiso)
+        {
+            return PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), permiso);
+        }
+
+        public bool ChequearPermisoYumiko(Context ctx, Permissions permiso)
         {
             return PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), permiso);
         }
@@ -226,7 +265,23 @@ namespace Discord_Bot
             }
         }
 
-        public async Task ChequearVotoTopGG(CommandContext ctx)
+        public async Task BorrarMensaje(Context ctx, ulong msgId)
+        {
+            if (ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
+            {
+                try
+                {
+                    var mensaje = await ctx.Channel.GetMessageAsync(msgId);
+                    if (mensaje != null)
+                    {
+                        await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                    }
+                }
+                catch (Exception) { }
+            }
+        }
+
+        public async Task ChequearVotoTopGG(Context ctx)
         {
             IDebuggingService mode = new DebuggingService();
             bool debug = mode.RunningInDebugMode();
@@ -488,6 +543,33 @@ namespace Discord_Bot
             }
         }
 
+        public async Task GrabarLogError(Context ctx, string descripcion)
+        {
+            var Guild = await ctx.Client.GetGuildAsync(713809173573271613);
+            if (Guild != null)
+            {
+                var ChannelErrores = Guild.GetChannel(840440877565739008);
+                if (ChannelErrores != null)
+                {
+                    await ChannelErrores.SendMessageAsync(new DiscordEmbedBuilder
+                    {
+                        Title = "Error no controlado",
+                        Description = descripcion,
+                        Color = DiscordColor.Red,
+                        Footer = GetFooter(ctx),
+                        Author = new EmbedAuthor
+                        {
+                            IconUrl = ctx.Guild.IconUrl,
+                            Name = ctx.Guild.Name
+                        },
+                    }.AddField("Id Servidor", $"{ctx.Guild.Id}", true)
+                    .AddField("Id Canal", $"{ctx.Channel.Id}", true)
+                    .AddField("Canal", $"#{ctx.Channel.Name}", false)
+                    .AddField("Mensaje", $"{ctx.Message.Content}", false));
+                }
+            }
+        }
+
         public async Task<string> GetStringInteractivity(CommandContext ctx, string tituloBusqueda, string descBusqueda, string descError, int timeoutSegundos)
         {
             var interactivity = ctx.Client.GetInteractivity();
@@ -600,7 +682,7 @@ namespace Discord_Bot
             var interJuego = await interactivity.WaitForButtonAsync(msgElegir, ctx.User, TimeSpan.FromSeconds(120));
         }
 
-        public async Task<List<Tag>> GetTags(CommandContext ctx)
+        public async Task<List<Tag>> GetTags(Context ctx)
         {
             List<Tag> lista = new();
             string query =
