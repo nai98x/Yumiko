@@ -75,7 +75,7 @@ namespace YumikoBot
             }
         }
 
-        [SlashCommand("stats", "Busca las estadisticas de un juego de adivinar algo de anime")]
+        [SlashCommand("stats", "Busca las estadisticas de un quiz")]
         public async Task Stats(InteractionContext ctx,
         [Choice("Adivina el personaje", "personajes")]
         [Choice("Adivina el anime", "animes")]
@@ -86,12 +86,7 @@ namespace YumikoBot
         [Choice("Adivina el genero", "genero")]
         [Option("Juego", "El tipo de quiz que quieres ver las estadisticas")] string juego)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
-            {
-                IsEphemeral = true,
-                Content = $"¡Haz iniciado la búsqueda de estadisticas!"
-            });
-
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var context = funciones.GetContext(ctx);
             var interactivity = ctx.Client.GetInteractivity();
             DiscordEmbedBuilder builder;
@@ -99,20 +94,21 @@ namespace YumikoBot
             {
                 case "personajes":
                     builder = await funcionesJuegos.GetEstadisticas(context, "personaje");
-                    await ctx.Channel.SendMessageAsync(embed: builder);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                     await funciones.ChequearVotoTopGG(context);
                     break;
                 case "animes":
                     builder = await funcionesJuegos.GetEstadisticas(context, "anime");
-                    await ctx.Channel.SendMessageAsync(embed: builder);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                     await funciones.ChequearVotoTopGG(context);
                     break;
                 case "mangas":
                     builder = await funcionesJuegos.GetEstadisticas(context, "manga");
-                    await ctx.Channel.SendMessageAsync(embed: builder);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                     await funciones.ChequearVotoTopGG(context);
                     break;
                 case "tag":
+                    await ctx.DeleteResponseAsync();
                     builder = await funcionesJuegos.GetEstadisticasTag(context);
                     var msg = await ctx.Channel.SendMessageAsync(embed: builder);
                     await funciones.ChequearVotoTopGG(context);
@@ -124,12 +120,12 @@ namespace YumikoBot
                     break;
                 case "estudio":
                     builder = await funcionesJuegos.GetEstadisticas(context, "estudio");
-                    await ctx.Channel.SendMessageAsync(embed: builder);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                     await funciones.ChequearVotoTopGG(context);
                     break;
                 case "protagonista":
                     builder = await funcionesJuegos.GetEstadisticas(context, "protagonista");
-                    await ctx.Channel.SendMessageAsync(embed: builder);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                     await funciones.ChequearVotoTopGG(context);
                     break;
                 case "genero":
@@ -137,7 +133,7 @@ namespace YumikoBot
                     if (respuesta.Ok)
                     {
                         builder = await funcionesJuegos.GetEstadisticasGenero(context, respuesta.Genero);
-                        await ctx.Channel.SendMessageAsync(embed: builder);
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                         await funciones.ChequearVotoTopGG(context);
                     }
                     break;
