@@ -29,6 +29,8 @@ namespace Discord_Bot
 
         private DiscordChannel LogChannelGeneral;
 
+        private DiscordChannel LogChannelSlash;
+
         private DiscordChannel LogChannelServers;
 
         private DiscordChannel LogChannelErrores;
@@ -126,12 +128,14 @@ namespace Discord_Bot
             if (Debug)
             {
                 LogChannelGeneral = LogGuild.GetChannel(820711607796891658);
+                LogChannelSlash   = LogGuild.GetChannel(866810782360928306);
                 LogChannelServers = LogGuild.GetChannel(840440818921897985);
                 LogChannelErrores = LogGuild.GetChannel(840440877565739008);
             }
             else
             {
                 LogChannelGeneral = LogGuild.GetChannel(781679685838569502);
+                LogChannelSlash   = LogGuild.GetChannel(866810567644676126);
                 LogChannelServers = LogGuild.GetChannel(840437931847974932);
                 LogChannelErrores = LogGuild.GetChannel(840439731011452959);
             }
@@ -479,7 +483,7 @@ namespace Discord_Bot
         {
             _ = Task.Run(async () =>
             {
-                await LogChannelGeneral.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                await LogChannelSlash.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
                     Title = "Slash command ejecutado",
                     Footer = new EmbedFooter()
@@ -497,7 +501,7 @@ namespace Discord_Bot
                 .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
                 .AddField("Id Usuario", $"{e.Context.User.Id}", true)
                 .AddField("Canal", $"#{e.Context.Channel.Name}", false)
-                .AddField("Comando", $"{e.Context.CommandName}", false)
+                .AddField("Comando", $"/{e.Context.CommandName}", false)
                 );
             });
             return Task.CompletedTask;

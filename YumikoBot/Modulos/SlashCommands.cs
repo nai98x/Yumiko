@@ -38,7 +38,7 @@ namespace YumikoBot
         [Choice("Adivina el manga", "mangas")]
         [Choice("Adivina el tag", "tag")]
         [Choice("Adivina el estudio", "estudio")]
-        [Choice("Adivina el progragonista", "protagonista")]
+        [Choice("Adivina el protagonista", "protagonista")]
         [Choice("Adivina el genero", "genero")]
         [Option("Juego", "El tipo de quiz que quieres iniciar")] string juego)
         {
@@ -82,7 +82,7 @@ namespace YumikoBot
         [Choice("Adivina el manga", "mangas")]
         [Choice("Adivina el tag", "tag")]
         [Choice("Adivina el estudio", "estudio")]
-        [Choice("Adivina el progragonista", "protagonista")]
+        [Choice("Adivina el protagonista", "protagonista")]
         [Choice("Adivina el genero", "genero")]
         [Option("Juego", "El tipo de quiz que quieres ver las estadisticas")] string juego)
         {
