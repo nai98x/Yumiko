@@ -29,8 +29,8 @@ namespace Discord_Bot.Modulos
                 {
                     Title = "Comandos disponibles",
                     Description = $"Puedes llamarme con `{ctx.Prefix}` o con {ctx.Client.CurrentUser.Mention}\n" +
-                    $"[Ejemplos de comandos]({web}) | [¡Vótame!]({urlTopGG})",
-                    Url = web,
+                    $"[Ejemplos de comandos]({web}) | [¡Vótame!]({urlTopGG})\n\n" +
+                    $"**Importante:** Para ver el resto de comandos, escribe `/help`",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
                 };
@@ -50,7 +50,7 @@ namespace Discord_Bot.Modulos
                     comandosDesc = string.Join(", ", listaComandos);
                     if (nomGrupo == "NSFW" && !ctx.Channel.IsNSFW)
                         comandosDesc = "`Para ver estos comandos ejecutalo en un canal NSFW`";
-                    if(nomGrupo != "Help")
+                    if(nomGrupo != "Help" && ! string.IsNullOrEmpty(comandosDesc))
                     {
                         builder.AddField(nomGrupo, comandosDesc, false);
                     }

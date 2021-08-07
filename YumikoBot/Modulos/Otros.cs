@@ -24,6 +24,12 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new();
 
+        [Command("ping"), Description("Muestra el ping de Yumiko."), Hidden]
+        public async Task Ping(CommandContext ctx)
+        {
+            await funciones.MovidoASlashCommand(ctx);
+        }
+
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
@@ -61,97 +67,6 @@ namespace Discord_Bot.Modulos
             await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, embedPages, token: new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token);
 
             await ctx.Channel.SendMessageAsync("uwu!");
-        }
-
-        [Command("ping"), Description("Muestra el ping de Yumiko.")]
-        public async Task Ping(CommandContext ctx)
-        {
-            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-            {
-                Title = "Latencia",
-                Description = "🏓 Pong! `" + ctx.Client.Ping.ToString() + " ms" + "`",
-                Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor()
-            }).ConfigureAwait(false);
-        }
-
-        [Command("invite"), Aliases("invitar"), Description("Muestra el link para invitar a Yumiko a un servidor.")]
-        public async Task Invite(CommandContext ctx)
-        {
-            DiscordLinkButtonComponent button = new(ConfigurationManager.AppSettings["Invite"], "Invitación");
-            DiscordMessageBuilder mensaje = new()
-            {
-                Content = "Puedes invitarme a un servidor haciendo click en el botón."
-            };
-            mensaje.AddComponents(button);
-            await mensaje.SendAsync(ctx.Channel);
-        }
-
-        [Command("vote"), Aliases("votar"), Description("Muestra el link para votar a Yumiko.")]
-        public async Task Vote(CommandContext ctx)
-        {
-            string url = "https://top.gg/bot/295182825521545218/vote";
-            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
-            {
-                Title = $"¡Votame en Top.gg!",
-                Description = $"Puedes ayudarme votando en [este sitio web]({url}). ¡Gracias!",
-                Color = funciones.GetColor(),
-                Footer = funciones.GetFooter(ctx)
-            }).ConfigureAwait(false);
-        }
-
-        [Command("info"), Description("Muestra la información de Yumiko.")]
-        public async Task Info(CommandContext ctx)
-        {
-            var owner = ctx.Client.CurrentApplication.Owners.ElementAt(0);
-            var guild = await ctx.Client.GetGuildAsync(713809173573271613);
-            var emoteNetCore = await guild.GetEmojiAsync(860762219637243924);
-            var emoteDiscord = await guild.GetEmojiAsync(860763925720072222);
-            var emoteDSharp = await guild.GetEmojiAsync(860762219150835712);
-
-            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-            {
-                Title = $"Información de {ctx.Client.CurrentUser.Username}",
-                Description = $"Bot de Discord creado por **{owner.Username}#{owner.Discriminator}**",
-                Color = funciones.GetColor(),
-                Footer = funciones.GetFooter(ctx)
-            }.AddField("Version DSharpPlus", $"{emoteDSharp} {ctx.Client.VersionString}", true)
-            .AddField("Version API de Discord", $"{emoteDiscord} V{ctx.Client.GatewayVersion}", true)
-            .AddField("Version .NET Core", $"{emoteNetCore} {Environment.Version}", true)
-            ).ConfigureAwait(false);
-        }
-
-        [Command("contactar"), Aliases("sugerencia", "contact"), Description("Envia una sugerencia o peticion de contacto al desarrollador del bot.")]
-        public async Task Contact(CommandContext ctx, [RemainingText]string texto)
-        {
-            if (String.IsNullOrEmpty(texto))
-            {
-                texto = await funciones.GetStringInteractivity(ctx, "Escribe tu mensaje", "Ejemplo: Hola! Encontre un bug en el juego de adivina el anime.", "Tiempo agotado esperando el texto", Convert.ToInt32(ConfigurationManager.AppSettings["TimeoutGeneral"]));
-            }
-            if (!String.IsNullOrEmpty(texto))
-            {
-                var LogGuild = await ctx.Client.GetGuildAsync(713809173573271613);
-                var canalContacto = LogGuild.GetChannel(844384175925624852);
-                await canalContacto.SendMessageAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Nuevo feedback",
-                    Footer = new EmbedFooter()
-                    {
-                        Text = $"{ctx.User.Username}#{ctx.User.Discriminator} - {ctx.Message.Timestamp}",
-                        IconUrl = ctx.User.AvatarUrl
-                    },
-                    Author = new EmbedAuthor()
-                    {
-                        IconUrl = ctx.Guild.IconUrl,
-                        Name = $"{ctx.Guild.Name}"
-                    },
-                    Color = DiscordColor.Green
-                }.AddField("Id Servidor", $"{ctx.Guild.Id}", true)
-                .AddField("Id Canal", $"{ctx.Channel.Id}", true)
-                .AddField("Id Usuario", $"{ctx.User.Id}", true)
-                .AddField("Canal", $"#{ctx.Channel.Name}", false)
-                .AddField("Mensaje", $"{texto}", false));
-            }
         }
 
         [Command("servers"), Description("Muestra los servidores en los que esta Yumiko."), RequireOwner, Hidden]
@@ -256,6 +171,7 @@ namespace Discord_Bot.Modulos
         [Command("descargar"), Description("Descarga los capitulos de un anime."), Hidden]
         public async Task DescargarAnime(CommandContext ctx, [RemainingText]string buscar)
         {
+            var context = funciones.GetContext(ctx);
             if(
                 ctx.Guild.Id == 748315008131268693 || // Eli y Nai
                 ctx.Guild.Id == 701813281718927441 || // Anilist ESP
@@ -270,7 +186,7 @@ namespace Discord_Bot.Modulos
             {
                 if (String.IsNullOrEmpty(buscar))
                 {
-                    buscar = await funciones.GetStringInteractivity(ctx, "Escriba el nombre del anime a descargar", "Ejemplo: Grisaia no Kajitsu", "Tiempo agotado esperando el nombre del anime", Convert.ToInt32(ConfigurationManager.AppSettings["TimeoutGeneral"]));
+                    buscar = await funciones.GetStringInteractivity(context, "Escriba el nombre del anime a descargar", "Ejemplo: Grisaia no Kajitsu", "Tiempo agotado esperando el nombre del anime", Convert.ToInt32(ConfigurationManager.AppSettings["TimeoutGeneral"]));
                 }
                 if (!String.IsNullOrEmpty(buscar))
                 {

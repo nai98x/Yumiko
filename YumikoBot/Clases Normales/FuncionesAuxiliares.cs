@@ -396,6 +396,36 @@ namespace Discord_Bot
             return -1;
         }
 
+        public async Task<bool> GetSiNoInteractivity(Context ctx, InteractivityExtension interactivity, string titulo, string descripcion)
+        {
+            DiscordButtonComponent buttonSi = new(ButtonStyle.Success, "true", "Si");
+            DiscordButtonComponent buttonNo = new(ButtonStyle.Danger, "false", "No");
+
+            DiscordMessageBuilder mensajeRondas = new()
+            {
+                Embed = new DiscordEmbedBuilder
+                {
+                    Title = titulo,
+                    Description = descripcion
+                }
+            };
+
+            mensajeRondas.AddComponents(buttonSi, buttonNo);
+
+            DiscordMessage msgElegir = await mensajeRondas.SendAsync(ctx.Channel);
+            var msgElegirInter = await interactivity.WaitForButtonAsync(msgElegir, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
+            await BorrarMensaje(ctx, msgElegir.Id);
+            if (!msgElegirInter.TimedOut)
+            {
+                return bool.Parse(msgElegirInter.Result.Id);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         public async Task<Character> GetRandomCharacter(Context ctx, int pag)
         {
             string titleMedia = "", siteUrlMedia = string.Empty;

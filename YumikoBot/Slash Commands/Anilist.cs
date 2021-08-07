@@ -24,6 +24,7 @@ namespace Discord_Bot.Modulos
         [SlashCommand("anilist", "Busca un perfil de AniList")]
         public async Task Profile(InteractionContext ctx, [Option("Usuario", "Nick de AniList del usuario a buscar")] string usuario)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var context = funciones.GetContext(ctx);
             var request = new GraphQLRequest
             {
@@ -163,7 +164,7 @@ namespace Discord_Bot.Modulos
                         builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":man_artist:")} Staff favoritos", favoriteStaff, true);
                     if (favoriteStudios != "")
                         builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios favoritos", favoriteStudios, true);
-                    await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                 }
                 else
                 {
@@ -177,12 +178,13 @@ namespace Discord_Bot.Modulos
             }
             catch (Exception ex)
             {
-                DiscordMessage msg = ex.Message switch
+                string mensaje = ex.Message switch
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado al usuario de anilist `{usuario}`").ConfigureAwait(false),
-                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
+                    "The HTTP request failed with status code NotFound" => $"No se ha encontrado el usuario de AniList `{usuario}`",
+                    _ => $"Error inesperado, mensaje: [{ex.Message}"
                 };
-                await Task.Delay(3000);
+                DiscordMessage msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(mensaje));
+                await Task.Delay(5000);
                 await funciones.BorrarMensaje(context, msg.Id);
             }
         }
@@ -190,6 +192,7 @@ namespace Discord_Bot.Modulos
         [SlashCommand("anime", "Busca un anime en AniList")]
         public async Task Anime(InteractionContext ctx, [Option("Anime", "Nombre del anime a buscar")] string anime)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var context = funciones.GetContext(ctx);
             try
             {
@@ -243,7 +246,7 @@ namespace Discord_Bot.Modulos
                                 builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Estudios", funciones.NormalizarField(media.Estudios), false);
                             if (media.LinksExternos != null && media.LinksExternos.Length > 0)
                                 builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} Links externos", funciones.NormalizarField(media.LinksExternos), false);
-                            await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+                            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                         }
                         else
                         {
@@ -258,6 +261,10 @@ namespace Discord_Bot.Modulos
                             await funciones.BorrarMensaje(context, msg.Id);
                         }
                     }
+                    else
+                    {
+                        await ctx.DeleteResponseAsync();
+                    }
                 }
                 else
                 {
@@ -271,12 +278,13 @@ namespace Discord_Bot.Modulos
             }
             catch (Exception ex)
             {
-                DiscordMessage msg = ex.Message switch
+                string mensaje = ex.Message switch
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el anime `{anime}`").ConfigureAwait(false),
-                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
+                    "The HTTP request failed with status code NotFound" => $"No se ha encontrado el anime `{anime}`",
+                    _ => $"Error inesperado, mensaje: [{ex.Message}"
                 };
-                await Task.Delay(3000);
+                DiscordMessage msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(mensaje));
+                await Task.Delay(5000);
                 await funciones.BorrarMensaje(context, msg.Id);
             }
         }
@@ -284,6 +292,7 @@ namespace Discord_Bot.Modulos
         [SlashCommand("manga", "Busca un manga en AniList")]
         public async Task Manga(InteractionContext ctx, [Option("Manga", "Nombre del manga a buscar")] string manga)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var context = funciones.GetContext(ctx);
             try
             {
@@ -331,7 +340,7 @@ namespace Discord_Bot.Modulos
                                 builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Etiquetas", funciones.NormalizarField(media.Tags), false);
                             if (media.Titulos != null && media.Titulos.Length > 0)
                                 builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Titulos alternativos", funciones.NormalizarField(media.Titulos), false);
-                            await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+                            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                         }
                         else
                         {
@@ -346,6 +355,10 @@ namespace Discord_Bot.Modulos
                             await funciones.BorrarMensaje(context, msg.Id);
                         }
                     }
+                    else
+                    {
+                        await ctx.DeleteResponseAsync();
+                    }
                 }
                 else
                 {
@@ -359,12 +372,14 @@ namespace Discord_Bot.Modulos
             }
             catch (Exception ex)
             {
-                DiscordMessage msg = ex.Message switch
+                string mensaje = ex.Message switch
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el anime `{manga}`").ConfigureAwait(false),
-                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado").ConfigureAwait(false),
+                    "The HTTP request failed with status code NotFound" => $"No se ha encontrado el manga `{manga}`",
+                    _ => $"Error inesperado, mensaje: [{ex.Message}"
                 };
-                await Task.Delay(3000);
+                DiscordMessage msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(mensaje));
+
+                await Task.Delay(5000);
                 await funciones.BorrarMensaje(context, msg.Id);
             }
         }
@@ -372,6 +387,7 @@ namespace Discord_Bot.Modulos
         [SlashCommand("character", "Busca un personaje en AniList")]
         public async Task Character(InteractionContext ctx, [Option("Personaje", "Nombre del personaje a buscar")] string personaje)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var context = funciones.GetContext(ctx);
             var request = new GraphQLRequest
             {
@@ -461,7 +477,11 @@ namespace Discord_Bot.Modulos
                             builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes", funciones.NormalizarField(animes), false);
                         if (mangas != null && mangas.Length > 0)
                             builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas", funciones.NormalizarField(mangas), false);
-                        await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
+                    }
+                    else
+                    {
+                        await ctx.DeleteResponseAsync();
                     }
                 }
                 else
@@ -476,11 +496,12 @@ namespace Discord_Bot.Modulos
             }
             catch (Exception ex)
             {
-                DiscordMessage msg = ex.Message switch
+                string mensaje = ex.Message switch
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.Channel.SendMessageAsync($"No se ha encontrado el personaje `{personaje}`").ConfigureAwait(false),
-                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado, mensaje: [{ex.Message}").ConfigureAwait(false),
+                    "The HTTP request failed with status code NotFound" => $"No se ha encontrado el personaje `{personaje}`",
+                    _ => $"Error inesperado, mensaje: [{ex.Message}"
                 };
+                DiscordMessage msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(mensaje));
                 await Task.Delay(5000);
                 await funciones.BorrarMensaje(context, msg.Id);
             }
@@ -491,6 +512,7 @@ namespace Discord_Bot.Modulos
         [SlashCommand("sauce", "Busca el anime de una imagen")]
         public async Task Sauce(InteractionContext ctx, [Option("Rondas", "Link de la imagen")] string url)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var context = funciones.GetContext(ctx);
             string msg = "OK";
             if (url.Length > 0)
@@ -543,7 +565,7 @@ namespace Discord_Bot.Modulos
                                     ImageUrl = url
                                 };
                                 embed.AddField(titulo, resultados);
-                                await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+                                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                                 break;
                             case HttpStatusCode.BadRequest:
                                 msg = "Debes ingresar un link";
@@ -575,8 +597,8 @@ namespace Discord_Bot.Modulos
             }
             if (msg != "OK")
             {
-                DiscordMessage msgError = await ctx.Channel.SendMessageAsync(msg).ConfigureAwait(false);
-                await Task.Delay(3000);
+                DiscordMessage msgError = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(msg));
+                await Task.Delay(5000);
                 await funciones.BorrarMensaje(context, msgError.Id);
             }
         }
@@ -584,13 +606,14 @@ namespace Discord_Bot.Modulos
         [SlashCommand("pj", "Personaje aleatorio")]
         public async Task Pj(InteractionContext ctx)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             int pag = funciones.GetNumeroRandom(1, 5000);
             var context = funciones.GetContext(ctx);
             Character personaje = await funciones.GetRandomCharacter(context, pag);
             if(personaje != null)
             {
                 DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
-                var msg = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                var builder = new DiscordEmbedBuilder
                 {
                     Title = personaje.NameFull,
                     Url = personaje.SiteUrl,
@@ -598,7 +621,8 @@ namespace Discord_Bot.Modulos
                     Description = $"[{personaje.AnimePrincipal.TitleRomaji}]({personaje.AnimePrincipal.SiteUrl})\n{personaje.Favoritos} {corazon} (nº {pag} en popularidad)",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
-                }).ConfigureAwait(false);
+                };
+                var msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                 await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsup:")).ConfigureAwait(false);
                 await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsdown:")).ConfigureAwait(false);
                 await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":question:")).ConfigureAwait(false);
@@ -608,6 +632,8 @@ namespace Discord_Bot.Modulos
         [SlashCommand("AWCRuntime", "Calcula los minutos totales entre animes para AWC")]
         public async Task AWCRuntime(InteractionContext ctx)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeleteResponseAsync();
             var context = funciones.GetContext(ctx);
             var interactivity = ctx.Client.GetInteractivity();
             bool terminar = false;

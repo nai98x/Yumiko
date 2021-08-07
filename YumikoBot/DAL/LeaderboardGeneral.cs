@@ -107,7 +107,7 @@ namespace YumikoBot.DAL
             return ret;
         }
 
-        public async Task EliminarEstadisticas(CommandContext ctx, string juego)
+        public async Task EliminarEstadisticas(Context ctx, string juego)
         {
             FirestoreDb db = funciones.GetFirestoreClient();
 
@@ -129,7 +129,7 @@ namespace YumikoBot.DAL
             if (snapExtremo.Exists)
                 await docExtremo.DeleteAsync();
         }
-        public async Task EliminarEstadisticasTag(CommandContext ctx)
+        public async Task EliminarEstadisticasTag(Context ctx)
         {
             FirestoreDb db = funciones.GetFirestoreClient();
 

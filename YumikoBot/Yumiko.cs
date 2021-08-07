@@ -116,17 +116,21 @@ namespace Discord_Bot
                 SlashCommands.RegisterCommands<JuegosSlashCommands>(idGuildTest);
                 SlashCommands.RegisterCommands<InteractuarSlashCommands>(idGuildTest);
                 SlashCommands.RegisterCommands<AnilistSlashCommands>(idGuildTest);
+                SlashCommands.RegisterCommands<OtrosSlashCommands>(idGuildTest);
+                SlashCommands.RegisterCommands<HelpSlashCommands>(idGuildTest);
             }
             else
             {
                 SlashCommands.RegisterCommands<JuegosSlashCommands>();
                 SlashCommands.RegisterCommands<InteractuarSlashCommands>();
                 SlashCommands.RegisterCommands<AnilistSlashCommands>();
+                SlashCommands.RegisterCommands<OtrosSlashCommands>();
+                SlashCommands.RegisterCommands<HelpSlashCommands>();
             }
 
             Commands.RegisterConverter(new MemberConverter());
 
-            await Client.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = prefix + "help | yumiko.uwu.ai" }, UserStatus.Online);
+            await Client.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "/help" }, UserStatus.Online);
 
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             if (Debug)
@@ -144,17 +148,17 @@ namespace Discord_Bot
                 LogChannelErrores = LogGuild.GetChannel(840439731011452959);
             }
 
-            await RotarEstado(prefix);
+            await RotarEstado();
         }
 
-        private async Task RotarEstado(string prefix)
+        private async Task RotarEstado()
         {
             while (true)
             {
                 await Task.Delay(30000);
                 await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "yumiko.uwu.ai" }, UserStatus.Online);
                 await Task.Delay(10000);
-                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = prefix + "help" }, UserStatus.Online);
+                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "/help" }, UserStatus.Online);
             }
         }
 

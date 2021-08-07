@@ -22,7 +22,7 @@ namespace YumikoBot
             await ctx.Channel.SendMessageAsync(texto);
         }
 
-        [SlashCommand("pregunta", "Responde con SI O NO")]
+        [SlashCommand("pregunta", "Responde con si o no")]
         public async Task Pregunta(InteractionContext ctx, [Option("Texto", "La pregunta que le quieres hacer")] string texto, [Option("Secreto", "Si quieres ver solo tu el comando")] bool secreto = false)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()

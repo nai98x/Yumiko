@@ -302,5 +302,26 @@ namespace YumikoBot
                     break;
             }
         }
+
+        [SlashCommand("deletestats", "Elimina tus estadisticas de todos los juegos en el servidor")]
+        public async Task DeleteStats(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            var context = funciones.GetContext(ctx);
+            var interactivity = ctx.Client.GetInteractivity();
+
+            string titulo = "Confirma si quieres eliminar tus estadisticas del servidor";
+            string opciones = $"**Ten en cuenta que el borrado de estadisticas no se puede deshacer**";
+            bool confirmar = await funciones.GetSiNoInteractivity(context, interactivity, titulo, opciones);
+            if (confirmar)
+            {
+                await funcionesJuegos.EliminarEstadisticas(context);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Se han borrado tus estadisticas correctamente"));
+            }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Se ha cancelado el proceso de borrar tus estadísticas"));
+            }
+        }
     }
 }

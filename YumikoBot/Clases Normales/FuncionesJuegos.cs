@@ -616,7 +616,7 @@ namespace Discord_Bot
             return builder;
         }
 
-        public async Task EliminarEstadisticas(CommandContext ctx)
+        public async Task EliminarEstadisticas(Context ctx)
         {
             await leaderboard.EliminarEstadisticas(ctx, "personaje");
             await leaderboard.EliminarEstadisticas(ctx, "anime");

@@ -31,60 +31,18 @@ namespace Discord_Bot.Modulos
             await funciones.MovidoASlashCommand(ctx);
         }
 
-        [Command("eliminarestadisticas"), Description("Elimina las estadisticas de todos los juegos del servidor."), RequireGuild] // AGREGARLE BOTONES
+        [Command("eliminarestadisticas"), Description("Elimina las estadisticas de todos los juegos del servidor."), RequireGuild, Hidden]
         public async Task EliminarEstadisticas(CommandContext ctx)
         {
-            var interactivity = ctx.Client.GetInteractivity();
-            string opcion;
-            string opciones =
-                $"**1-** Si\n" +
-                $"**2-** No\n\n" +
-                $"**Ten en cuenta que el borrado de estadisticas no se puede deshacer.**";
-            var msgElegir = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Title = "Confirma si quieres eliminar tus estadisticas del servidor",
-                Description = opciones,
+                Title = "Comando movido a /",
+                Description = $"Para jugar ingresa `/deletestats` en vez de `{ctx.Prefix}{ctx.Command.Name}`.",
                 Footer = funciones.GetFooter(ctx),
-                Color = funciones.GetColor(),
+                Color = DiscordColor.Red,
             });
-            var msgElegirInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-            if (!msgElegirInter.TimedOut)
-            {
-                opcion = msgElegirInter.Result.Content;
-                if (msgElegir != null)
-                    await funciones.BorrarMensaje(ctx, msgElegir.Id);
-                if (msgElegirInter.Result != null)
-                    await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
-                opcion = opcion.ToLower();
-                switch (opcion)
-                {
-                    case "1":
-                    case "1- si":
-                    case "si":
-                        await funcionesJuegos.EliminarEstadisticas(ctx);
-                        break;
-                    case "2":
-                    case "2- no":
-                    case "no":
-                        break;
-                    default:
-                        var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Title = "Error",
-                            Description = "Opcion incorrecta",
-                            Footer = funciones.GetFooter(ctx),
-                            Color = DiscordColor.Red,
-                        });
-                        await Task.Delay(3000);
-                        if (msgError != null)
-                            await funciones.BorrarMensaje(ctx, msgError.Id);
-                        break;
-                }
-            }
-            if (msgElegir != null)
-                await funciones.BorrarMensaje(ctx, msgElegir.Id);
-            if (msgElegirInter.Result != null)
-                await funciones.BorrarMensaje(ctx, msgElegirInter.Result.Id);
+            await Task.Delay(10000);
+            await funciones.BorrarMensaje(ctx, msgError.Id);
         }
     }
 }
