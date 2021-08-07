@@ -113,11 +113,15 @@ namespace Discord_Bot
             if (Debug)
             {
                 ulong idGuildTest = 713809173573271613;
-                SlashCommands.RegisterCommands<SlashCommands>(idGuildTest);
+                SlashCommands.RegisterCommands<JuegosSlashCommands>(idGuildTest);
+                SlashCommands.RegisterCommands<InteractuarSlashCommands>(idGuildTest);
+                SlashCommands.RegisterCommands<AnilistSlashCommands>(idGuildTest);
             }
             else
             {
-                SlashCommands.RegisterCommands<SlashCommands>();
+                SlashCommands.RegisterCommands<JuegosSlashCommands>();
+                SlashCommands.RegisterCommands<InteractuarSlashCommands>();
+                SlashCommands.RegisterCommands<AnilistSlashCommands>();
             }
 
             Commands.RegisterConverter(new MemberConverter());
@@ -509,7 +513,21 @@ namespace Discord_Bot
 
         private Task SlashCommands_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e)
         {
-            
+            _ = Task.Run(async () =>
+            {
+                await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Error no controlado",
+                    Description = $"{e.Exception.Message}\n```{e.Exception.StackTrace}```",
+                    Color = DiscordColor.Red
+                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
+                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                .AddField("Comando", $"{e.Context.CommandName}", false)
+                );
+            });
+
             return Task.CompletedTask;
         }
     }

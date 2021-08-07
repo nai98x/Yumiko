@@ -62,6 +62,19 @@ namespace Discord_Bot
             };
         }
 
+        public async Task MovidoASlashCommand(CommandContext ctx)
+        {
+            var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+            {
+                Title = "Comando movido a /",
+                Description = $"Para jugar ingresa `/{ctx.Command.Name}` en vez de `{ctx.Prefix}{ctx.Command.Name}`.",
+                Footer = GetFooter(ctx),
+                Color = DiscordColor.Red,
+            });
+            await Task.Delay(10000);
+            await BorrarMensaje(ctx, msgError.Id);
+        }
+
         public async Task<Imagen> GetImagenDiscordYumiko(CommandContext ctx, ulong idChannel)
         {
             DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(713809173573271613);
@@ -333,7 +346,7 @@ namespace Discord_Bot
             await DblApi.UpdateStats(guildCount: c.Guilds.Count);
         }
 
-        public async Task<int> GetElegido(CommandContext ctx, List<string> opciones)
+        public async Task<int> GetElegido(Context ctx, List<string> opciones)
         {
             int cantidadOpciones = opciones.Count;
             if (cantidadOpciones == 1)
@@ -383,7 +396,7 @@ namespace Discord_Bot
             return -1;
         }
 
-        public async Task<Character> GetRandomCharacter(CommandContext ctx, int pag)
+        public async Task<Character> GetRandomCharacter(Context ctx, int pag)
         {
             string titleMedia = "", siteUrlMedia = string.Empty;
             string query = "query($pagina: Int){" +
@@ -458,7 +471,7 @@ namespace Discord_Bot
             return null;
         }
 
-        public async Task<Anime> GetRandomMedia(CommandContext ctx, int pag, string tipo)
+        public async Task<Anime> GetRandomMedia(Context ctx, int pag, string tipo)
         {
             string query = "query($pagina: Int){" +
                         "   Page(page: $pagina, perPage: 1){" +
@@ -570,7 +583,7 @@ namespace Discord_Bot
             }
         }
 
-        public async Task<string> GetStringInteractivity(CommandContext ctx, string tituloBusqueda, string descBusqueda, string descError, int timeoutSegundos)
+        public async Task<string> GetStringInteractivity(Context ctx, string tituloBusqueda, string descBusqueda, string descError, int timeoutSegundos)
         {
             var interactivity = ctx.Client.GetInteractivity();
             var msgUsuario = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
@@ -661,27 +674,6 @@ namespace Discord_Bot
             return await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
         }
 
-        public async Task GetPaginatedButtons(CommandContext ctx, InteractivityExtension interactivity, List<string> opciones, DiscordEmbedBuilder embedBase)
-        {
-            List<DiscordButtonComponent> botones = new();
-            int iter = 0;
-            foreach(var opc in opciones)
-            {
-                iter++;
-                botones.Add(new DiscordButtonComponent(ButtonStyle.Primary, iter.ToString(), opc));
-            }
-
-            DiscordMessageBuilder mensaje = new()
-            {
-                Embed = embedBase
-            };
-
-            //mensaje.AddComponents(buttonAleatorio, buttonPersonaje, buttonAnime, buttonManga);
-
-            DiscordMessage msgElegir = await mensaje.SendAsync(ctx.Channel);
-            var interJuego = await interactivity.WaitForButtonAsync(msgElegir, ctx.User, TimeSpan.FromSeconds(120));
-        }
-
         public async Task<List<Tag>> GetTags(Context ctx)
         {
             List<Tag> lista = new();
@@ -716,6 +708,50 @@ namespace Discord_Bot
             }
             catch{  }
             return lista;
+        }
+
+        public DiscordEmbedBuilder Pregunta(CommandContext ctx, string pregunta)
+        {
+            Random rnd = new();
+            int random = rnd.Next(2);
+            return random switch
+            {
+                0 => new DiscordEmbedBuilder
+                {
+                    Footer = GetFooter(ctx),
+                    Color = DiscordColor.Red,
+                    Title = "¿SI O NO?",
+                    Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** NO"
+                },
+                _ => new DiscordEmbedBuilder
+                {
+                    Footer = GetFooter(ctx),
+                    Color = DiscordColor.Green,
+                    Title = "¿SI O NO?",
+                    Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** SI"
+                },
+            };
+        }
+
+        public DiscordEmbedBuilder Pregunta(string pregunta)
+        {
+            Random rnd = new();
+            int random = rnd.Next(2);
+            return random switch
+            {
+                0 => new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Red,
+                    Title = "¿SI O NO?",
+                    Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** NO"
+                },
+                _ => new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Green,
+                    Title = "¿SI O NO?",
+                    Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** SI"
+                },
+            };
         }
     }
 }

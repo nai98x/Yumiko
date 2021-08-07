@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus.SlashCommands;
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
@@ -22,202 +23,7 @@ namespace Discord_Bot
         private readonly FuncionesAuxiliares funciones = new();
         private readonly LeaderboardoGeneral leaderboard = new();
         private readonly GraphQLHttpClient graphQLClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
-
-        public async Task QuizCharactersGlobal(Context ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await InicializarJuego(ctx, interactivity, true, false, false);
-            if (settings.Ok)
-            {
-                DiscordEmbed embebido = new DiscordEmbedBuilder
-                {
-                    Title = "Adivina el personaje",
-                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
-                    Color = funciones.GetColor(),
-                    Footer = funciones.GetFooter(ctx)
-                }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
-                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var characterList = await GetCharacters(ctx, settings, false);
-                await Jugar(ctx, "personaje", characterList, settings, interactivity);
-            }
-            else
-            {
-                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
-                await Task.Delay(5000);
-                await funciones.BorrarMensaje(ctx, error.Id);
-            }
-        }
-
-        public async Task QuizAnimeGlobal(Context ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await InicializarJuego(ctx, interactivity, true, false, false);
-            if (settings.Ok)
-            {
-                DiscordEmbed embebido = new DiscordEmbedBuilder
-                {
-                    Title = "Adivina el anime",
-                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
-                    Color = funciones.GetColor(),
-                    Footer = funciones.GetFooter(ctx)
-                }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
-                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var characterList = await GetCharacters(ctx, settings, true);
-                await Jugar(ctx, "anime", characterList, settings, interactivity);
-            }
-            else
-            {
-                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
-                await Task.Delay(5000);
-                await funciones.BorrarMensaje(ctx, error.Id);
-            }
-        }
-
-        public async Task QuizMangaGlobal(Context ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await InicializarJuego(ctx, interactivity, true, false, false);
-            if (settings.Ok)
-            {
-                DiscordEmbed embebido = new DiscordEmbedBuilder
-                {
-                    Title = "Adivina el manga",
-                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
-                    Color = funciones.GetColor(),
-                    Footer = funciones.GetFooter(ctx)
-                }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
-                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await GetMedia(ctx, "MANGA", settings, false, false, false, false);
-                await Jugar(ctx, "manga", animeList, settings, interactivity);
-            }
-            else
-            {
-                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
-                await Task.Delay(5000);
-                await funciones.BorrarMensaje(ctx, error.Id);
-            }
-        }
-
-        public async Task QuizAnimeTagGlobal(Context ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await InicializarJuego(ctx, interactivity, false, true, false);
-            if (settings.Ok)
-            {
-                DiscordEmbed embebido = new DiscordEmbedBuilder
-                {
-                    Title = $"Adivina el tag",
-                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
-                    Color = funciones.GetColor(),
-                    Footer = funciones.GetFooter(ctx)
-                }.AddField("Rondas", $"{settings.Rondas}").AddField("Tag", $"{settings.Tag}");
-                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                settings.PorcentajeTag = 70;
-                var animeList = await GetMedia(ctx, "ANIME", settings, false, false, true, false);
-                int cantidadAnimes = animeList.Count;
-                if (cantidadAnimes > 0)
-                {
-                    if (cantidadAnimes < settings.Rondas)
-                    {
-                        settings.Rondas = cantidadAnimes;
-                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                        {
-                            Color = DiscordColor.Yellow,
-                            Title = $"Rondas reducidas",
-                            Description = $"Se han reducido el numero de rondas a {settings.Rondas} ya que esta es la cantidad de animes con al menos un {settings.PorcentajeTag}% de {settings.Tag}",
-                        }).ConfigureAwait(false);
-                    }
-                    settings.Dificultad = settings.Tag;
-                    await Jugar(ctx, "tag", animeList, settings, interactivity);
-                }
-                else
-                {
-                    settings.Ok = false;
-                    settings.MsgError = "No hay ningun anime con este tag con al menos 70%";
-                }
-            }
-            if (!settings.Ok)
-            {
-                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
-                await Task.Delay(3000);
-                await funciones.BorrarMensaje(ctx, error.Id);
-            }
-        }
-
-        public async Task QuizStudioGlobal(Context ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await InicializarJuego(ctx, interactivity, true, false, false);
-            if (settings.Ok)
-            {
-                DiscordEmbed embebido = new DiscordEmbedBuilder
-                {
-                    Title = "Adivina el estudio del anime",
-                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
-                    Color = funciones.GetColor(),
-                    Footer = funciones.GetFooter(ctx)
-                }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
-                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await GetMedia(ctx, "ANIME", settings, false, true, false, false);
-                await Jugar(ctx, "estudio", animeList, settings, interactivity);
-            }
-            else
-            {
-                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
-                await Task.Delay(5000);
-                await funciones.BorrarMensaje(ctx, error.Id);
-            }
-        }
-
-        public async Task QuizProtagonistGlobal(Context ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await InicializarJuego(ctx, interactivity, true, false, false);
-            if (settings.Ok)
-            {
-                DiscordEmbed embebido = new DiscordEmbedBuilder
-                {
-                    Title = "Adivina el protagonista del anime",
-                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
-                    Color = funciones.GetColor(),
-                    Footer = funciones.GetFooter(ctx)
-                }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
-                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await GetMedia(ctx, "ANIME", settings, true, false, false, false);
-                await Jugar(ctx, "protagonista", animeList, settings, interactivity);
-            }
-            else
-            {
-                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
-                await Task.Delay(5000);
-                await funciones.BorrarMensaje(ctx, error.Id);
-            }
-        }
-
-        public async Task QuizGenreGlobal(Context ctx)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-            SettingsJuego settings = await InicializarJuego(ctx, interactivity, false, false, true);
-            if (settings.Ok)
-            {
-                DiscordEmbed embebido = new DiscordEmbedBuilder
-                {
-                    Title = $"Adivina el género",
-                    Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
-                    Color = funciones.GetColor(),
-                    Footer = funciones.GetFooter(ctx)
-                }.AddField("Rondas", $"{settings.Rondas}").AddField("Género", $"{settings.Dificultad}");
-                await ctx.Channel.SendMessageAsync(embed: embebido).ConfigureAwait(false);
-                var animeList = await GetMedia(ctx, "ANIME", settings, false, false, false, true);
-                await Jugar(ctx, "genero", animeList, settings, interactivity);
-            }
-            else
-            {
-                var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
-                await Task.Delay(5000);
-                await funciones.BorrarMensaje(ctx, error.Id);
-            }
-        }
+        
         public async Task GetResultados(Context ctx, List<UsuarioJuego> participantes, int rondas, string dificultad, string juego)
         {
             string resultados;
@@ -272,169 +78,28 @@ namespace Discord_Bot
             await funciones.ChequearVotoTopGG(ctx);
         }
 
-        public async Task<SettingsJuego> InicializarJuego(Context ctx, InteractivityExtension interactivity, bool elegirDificultad, bool elegirTag, bool elegirGenero)
+        public async Task<SettingsJuego> InicializarJuego(Context ctx, InteractivityExtension interactivity, bool elegirTag, bool elegirGenero)
         {
-            DiscordComponentEmoji emote = new(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
-
-            DiscordButtonComponent buttonRandom = new(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
-            DiscordButtonComponent button5 = new(ButtonStyle.Primary, "5", "5");
-            DiscordButtonComponent button10 = new(ButtonStyle.Primary, "10", "10");
-            DiscordButtonComponent button15 = new(ButtonStyle.Primary, "15", "15");
-            DiscordButtonComponent button20 = new(ButtonStyle.Primary, "20", "20");
-            DiscordButtonComponent button50 = new(ButtonStyle.Primary, "50", "50");
-            DiscordButtonComponent button75 = new(ButtonStyle.Primary, "75", "75");
-            DiscordButtonComponent button100 = new(ButtonStyle.Primary, "100", "100");
-
-            DiscordMessageBuilder mensajeRondas = new()
+            if (elegirTag)
             {
-                Embed = new DiscordEmbedBuilder
+                var tags = await funciones.GetTags(ctx);
+                if (tags.Count > 0)
                 {
-                    Title = "Elige la cantidad de rondas",
-                    Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
-                }
-            };
-
-            mensajeRondas.AddComponents(buttonRandom, button5, button10, button15);
-            mensajeRondas.AddComponents(button20, button50, button75, button100);
-
-            DiscordMessage msgCntRondas = await mensajeRondas.SendAsync(ctx.Channel);
-            var msgRondasInter = await interactivity.WaitForButtonAsync(msgCntRondas, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-            if (!msgRondasInter.TimedOut)
-            {
-                var resultRondas = msgRondasInter.Result;
-                int rondas = int.Parse(resultRondas.Id);
-                if(rondas == 0)
-                {
-                    rondas = funciones.GetNumeroRandom(3, 100);
-                }
-                if (msgCntRondas != null)
-                    await funciones.BorrarMensaje(ctx, msgCntRondas.Id);
-                if (elegirDificultad)
-                {
-                    DiscordButtonComponent buttonAleatorio = new(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
-                    DiscordButtonComponent buttonFacil = new(ButtonStyle.Primary, "1", "Fácil");
-                    DiscordButtonComponent buttonMedia = new(ButtonStyle.Primary, "2", "Media");
-                    DiscordButtonComponent buttonDificil = new(ButtonStyle.Primary, "3", "Dificil");
-                    DiscordButtonComponent buttonExtremo = new(ButtonStyle.Primary, "4", "Extremo");
-
-                    DiscordMessageBuilder mensaje = new()
+                    if (funciones.ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
                     {
-                        Embed = new DiscordEmbedBuilder
+                        int porPagina = 30;
+                        int ultPagina = tags.Count / porPagina;
+                        int iterInterna = 0;
+                        int iter = 0;
+                        string tagsStr = string.Empty;
+                        List<Page> pages = new();
+                        foreach (var tag in tags)
                         {
-                            Title = "Elije la dificultad",
-                            Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
-                        }
-                    };
+                            tagsStr += $"{tag.Nombre}\n";
+                            iterInterna++;
+                            iter++;
 
-                    mensaje.AddComponents(buttonAleatorio, buttonFacil, buttonMedia, buttonDificil, buttonExtremo);
-
-                    DiscordMessage msg = await mensaje.SendAsync(ctx.Channel);
-                    var interDificultad = await interactivity.WaitForButtonAsync(msg, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-                    if (!interDificultad.TimedOut)
-                    {
-                        var resultDifiicultad = interDificultad.Result;
-                        string dificultad = resultDifiicultad.Id;
-                        if (dificultad == "0")
-                        {
-                            var dificultadNum = funciones.GetNumeroRandom(1, 4);
-                            dificultad = dificultadNum.ToString();
-                        }
-                        int iterIni;
-                        int iterFin;
-                        string dificultadStr;
-                        switch (dificultad)
-                        {
-                            case "1":
-                                iterIni = 1;
-                                iterFin = 10;
-                                dificultadStr = "Fácil";
-                                break;
-                            case "2":
-                                iterIni = 10;
-                                iterFin = 30;
-                                dificultadStr = "Media";
-                                break;
-                            case "3":
-                                iterIni = 30;
-                                iterFin = 60;
-                                dificultadStr = "Dificil";
-                                break;
-                            case "4":
-                                iterIni = 60;
-                                iterFin = 100;
-                                dificultadStr = "Extremo";
-                                break;
-                            default:
-                                iterIni = 10;
-                                iterFin = 30;
-                                dificultadStr = "Media";
-                                break;
-                        }
-                        if (msg != null)
-                            await funciones.BorrarMensaje(ctx, msg.Id);
-                        if (!elegirTag)
-                        {
-                            return new SettingsJuego()
-                            {
-                                Ok = true,
-                                Rondas = rondas,
-                                IterIni = iterIni,
-                                IterFin = iterFin,
-                                Dificultad = dificultadStr
-                            };
-                        }
-                    }
-                    else
-                    {
-                        if (msg != null)
-                            await funciones.BorrarMensaje(ctx, msg.Id);
-                        return new SettingsJuego()
-                        {
-                            Ok = false,
-                            MsgError = "Tiempo agotado esperando la dificultad"
-                        };
-                    }
-                }
-                if (elegirTag)
-                {
-                    var tags = await funciones.GetTags(ctx);
-                    if(tags.Count > 0)
-                    {
-                        if (funciones.ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
-                        {
-                            int porPagina = 30;
-                            int ultPagina = tags.Count / porPagina;
-                            int iterInterna = 0;
-                            int iter = 0;
-                            string tagsStr = string.Empty;
-                            List<Page> pages = new();
-                            foreach (var tag in tags)
-                            {
-                                tagsStr += $"{tag.Nombre}\n";
-                                iterInterna++;
-                                iter++;
-
-                                if (iterInterna == porPagina)
-                                {
-                                    pages.Add(new()
-                                    {
-                                        Embed = new DiscordEmbedBuilder
-                                        {
-                                            Title = "Escribe un tag",
-                                            Description = tagsStr,
-                                            Color = funciones.GetColor(),
-                                            Footer = new DiscordEmbedBuilder.EmbedFooter
-                                            {
-                                                Text = $"Obtenido desde AniList | Página {pages.Count + 1}/{ultPagina + 1}",
-                                                IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"]
-                                            }
-                                        }
-                                    });
-                                    tagsStr = string.Empty;
-                                    iterInterna = 0;
-                                }
-                            }
-                            if (iterInterna > 0)
+                            if (iterInterna == porPagina)
                             {
                                 pages.Add(new()
                                 {
@@ -450,85 +115,94 @@ namespace Discord_Bot
                                         }
                                     }
                                 });
+                                tagsStr = string.Empty;
+                                iterInterna = 0;
                             }
-
-                            _ = interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, pages, token: new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token).ConfigureAwait(false);
                         }
-                        else
+                        if (iterInterna > 0)
                         {
-                            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                            pages.Add(new()
                             {
-                                Title = "Escriber un tag!",
-                                Description = "Para ver los tags dispibles habilita a Yumiko el permiso de `Gestionar Mensajes` y vuelve a ejecutar el comando.",
-                                Color = funciones.GetColor()
+                                Embed = new DiscordEmbedBuilder
+                                {
+                                    Title = "Escribe un tag",
+                                    Description = tagsStr,
+                                    Color = funciones.GetColor(),
+                                    Footer = new DiscordEmbedBuilder.EmbedFooter
+                                    {
+                                        Text = $"Obtenido desde AniList | Página {pages.Count + 1}/{ultPagina + 1}",
+                                        IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"]
+                                    }
+                                }
                             });
                         }
 
-                        var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(120));
-                        if (!msgTagInter.TimedOut)
+                        _ = interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, pages, token: new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
-                            int numTag = 0;
-                            string tagResp = string.Empty;
-                            List<Tag> tagsFiltrados = tags.Where(x => x.Nombre.ToLower().Trim().Contains(msgTagInter.Result.Content.ToLower().Trim())).ToList();
-                            if (tagsFiltrados.Count > 0)
-                            {
-                                if (tagsFiltrados.Count == 1)
-                                {
-                                    return new SettingsJuego()
-                                    {
-                                        Rondas = rondas,
-                                        Tag = tagsFiltrados[0].Nombre,
-                                        TagDesc = tagsFiltrados[0].Descripcion,
-                                        Ok = true
-                                    };
-                                }
+                            Title = "Escriber un tag!",
+                            Description = "Para ver los tags dispibles habilita a Yumiko el permiso de `Gestionar Mensajes` y vuelve a ejecutar el comando.",
+                            Color = funciones.GetColor()
+                        });
+                    }
 
-                                foreach (Tag t in tagsFiltrados)
+                    var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(120));
+                    if (!msgTagInter.TimedOut)
+                    {
+                        int numTag = 0;
+                        string tagResp = string.Empty;
+                        List<Tag> tagsFiltrados = tags.Where(x => x.Nombre.ToLower().Trim().Contains(msgTagInter.Result.Content.ToLower().Trim())).ToList();
+                        if (tagsFiltrados.Count > 0)
+                        {
+                            if (tagsFiltrados.Count == 1)
+                            {
+                                return new SettingsJuego()
                                 {
-                                    numTag++;
-                                    tagResp += $"{numTag} - {t.Nombre}\n";
-                                }
-                                var msgOpciones = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                    Tag = tagsFiltrados[0].Nombre,
+                                    TagDesc = tagsFiltrados[0].Descripcion,
+                                    Ok = true
+                                };
+                            }
+
+                            foreach (Tag t in tagsFiltrados)
+                            {
+                                numTag++;
+                                tagResp += $"{numTag} - {t.Nombre}\n";
+                            }
+                            var msgOpciones = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                            {
+                                Footer = funciones.GetFooter(ctx),
+                                Color = funciones.GetColor(),
+                                Title = "Elije el tag escribiendo su número",
+                                Description = tagResp
+                            });
+                            var msgElegirTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
+                            if (!msgElegirTagInter.TimedOut)
+                            {
+                                bool resultTag = int.TryParse(msgElegirTagInter.Result.Content, out int numTagElegir);
+                                if (resultTag)
                                 {
-                                    Footer = funciones.GetFooter(ctx),
-                                    Color = funciones.GetColor(),
-                                    Title = "Elije el tag escribiendo su número",
-                                    Description = tagResp
-                                });
-                                var msgElegirTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-                                if (!msgElegirTagInter.TimedOut)
-                                {
-                                    bool resultTag = int.TryParse(msgElegirTagInter.Result.Content, out int numTagElegir);
-                                    if (resultTag)
+                                    if (numTagElegir > 0 && (numTagElegir <= tagsFiltrados.Count))
                                     {
-                                        if (numTagElegir > 0 && (numTagElegir <= tagsFiltrados.Count))
+                                        await funciones.BorrarMensaje(ctx, msgTagInter.Result.Id);
+                                        await funciones.BorrarMensaje(ctx, msgOpciones.Id);
+                                        await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
+                                        return new SettingsJuego()
                                         {
-                                            await funciones.BorrarMensaje(ctx, msgTagInter.Result.Id);
-                                            await funciones.BorrarMensaje(ctx, msgOpciones.Id);
-                                            await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
-                                            return new SettingsJuego()
-                                            {
-                                                Rondas = rondas,
-                                                Tag = tagsFiltrados[numTagElegir - 1].Nombre,
-                                                TagDesc = tagsFiltrados[numTagElegir - 1].Descripcion,
-                                                Ok = true
-                                            };
-                                        }
-                                        else
-                                        {
-                                            return new SettingsJuego()
-                                            {
-                                                Ok = false,
-                                                MsgError = "El numero indicado del tag debe ser válido"
-                                            };
-                                        }
+                                            Tag = tagsFiltrados[numTagElegir - 1].Nombre,
+                                            TagDesc = tagsFiltrados[numTagElegir - 1].Descripcion,
+                                            Ok = true
+                                        };
                                     }
                                     else
                                     {
                                         return new SettingsJuego()
                                         {
                                             Ok = false,
-                                            MsgError = "Debes indicar un numero para elegir el tag"
+                                            MsgError = "El numero indicado del tag debe ser válido"
                                         };
                                     }
                                 }
@@ -537,7 +211,7 @@ namespace Discord_Bot
                                     return new SettingsJuego()
                                     {
                                         Ok = false,
-                                        MsgError = "Tiempo agotado esperando la elección del tag"
+                                        MsgError = "Debes indicar un numero para elegir el tag"
                                     };
                                 }
                             }
@@ -546,7 +220,7 @@ namespace Discord_Bot
                                 return new SettingsJuego()
                                 {
                                     Ok = false,
-                                    MsgError = "No se encontro ningun tag"
+                                    MsgError = "Tiempo agotado esperando la elección del tag"
                                 };
                             }
                         }
@@ -555,56 +229,53 @@ namespace Discord_Bot
                             return new SettingsJuego()
                             {
                                 Ok = false,
-                                MsgError = "Tiempo agotado esperando el tag"
+                                MsgError = "No se encontro ningun tag"
                             };
                         }
                     }
                     else
                     {
-                        await funciones.GrabarLogError(ctx, $"Error inesperado en InicializarJuego eligiendo tag");
                         return new SettingsJuego()
                         {
                             Ok = false,
-                            MsgError = "Error inesperado eligiendo el tag"
+                            MsgError = "Tiempo agotado esperando el tag"
                         };
                     }
                 }
-                if (elegirGenero)
+                else
                 {
-                    var respuesta = await ElegirGenero(ctx, interactivity);
-                    if (respuesta.Ok)
+                    await funciones.GrabarLogError(ctx, $"Error inesperado en InicializarJuego eligiendo tag");
+                    return new SettingsJuego()
                     {
-                        return new SettingsJuego()
-                        {
-                            Rondas = rondas,
-                            Genero = respuesta.Genero,
-                            Dificultad = respuesta.Genero,
-                            Ok = true
-                        };
-                    }
-                    else
-                    {
-                        return respuesta;
-                    }
+                        Ok = false,
+                        MsgError = "Error inesperado eligiendo el tag"
+                    };
                 }
-                string mensajeErr = "Error de programación, se debe elegir el tag o las rondas";
-                await funciones.GrabarLogError(ctx, $"{mensajeErr}");
-                return new SettingsJuego()
-                {
-                    Ok = false,
-                    MsgError = mensajeErr
-                };
             }
-            else
+            if (elegirGenero)
             {
-                if (msgCntRondas != null)
-                    await funciones.BorrarMensaje(ctx, msgCntRondas.Id);
-                return new SettingsJuego()
+                var respuesta = await ElegirGenero(ctx, interactivity);
+                if (respuesta.Ok)
                 {
-                    Ok = false,
-                    MsgError = "Tiempo agotado esperando la cantidad de rondas"
-                };
+                    return new SettingsJuego()
+                    {
+                        Genero = respuesta.Genero,
+                        Dificultad = respuesta.Genero,
+                        Ok = true
+                    };
+                }
+                else
+                {
+                    return respuesta;
+                }
             }
+            string mensajeErr = "Error de programación, se debe elegir el tag o las rondas";
+            await funciones.GrabarLogError(ctx, $"{mensajeErr}");
+            return new SettingsJuego()
+            {
+                Ok = false,
+                MsgError = mensajeErr
+            };
         }
 
         public async Task Jugar(Context ctx, string juego, dynamic lista, SettingsJuego settings, InteractivityExtension interactivity)
@@ -1266,8 +937,9 @@ namespace Discord_Bot
             return characterList;
         }
 
-        public async Task JugarAhorcado(CommandContext ctx, dynamic elegido, string juego)
+        public async Task JugarAhorcado(InteractionContext ctx, dynamic elegido, string juego)
         {
+            var context = funciones.GetContext(ctx);
             var interactivity = ctx.Client.GetInteractivity();
             int errores = 0;
             string nameFull = string.Empty;
@@ -1280,7 +952,7 @@ namespace Discord_Bot
                     nameFull = elegido.TitleRomaji.ToLower().Trim();
                     break;
                 default:
-                    await funciones.GrabarLogError(ctx, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
+                    await funciones.GrabarLogError(context, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
                     return;
             }
             string nameFullParsed = Regex.Replace(nameFull, @"\s+", " ");
@@ -1311,13 +983,13 @@ namespace Discord_Bot
             }
             bool partidaTerminada = false;
             List<UsuarioJuego> participantes = new();
-            await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder()
             {
                 Title = $"Ahorcado ({juego}s)",
                 Description = "¡Escribe una letra!\n\nPuedes terminar la partida en cualquier momento escribiendo `cancelar`",
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor()
-            }).ConfigureAwait(false);
+            }));
             DiscordMember ganador = ctx.Member;
             string titRonda;
             DiscordColor colRonda;
@@ -1346,7 +1018,7 @@ namespace Discord_Bot
                         ));
                     break;
                 default:
-                    await funciones.GrabarLogError(ctx, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
+                    await funciones.GrabarLogError(context, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
                     return;
             }
             do

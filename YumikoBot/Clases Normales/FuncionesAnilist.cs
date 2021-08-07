@@ -12,7 +12,7 @@ namespace Discord_Bot
         private readonly FuncionesAuxiliares funciones = new();
         private readonly GraphQLHttpClient graphQLClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        public async Task<dynamic> GetAnilistMedia(CommandContext ctx, string busqueda, string tipo)
+        public async Task<dynamic> GetAnilistMedia(Context ctx, string busqueda, string tipo)
         {
             string query = "query($busqueda : String){" +
                 "   Page(perPage:5){" +
