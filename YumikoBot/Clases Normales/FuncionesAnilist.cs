@@ -1,8 +1,10 @@
 ﻿using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Discord_Bot
@@ -12,55 +14,55 @@ namespace Discord_Bot
         private readonly FuncionesAuxiliares funciones = new();
         private readonly GraphQLHttpClient graphQLClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        public async Task<dynamic> GetAnilistMedia(Context ctx, string busqueda, string tipo)
+        public async Task<Media> GetAniListMedia(InteractionContext ctx, string busqueda, string tipo)
         {
             string query = "query($busqueda : String){" +
-                "   Page(perPage:5){" +
-                "       media(type: " + tipo.ToUpper() + ", search: $busqueda){" +
-                "           title{" +
-                "               romaji" +
-                "           }," +
-                "           coverImage{" +
-                "               large" +
-                "           }," +
-                "           siteUrl," +
-                "           description," +
-                "           format," +
-                "           chapters" +
-                "           episodes" +
-                "           status," +
-                "           meanScore," +
-                "           genres," +
-                "           startDate{" +
-                "               year," +
-                "               month," +
-                "               day" +
-                "           }," +
-                "           endDate{" +
-                "               year," +
-                "               month," +
-                "               day" +
-                "           }," +
-                "           genres," +
-                "           tags{" +
-                "               name," +
-                "               isMediaSpoiler" +
-                "           }," +
-                "           synonyms," +
-                "           studios{" +
-                "               nodes{" +
-                "                   name," +
-                "                   siteUrl" +
-                "               }" +
-                "           }," +
-                "           externalLinks{" +
-                "               site," +
-                "               url" +
-                "           }," +
-                "           isAdult" +
-                "       }" +
-                "   }" +
-                "}";
+            "   Page(perPage:5){" +
+            "       media(type: " + tipo.ToUpper() + ", search: $busqueda){" +
+            "           title{" +
+            "               romaji" +
+            "           }," +
+            "           coverImage{" +
+            "               large" +
+            "           }," +
+            "           siteUrl," +
+            "           description," +
+            "           format," +
+            "           chapters" +
+            "           episodes" +
+            "           status," +
+            "           meanScore," +
+            "           genres," +
+            "           startDate{" +
+            "               year," +
+            "               month," +
+            "               day" +
+            "           }," +
+            "           endDate{" +
+            "               year," +
+            "               month," +
+            "               day" +
+            "           }," +
+            "           genres," +
+            "           tags{" +
+            "               name," +
+            "               isMediaSpoiler" +
+            "           }," +
+            "           synonyms," +
+            "           studios{" +
+            "               nodes{" +
+            "                   name," +
+            "                   siteUrl" +
+            "               }" +
+            "           }," +
+            "           externalLinks{" +
+            "               site," +
+            "               url" +
+            "           }," +
+            "           isAdult" +
+            "       }" +
+            "   }" +
+            "}";
 
             var request = new GraphQLRequest
             {
@@ -70,29 +72,66 @@ namespace Discord_Bot
                     busqueda
                 }
             };
+
             try
             {
                 var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                if (data.Data != null)
+                if (data.Data != null && data.Data.Page.media != null)
                 {
-                    //return data;
+                    int cont = 0;
+                    List<string> opc = new();
+                    foreach (var animeP in data.Data.Page.media)
+                    {
+                        cont++;
+                        string opcStr = animeP.title.romaji;
+                        opc.Add(opcStr);
+                    }
+                    var elegido = await funciones.GetElegido(ctx, opc);
+                    if (elegido > 0)
+                    {
+                        var datos = data.Data.Page.media[elegido - 1];
+                        return DecodeMedia(datos);
+                    }
+                    else
+                    {
+                        return new()
+                        {
+                            Ok = false,
+                            MsgError = $"Tiempo agotado esperando la opción"
+                        };
+                    } 
                 }
-                return data;
+                else
+                {
+                    return new()
+                    {
+                        Ok = false,
+                        MsgError = $"No se encontró el {tipo} `{busqueda}`"
+                    };
+                }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                await funciones.GrabarLogError(ctx, $"Error en query en FuncionesAnilist - GetAnilistMedia, utilizado: {tipo}\nError: {e.Message}");
+                var context = funciones.GetContext(ctx);
+                await funciones.GrabarLogError(context, $"Error en query en FuncionesAnilist - GetAnilistMedia, utilizado: {tipo}\nError: {e.Message}");
+                return new()
+                {
+                    Ok = false,
+                    MsgError = $"{e.Message}"
+                };
             }
-            return null;
         }
 
         public Media DecodeMedia(dynamic datos)
         {
             if(datos != null)
             {
+                string isadult = datos.isAdult;
+
                 Media media = new();
 
-                media.IsAdult = datos.isAdult;
+                media.Ok = true;
+                media.IsAdult = bool.Parse(isadult);
                 media.Descripcion = datos.description;
                 media.Descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(media.Descripcion));
                 if (media.Descripcion == "")
@@ -124,13 +163,13 @@ namespace Discord_Bot
                 }
                 if (media.Tags.Length >= 2)
                     media.Tags = media.Tags.Remove(media.Tags.Length - 2);
-                media.Titulos = string.Empty;
-                foreach (var title in datos.synonyms)
+
+                media.Titulos = new();
+                foreach (string title in datos.synonyms)
                 {
-                    media.Titulos += $"`{title}`, ";
+                    media.Titulos.Add(title);
                 }
-                if (media.Titulos.Length >= 2)
-                    media.Titulos = media.Titulos.Remove(media.Titulos.Length - 2);
+
                 media.Estudios = string.Empty;
                 var nodos = datos.studios.nodes;
                 if (nodos.HasValues)
@@ -160,8 +199,9 @@ namespace Discord_Bot
                 {
                     media.Fechas = $"Este anime no tiene fecha de emisión";
                 }
-                media.Titulo = datos.title.romaji;
+                media.TituloRomaji = datos.title.romaji;
                 media.UrlAnilist = datos.siteUrl;
+                media.CoverImage = datos.coverImage.large;
 
                 return media;
             }

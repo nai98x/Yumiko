@@ -1,8 +1,11 @@
 ﻿using Discord_Bot;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace YumikoBot
@@ -73,78 +76,80 @@ namespace YumikoBot
 
             var context = funciones.GetContext(ctx);
             var interactivity = ctx.Client.GetInteractivity();
+            DiscordEmbed embebido;
+            dynamic list;
             switch (juego)
             {
                 case "personajes":
-                    DiscordEmbed embebido = new DiscordEmbedBuilder
+                    embebido = new DiscordEmbedBuilder
                     {
                         Title = "Adivina el personaje",
                         Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
                         Color = funciones.GetColor()
                     }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
-                    var characterList = await funcionesJuegos.GetCharacters(context, settings, false);
-                    await funcionesJuegos.Jugar(context, "personaje", characterList, settings, interactivity);
+                    list = await funcionesJuegos.GetCharacters(context, settings, false);
+                    await funcionesJuegos.JugarQuiz(context, "personaje", list, settings, interactivity);
                     break;
                 case "animes":
-                    DiscordEmbed embebido2 = new DiscordEmbedBuilder
+                    embebido = new DiscordEmbedBuilder
                     {
                         Title = "Adivina el anime",
                         Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
                         Color = funciones.GetColor()
                     }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido2));
-                    var characterList2 = await funcionesJuegos.GetCharacters(context, settings, true);
-                    await funcionesJuegos.Jugar(context, "anime", characterList2, settings, interactivity);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
+                    list = await funcionesJuegos.GetCharacters(context, settings, true);
+                    await funcionesJuegos.JugarQuiz(context, "anime", list, settings, interactivity);
                     break;
                 case "mangas":
-                    DiscordEmbed embebido3 = new DiscordEmbedBuilder
+                    embebido = new DiscordEmbedBuilder
                     {
                         Title = "Adivina el manga",
                         Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
                         Color = funciones.GetColor()
                     }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido3));
-                    var animeList = await funcionesJuegos.GetMedia(context, "MANGA", settings, false, false, false, false);
-                    await funcionesJuegos.Jugar(context, "manga", animeList, settings, interactivity);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
+                    list = await funcionesJuegos.GetMedia(context, "MANGA", settings, false, false, false, false);
+                    await funcionesJuegos.JugarQuiz(context, "manga", list, settings, interactivity);
                     break;
                 case "tag":
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
-                    {
-                        IsEphemeral = true,
-                        Content = $"¡Haz iniciado un nuevo quiz!"
-                    });
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder {
+                        Title = "Configura la partida",
+                        Description = "Deberás elegir el tag para continuar",
+                        Color = funciones.GetColor(),
+                    }));
                     SettingsJuego settingsTag = await funcionesJuegos.InicializarJuego(context, interactivity, true, false);
                     settings.Ok = settingsTag.Ok;
                     if (settings.Ok)
                     {
                         settings.Tag = settingsTag.Tag;
                         settings.TagDesc = settingsTag.TagDesc;
-                        DiscordEmbed embebido4 = new DiscordEmbedBuilder
+                        embebido = new DiscordEmbedBuilder
                         {
                             Title = $"Adivina el tag",
                             Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
                             Color = funciones.GetColor(),
                             Footer = funciones.GetFooter(ctx)
                         }.AddField("Rondas", $"{settings.Rondas}").AddField("Tag", $"{settings.Tag}");
-                        await ctx.Channel.SendMessageAsync(embebido4);
+                        await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embebido));
                         settings.PorcentajeTag = 70;
-                        var animeList2 = await funcionesJuegos.GetMedia(context, "ANIME", settings, false, false, true, false);
-                        int cantidadAnimes = animeList2.Count;
+                        list = await funcionesJuegos.GetMedia(context, "ANIME", settings, false, false, true, false);
+                        int cantidadAnimes = list.Count;
                         if (cantidadAnimes > 0)
                         {
                             if (cantidadAnimes < settings.Rondas)
                             {
                                 settings.Rondas = cantidadAnimes;
-                                await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                                await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                                 {
                                     Color = DiscordColor.Yellow,
                                     Title = $"Rondas reducidas",
                                     Description = $"Se han reducido el numero de rondas a {settings.Rondas} ya que esta es la cantidad de animes con al menos un {settings.PorcentajeTag}% de {settings.Tag}",
-                                }).ConfigureAwait(false);
+                                }));
                             }
                             settings.Dificultad = settings.Tag;
-                            await funcionesJuegos.Jugar(context, "tag", animeList2, settings, interactivity);
+                            await funcionesJuegos.JugarQuiz(context, "tag", list, settings, interactivity);
                         }
                         else
                         {
@@ -154,32 +159,36 @@ namespace YumikoBot
                     }
                     if (!settings.Ok)
                     {
-                        var error = await ctx.Channel.SendMessageAsync(settings.MsgError).ConfigureAwait(false);
+                        var error = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder { 
+                            Title = "Error",
+                            Description = settings.MsgError,
+                            Color = DiscordColor.Red
+                        }));
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(context, error.Id);
                     }
                     break;
                 case "estudio":
-                    DiscordEmbed embebido5 = new DiscordEmbedBuilder
+                    embebido = new DiscordEmbedBuilder
                     {
                         Title = "Adivina el estudio del anime",
                         Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
                         Color = funciones.GetColor()
                     }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido5));
-                    var animeList3 = await funcionesJuegos.GetMedia(context, "ANIME", settings, false, true, false, false);
-                    await funcionesJuegos.Jugar(context, "estudio", animeList3, settings, interactivity);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
+                    list = await funcionesJuegos.GetMedia(context, "ANIME", settings, false, true, false, false);
+                    await funcionesJuegos.JugarQuiz(context, "estudio", list, settings, interactivity);
                     break;
                 case "protagonista":
-                    DiscordEmbed embebido6 = new DiscordEmbedBuilder
+                    embebido = new DiscordEmbedBuilder
                     {
                         Title = "Adivina el protagonista del anime",
                         Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
                         Color = funciones.GetColor()
                     }.AddField("Rondas", $"{settings.Rondas}").AddField("Dificultad", $"{settings.Dificultad}");
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido6));
-                    var animeList4 = await funcionesJuegos.GetMedia(context, "ANIME", settings, true, false, false, false);
-                    await funcionesJuegos.Jugar(context, "protagonista", animeList4, settings, interactivity);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
+                    list = await funcionesJuegos.GetMedia(context, "ANIME", settings, true, false, false, false);
+                    await funcionesJuegos.JugarQuiz(context, "protagonista", list, settings, interactivity);
                     break;
                 case "genero":
                     await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -189,15 +198,15 @@ namespace YumikoBot
                     {
                         settings.Genero = settingsGenero.Genero;
                         settings.Dificultad = settingsGenero.Dificultad;
-                        DiscordEmbed embebido7 = new DiscordEmbedBuilder
+                        embebido = new DiscordEmbedBuilder
                         {
                             Title = $"Adivina el género",
                             Description = $"{ctx.User.Mention}, puedes escribir `cancelar` en cualquiera de las rondas si deseas terminar la partida.",
                             Color = funciones.GetColor()
                         }.AddField("Rondas", $"{settings.Rondas}").AddField("Género", $"{settings.Dificultad}");
-                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embebido7));
-                        var animeList5 = await funcionesJuegos.GetMedia(context, "ANIME", settings, false, false, false, true);
-                        await funcionesJuegos.Jugar(context, "genero", animeList5, settings, interactivity);
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embebido));
+                        list = await funcionesJuegos.GetMedia(context, "ANIME", settings, false, false, false, true);
+                        await funcionesJuegos.JugarQuiz(context, "genero", list, settings, interactivity);
                     }
                     else
                     {
@@ -236,6 +245,136 @@ namespace YumikoBot
                     }
                     break;
             }
+        }
+
+        [SlashCommand("higherorlower", "Juega una partida de higher or lower")]
+        public async Task HighrOrLower(InteractionContext ctx,
+        [Choice("Singleplayer", "Singleplayer")]
+        [Choice("Multiplayer", "Multiplayer")]
+        [Option("Gamemode", "Elige si quieres jugar en solitario o en compañía")] string gamemode)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder { 
+                Title = "Higher or Lower",
+                Description = $"**Modo de juego:** {gamemode}\n\n" +
+                $"Elige el anime con mejor score para obtener la mejor puntuación.",
+                Color = funciones.GetColor(),
+            }));
+
+            var context = funciones.GetContext(ctx);
+            var interactivity = ctx.Client.GetInteractivity();
+
+            int valorBase = funciones.GetNumeroRandom(1, 36); // Del 1-200 hasta 1800-2000
+            var settings = new SettingsJuego
+            {
+                IterIni = valorBase,
+                IterFin = valorBase + 4, // 200 animes seleccionados
+            };
+            var listaAux = await funcionesJuegos.GetMedia(context, "ANIME", settings, false, false, false, false);
+            List<Anime> lista = new();
+            foreach(var item in listaAux)
+            {
+                if(item.AvarageScore > -1)
+                {
+                    lista.Add(item);
+                }
+            }
+
+            bool jugar = true;
+            int puntuacion = 0;
+            while (jugar && lista.Count >= 2)
+            {
+                int random1 = funciones.GetNumeroRandom(0, lista.Count - 1);
+                int random2;
+                do
+                {
+                    random2 = funciones.GetNumeroRandom(0, lista.Count - 1);
+                } while (random1 == random2);
+
+                var elegido1 = lista[random1];
+                var elegido2 = lista[random2];
+
+                var embed1 = new DiscordEmbedBuilder
+                {
+                    Description = $"**{elegido1.TitleRomaji}**",
+                    ImageUrl = elegido1.Image,
+                    Color = DiscordColor.Green
+                };
+                var embed2 = new DiscordEmbedBuilder
+                {
+                    Description = $"**{elegido2.TitleRomaji}**",
+                    ImageUrl = elegido2.Image,
+                    Color = DiscordColor.Red
+                };
+
+                DiscordButtonComponent button1 = new(ButtonStyle.Success, $"{elegido1.Id}", $"{elegido1.TitleRomaji}");
+                DiscordButtonComponent button2 = new(ButtonStyle.Danger, $"{elegido2.Id}", $"{elegido2.TitleRomaji}");
+
+                var msgElegir = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embed1).AddEmbed(embed2).AddComponents(button1, button2).WithContent("¿Cuál tiene mejor puntuación?"));
+                double timeout = 15;
+
+                dynamic msgElegirInter;
+
+                if(gamemode == "Singleplayer")
+                {
+                    msgElegirInter = await interactivity.WaitForButtonAsync(msgElegir, ctx.User, TimeSpan.FromSeconds(timeout));
+                }
+                else
+                {
+                    msgElegirInter = await interactivity.WaitForButtonAsync(msgElegir, TimeSpan.FromSeconds(timeout));
+                }
+                if (!msgElegirInter.TimedOut)
+                {
+                    DiscordMember acertador = (DiscordMember)msgElegirInter.Result.User;
+                    Anime seleccionado, otro;
+                    string idElegido = msgElegirInter.Result.Id;
+                    if(elegido1.Id == int.Parse(idElegido))
+                    {
+                        seleccionado = elegido1;
+                        otro = elegido2;
+                    }
+                    else{
+                        seleccionado = elegido2;
+                        otro = elegido1;
+                    }
+                    double puntajeSel, puntajeOtro;
+                    puntajeSel = (double)seleccionado.AvarageScore / 10;
+                    puntajeOtro = (double)otro.AvarageScore / 10;
+
+                    if (seleccionado.AvarageScore >= otro.AvarageScore)
+                    {
+                        puntuacion++;
+                        await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
+                        {
+                            Title = $"¡{acertador.DisplayName} le ha acertado!",
+                            Description = $"**{seleccionado.TitleRomaji}** tiene **{puntajeSel}/10** de puntuación promedio mientras **{otro.TitleRomaji}** tiene **{puntajeOtro}/10**\n\nPuntuación: **{puntuacion}**",
+                            Color = DiscordColor.Green
+                        }));
+                    }
+                    else
+                    {
+                        await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
+                        {
+                            Title = $"¡{acertador.DisplayName} le ha errado!",
+                            Description = $"**¡Derrota!**\n\n**{seleccionado.TitleRomaji}** tiene menor puntuación promedio **({puntajeSel}/10)** que **{otro.TitleRomaji} ({puntajeOtro}/10)**\n\nPuntuación: **{puntuacion}**",
+                            Color = DiscordColor.Red
+                        }));
+                        jugar = false;
+                    }
+                }
+                else
+                {
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder {
+                        Title = "Derrota",
+                        Description = $"Han pasado {timeout} segundos y no se ha contestado a tiempo",
+                        Color = DiscordColor.Red
+                    }));
+                    jugar = false;
+                }
+
+                lista.Remove(elegido1);
+                lista.Remove(elegido2);
+            }
+            // juego terminado cartel (preguntar si se vacio la lista)
         }
 
         [SlashCommand("stats", "Busca las estadisticas de un quiz")]

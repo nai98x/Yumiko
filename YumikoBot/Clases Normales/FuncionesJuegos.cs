@@ -83,43 +83,21 @@ namespace Discord_Bot
             if (elegirTag)
             {
                 var tags = await funciones.GetTags(ctx);
-                if (tags.Count > 0)
+                if (funciones.ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
                 {
-                    if (funciones.ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
+                    int porPagina = 30;
+                    int ultPagina = tags.Count / porPagina;
+                    int iterInterna = 0;
+                    int iter = 0;
+                    string tagsStr = string.Empty;
+                    List<Page> pages = new();
+                    foreach (var tag in tags)
                     {
-                        int porPagina = 30;
-                        int ultPagina = tags.Count / porPagina;
-                        int iterInterna = 0;
-                        int iter = 0;
-                        string tagsStr = string.Empty;
-                        List<Page> pages = new();
-                        foreach (var tag in tags)
-                        {
-                            tagsStr += $"{tag.Nombre}\n";
-                            iterInterna++;
-                            iter++;
+                        tagsStr += $"{tag.Nombre}\n";
+                        iterInterna++;
+                        iter++;
 
-                            if (iterInterna == porPagina)
-                            {
-                                pages.Add(new()
-                                {
-                                    Embed = new DiscordEmbedBuilder
-                                    {
-                                        Title = "Escribe un tag",
-                                        Description = tagsStr,
-                                        Color = funciones.GetColor(),
-                                        Footer = new DiscordEmbedBuilder.EmbedFooter
-                                        {
-                                            Text = $"Obtenido desde AniList | Página {pages.Count + 1}/{ultPagina + 1}",
-                                            IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"]
-                                        }
-                                    }
-                                });
-                                tagsStr = string.Empty;
-                                iterInterna = 0;
-                            }
-                        }
-                        if (iterInterna > 0)
+                        if (iterInterna == porPagina)
                         {
                             pages.Add(new()
                             {
@@ -135,120 +113,62 @@ namespace Discord_Bot
                                     }
                                 }
                             });
+                            tagsStr = string.Empty;
+                            iterInterna = 0;
                         }
-
-                        _ = interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, pages, token: new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token).ConfigureAwait(false);
                     }
-                    else
+                    if (iterInterna > 0)
                     {
-                        await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                        pages.Add(new()
                         {
-                            Title = "Escriber un tag!",
-                            Description = "Para ver los tags dispibles habilita a Yumiko el permiso de `Gestionar Mensajes` y vuelve a ejecutar el comando.",
-                            Color = funciones.GetColor()
+                            Embed = new DiscordEmbedBuilder
+                            {
+                                Title = "Escribe un tag",
+                                Description = tagsStr,
+                                Color = funciones.GetColor(),
+                                Footer = new DiscordEmbedBuilder.EmbedFooter
+                                {
+                                    Text = $"Obtenido desde AniList | Página {pages.Count + 1}/{ultPagina + 1}",
+                                    IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"]
+                                }
+                            }
                         });
                     }
 
-                    var msgTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(120));
-                    if (!msgTagInter.TimedOut)
-                    {
-                        int numTag = 0;
-                        string tagResp = string.Empty;
-                        List<Tag> tagsFiltrados = tags.Where(x => x.Nombre.ToLower().Trim().Contains(msgTagInter.Result.Content.ToLower().Trim())).ToList();
-                        if (tagsFiltrados.Count > 0)
-                        {
-                            if (tagsFiltrados.Count == 1)
-                            {
-                                return new SettingsJuego()
-                                {
-                                    Tag = tagsFiltrados[0].Nombre,
-                                    TagDesc = tagsFiltrados[0].Descripcion,
-                                    Ok = true
-                                };
-                            }
-
-                            foreach (Tag t in tagsFiltrados)
-                            {
-                                numTag++;
-                                tagResp += $"{numTag} - {t.Nombre}\n";
-                            }
-                            var msgOpciones = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-                            {
-                                Footer = funciones.GetFooter(ctx),
-                                Color = funciones.GetColor(),
-                                Title = "Elije el tag escribiendo su número",
-                                Description = tagResp
-                            });
-                            var msgElegirTagInter = await interactivity.WaitForMessageAsync(xm => xm.Channel == ctx.Channel && xm.Author == ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGames"])));
-                            if (!msgElegirTagInter.TimedOut)
-                            {
-                                bool resultTag = int.TryParse(msgElegirTagInter.Result.Content, out int numTagElegir);
-                                if (resultTag)
-                                {
-                                    if (numTagElegir > 0 && (numTagElegir <= tagsFiltrados.Count))
-                                    {
-                                        await funciones.BorrarMensaje(ctx, msgTagInter.Result.Id);
-                                        await funciones.BorrarMensaje(ctx, msgOpciones.Id);
-                                        await funciones.BorrarMensaje(ctx, msgElegirTagInter.Result.Id);
-                                        return new SettingsJuego()
-                                        {
-                                            Tag = tagsFiltrados[numTagElegir - 1].Nombre,
-                                            TagDesc = tagsFiltrados[numTagElegir - 1].Descripcion,
-                                            Ok = true
-                                        };
-                                    }
-                                    else
-                                    {
-                                        return new SettingsJuego()
-                                        {
-                                            Ok = false,
-                                            MsgError = "El numero indicado del tag debe ser válido"
-                                        };
-                                    }
-                                }
-                                else
-                                {
-                                    return new SettingsJuego()
-                                    {
-                                        Ok = false,
-                                        MsgError = "Debes indicar un numero para elegir el tag"
-                                    };
-                                }
-                            }
-                            else
-                            {
-                                return new SettingsJuego()
-                                {
-                                    Ok = false,
-                                    MsgError = "Tiempo agotado esperando la elección del tag"
-                                };
-                            }
-                        }
-                        else
-                        {
-                            return new SettingsJuego()
-                            {
-                                Ok = false,
-                                MsgError = "No se encontro ningun tag"
-                            };
-                        }
-                    }
-                    else
-                    {
-                        return new SettingsJuego()
-                        {
-                            Ok = false,
-                            MsgError = "Tiempo agotado esperando el tag"
-                        };
-                    }
+                    _ = interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, pages, token: new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token).ConfigureAwait(false);
                 }
                 else
                 {
-                    await funciones.GrabarLogError(ctx, $"Error inesperado en InicializarJuego eligiendo tag");
+                    await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
+                    {
+                        Title = "Escriber un tag!",
+                        Description = "Para ver los tags dispibles habilita a Yumiko el permiso de `Gestionar Mensajes` y vuelve a ejecutar el comando.",
+                        Color = funciones.GetColor()
+                    });
+                }
+
+                var msgTagInter = await interactivity.WaitForMessageAsync(
+                    xm => xm.Channel == ctx.Channel &&
+                    xm.Author == ctx.User &&
+                    tags.Find(xy => xy.Nombre.ToLower().Trim() == xm.Content.ToLower().Trim()) != null
+                    , TimeSpan.FromSeconds(180));
+
+                if (!msgTagInter.TimedOut)
+                {
+                    var elegido = tags.Find(xy => xy.Nombre.ToLower().Trim() == msgTagInter.Result.Content.ToLower().Trim());
+                    return new SettingsJuego()
+                    {
+                        Tag = elegido.Nombre,
+                        TagDesc = elegido.Descripcion,
+                        Ok = true
+                    };
+                }
+                else
+                {
                     return new SettingsJuego()
                     {
                         Ok = false,
-                        MsgError = "Error inesperado eligiendo el tag"
+                        MsgError = "Tiempo agotado esperando el tag"
                     };
                 }
             }
@@ -278,7 +198,7 @@ namespace Discord_Bot
             };
         }
 
-        public async Task Jugar(Context ctx, string juego, dynamic lista, SettingsJuego settings, InteractivityExtension interactivity)
+        public async Task JugarQuiz(Context ctx, string juego, dynamic lista, SettingsJuego settings, InteractivityExtension interactivity)
         {
             List<UsuarioJuego> participantes = new();
             int lastRonda;
@@ -678,12 +598,14 @@ namespace Discord_Bot
             string query = "query($pagina : Int){" +
                     "   Page(page: $pagina){" +
                    $"       media({mediaFiltros}){{" +
+                   $"           id," +
                     "           siteUrl," +
                     "           favourites," +
                     "           title{" +
                     "               romaji," +
                     "               english" +
                     "           }," +
+                    "           averageScore," +
                     "           synonyms," +
                     "           coverImage{" +
                     "               large" +
@@ -740,15 +662,23 @@ namespace Discord_Bot
                     {
                         string titleEnglish = x.title.english;
                         string titleRomaji = x.title.romaji;
+                        string id = x.id;
+                        string scoreStr = x.averageScore;
+                        bool tieneScore = int.TryParse(scoreStr, out int score);
+                        if (!tieneScore)
+                            score = -1;
                         Anime anim = new()
                         {
+                            Id = int.Parse(id),
                             Image = x.coverImage.large,
                             TitleEnglish = titleEnglish,
                             TitleRomaji = titleRomaji,
                             TitleEnglishFormatted = funciones.QuitarCaracteresEspeciales(titleEnglish),
                             TitleRomajiFormatted = funciones.QuitarCaracteresEspeciales(titleRomaji),
                             SiteUrl = x.siteUrl,
+
                             Favoritos = x.favourites,
+                            AvarageScore = score,
                             Popularidad = popularidad,
                             Estudios = new List<Estudio>(),
                             Sinonimos = new List<string>(),

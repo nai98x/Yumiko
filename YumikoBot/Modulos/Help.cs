@@ -19,7 +19,6 @@ namespace Discord_Bot.Modulos
 
             var comandos = commandsNext.RegisteredCommands.Values;
             string web = ConfigurationManager.AppSettings["Web"] + "#commands";
-            string urlTopGG = "https://top.gg/bot/295182825521545218/";
             var comandosFiltrados = from com in comandos
                                     group com by com.Module.ModuleType.Name;
             if (comando == null)
@@ -28,8 +27,7 @@ namespace Discord_Bot.Modulos
                 var builder = new DiscordEmbedBuilder
                 {
                     Title = "Comandos disponibles",
-                    Description = $"Puedes llamarme con `{ctx.Prefix}` o con {ctx.Client.CurrentUser.Mention}\n" +
-                    $"[Ejemplos de comandos]({web}) | [¡Vótame!]({urlTopGG})\n\n" +
+                    Description = $"Puedes llamarme con `{ctx.Prefix}` o con {ctx.Client.CurrentUser.Mention}\n\n" +
                     $"**Importante:** Para ver el resto de comandos, escribe `/help`",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()

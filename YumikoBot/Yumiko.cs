@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using YumikoBot;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.SlashCommands.EventArgs;
 using static DSharpPlus.Entities.DiscordEmbedBuilder;
 
 namespace Discord_Bot
@@ -130,7 +131,7 @@ namespace Discord_Bot
 
             Commands.RegisterConverter(new MemberConverter());
 
-            await Client.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "/help" }, UserStatus.Online);
+            await Client.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.ListeningTo, Name = "/help" }, UserStatus.Online);
 
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             if (Debug)
@@ -156,9 +157,9 @@ namespace Discord_Bot
             while (true)
             {
                 await Task.Delay(30000);
-                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "yumiko.uwu.ai" }, UserStatus.Online);
+                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.ListeningTo, Name = "yumiko.uwu.ai" }, UserStatus.Online);
                 await Task.Delay(10000);
-                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.Playing, Name = "/help" }, UserStatus.Online);
+                await Client.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.ListeningTo, Name = "/help" }, UserStatus.Online);
             }
         }
 
@@ -190,7 +191,8 @@ namespace Discord_Bot
                     Description =
                     $"   **Id**: {e.Guild.Id}\n" +
                     $"   **Miembros**: {e.Guild.MemberCount - 1}\n" +
-                    $"   **Owner**: {e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator}",
+                    $"   **Owner**: {e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator}\n\n" +
+                    $"   **Cantidad de servidores**: {c.Guilds.Count}",
                     Footer = new EmbedFooter()
                     {
                         Text = $"{DateTimeOffset.Now}"
@@ -203,7 +205,7 @@ namespace Discord_Bot
             return Task.CompletedTask;
         }
 
-        private Task Client_GuildDeleted(DiscordClient sender, GuildDeleteEventArgs e)
+        private Task Client_GuildDeleted(DiscordClient c, GuildDeleteEventArgs e)
         {
             e.Handled = true;
             _ = Task.Run(async () =>
@@ -218,7 +220,8 @@ namespace Discord_Bot
                     Title = "Bye-bye servidor",
                     Description =
                     $"   **Id**: {e.Guild.Id}\n" +
-                    $"   **Miembros**: {e.Guild.MemberCount - 1}",
+                    $"   **Miembros**: {e.Guild.MemberCount - 1}\n\n" +
+                    $"   **Cantidad de servidores**: {c.Guilds.Count}",
                     Footer = new EmbedFooter()
                     {
                         Text = $"{DateTimeOffset.Now}"
@@ -226,7 +229,7 @@ namespace Discord_Bot
                     Color = DiscordColor.Red
                 });
                 if (!Debug)
-                    await funciones.UpdateStatsTopGG(sender).ConfigureAwait(false);
+                    await funciones.UpdateStatsTopGG(c).ConfigureAwait(false);
             });
             return Task.CompletedTask;
         }
@@ -262,6 +265,63 @@ namespace Discord_Bot
             _ = Task.Run(async () =>
             {
                 await e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+            });
+            return Task.CompletedTask;
+        }
+
+        private Task SlashCommands_SlashCommandExecuted(SlashCommandsExtension sender, SlashCommandExecutedEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                await LogChannelSlash.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                {
+                    Title = "Slash command ejecutado",
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator}",
+                        IconUrl = e.Context.User.AvatarUrl
+                    },
+                    Author = new EmbedAuthor()
+                    {
+                        IconUrl = e.Context.Guild.IconUrl,
+                        Name = $"{e.Context.Guild.Name}"
+                    },
+                    Color = DiscordColor.Green
+                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
+                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                .AddField("Comando", $"/{e.Context.CommandName}", false)
+                );
+            });
+            return Task.CompletedTask;
+        }
+
+        private Task SlashCommands_SlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Error no controlado",
+                    Description = $"{e.Exception.Message}\n```{e.Exception.StackTrace}```",
+                    Color = DiscordColor.Red,
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator}",
+                        IconUrl = e.Context.User.AvatarUrl
+                    },
+                    Author = new EmbedAuthor()
+                    {
+                        IconUrl = e.Context.Guild.IconUrl,
+                        Name = $"{e.Context.Guild.Name}"
+                    },
+                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
+                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                .AddField("Comando", $"/{e.Context.CommandName}", false)
+                );
             });
             return Task.CompletedTask;
         }
@@ -484,54 +544,6 @@ namespace Discord_Bot
                     }
                 }
             });
-            return Task.CompletedTask;
-        }
-
-        private Task SlashCommands_SlashCommandExecuted(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandExecutedEventArgs e)
-        {
-            _ = Task.Run(async () =>
-            {
-                await LogChannelSlash.SendMessageAsync(embed: new DiscordEmbedBuilder()
-                {
-                    Title = "Slash command ejecutado",
-                    Footer = new EmbedFooter()
-                    {
-                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator} - {e.Context.Interaction.CreationTimestamp}",
-                        IconUrl = e.Context.User.AvatarUrl
-                    },
-                    Author = new EmbedAuthor()
-                    {
-                        IconUrl = e.Context.Guild.IconUrl,
-                        Name = $"{e.Context.Guild.Name}"
-                    },
-                    Color = DiscordColor.Green
-                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
-                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
-                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
-                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
-                .AddField("Comando", $"/{e.Context.CommandName}", false)
-                );
-            });
-            return Task.CompletedTask;
-        }
-
-        private Task SlashCommands_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e)
-        {
-            _ = Task.Run(async () =>
-            {
-                await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder
-                {
-                    Title = "Error no controlado",
-                    Description = $"{e.Exception.Message}\n```{e.Exception.StackTrace}```",
-                    Color = DiscordColor.Red
-                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
-                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
-                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
-                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
-                .AddField("Comando", $"{e.Context.CommandName}", false)
-                );
-            });
-
             return Task.CompletedTask;
         }
     }

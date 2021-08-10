@@ -1,7 +1,6 @@
 ﻿using Discord_Bot;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using System;
 using System.Collections.Generic;

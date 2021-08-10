@@ -64,15 +64,56 @@ namespace Discord_Bot
 
         public async Task MovidoASlashCommand(CommandContext ctx)
         {
+            string url = ConfigurationManager.AppSettings["Invite"];
             var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
                 Title = "Comando movido a /",
-                Description = $"Para jugar ingresa `/{ctx.Command.Name}` en vez de `{ctx.Prefix}{ctx.Command.Name}`.",
+                Description = $"Para ejecutar este comando ingresa `/{ctx.Command.Name}` en vez de `{ctx.Prefix}{ctx.Command.Name}`.\n\n" +
+                $"Si al ingresar `/` no ves ningún comando de Yumiko dile a un administrador de tu servidor que autorice a Yumiko con [este link]({url}) (no es necesario quitar el bot).",
                 Footer = GetFooter(ctx),
                 Color = DiscordColor.Red,
             });
             await Task.Delay(10000);
             await BorrarMensaje(ctx, msgError.Id);
+        }
+
+        public string GraphQLParse(string queryType, string queryName, string[] subSelection, object @object = null, string objectTypeName = null)
+        {
+            var query = queryType + "{" + queryName;
+
+            if (@object != null)
+            {
+                query += "(";
+
+                if (objectTypeName != null)
+                {
+                    query += objectTypeName + ":" + "{";
+                }
+
+                var queryData = string.Empty;
+                foreach (var propertyInfo in @object.GetType().GetProperties())
+                {
+                    var value = propertyInfo.GetValue(@object);
+                    if (value != null)
+                    {
+                        var type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+                        var valueQuotes = type == typeof(string) ? "\"" : string.Empty;
+
+                        var queryPart = char.ToLowerInvariant(propertyInfo.Name[0]) + propertyInfo.Name.Substring(1) + ":" + valueQuotes + value + valueQuotes;
+                        queryData += queryData.Length > 0 ? "," + queryPart : queryPart;
+                    }
+                }
+                query += (objectTypeName != null ? queryData + "}" : queryData) + ")";
+            }
+
+            if (subSelection.Length > 0)
+            {
+                query += subSelection.Aggregate("{", (current, s) => current + (current.Length > 1 ? "," + s : s)) + "}";
+            }
+
+            query += "}";
+
+            return query;
         }
 
         public async Task<Imagen> GetImagenDiscordYumiko(CommandContext ctx, ulong idChannel)
@@ -187,16 +228,6 @@ namespace Discord_Bot
             IconUrl = ctx.Member.AvatarUrl
         };
 
-        public EmbedAuthor GetAuthor(string nombre, string avatar, string url)
-        {
-            return new EmbedAuthor()
-            {
-                IconUrl = avatar,
-                Name = nombre,
-                Url = url
-            };
-        }
-
         public DiscordColor GetColor() => DiscordColor.Blurple;
 
         public string QuitarCaracteresEspeciales(string str)
@@ -221,6 +252,10 @@ namespace Discord_Bot
                 texto = texto.Replace("~!", "||");
                 texto = texto.Replace("!~", "||");
                 texto = texto.Replace("__", "**");
+                texto = texto.Replace("<b>", "**");
+                texto = texto.Replace("<B>", "**");
+                texto = texto.Replace("</b>", "**");
+                texto = texto.Replace("</B>", "**");
             }
             else
             {
@@ -346,51 +381,48 @@ namespace Discord_Bot
             await DblApi.UpdateStats(guildCount: c.Guilds.Count);
         }
 
-        public async Task<int> GetElegido(Context ctx, List<string> opciones)
+        public async Task<int> GetElegido(InteractionContext ctx, List<string> opciones)
         {
             int cantidadOpciones = opciones.Count;
             if (cantidadOpciones == 1)
                 return 1;
-            if (cantidadOpciones > 1)
+            else
             {
                 var interactivity = ctx.Client.GetInteractivity();
 
-                DiscordMessageBuilder mensajeRondas = new()
-                {
-                    Embed = new DiscordEmbedBuilder
-                    {
-                        Footer = GetFooter(ctx),
-                        Color = GetColor(),
-                        Title = "Elije la opcion",
-                    }
-                };
                 List<DiscordComponent> componentes = new();
                 int i = 0;
                 foreach(var opc in opciones)
                 {
+                    if (i > 5)
+                    {
+                        break;
+                    }
+                    var aux = opc;
+                    if(opc.Length > 80)
+                    {
+                        aux = opc.Substring(0, 77);
+                        aux = aux += "...";
+                    }
                     i++;
-                    DiscordButtonComponent button = new(ButtonStyle.Primary, $"{i}", $"{opc}");
+                    DiscordButtonComponent button = new(ButtonStyle.Primary, $"{i}", $"{aux}");
                     componentes.Add(button);
                 }
 
-                mensajeRondas.AddComponents(componentes);
+                var embed = new DiscordEmbedBuilder
+                {
+                    Footer = GetFooter(ctx),
+                    Color = GetColor(),
+                    Title = "Elije la opcion",
+                };
+                DiscordMessage elegirMsg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddComponents(componentes).AddEmbed(embed));
 
-                DiscordMessage elegirMsg = await mensajeRondas.SendAsync(ctx.Channel);
                 var msgElegirInter = await interactivity.WaitForButtonAsync(elegirMsg, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
 
                 if (!msgElegirInter.TimedOut)
                 {
                     var resultElegir = msgElegirInter.Result;
-                    await Task.Delay(3000);
-                    await BorrarMensaje(ctx, elegirMsg.Id);
                     return int.Parse(resultElegir.Id);
-                }
-                else
-                {
-                    var msg = await ctx.Channel.SendMessageAsync($"Tiempo agotado esperando la opción").ConfigureAwait(false);
-                    await Task.Delay(3000);
-                    await BorrarMensaje(ctx, msg.Id);
-                    await BorrarMensaje(ctx, elegirMsg.Id);
                 }
             }
             return -1;
@@ -608,7 +640,7 @@ namespace Discord_Bot
                     }.AddField("Id Servidor", $"{ctx.Guild.Id}", true)
                     .AddField("Id Canal", $"{ctx.Channel.Id}", true)
                     .AddField("Canal", $"#{ctx.Channel.Name}", false)
-                    .AddField("Mensaje", $"{ctx.Message.Content}", false));
+                    );
                 }
             }
         }
