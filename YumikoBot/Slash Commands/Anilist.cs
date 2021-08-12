@@ -15,7 +15,7 @@ using DSharpPlus.SlashCommands;
 
 namespace Discord_Bot.Modulos
 {
-    public class AnilistSlashCommands : SlashCommandModule
+    public class AnilistSlashCommands : ApplicationCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new();
         private readonly FuncionesAnilist funcionesAnilist = new();
@@ -377,7 +377,7 @@ namespace Discord_Bot.Modulos
             try
             {
                 var data = await graphQLClient.SendQueryAsync<dynamic>(request);
-                if (data != null && data.Data != null && data.Data.media != null)
+                if (data != null && data.Data != null && data.Data.Page.characters != null)
                 {
                     int cont = 0;
                     List<string> opc = new();

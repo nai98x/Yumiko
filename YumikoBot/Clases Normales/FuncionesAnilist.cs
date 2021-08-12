@@ -122,6 +122,96 @@ namespace Discord_Bot
             }
         }
 
+        public async Task<Media> GetAniListCharacter(InteractionContext ctx, string busqueda, string tipo)
+        {
+            var request = new GraphQLRequest
+            {
+                Query =
+                "query($nombre : String){" +
+                "   Page(perPage:5){" +
+                "       characters(search: $nombre){" +
+                "           name{" +
+                "               full" +
+                "           }," +
+                "           image{" +
+                "               large" +
+                "           }," +
+                "           siteUrl," +
+                "           description," +
+                "           animes: media(type: ANIME){" +
+                "               nodes{" +
+                "                   title{" +
+                "                       romaji" +
+                "                   }," +
+                "                   siteUrl" +
+                "               }" +
+                "           }" +
+                "           mangas: media(type: MANGA){" +
+                "               nodes{" +
+                "                   title{" +
+                "                       romaji" +
+                "                   }," +
+                "                   siteUrl" +
+                "               }" +
+                "           }" +
+                "       }" +
+                "   }" +
+                "}",
+                Variables = new
+                {
+                    nombre = busqueda
+                }
+            };
+
+            try
+            {
+                var data = await graphQLClient.SendQueryAsync<dynamic>(request);
+                if (data.Data != null && data.Data.Page.media != null)
+                {
+                    int cont = 0;
+                    List<string> opc = new();
+                    foreach (var animeP in data.Data.Page.media)
+                    {
+                        cont++;
+                        string opcStr = animeP.title.romaji;
+                        opc.Add(opcStr);
+                    }
+                    var elegido = await funciones.GetElegido(ctx, opc);
+                    if (elegido > 0)
+                    {
+                        var datos = data.Data.Page.characters[elegido - 1];
+                        return DecodeCharacter(datos);
+                    }
+                    else
+                    {
+                        return new()
+                        {
+                            Ok = false,
+                            MsgError = $"Tiempo agotado esperando la opción"
+                        };
+                    }
+                }
+                else
+                {
+                    return new()
+                    {
+                        Ok = false,
+                        MsgError = $"No se encontró el {tipo} `{busqueda}`"
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                var context = funciones.GetContext(ctx);
+                await funciones.GrabarLogError(context, $"Error en query en FuncionesAnilist - GetAnilistMedia, utilizado: {tipo}\nError: {e.Message}");
+                return new()
+                {
+                    Ok = false,
+                    MsgError = $"{e.Message}"
+                };
+            }
+        }
+
         public Media DecodeMedia(dynamic datos)
         {
             if(datos != null)
@@ -204,6 +294,47 @@ namespace Discord_Bot
                 media.CoverImage = datos.coverImage.large;
 
                 return media;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public Character DecodeCharacter(dynamic datos)
+        {
+            if (datos != null)
+            {
+                Character character = new();
+
+                string descripcion = datos.description;
+                character.Description = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
+                if (character.Description == "")
+                    character.Description = "(Sin descripción)";
+                character.NameFull = datos.name.full;
+                character.Image = datos.image.large;
+                character.SiteUrl = datos.siteUrl;
+                character.Animes = new();
+                foreach (var anime in datos.animes.nodes)
+                {
+                    character.Animes.Add(new()
+                    {
+                        //TituloRomaji = anime.title.romaji,
+                        //UrlAnilist = anime.siteUrl
+                    });
+                }
+                string mangas = string.Empty;
+                foreach (var manga in datos.mangas.nodes)
+                {
+                    character.Mangas.Add(new()
+                    {
+                        //TitleRomaji = anime.title.romaji,
+                        //SiteUrl = anime.siteUrl
+                    });
+                    mangas += $"[{manga.title.romaji}]({manga.siteUrl})\n";
+                }
+
+                return character;
             }
             else
             {

@@ -917,7 +917,6 @@ namespace Discord_Bot
             {
                 Title = $"Ahorcado ({juego}s)",
                 Description = "¡Escribe una letra!\n\nPuedes terminar la partida en cualquier momento escribiendo `cancelar`",
-                Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor()
             }));
             DiscordMember ganador = ctx.Member;

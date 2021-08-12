@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace YumikoBot
 {
-    public class HelpSlashCommands : SlashCommandModule
+    public class HelpSlashCommands : ApplicationCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new();
 
@@ -40,7 +40,10 @@ namespace YumikoBot
                 var cmdTopLevel = cmdPairTopLevel.Value;
                 foreach(var cmd in cmdTopLevel)
                 {
-                    comandos += $"`/{cmd.Name}` {cmd.Description}\n";
+                    if(cmd.Type == ApplicationCommandType.SlashCommand)
+                    {
+                        comandos += $"`/{cmd.Name}` {cmd.Description}\n";
+                    }
                 }
             }
 

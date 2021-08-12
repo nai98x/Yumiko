@@ -185,6 +185,15 @@ namespace Discord_Bot
             return s;
         }
 
+        public string NormalizarBoton(string s)
+        {
+            if (s.Length > 80)
+            {
+                return s.Remove(76) + " ...";
+            }
+            return s;
+        }
+
         public string NormalizarDescription(string s)
         {
             if (s.Length > 4096)
@@ -398,12 +407,7 @@ namespace Discord_Bot
                     {
                         break;
                     }
-                    var aux = opc;
-                    if(opc.Length > 80)
-                    {
-                        aux = opc.Substring(0, 77);
-                        aux = aux += "...";
-                    }
+                    var aux = NormalizarBoton(opc);
                     i++;
                     DiscordButtonComponent button = new(ButtonStyle.Primary, $"{i}", $"{aux}");
                     componentes.Add(button);
@@ -814,6 +818,64 @@ namespace Discord_Bot
                     Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** SI"
                 },
             };
+        }
+
+        public DiscordEmbedBuilder Waifu(DiscordMember miembro)
+        {
+            string nombre;
+            nombre = miembro.DisplayName;
+
+            int waifuLevel = GetNumeroRandom(0, 100);
+            if (waifuLevel < 25)
+            {
+                return new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Red,
+                    Title = "Nivel de waifu",
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nMe pego un tiro antes de tocarte.",
+                    ImageUrl = "https://i.imgur.com/BOxbruw.png"
+                };
+            }
+            else if (waifuLevel >= 25 && waifuLevel < 50)
+            {
+                return new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Orange,
+                    Title = "Nivel de waifu",
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nMe das asquito, mejor me alejo de vos.",
+                    ImageUrl = "https://i.imgur.com/ys2HoiL.jpg"
+                };
+            }
+            else if (waifuLevel >= 50 && waifuLevel < 75)
+            {
+                return new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Yellow,
+                    Title = "Nivel de waifu",
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nNo estás mal, quizas tengas posibilidades conmigo.",
+                    ImageUrl = "https://i.imgur.com/h7Ic2rk.jpg"
+                };
+            }
+            else if (waifuLevel >= 75 && waifuLevel < 100)
+            {
+                return new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Green,
+                    Title = "Nivel de waifu",
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nSoy tu waifu, podes hacer lo que quieras conmigo.",
+                    ImageUrl = "https://i.imgur.com/dhXR8mV.png"
+                };
+            }
+            else // 100
+            {
+                return new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Blue,
+                    Title = "Nivel de waifu",
+                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\n.Estoy completamente enamorada de ti, ¿cuándo nos casamos?",
+                    ImageUrl = "https://i.imgur.com/Vk6JMJi.jpg"
+                };
+            }
         }
     }
 }

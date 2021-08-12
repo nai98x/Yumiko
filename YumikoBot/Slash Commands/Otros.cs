@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Discord_Bot.Modulos
 {
-    public class OtrosSlashCommands : SlashCommandModule
+    public class OtrosSlashCommands : ApplicationCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new();
 

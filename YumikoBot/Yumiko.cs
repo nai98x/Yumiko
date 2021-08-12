@@ -26,11 +26,13 @@ namespace Discord_Bot
     {
         public DiscordClient Client { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
-        public SlashCommandsExtension SlashCommands { get; private set; }
+        public SlashCommandsExtension ApplicationCommands { get; private set; }
 
         private DiscordChannel LogChannelGeneral;
 
         private DiscordChannel LogChannelSlash;
+
+        private DiscordChannel LogChannelContextMenus;
 
         private DiscordChannel LogChannelServers;
 
@@ -81,7 +83,7 @@ namespace Discord_Bot
             Client.GuildCreated += Client_GuildCreated;
             Client.GuildDeleted += Client_GuildDeleted;
             Client.Resumed += Client_Resumed;
-            Client.ComponentInteractionCreated += Client_ComponentInteractionCreated;
+            Client.ComponentInteractionCreated += async (_, args) => await args.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
 
             Client.UseInteractivity(new InteractivityConfiguration());
 
@@ -106,27 +108,39 @@ namespace Discord_Bot
             Commands.RegisterCommands<Otros>();
             Commands.RegisterCommands<Help>();
 
-            SlashCommands = Client.UseSlashCommands();
+            ApplicationCommands = Client.UseSlashCommands();
 
-            SlashCommands.SlashCommandExecuted += SlashCommands_SlashCommandExecuted;
-            SlashCommands.SlashCommandErrored += SlashCommands_SlashCommandErrored;
+            ApplicationCommands.SlashCommandExecuted += SlashCommands_SlashCommandExecuted;
+            ApplicationCommands.SlashCommandErrored += SlashCommands_SlashCommandErrored;
+
+            ApplicationCommands.ContextMenuExecuted += SlashCommands_ContextMenuExecuted;
+            ApplicationCommands.ContextMenuErrored += SlashCommands_ContextMenuErrored;
 
             if (Debug)
             {
                 ulong idGuildTest = 713809173573271613;
-                SlashCommands.RegisterCommands<JuegosSlashCommands>(idGuildTest);
-                SlashCommands.RegisterCommands<InteractuarSlashCommands>(idGuildTest);
-                SlashCommands.RegisterCommands<AnilistSlashCommands>(idGuildTest);
-                SlashCommands.RegisterCommands<OtrosSlashCommands>(idGuildTest);
-                SlashCommands.RegisterCommands<HelpSlashCommands>(idGuildTest);
+
+                // Slash Commands
+                ApplicationCommands.RegisterCommands<JuegosSlashCommands>(idGuildTest);
+                ApplicationCommands.RegisterCommands<InteractuarSlashCommands>(idGuildTest);
+                ApplicationCommands.RegisterCommands<AnilistSlashCommands>(idGuildTest);
+                ApplicationCommands.RegisterCommands<OtrosSlashCommands>(idGuildTest);
+                ApplicationCommands.RegisterCommands<HelpSlashCommands>(idGuildTest);
+
+                // Context Menus
+                ApplicationCommands.RegisterCommands<InteractuarConextMenus>(idGuildTest);
             }
             else
             {
-                SlashCommands.RegisterCommands<JuegosSlashCommands>();
-                SlashCommands.RegisterCommands<InteractuarSlashCommands>();
-                SlashCommands.RegisterCommands<AnilistSlashCommands>();
-                SlashCommands.RegisterCommands<OtrosSlashCommands>();
-                SlashCommands.RegisterCommands<HelpSlashCommands>();
+                // Slash Commands
+                ApplicationCommands.RegisterCommands<JuegosSlashCommands>();
+                ApplicationCommands.RegisterCommands<InteractuarSlashCommands>();
+                ApplicationCommands.RegisterCommands<AnilistSlashCommands>();
+                ApplicationCommands.RegisterCommands<OtrosSlashCommands>();
+                ApplicationCommands.RegisterCommands<HelpSlashCommands>();
+
+                // Context Menus
+                ApplicationCommands.RegisterCommands<InteractuarConextMenus>();
             }
 
             Commands.RegisterConverter(new MemberConverter());
@@ -136,17 +150,19 @@ namespace Discord_Bot
             var LogGuild = await Client.GetGuildAsync(713809173573271613);
             if (Debug)
             {
-                LogChannelGeneral = LogGuild.GetChannel(820711607796891658);
-                LogChannelSlash   = LogGuild.GetChannel(866810782360928306);
-                LogChannelServers = LogGuild.GetChannel(840440818921897985);
-                LogChannelErrores = LogGuild.GetChannel(840440877565739008);
+                LogChannelGeneral      = LogGuild.GetChannel(820711607796891658);
+                LogChannelSlash        = LogGuild.GetChannel(866810782360928306);
+                LogChannelContextMenus = LogGuild.GetChannel(875049729455693824);
+                LogChannelServers      = LogGuild.GetChannel(840440818921897985);
+                LogChannelErrores      = LogGuild.GetChannel(840440877565739008);
             }
             else
             {
-                LogChannelGeneral = LogGuild.GetChannel(781679685838569502);
-                LogChannelSlash   = LogGuild.GetChannel(866810567644676126);
-                LogChannelServers = LogGuild.GetChannel(840437931847974932);
-                LogChannelErrores = LogGuild.GetChannel(840439731011452959);
+                LogChannelGeneral      = LogGuild.GetChannel(781679685838569502);
+                LogChannelSlash        = LogGuild.GetChannel(866810567644676126);
+                LogChannelContextMenus = LogGuild.GetChannel(875049729585725450);
+                LogChannelServers      = LogGuild.GetChannel(840437931847974932);
+                LogChannelErrores      = LogGuild.GetChannel(840439731011452959);
             }
 
             await RotarEstado();
@@ -260,22 +276,88 @@ namespace Discord_Bot
             return Task.CompletedTask;
         }
 
-        private Task Client_ComponentInteractionCreated(DiscordClient sender, ComponentInteractionCreateEventArgs e)
-        {
-            _ = Task.Run(async () =>
-            {
-                await e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
-            });
-            return Task.CompletedTask;
-        }
-
         private Task SlashCommands_SlashCommandExecuted(SlashCommandsExtension sender, SlashCommandExecutedEventArgs e)
         {
             _ = Task.Run(async () =>
             {
+                string options = string.Empty;
+                var args = e.Context.Interaction.Data.Options;
+                if(args != null)
+                {
+                    foreach (var arg in args)
+                    {
+                        options += $"`{arg.Name}: {arg.Value}` ";
+                    }
+                }
                 await LogChannelSlash.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
-                    Title = "Slash command ejecutado",
+                    Title = "Slash Command ejecutado",
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator}",
+                        IconUrl = e.Context.User.AvatarUrl
+                    },
+                    Author = new EmbedAuthor()
+                    {
+                        IconUrl = e.Context.Guild.IconUrl,
+                        Name = $"{e.Context.Guild.Name}"
+                    },
+                    Color = DiscordColor.Green
+                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
+                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                .AddField("Comando", $"/{e.Context.CommandName} {options}", false)
+                );
+            });
+            return Task.CompletedTask;
+        }
+
+        private Task SlashCommands_SlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                string options = string.Empty;
+                var args = e.Context.Interaction.Data.Options;
+                if (args != null)
+                {
+                    foreach (var arg in args)
+                    {
+                        options += $"`{arg.Name}: {arg.Value}` ";
+                    }
+                }
+                await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder
+                {
+                    Title = "Error no controlado (Slash Commands)",
+                    Description = $"{e.Exception.Message}\n```{e.Exception.StackTrace}```",
+                    Color = DiscordColor.Red,
+                    Footer = new EmbedFooter()
+                    {
+                        Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator}",
+                        IconUrl = e.Context.User.AvatarUrl
+                    },
+                    Author = new EmbedAuthor()
+                    {
+                        IconUrl = e.Context.Guild.IconUrl,
+                        Name = $"{e.Context.Guild.Name}"
+                    },
+                }.AddField("Id Servidor", $"{e.Context.Guild.Id}", true)
+                .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
+                .AddField("Id Usuario", $"{e.Context.User.Id}", true)
+                .AddField("Canal", $"#{e.Context.Channel.Name}", false)
+                .AddField("Comando", $"/{e.Context.CommandName} {options}", false)
+                );
+            });
+            return Task.CompletedTask;
+        }
+
+        private Task SlashCommands_ContextMenuExecuted(SlashCommandsExtension sender, ContextMenuExecutedEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                await LogChannelContextMenus.SendMessageAsync(embed: new DiscordEmbedBuilder()
+                {
+                    Title = "Context Menu ejecutado",
                     Footer = new EmbedFooter()
                     {
                         Text = $"{e.Context.User.Username}#{e.Context.User.Discriminator}",
@@ -297,13 +379,19 @@ namespace Discord_Bot
             return Task.CompletedTask;
         }
 
-        private Task SlashCommands_SlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
+        private Task SlashCommands_ContextMenuErrored(SlashCommandsExtension sender, ContextMenuErrorEventArgs e)
         {
             _ = Task.Run(async () =>
             {
+                string options = string.Empty;
+                var args = e.Context.Interaction.Data.Options;
+                foreach (var arg in args)
+                {
+                    options += $"`{arg.Name}: {arg.Value}` ";
+                }
                 await LogChannelErrores.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = "Error no controlado",
+                    Title = "Error no controlado (Context Menus)",
                     Description = $"{e.Exception.Message}\n```{e.Exception.StackTrace}```",
                     Color = DiscordColor.Red,
                     Footer = new EmbedFooter()
@@ -320,7 +408,7 @@ namespace Discord_Bot
                 .AddField("Id Canal", $"{e.Context.Channel.Id}", true)
                 .AddField("Id Usuario", $"{e.Context.User.Id}", true)
                 .AddField("Canal", $"#{e.Context.Channel.Name}", false)
-                .AddField("Comando", $"/{e.Context.CommandName}", false)
+                .AddField("Comando", $"/{e.Context.CommandName} {options}", false)
                 );
             });
             return Task.CompletedTask;

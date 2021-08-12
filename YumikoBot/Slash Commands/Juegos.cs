@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace YumikoBot
 {
-    public class JuegosSlashCommands : SlashCommandModule
+    public class JuegosSlashCommands : ApplicationCommandModule
     {
         private readonly FuncionesAuxiliares funciones = new();
         private readonly FuncionesJuegos funcionesJuegos = new();
@@ -306,8 +306,8 @@ namespace YumikoBot
                     Color = DiscordColor.Red
                 };
 
-                DiscordButtonComponent button1 = new(ButtonStyle.Success, $"{elegido1.Id}", $"{elegido1.TitleRomaji}");
-                DiscordButtonComponent button2 = new(ButtonStyle.Danger, $"{elegido2.Id}", $"{elegido2.TitleRomaji}");
+                DiscordButtonComponent button1 = new(ButtonStyle.Success, $"{elegido1.Id}", $"{funciones.NormalizarBoton(elegido1.TitleRomaji)}");
+                DiscordButtonComponent button2 = new(ButtonStyle.Danger, $"{elegido2.Id}", $"{funciones.NormalizarBoton(elegido2.TitleRomaji)}");
 
                 var msgElegir = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embed1).AddEmbed(embed2).AddComponents(button1, button2).WithContent("¿Cuál tiene mejor puntuación?"));
                 double timeout = 15;
@@ -348,7 +348,7 @@ namespace YumikoBot
                             Title = $"¡{acertador.DisplayName} le ha acertado!",
                             Description = $"**{seleccionado.TitleRomaji}** tiene **{puntajeSel}/10** de puntuación promedio mientras **{otro.TitleRomaji}** tiene **{puntajeOtro}/10**\n\nPuntuación: **{puntuacion}**",
                             Color = DiscordColor.Green
-                        }));
+                        }.WithFooter($"Partida iniciada por {ctx.User.Username}#{ctx.User.Discriminator}", ctx.User.AvatarUrl)));
                     }
                     else
                     {
@@ -357,7 +357,7 @@ namespace YumikoBot
                             Title = $"¡{acertador.DisplayName} le ha errado!",
                             Description = $"**¡Derrota!**\n\n**{seleccionado.TitleRomaji}** tiene menor puntuación promedio **({puntajeSel}/10)** que **{otro.TitleRomaji} ({puntajeOtro}/10)**\n\nPuntuación: **{puntuacion}**",
                             Color = DiscordColor.Red
-                        }));
+                        }.WithFooter($"Partida iniciada por {ctx.User.Username}#{ctx.User.Discriminator}", ctx.User.AvatarUrl)));
                         jugar = false;
                     }
                 }
@@ -367,14 +367,13 @@ namespace YumikoBot
                         Title = "Derrota",
                         Description = $"Han pasado {timeout} segundos y no se ha contestado a tiempo",
                         Color = DiscordColor.Red
-                    }));
+                    }.WithFooter($"Partida iniciada por {ctx.User.Username}#{ctx.User.Discriminator}", ctx.User.AvatarUrl)));
                     jugar = false;
                 }
 
                 lista.Remove(elegido1);
                 lista.Remove(elegido2);
             }
-            // juego terminado cartel (preguntar si se vacio la lista)
         }
 
         [SlashCommand("stats", "Busca las estadisticas de un quiz")]
