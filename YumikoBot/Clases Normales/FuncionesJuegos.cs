@@ -221,7 +221,7 @@ namespace Discord_Bot
                     ImageUrl = elegido.Image,
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {
-                        Text = $"{elegido.Favoritos} {corazon} (nº {elegido.Popularidad} en popularidad)"
+                        Text = $"{elegido.Favoritos} {corazon}"
                     }
                 }).ConfigureAwait(false);
                 string desc = string.Empty;
@@ -635,16 +635,40 @@ namespace Discord_Bot
                     "       }" +
                     "   }" +
                     "}";
-            int popularidad;
-            if (settings.IterIni == 1)
-                popularidad = 1;
-            else
-                popularidad = settings.IterIni * 50;
-            int i = settings.IterIni;
+
+            int random1;
+            int random2;
+
+            if(tag || genero)
+            {
+                settings.IterIni = 0;
+                settings.IterFin = 10;
+            }
+
+            random1 = funciones.GetNumeroRandom(settings.IterIni, settings.IterFin);
+            do
+            {
+                random2 = funciones.GetNumeroRandom(settings.IterIni, settings.IterFin);
+            } while (random1 == random2);
+
+            bool firstloop = true, secondloop = true;
+
             string hasNextValue;
             int iter = 0;
             do
             {
+                int i = 0;
+                if (!firstloop && secondloop)
+                {
+                    secondloop = false;
+                    i = random2;
+                }
+                if (firstloop)
+                {
+                    firstloop = false;
+                    i = random1;
+                }
+
                 var request = new GraphQLRequest
                 {
                     Query = query,
@@ -679,7 +703,6 @@ namespace Discord_Bot
 
                             Favoritos = x.favourites,
                             AvarageScore = score,
-                            Popularidad = popularidad,
                             Estudios = new List<Estudio>(),
                             Sinonimos = new List<string>(),
                             Personajes = new List<Character>()
@@ -719,7 +742,6 @@ namespace Discord_Bot
                                 }
                             }
                         }
-                        popularidad++;
                         if ((!estudios && !personajes) || (estudios && anim.Estudios.Count > 0) || (personajes && anim.Personajes.Count > 0))
                         {
                             animeList.Add(anim);
@@ -737,8 +759,7 @@ namespace Discord_Bot
                     await funciones.BorrarMensaje(ctx, msg.Id);
                     return animeList;
                 }
-                i++;
-            } while (hasNextValue.ToLower() == "true" && (((tag || genero) && iter < 10) || (!tag && !genero && i <= settings.IterFin)));
+            } while (hasNextValue.ToLower() == "true" && (firstloop || secondloop));
             await funciones.BorrarMensaje(ctx, mensaje.Id);
             return animeList;
         }
@@ -785,15 +806,30 @@ namespace Discord_Bot
                         "       }" +
                         "   }" +
                         "}";
-            int popularidad;
-            if (settings.IterIni == 1)
-                popularidad = 1;
-            else
-                popularidad = settings.IterIni * 50;
-            int i = settings.IterIni;
+
+            int random1 = funciones.GetNumeroRandom(settings.IterIni, settings.IterFin);
+            int random2;
+            do
+            {
+                random2 = funciones.GetNumeroRandom(settings.IterIni, settings.IterFin);
+            } while (random1 == random2);
+            bool firstloop = true, secondloop = true;
+
             string hasNextValue;
             do
             {
+                int i = 0;
+                if (!firstloop && secondloop)
+                {
+                    secondloop = false;
+                    i = random2;
+                }
+                if (firstloop)
+                {
+                    firstloop = false;
+                    i = random1;
+                }
+
                 var request = new GraphQLRequest
                 {
                     Query = query,
@@ -816,10 +852,8 @@ namespace Discord_Bot
                             NameFull = x.name.full,
                             SiteUrl = x.siteUrl,
                             Favoritos = x.favourites,
-                            Animes = new List<Anime>(),
-                            Popularidad = popularidad
+                            Animes = new List<Anime>()
                         };
-                        popularidad++;
                         if (animes)
                         {
                             foreach (var y in x.media.nodes)
@@ -861,8 +895,7 @@ namespace Discord_Bot
                     await funciones.BorrarMensaje(ctx, msg.Id);
                     return characterList;
                 }
-                i++;
-            } while (hasNextValue.ToLower() == "true" && i <= settings.IterFin);
+            } while (hasNextValue.ToLower() == "true" && (firstloop || secondloop));
             await funciones.BorrarMensaje(ctx, mensaje.Id);
             return characterList;
         }

@@ -13,7 +13,6 @@ namespace Discord_Bot
         public List<Anime> Animes { get; set; }
         public List<Media> Mangas { get; set; }
         public int Favoritos { get; set; }
-        public int Popularidad { get; set; }
         public Anime AnimePrincipal { get; set; }
     }
 }
