@@ -62,21 +62,6 @@ namespace Discord_Bot
             };
         }
 
-        public async Task MovidoASlashCommand(CommandContext ctx)
-        {
-            string url = ConfigurationManager.AppSettings["Invite"];
-            var msgError = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
-            {
-                Title = "Comando movido a /",
-                Description = $"Para ejecutar este comando ingresa `/{ctx.Command.Name}` en vez de `{ctx.Prefix}{ctx.Command.Name}`.\n\n" +
-                $"Si al ingresar `/` no ves ningún comando de Yumiko dile a un administrador de tu servidor que autorice a Yumiko con [este link]({url}) (no es necesario quitar el bot).",
-                Footer = GetFooter(ctx),
-                Color = DiscordColor.Red,
-            });
-            await Task.Delay(10000);
-            await BorrarMensaje(ctx, msgError.Id);
-        }
-
         public string GraphQLParse(string queryType, string queryName, string[] subSelection, object @object = null, string objectTypeName = null)
         {
             var query = queryType + "{" + queryName;
@@ -121,13 +106,13 @@ namespace Discord_Bot
             DiscordGuild discordOOC = await ctx.Client.GetGuildAsync(713809173573271613);
             if (discordOOC == null)
             {
-                await ctx.Channel.SendMessageAsync("Error al obtener servidor").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync("Failed to get server").ConfigureAwait(false);
                 return null;
             }
             DiscordChannel channel = discordOOC.GetChannel(idChannel);
             if (channel == null)
             {
-                await ctx.Channel.SendMessageAsync("Error al obtener canal del servidor").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync("Failed to get channel").ConfigureAwait(false);
                 return null;
             }
             IReadOnlyList<DiscordMessage> mensajes = await channel.GetMessagesAsync();
@@ -221,19 +206,19 @@ namespace Discord_Bot
         
         public EmbedFooter GetFooter(CommandContext ctx) => new()
         {
-            Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator}) | {ctx.Prefix}{ctx.Command.Name}",
+            Text = $"Executed by {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator}) | {ctx.Prefix}{ctx.Command.Name}",
             IconUrl = ctx.Member.AvatarUrl
         };
 
         public EmbedFooter GetFooter(InteractionContext ctx) => new()
         {
-            Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator})",
+            Text = $"Executed by {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator})",
             IconUrl = ctx.Member.AvatarUrl
         };
 
         public EmbedFooter GetFooter(Context ctx) => new()
         {
-            Text = $"Invocado por {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator})",
+            Text = $"Executed by {ctx.Member.DisplayName} ({ctx.Member.Username}#{ctx.Member.Discriminator})",
             IconUrl = ctx.Member.AvatarUrl
         };
 
@@ -278,11 +263,11 @@ namespace Discord_Bot
             string path = $@"c:\temp\descargaLinks.txt";
             using (FileStream fs = File.Create(path))
             {
-                string linksList = $"Links de descarga para {links.name}\n\n";
+                string linksList = $"Download links for {links.name} (Spanish)\n\n";
                 var hosts = links.hosts;
                 foreach(var host in hosts)
                 {
-                    linksList += $"Servidor: {host.name}\n";
+                    linksList += $"Server: {host.name}\n";
                     var linkList = host.links;
                     foreach(var l in linkList)
                     {
@@ -315,7 +300,7 @@ namespace Discord_Bot
                     var mensaje = await ctx.Channel.GetMessageAsync(msgId);
                     if (mensaje != null)
                     {
-                        await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                        await mensaje.DeleteAsync("Yumiko's auto erase");
                     }
                 }
                 catch (Exception){ }
@@ -331,7 +316,7 @@ namespace Discord_Bot
                     var mensaje = await ctx.Channel.GetMessageAsync(msgId);
                     if (mensaje != null)
                     {
-                        await mensaje.DeleteAsync("Auto borrado de Yumiko");
+                        await mensaje.DeleteAsync("Yumiko's auto erase");
                     }
                 }
                 catch (Exception) { }
@@ -365,8 +350,8 @@ namespace Discord_Bot
                         string url = "https://top.gg/bot/295182825521545218/vote";
                         var mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
                         {
-                            Title = $"¡Votame en Top.gg!",
-                            Description = $"Puedes ayudarme votando en [este sitio web]({url}). ¡Gracias!",
+                            Title = $"Vote me on Top.gg!",
+                            Description = $"You can help me by voting me in this [website]({url}). Thanks!",
                             Color = GetColor()
                         }).ConfigureAwait(false);
                         await Task.Delay(10000);
@@ -417,7 +402,7 @@ namespace Discord_Bot
                 {
                     Footer = GetFooter(ctx),
                     Color = GetColor(),
-                    Title = "Elije la opcion",
+                    Title = "Choose the option",
                 };
                 DiscordMessage elegirMsg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddComponents(componentes).AddEmbed(embed));
 
@@ -434,7 +419,7 @@ namespace Discord_Bot
 
         public async Task<bool> GetSiNoInteractivity(Context ctx, InteractivityExtension interactivity, string titulo, string descripcion)
         {
-            DiscordButtonComponent buttonSi = new(ButtonStyle.Success, "true", "Si");
+            DiscordButtonComponent buttonSi = new(ButtonStyle.Success, "true", "Yes");
             DiscordButtonComponent buttonNo = new(ButtonStyle.Danger, "false", "No");
 
             DiscordMessageBuilder mensajeRondas = new()
@@ -525,10 +510,10 @@ namespace Discord_Bot
             }
             catch (Exception ex)
             {
-                await GrabarLogError(ctx, $"Error inesperado en  GetRandomCharacter");
+                await GrabarLogError(ctx, $"Unknow error in GetRandomCharacter");
                 DiscordMessage msg = ex.Message switch
                 {
-                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                    _ => await ctx.Channel.SendMessageAsync($"Unknow error: {ex.Message}").ConfigureAwait(false),
                 };
                 await Task.Delay(3000);
                 await BorrarMensaje(ctx, msg.Id);
@@ -584,10 +569,10 @@ namespace Discord_Bot
             }
             catch (Exception ex)
             {
-                await GrabarLogError(ctx, $"Error inesperado en  GetRandomMedia");
+                await GrabarLogError(ctx, $"Unknow error in GetRandomMedia");
                 DiscordMessage msg = ex.Message switch
                 {
-                    _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                    _ => await ctx.Channel.SendMessageAsync($"Unknow error: {ex.Message}").ConfigureAwait(false),
                 };
                 await Task.Delay(3000);
                 await BorrarMensaje(ctx, msg.Id);
@@ -614,10 +599,10 @@ namespace Discord_Bot
                             IconUrl = ctx.Guild.IconUrl,
                             Name = ctx.Guild.Name
                         },
-                    }.AddField("Id Servidor", $"{ctx.Guild.Id}", true)
-                    .AddField("Id Canal", $"{ctx.Channel.Id}", true)
-                    .AddField("Canal", $"#{ctx.Channel.Name}", false)
-                    .AddField("Mensaje", $"{ctx.Message.Content}", false));
+                    }.AddField("Guild Id", $"{ctx.Guild.Id}", true)
+                    .AddField("Channel Id", $"{ctx.Channel.Id}", true)
+                    .AddField("Channel", $"#{ctx.Channel.Name}", false)
+                    .AddField("Message", $"{ctx.Message.Content}", false));
                 }
             }
         }
@@ -641,9 +626,9 @@ namespace Discord_Bot
                             IconUrl = ctx.Guild.IconUrl,
                             Name = ctx.Guild.Name
                         },
-                    }.AddField("Id Servidor", $"{ctx.Guild.Id}", true)
-                    .AddField("Id Canal", $"{ctx.Channel.Id}", true)
-                    .AddField("Canal", $"#{ctx.Channel.Name}", false)
+                    }.AddField("Guild Id", $"{ctx.Guild.Id}", true)
+                    .AddField("Channel Id", $"{ctx.Channel.Id}", true)
+                    .AddField("Channel", $"#{ctx.Channel.Name}", false)
                     );
                 }
             }
@@ -692,7 +677,7 @@ namespace Discord_Bot
             string nomComando = comando.Name;
             var builder = new DiscordEmbedBuilder
             {
-                Title = $"Comando {nomComando}",
+                Title = $"Command {nomComando}",
                 Url = web,
                 Footer = GetFooter(ctx),
                 Color = GetColor()
@@ -701,7 +686,7 @@ namespace Discord_Bot
             var aliases = comando.Aliases;
             string descripcion = comando.Description;
             if (modulo != null)
-                builder.AddField("Modulo", modulo, false);
+                builder.AddField("Module", modulo, false);
             if (aliases.Count > 0)
             {
                 List<string> listaAliases = new();
@@ -713,7 +698,7 @@ namespace Discord_Bot
                 builder.AddField("Aliases", aliasesC, false);
             }
             if (descripcion != null)
-                builder.AddField("Descripcion", descripcion, false);
+                builder.AddField("Description", descripcion, false);
             foreach (var overload in comando.Overloads)
             {
                 string parametros = string.Empty;
@@ -722,20 +707,20 @@ namespace Discord_Bot
                     if (argument.Description != null)
                     {
                         if (argument.IsOptional)
-                            parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Obligatorio: **No**\n";
+                            parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Mandatory: **No**\n";
                         else
-                            parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Obligatorio: **Si**\n";
+                            parametros += $":arrow_right: **{argument.Name}** | {argument.Description} | Mandatory: **Ýes**\n";
                     }
                     else
                     {
                         if (argument.IsOptional)
-                            parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **No**\n";
+                            parametros += $":arrow_right: **{argument.Name}** | Mandatory: **No**\n";
                         else
-                            parametros += $":arrow_right: **{argument.Name}** | Obligatorio: **Si**\n";
+                            parametros += $":arrow_right: **{argument.Name}** | Mandatory: **Yes**\n";
                     }
                 }
                 if (!string.IsNullOrEmpty(parametros))
-                    builder.AddField("Parametros", parametros, false);
+                    builder.AddField("Parameters", parametros, false);
             }
             return await ctx.Channel.SendMessageAsync(embed: builder).ConfigureAwait(false);
         }
@@ -776,29 +761,6 @@ namespace Discord_Bot
             return lista;
         }
 
-        public DiscordEmbedBuilder Pregunta(CommandContext ctx, string pregunta)
-        {
-            Random rnd = new();
-            int random = rnd.Next(2);
-            return random switch
-            {
-                0 => new DiscordEmbedBuilder
-                {
-                    Footer = GetFooter(ctx),
-                    Color = DiscordColor.Red,
-                    Title = "¿SI O NO?",
-                    Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** NO"
-                },
-                _ => new DiscordEmbedBuilder
-                {
-                    Footer = GetFooter(ctx),
-                    Color = DiscordColor.Green,
-                    Title = "¿SI O NO?",
-                    Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** SI"
-                },
-            };
-        }
-
         public DiscordEmbedBuilder Pregunta(string pregunta)
         {
             Random rnd = new();
@@ -808,14 +770,14 @@ namespace Discord_Bot
                 0 => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Red,
-                    Title = "¿SI O NO?",
-                    Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** NO"
+                    Title = "YES OR NO?",
+                    Description = "**Question:** " + pregunta + "\n**Answer:** NO"
                 },
                 _ => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Green,
-                    Title = "¿SI O NO?",
-                    Description = "**Pregunta:** " + pregunta + "\n**Respuesta:** SI"
+                    Title = "YES OR NO?",
+                    Description = "**Question:** " + pregunta + "\n**Answer:** SI"
                 },
             };
         }
@@ -831,8 +793,8 @@ namespace Discord_Bot
                 return new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Red,
-                    Title = "Nivel de waifu",
-                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nMe pego un tiro antes de tocarte.",
+                    Title = "Waifu level",
+                    Description = "My love to **" + nombre + "** is **" + waifuLevel + "%**\nI would rather shoot myself than touch you.",
                     ImageUrl = "https://i.imgur.com/BOxbruw.png"
                 };
             }
@@ -841,8 +803,8 @@ namespace Discord_Bot
                 return new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Orange,
-                    Title = "Nivel de waifu",
-                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nMe das asquito, mejor me alejo de vos.",
+                    Title = "Waifu level",
+                    Description = "My love to **" + nombre + "** is **" + waifuLevel + "%**\nYou disgust me, I better get away from you.",
                     ImageUrl = "https://i.imgur.com/ys2HoiL.jpg"
                 };
             }
@@ -851,8 +813,8 @@ namespace Discord_Bot
                 return new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Yellow,
-                    Title = "Nivel de waifu",
-                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nNo estás mal, quizas tengas posibilidades conmigo.",
+                    Title = "Waifu level",
+                    Description = "My love to **" + nombre + "** is **" + waifuLevel + "%**\nYou're not bad, maybe you have a chance with me.",
                     ImageUrl = "https://i.imgur.com/h7Ic2rk.jpg"
                 };
             }
@@ -861,8 +823,8 @@ namespace Discord_Bot
                 return new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Green,
-                    Title = "Nivel de waifu",
-                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\nSoy tu waifu, podes hacer lo que quieras conmigo.",
+                    Title = "Waifu level",
+                    Description = "My love to **" + nombre + "** is **" + waifuLevel + "%**\nI'm your waifu, you can do whatever you want with me.",
                     ImageUrl = "https://i.imgur.com/dhXR8mV.png"
                 };
             }
@@ -871,8 +833,8 @@ namespace Discord_Bot
                 return new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Blue,
-                    Title = "Nivel de waifu",
-                    Description = "Mi amor hacia **" + nombre + "** es de **" + waifuLevel + "%**\n.Estoy completamente enamorada de ti, ¿cuándo nos casamos?",
+                    Title = "Waifu level",
+                    Description = "My love to **" + nombre + "** is **" + waifuLevel + "%**\n.I am completely in love with you, when did we get married?",
                     ImageUrl = "https://i.imgur.com/Vk6JMJi.jpg"
                 };
             }

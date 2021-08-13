@@ -30,7 +30,7 @@ namespace Discord_Bot
             if (juego == "tag" || juego == "genero")
                 resultados = $"{funciones.UppercaseFirst(juego)}: **{dificultad}**\n\n";
             else
-                resultados = $"Dificultad: **{dificultad}**\n\n";
+                resultados = $"Difficulty: **{dificultad}**\n\n";
             participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
             int tot = 0;
             int pos = 0;
@@ -44,18 +44,18 @@ namespace Discord_Bot
                 {
                     case 1:
                         DiscordEmoji emoji1 = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                        resultados += $"{emoji1} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
+                        resultados += $"{emoji1} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} guesses ({porcentaje}%)\n";
                         break;
                     case 2:
                         DiscordEmoji emoji2 = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                        resultados += $"{emoji2} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
+                        resultados += $"{emoji2} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} guesses ({porcentaje}%)\n";
                         break;
                     case 3:
                         DiscordEmoji emoji3 = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                        resultados += $"{emoji3} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
+                        resultados += $"{emoji3} - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} guesses ({porcentaje}%)\n";
                         break;
                     default:
-                        resultados += $"**#{pos}** - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} aciertos ({porcentaje}%)\n";
+                        resultados += $"**#{pos}** - **{uj.Usuario.Username}#{uj.Usuario.Discriminator}**: {uj.Puntaje} guesses ({porcentaje}%)\n";
                         break;
                 }
                 lastScore = uj.Puntaje;
@@ -65,12 +65,12 @@ namespace Discord_Bot
             resultados += $"\n**Total ({tot}/{rondas})**";
             string titulo;
             if (juego.Contains("ahorcado"))
-                titulo = "Ahorcado";
+                titulo = "Hangman";
             else
-                titulo = $"Adivina el {juego}";
+                titulo = $"Guess the {juego}";
             await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
             {
-                Title = $"Resultados - {titulo}",
+                Title = $"Results - {titulo}",
                 Description = resultados,
                 Color = funciones.GetColor(),
                 Footer = funciones.GetFooter(ctx)
@@ -103,12 +103,12 @@ namespace Discord_Bot
                             {
                                 Embed = new DiscordEmbedBuilder
                                 {
-                                    Title = "Escribe un tag",
+                                    Title = "Type a tag",
                                     Description = tagsStr,
                                     Color = funciones.GetColor(),
                                     Footer = new DiscordEmbedBuilder.EmbedFooter
                                     {
-                                        Text = $"Obtenido desde AniList | Página {pages.Count + 1}/{ultPagina + 1}",
+                                        Text = $"Obtained from AniList | Page {pages.Count + 1}/{ultPagina + 1}",
                                         IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"]
                                     }
                                 }
@@ -123,12 +123,12 @@ namespace Discord_Bot
                         {
                             Embed = new DiscordEmbedBuilder
                             {
-                                Title = "Escribe un tag",
+                                Title = "Type a tag",
                                 Description = tagsStr,
                                 Color = funciones.GetColor(),
                                 Footer = new DiscordEmbedBuilder.EmbedFooter
                                 {
-                                    Text = $"Obtenido desde AniList | Página {pages.Count + 1}/{ultPagina + 1}",
+                                    Text = $"Obtained from AniList | Page {pages.Count + 1}/{ultPagina + 1}",
                                     IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"]
                                 }
                             }
@@ -141,8 +141,8 @@ namespace Discord_Bot
                 {
                     await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
-                        Title = "Escriber un tag!",
-                        Description = "Para ver los tags dispibles habilita a Yumiko el permiso de `Gestionar Mensajes` y vuelve a ejecutar el comando.",
+                        Title = "Type a tag!",
+                        Description = "To see the available tags, give Yumiko the `Manage Messages` permission and run the command again.",
                         Color = funciones.GetColor()
                     });
                 }
@@ -168,7 +168,7 @@ namespace Discord_Bot
                     return new SettingsJuego()
                     {
                         Ok = false,
-                        MsgError = "Tiempo agotado esperando el tag"
+                        MsgError = "Timeout waiting for a tag"
                     };
                 }
             }
@@ -189,7 +189,7 @@ namespace Discord_Bot
                     return respuesta;
                 }
             }
-            string mensajeErr = "Error de programación, se debe elegir el tag o las rondas";
+            string mensajeErr = "Programming error, tag or rounds must be chosen";
             await funciones.GrabarLogError(ctx, $"{mensajeErr}");
             return new SettingsJuego()
             {
@@ -216,8 +216,8 @@ namespace Discord_Bot
                 await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Gold,
-                    Title = $"Adivina el {juegoMostrar}",
-                    Description = $"Ronda {ronda} de {settings.Rondas}",
+                    Title = $"Guess the {juegoMostrar}",
+                    Description = $"Round {ronda} of {settings.Rondas}",
                     ImageUrl = elegido.Image,
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {
@@ -229,24 +229,24 @@ namespace Discord_Bot
                 switch (juego)
                 {
                     case "personaje":
-                        desc = $"El nombre es: [{elegido.NameFull}]({elegido.SiteUrl})";
+                        desc = $"The name is: [{elegido.NameFull}]({elegido.SiteUrl})";
                         Character elegidoP = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
-                            ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                            ((xm.Content.ToLower() == "cancel" && xm.Author == ctx.User) ||
                             (elegidoP.NameFull != null && xm.Content.ToLower().Trim() == elegidoP.NameFull.ToLower().Trim()) ||
                             (elegidoP.NameFirst != null && xm.Content.ToLower().Trim() == elegidoP.NameFirst.ToLower().Trim()) ||
                             (elegidoP.NameLast != null && xm.Content.ToLower().Trim() == elegidoP.NameLast.ToLower().Trim())
                             ));
                         break;
                     case "anime":
-                        desc = $"Los animes de [{elegido.NameFull}]({elegido.SiteUrl}) son:\n\n";
+                        desc = $"The animes for [{elegido.NameFull}]({elegido.SiteUrl}) are:\n\n";
                         foreach (Anime anim in elegido.Animes)
                         {
                             desc += $"- [{anim.TitleRomajiFormatted}]({anim.SiteUrl})\n";
                         }
                         Character elegidoC = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
-                            ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                            ((xm.Content.ToLower() == "cancel" && xm.Author == ctx.User) ||
                             (elegidoC.Animes.Find(x => x.TitleEnglish != null && x.TitleEnglish.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                             (elegidoC.Animes.Find(x => x.TitleRomaji != null && x.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                             (elegidoC.Animes.Find(x => x.TitleEnglishFormatted != null && x.TitleEnglishFormatted.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
@@ -255,27 +255,27 @@ namespace Discord_Bot
                             ));
                         break;
                     case "manga":
-                        desc = $"El nombre era: [{elegido.TitleRomaji}]({elegido.SiteUrl})";
+                        desc = $"The name is: [{elegido.TitleRomaji}]({elegido.SiteUrl})";
                         Anime elegidoM = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
-                            ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                            ((xm.Content.ToLower() == "cancel" && xm.Author == ctx.User) ||
                             (elegido.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
                             (elegido.TitleRomajiFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleRomajiFormatted.ToLower().Trim())) || (elegido.TitleEnglishFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglishFormatted.ToLower().Trim())) ||
                             (elegidoM.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                             ));
                         break;
                     case "tag":
-                        desc = $"El nombre es: [{elegido.TitleRomaji}]({elegido.SiteUrl})";
+                        desc = $"The name is: [{elegido.TitleRomaji}]({elegido.SiteUrl})";
                         Anime elegidoT = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
-                            ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                            ((xm.Content.ToLower() == "cancel" && xm.Author == ctx.User) ||
                             (elegido.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
                             (elegido.TitleRomajiFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleRomajiFormatted.ToLower().Trim())) || (elegido.TitleEnglishFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglishFormatted.ToLower().Trim())) ||
                             (elegidoT.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                             ));
                         break;
                     case "estudio":
-                        string estudiosStr = $"Los estudios de [{elegido.TitleRomaji}]({elegido.SiteUrl}) son:\n";
+                        string estudiosStr = $"The studios for [{elegido.TitleRomaji}]({elegido.SiteUrl}) are:\n";
                         foreach (var studio in elegido.Estudios)
                         {
                             estudiosStr += $"- [{studio.Nombre}]({studio.SiteUrl})\n";
@@ -283,12 +283,12 @@ namespace Discord_Bot
                         desc = funciones.NormalizarDescription(estudiosStr);
                         Anime elegidoS = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
-                            ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                            ((xm.Content.ToLower() == "cancel" && xm.Author == ctx.User) ||
                             (elegidoS.Estudios.Find(y => y.Nombre.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                             ));
                         break;
                     case "protagonista":
-                        string protagonistasStr = $"Los protagonistas de [{elegido.TitleRomaji}]({elegido.SiteUrl}) son:\n";
+                        string protagonistasStr = $"The protagonists for [{elegido.TitleRomaji}]({elegido.SiteUrl}) are:\n";
                         foreach (var personaje in elegido.Personajes)
                         {
                             protagonistasStr += $"- [{personaje.NameFull}]({personaje.SiteUrl})\n";
@@ -296,35 +296,35 @@ namespace Discord_Bot
                         desc = funciones.NormalizarDescription(protagonistasStr);
                         Anime elegidoPr = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
-                            ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                            ((xm.Content.ToLower() == "cancel" && xm.Author == ctx.User) ||
                             (elegidoPr.Personajes.Find(x => x.NameFull != null && x.NameFull.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                             (elegidoPr.Personajes.Find(x => x.NameFirst != null && x.NameFirst.ToLower().Trim() == xm.Content.ToLower().Trim()) != null) ||
                             (elegidoPr.Personajes.Find(x => x.NameLast != null && x.NameLast.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                             ));
                         break;
                     case "genero":
-                        desc = $"El nombre es: [{elegido.TitleRomajiFormatted}]({elegido.SiteUrl})";
+                        desc = $"The name is: [{elegido.TitleRomajiFormatted}]({elegido.SiteUrl})";
                         Anime elegidoG = elegido;
                         predicate = new Func<DiscordMessage, bool>(xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
-                            ((xm.Content.ToLower() == "cancelar" && xm.Author == ctx.User) ||
+                            ((xm.Content.ToLower() == "cancel" && xm.Author == ctx.User) ||
                             (elegido.TitleRomaji != null && (xm.Content.ToLower().Trim() == elegido.TitleRomaji.ToLower().Trim())) || (elegido.TitleEnglish != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglish.ToLower().Trim())) ||
                             (elegido.TitleRomajiFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleRomajiFormatted.ToLower().Trim())) || (elegido.TitleEnglishFormatted != null && (xm.Content.ToLower().Trim() == elegido.TitleEnglishFormatted.ToLower().Trim())) ||
                             (elegidoG.Sinonimos.Find(y => y.ToLower().Trim() == xm.Content.ToLower().Trim()) != null)
                             ));
                         break;
                     default:
-                        await funciones.GrabarLogError(ctx, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
+                        await funciones.GrabarLogError(ctx, $"There is no case of the switch of FuncionesJuegos - Jugar, used: {juego}");
                         return;
                 }
                 desc = funciones.NormalizarDescription(desc);
                 var msg = await interactivity.WaitForMessageAsync(predicate, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["GuessTimeGames"])));
                 if (!msg.TimedOut)
                 {
-                    if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancelar")
+                    if (msg.Result.Author == ctx.User && msg.Result.Content.ToLower() == "cancel")
                     {
                         await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                         {
-                            Title = $"¡Juego cancelado por {ctx.Member.Username}#{ctx.Member.Discriminator}!",
+                            Title = $"¡Game canceled by {ctx.Member.Username}#{ctx.Member.Discriminator}!",
                             Description = desc,
                             Color = DiscordColor.Red
                         }).ConfigureAwait(false);
@@ -347,7 +347,7 @@ namespace Discord_Bot
                     }
                     await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
-                        Title = $"¡**{acertador.DisplayName}** ha acertado!",
+                        Title = $"¡**{acertador.DisplayName}** has guessed!",
                         Description = desc,
                         Color = DiscordColor.Green
                     }).ConfigureAwait(false);
@@ -356,7 +356,7 @@ namespace Discord_Bot
                 {
                     await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
                     {
-                        Title = "¡Nadie ha acertado!",
+                        Title = "No one has guessed!",
                         Description = desc,
                         Color = DiscordColor.Red
                     }).ConfigureAwait(false);
@@ -388,18 +388,18 @@ namespace Discord_Bot
                         {
                             case 1:
                                 emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                                stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
+                                stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Guesses: **{jugador.PorcentajeAciertos}%** - Games: **{jugador.PartidasTotales}**\n";
                                 break;
                             case 2:
                                 emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                                stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
+                                stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Guesses: **{jugador.PorcentajeAciertos}%** - Games: **{jugador.PartidasTotales}**\n";
                                 break;
                             case 3:
                                 emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                                stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
+                                stats += $"{emoji} - **{miembro.Username}#{miembro.Discriminator}** - Guesses: **{jugador.PorcentajeAciertos}%** - Games: **{jugador.PartidasTotales}**\n";
                                 break;
                             default:
-                                stats += $"**#{pos}** - **{miembro.Username}#{miembro.Discriminator}** - Aciertos: **{jugador.PorcentajeAciertos}%** - Partidas: **{jugador.PartidasTotales}**\n";
+                                stats += $"**#{pos}** - **{miembro.Username}#{miembro.Discriminator}** - Guesses: **{jugador.PorcentajeAciertos}%** - Games: **{jugador.PartidasTotales}**\n";
                                 break;
                         }
                         lastScore = jugador.PorcentajeAciertos;
@@ -419,10 +419,10 @@ namespace Discord_Bot
 
             string titulo;
             if (juego.Contains("ahorcado"))
-                titulo = "Ahorcado";
+                titulo = "Hangman";
             else
-                titulo = $"Adivina el {juego}";
-            var builder = CrearEmbedStats(ctx, $"Estadisticas - {titulo}", facil, media, dificil, extremo);
+                titulo = $"Guess the {juego}";
+            var builder = CrearEmbedStats(ctx, $"Stats - {titulo}", facil, media, dificil, extremo);
             return builder;
         }
 
@@ -444,7 +444,7 @@ namespace Discord_Bot
                 {
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
-                    Title = "Elije el tag escribiendo su número"
+                    Title = "Choose the tag by writing its number"
                 };
                 var pages = interactivity.GeneratePagesInEmbed(tags, DSharpPlus.Interactivity.Enums.SplitType.Line, embed);
                 _ = interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, pages, token: new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token).ConfigureAwait(false);
@@ -463,7 +463,7 @@ namespace Discord_Bot
                             string stats = await GetEstadisticasDificultad(ctx, "tag", elegido);
                             return new DiscordEmbedBuilder
                             {
-                                Title = $"Estadisticas - Adivina el {elegido}",
+                                Title = $"Stats - guess the {elegido}",
                                 Footer = funciones.GetFooter(ctx),
                                 Color = funciones.GetColor(),
                                 Description = stats
@@ -471,17 +471,17 @@ namespace Discord_Bot
                         }
                         else
                         {
-                            msgError = "El numero que indica el tag debe ser valido";
+                            msgError = "The number indicated by the tag must be valid";
                         }
                     }
                     else
                     {
-                        msgError = "Debes indicar un numero para elegir el tag";
+                        msgError = "You must indicate a number to choose the tag";
                     }
                 }
                 else
                 {
-                    msgError = "Tiempo agotado esperando el tag";
+                    msgError = "Timeout waiting for tag";
                 }
                 //await funciones.BorrarMensaje(ctx, msgOpciones.Id);
                 
@@ -500,7 +500,7 @@ namespace Discord_Bot
                     Title = "Error",
                     Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Red,
-                    Description = "No se encontró ninguna partida de adivina el tag, juega partidas para consultar las estadísticas."
+                    Description = "No games for this tag was found, play games to check the statistics."
                 };
             }
         }
@@ -510,7 +510,7 @@ namespace Discord_Bot
             string stats = await GetEstadisticasDificultad(ctx, "genero", genero);
             return new DiscordEmbedBuilder
             {
-                Title = $"Estadisticas - Adivina el {genero}",
+                Title = $"Stats - Guess the {genero}",
                 Footer = funciones.GetFooter(ctx),
                 Color = funciones.GetColor(),
                 Description = stats
@@ -526,13 +526,13 @@ namespace Discord_Bot
                 Color = funciones.GetColor()
             };
             if (!String.IsNullOrEmpty(facil))
-                builder.AddField("Dificultad Fácil", facil);
+                builder.AddField("Easy", facil);
             if (!String.IsNullOrEmpty(media))
-                builder.AddField("Dificultad Media", media);
+                builder.AddField("Medium", media);
             if (!String.IsNullOrEmpty(dificil))
-                builder.AddField("Dificultad Dificil", dificil);
+                builder.AddField("Hard", dificil);
             if (!String.IsNullOrEmpty(extremo))
-                builder.AddField("Dificultad Extremo", extremo);
+                builder.AddField("Extreme", extremo);
             return builder;
         }
 
@@ -551,13 +551,13 @@ namespace Discord_Bot
             List<Anime> animeList = new();
             DiscordMessage mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
             {
-                Title = $"Obteniendo {tipo.ToLower()}s",
-                Description = "Por favor espera mientras se prepara todo",
+                Title = $"Obtaining {tipo.ToLower()}s",
+                Description = "Please wait while everything is prepared",
                 Color = funciones.GetColor(),
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
                     IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"],
-                    Text = "Obtenido desde AniList"
+                    Text = "Obtained from AniList"
                 }
             }).ConfigureAwait(false);
             string mediaFiltros;
@@ -753,7 +753,7 @@ namespace Discord_Bot
                     await funciones.GrabarLogError(ctx, $"{ex.Message}");
                     DiscordMessage msg = ex.Message switch
                     {
-                        _ => await ctx.Channel.SendMessageAsync($"Error inesperado en GetMedia: {ex.Message}").ConfigureAwait(false),
+                        _ => await ctx.Channel.SendMessageAsync($"Unknown error in GetMedia: {ex.Message}").ConfigureAwait(false),
                     };
                     await Task.Delay(3000);
                     await funciones.BorrarMensaje(ctx, msg.Id);
@@ -768,13 +768,13 @@ namespace Discord_Bot
         {
             var characterList = new List<Character>();
             DiscordMessage mensaje = await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder{ 
-                Title = "Obteniendo personajes",
-                Description = "Por favor espera mientras se prepara todo",
+                Title = "Obtaining characters",
+                Description = "Please wait while everything is prepared",
                 Color = funciones.GetColor(),
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
                     IconUrl = ConfigurationManager.AppSettings["AnilistAvatar"],
-                    Text = "Obtenido desde AniList"
+                    Text = "Obtained from AniList"
                 }
             }).ConfigureAwait(false);
             string query = "query($pagina : Int){" +
@@ -886,10 +886,10 @@ namespace Discord_Bot
                 }
                 catch (Exception ex)
                 {
-                    await funciones.GrabarLogError(ctx, $"Error inesperado en GetCharacters: {ex.Message}");
+                    await funciones.GrabarLogError(ctx, $"Unknown error in GetCharacters: {ex.Message}");
                     DiscordMessage msg = ex.Message switch
                     {
-                        _ => await ctx.Channel.SendMessageAsync($"Error inesperado: {ex.Message}").ConfigureAwait(false),
+                        _ => await ctx.Channel.SendMessageAsync($"Unknown error: {ex.Message}").ConfigureAwait(false),
                     };
                     await Task.Delay(3000);
                     await funciones.BorrarMensaje(ctx, msg.Id);
@@ -908,14 +908,14 @@ namespace Discord_Bot
             string nameFull = string.Empty;
             switch (juego)
             {
-                case "personaje":
+                case "character":
                     nameFull = elegido.NameFull.ToLower().Trim();
                     break;
                 case "anime":
                     nameFull = elegido.TitleRomaji.ToLower().Trim();
                     break;
                 default:
-                    await funciones.GrabarLogError(context, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
+                    await funciones.GrabarLogError(context, $"There is no switch case in FuncionesJuegos - Jugar, used: {juego}");
                     return;
             }
             string nameFullParsed = Regex.Replace(nameFull, @"\s+", " ");
@@ -948,8 +948,8 @@ namespace Discord_Bot
             List<UsuarioJuego> participantes = new();
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder()
             {
-                Title = $"Ahorcado ({juego}s)",
-                Description = "¡Escribe una letra!\n\nPuedes terminar la partida en cualquier momento escribiendo `cancelar`",
+                Title = $"Hangman ({juego}s)",
+                Description = "¡Type a letter!\n\nYou can end the game at any time by typing `cancel`",
                 Color = funciones.GetColor()
             }));
             DiscordMember ganador = ctx.Member;
@@ -962,25 +962,25 @@ namespace Discord_Bot
             switch (juego)
             {
                 case "personaje":
-                    desc1 = $"El personaje es [{elegido.NameFull}]({elegido.SiteUrl}) de [{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})";
+                    desc1 = $"The character is [{elegido.NameFull}]({elegido.SiteUrl}) de [{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})";
                     predicate = new Func<DiscordMessage, bool>(
                         xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
-                        ((xm.Content.ToLower().Trim() == "cancelar") ||
+                        ((xm.Content.ToLower().Trim() == "cancel") ||
                         ((xm.Content.ToLower().Trim().Length == 1) && (xm.Content.ToLower().Trim().All(Char.IsLetter)) && (letrasUsadas.Find(x => x == xm.Content.ToLower().Trim()) == null)) ||
                         (xm.Content.ToLower().Trim() == elegido.NameFull.ToLower().Trim())
                         ));
                     break;
                 case "anime":
-                    desc1 = $"El anime es [{elegido.TitleRomaji}]({elegido.SiteUrl})";
+                    desc1 = $"The anime is [{elegido.TitleRomaji}]({elegido.SiteUrl})";
                     predicate = new Func<DiscordMessage, bool>(
                         xm => (xm.Channel == ctx.Channel) && (xm.Author.Id != ctx.Client.CurrentUser.Id) && (!xm.Author.IsBot) &&
-                        ((xm.Content.ToLower().Trim() == "cancelar") ||
+                        ((xm.Content.ToLower().Trim() == "cancel") ||
                         ((xm.Content.ToLower().Trim().Length == 1) && (xm.Content.ToLower().Trim().All(Char.IsLetter)) && (letrasUsadas.Find(x => x == xm.Content.ToLower().Trim()) == null)) ||
                         (elegido.TitleRomaji != null && elegido.TitleRomaji.ToLower().Trim() == xm.Content.ToLower().Trim())
                         ));
                     break;
                 default:
-                    await funciones.GrabarLogError(context, $"No existe case del switch de FuncionesJuegos - Jugar, utilizado: {juego}");
+                    await funciones.GrabarLogError(context, $"There is no switch case in FuncionesJuegos - Jugar, used: {juego}");
                     return;
             }
             do
@@ -995,7 +995,7 @@ namespace Discord_Bot
                         if (acierto != null)
                         {
                             acierto.Acertado = true;
-                            titRonda = $"¡{acertador.DisplayName} ha acertado!";
+                            titRonda = $"{acertador.DisplayName} has guessed!";
                             colRonda = DiscordColor.Green;
                             UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
                             if (usr != null)
@@ -1015,7 +1015,7 @@ namespace Discord_Bot
                         {
                             errores++;
                             rondasPerdidas++;
-                            titRonda = $"¡{acertador.DisplayName} le ha errado!";
+                            titRonda = $"{acertador.DisplayName} has missed!";
                             colRonda = DiscordColor.Red;
                             UsuarioJuego usr = participantes.Find(x => x.Usuario == msg.Result.Author);
                             if (usr == null)
@@ -1125,7 +1125,7 @@ namespace Discord_Bot
                                 "\n";
                                 break;
                         }
-                        desc += "\n**Letras usadas:**\n";
+                        desc += "\n**Used letters:**\n";
                         foreach (var cc in letrasUsadas)
                         {
                             desc += $"`{cc}` ";
@@ -1139,7 +1139,7 @@ namespace Discord_Bot
                     }
                     else
                     {
-                        if (msg.Result.Content.ToLower().Trim() == "cancelar")
+                        if (msg.Result.Content.ToLower().Trim() == "cancel")
                         {
                             errores = 6;
                             partidaTerminada = true;
@@ -1182,8 +1182,8 @@ namespace Discord_Bot
                     errores++;
                     await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
                     {
-                        Title = "¡Nadie ha escrito!",
-                        Description = "Escribe una letra cualquiera para seguir con el juego.",
+                        Title = "No one has typed!",
+                        Description = "Type any letter to continue with the game.",
                         Footer = funciones.GetFooter(ctx),
                         Color = DiscordColor.Red
                     }).ConfigureAwait(false);
@@ -1197,7 +1197,7 @@ namespace Discord_Bot
             {
                 await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
-                    Title = "¡Derrota!",
+                    Title = "Defeat!",
                     Description = $"{desc1}",
                     ImageUrl = elegido.Image,
                     Footer = funciones.GetFooter(ctx),
@@ -1208,9 +1208,9 @@ namespace Discord_Bot
             {
                 await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder()
                 {
-                    Title = "¡Victoria!",
+                    Title = "Victory!",
                     Description = $"{desc1}\n\n" +
-                    $"Ganador: {ganador.Mention}",
+                    $"Winner: {ganador.Mention}",
                     ImageUrl = elegido.Image,
                     Footer = funciones.GetFooter(ctx),
                     Color = DiscordColor.Green
@@ -1247,7 +1247,7 @@ namespace Discord_Bot
                 return new SettingsJuego()
                 {
                     Ok = false,
-                    MsgError = "Error inesperado eligiendo el genero"
+                    MsgError = "Unknown error choosing genre"
                 };
             }
 
@@ -1255,8 +1255,8 @@ namespace Discord_Bot
             {
                 Embed = new DiscordEmbedBuilder
                 {
-                    Title = "Elije el genero",
-                    Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
+                    Title = "Choose the genre",
+                    Description = $"{ctx.User.Mention}, click on a button to continue"
                 }
             };
             int iterInterna = 0;
@@ -1304,7 +1304,7 @@ namespace Discord_Bot
                 return new SettingsJuego()
                 {
                     Ok = false,
-                    MsgError = "Tiempo agotado esperando el genero"
+                    MsgError = "Timeout waiting for the genre"
                 };
             }
         }

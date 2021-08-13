@@ -97,7 +97,7 @@ namespace Discord_Bot
                         return new()
                         {
                             Ok = false,
-                            MsgError = $"Tiempo agotado esperando la opción"
+                            MsgError = $"Time out waiting for the option"
                         };
                     } 
                 }
@@ -106,14 +106,14 @@ namespace Discord_Bot
                     return new()
                     {
                         Ok = false,
-                        MsgError = $"No se encontró el {tipo} `{busqueda}`"
+                        MsgError = $"{tipo} not found with `{busqueda}`"
                     };
                 }
             }
             catch (Exception e)
             {
                 var context = funciones.GetContext(ctx);
-                await funciones.GrabarLogError(context, $"Error en query en FuncionesAnilist - GetAnilistMedia, utilizado: {tipo}\nError: {e.Message}");
+                await funciones.GrabarLogError(context, $"Error in query in FuncionesAnilist - GetAnilistMedia, used: {tipo}\nError: {e.Message}");
                 return new()
                 {
                     Ok = false,
@@ -187,7 +187,7 @@ namespace Discord_Bot
                         return new()
                         {
                             Ok = false,
-                            MsgError = $"Tiempo agotado esperando la opción"
+                            MsgError = $"Time out waiting for the option"
                         };
                     }
                 }
@@ -196,14 +196,14 @@ namespace Discord_Bot
                     return new()
                     {
                         Ok = false,
-                        MsgError = $"No se encontró el {tipo} `{busqueda}`"
+                        MsgError = $"{tipo} not found with `{busqueda}`"
                     };
                 }
             }
             catch (Exception e)
             {
                 var context = funciones.GetContext(ctx);
-                await funciones.GrabarLogError(context, $"Error en query en FuncionesAnilist - GetAnilistMedia, utilizado: {tipo}\nError: {e.Message}");
+                await funciones.GrabarLogError(context, $"Error in query in FuncionesAnilist - GetAnilistMedia, used: {tipo}\nError: {e.Message}");
                 return new()
                 {
                     Ok = false,
@@ -225,7 +225,7 @@ namespace Discord_Bot
                 media.Descripcion = datos.description;
                 media.Descripcion = funciones.NormalizarDescription(funciones.LimpiarTexto(media.Descripcion));
                 if (media.Descripcion == "")
-                    media.Descripcion = "(Sin descripción)";
+                    media.Descripcion = "(without description)";
                 media.Estado = datos.status;
                 media.Episodios = datos.episodes;
                 media.Formato = datos.format;
@@ -283,11 +283,11 @@ namespace Discord_Bot
                     if (datos.endDate.day != null)
                         media.Fechas = $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year} al {datos.endDate.day}/{datos.endDate.month}/{datos.endDate.year}";
                     else
-                        media.Fechas = $"En emisión desde {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
+                        media.Fechas = $"Airing since {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
                 }
                 else
                 {
-                    media.Fechas = $"Este anime no tiene fecha de emisión";
+                    media.Fechas = $"This media has no air date";
                 }
                 media.TituloRomaji = datos.title.romaji;
                 media.UrlAnilist = datos.siteUrl;
@@ -310,7 +310,7 @@ namespace Discord_Bot
                 string descripcion = datos.description;
                 character.Description = funciones.NormalizarDescription(funciones.LimpiarTexto(descripcion));
                 if (character.Description == "")
-                    character.Description = "(Sin descripción)";
+                    character.Description = "(without description)";
                 character.NameFull = datos.name.full;
                 character.Image = datos.image.large;
                 character.SiteUrl = datos.siteUrl;

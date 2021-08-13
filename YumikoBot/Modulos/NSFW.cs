@@ -14,15 +14,15 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new();
 
-        [Command("fuck"), Description("Tienes sexo con alguien")]
-        public async Task Fuck(CommandContext ctx, [Description("El usuario que te quieres follar")] DiscordMember usuario = null)
+        [Command("fuck"), Description("Fuck with someone")]
+        public async Task Fuck(CommandContext ctx, [Description("The user you want to fuck")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130213346934834);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** quiere que se lo follen",
+                    Title = $"**{ctx.Member.DisplayName}** he wants to be fucked",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -32,7 +32,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync($"", embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** se folló a **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** fucked **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -40,8 +40,8 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("cum"), Description("Te vienes")]
-        public async Task Cum(CommandContext ctx, [Description("El usuario al que le quieres acabar")] DiscordMember usuario = null)
+        [Command("cum"), Description("You came")]
+        public async Task Cum(CommandContext ctx, [Description("The user you want to cum")] DiscordMember usuario = null)
         {
             Random rnd = new();
             if (rnd.NextDouble() >= 0.5)
@@ -50,17 +50,17 @@ namespace Discord_Bot.Modulos
                 await BCum(ctx, usuario);
         }
 
-        [Command("gcum"), Description("Te vienes (vagina)")]
-        public async Task GCum(CommandContext ctx, [Description("El usuario al que le quieres acabar")] DiscordMember usuario = null)
+        [Command("gcum"), Description("You came (pussy)")]
+        public async Task GCum(CommandContext ctx, [Description("You user yopu want to came")] DiscordMember usuario = null)
         {
             if (usuario == null || (usuario != null && ctx.User.Id != usuario.Id))
             {
                 Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130231152803882);
                 string titulo;
                 if (usuario == null)
-                    titulo = $"**{ctx.Member.DisplayName}** se ha venido";
+                    titulo = $"**{ctx.Member.DisplayName}** just came";
                 else
-                    titulo = $"**{ctx.Member.DisplayName}** se vino en **{usuario.DisplayName}**";
+                    titulo = $"**{ctx.Member.DisplayName}** just came inside **{usuario.DisplayName}**";
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = titulo,
@@ -71,23 +71,23 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
+                var msg = await ctx.RespondAsync("You can't do that to yourself");
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
             }
         }
 
-        [Command("bcum"), Description("Te vienes (pene)")]
-        public async Task BCum(CommandContext ctx, [Description("El usuario al que le quieres acabar")] DiscordMember usuario = null)
+        [Command("bcum"), Description("You came (dick)")]
+        public async Task BCum(CommandContext ctx, [Description("You user yopu want to came")] DiscordMember usuario = null)
         {
             if (usuario == null || (usuario != null && ctx.User.Id != usuario.Id))
             {
                 Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130246767280180);
                 string titulo;
                 if (usuario == null)
-                    titulo = $"**{ctx.Member.DisplayName}** se ha venido";
+                    titulo = $"**{ctx.Member.DisplayName}** just came";
                 else
-                    titulo = $"**{ctx.Member.DisplayName}** se vino en **{usuario.DisplayName}**";
+                    titulo = $"**{ctx.Member.DisplayName}** just came inside **{usuario.DisplayName}**";
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
                     Title = titulo,
@@ -98,21 +98,21 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
+                var msg = await ctx.RespondAsync("You can't do that to yourself");
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
             }
         }
 
-        [Command("boobjob"), Description("Le haces una rusa a alguien")]
-        public async Task Boobjob(CommandContext ctx, [Description("El usuario que le quieres hacer una rusa")] DiscordMember usuario = null)
+        [Command("boobjob"), Description("Do a boobjob to someone")]
+        public async Task Boobjob(CommandContext ctx, [Description("The user you want to do a boobjob")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130262567485483);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** quiere que le hagan una rusa",
+                    Title = $"**{ctx.Member.DisplayName}** wants to do a boobjob",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -122,7 +122,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** le hizo una rusa a **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** just made a boobjob to **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -130,8 +130,8 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("masturbate"), Description("Te masturbas")]
-        public async Task Masturbate(CommandContext ctx, [Description("El usuario al que quieres masturbar")] DiscordMember usuario = null)
+        [Command("masturbate"), Description("You masturbate")]
+        public async Task Masturbate(CommandContext ctx, [Description("The user you want to masturbate")] DiscordMember usuario = null)
         {
             Random rnd = new();
             if (rnd.NextDouble() >= 0.5)
@@ -140,8 +140,8 @@ namespace Discord_Bot.Modulos
                 await BMasturbate(ctx, usuario);
         }
 
-        [Command("gmasturbate"), Description("Te masturbas (vagina)")]
-        public async Task GMasturbate(CommandContext ctx, [Description("El usuario al que quieres masturbar")] DiscordMember usuario = null)
+        [Command("gmasturbate"), Description("You masturbate (pussy)")]
+        public async Task GMasturbate(CommandContext ctx, [Description("The user you want to masturbate")] DiscordMember usuario = null)
         {
             Imagen elegida; 
             if (usuario == null || ctx.User.Id == usuario.Id)
@@ -149,7 +149,7 @@ namespace Discord_Bot.Modulos
                 elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130300458565672);
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** se está masturbando",
+                    Title = $"**{ctx.Member.DisplayName}** is masturbating",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -160,7 +160,7 @@ namespace Discord_Bot.Modulos
                 elegida = await funciones.GetImagenDiscordYumiko(ctx, 823001635751854130);
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** está masturbando a **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** is jerking off **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -168,8 +168,8 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("bmasturbate"), Description("Te masturbas (pene)")]
-        public async Task BMasturbate(CommandContext ctx, [Description("El usuario al que quieres masturbar")] DiscordMember usuario = null)
+        [Command("bmasturbate"), Description("You masturbate (dick)")]
+        public async Task BMasturbate(CommandContext ctx, [Description("The user you want to masturbate")] DiscordMember usuario = null)
         {
             Imagen elegida;
             if (usuario == null || ctx.User.Id == usuario.Id)
@@ -177,7 +177,7 @@ namespace Discord_Bot.Modulos
                 elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130322554945567); // Cambiar por el solo, cuando tenga contenido
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** se está masturbando",
+                    Title = $"**{ctx.Member.DisplayName}** is masturbating",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -188,7 +188,7 @@ namespace Discord_Bot.Modulos
                 elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130322554945567);
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** está masturbando a **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** is jerking off **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -196,8 +196,8 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("suck"), Description("Se la chupas a alguien")]
-        public async Task Suck(CommandContext ctx, [Description("El usuario que se la quieres chupar")] DiscordMember usuario = null)
+        [Command("suck"), Description("You suck someone's genitals")]
+        public async Task Suck(CommandContext ctx, [Description("The user you want to suck")] DiscordMember usuario = null)
         {
             Random rnd = new();
             if (rnd.NextDouble() >= 0.5)
@@ -206,15 +206,15 @@ namespace Discord_Bot.Modulos
                 await BSuck(ctx, usuario);
         }
 
-        [Command("gsuck"), Description("Se la chupas a alguien (con vagina)")]
-        public async Task GSuck(CommandContext ctx, [Description("El usuario que se la quieres chupar")] DiscordMember usuario = null)
+        [Command("gsuck"), Description("You suck someone's vagina")]
+        public async Task GSuck(CommandContext ctx, [Description("The user you want to suck")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130366343348234);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** quiere que se la chupen",
+                    Title = $"**{ctx.Member.DisplayName}** wants a blowjob",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -224,7 +224,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** se la chupó a **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** suck **{usuario.DisplayName}'s pussy**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -232,15 +232,15 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("bsuck"), Description("Se la chupas a alguien (con pene)")]
-        public async Task BSuck(CommandContext ctx, [Description("El usuario que se la quieres chupar")] DiscordMember usuario = null)
+        [Command("bsuck"), Description("You suck someone's dick")]
+        public async Task BSuck(CommandContext ctx, [Description("The user you want to suck")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816130449679319041);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** quiere que se la chupen",
+                    Title = $"**{ctx.Member.DisplayName}** wants a blowjob",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -250,7 +250,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** se la chupó a **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** suck **{usuario.DisplayName}'s dick**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -259,14 +259,14 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("yaoi"), Description("Sexo entre hombres")]
-        public async Task Yaoi(CommandContext ctx, [Description("Tu compañero")] DiscordMember usuario = null)
+        public async Task Yaoi(CommandContext ctx, [Description("User")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152519256178750);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** está teniendo pensamientos yaoi",
+                    Title = $"**{ctx.Member.DisplayName}** is having yaoi fantasies",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -276,7 +276,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** tiene una fantasía yaoi con **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** haves a yaoi fantasy with **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -285,14 +285,14 @@ namespace Discord_Bot.Modulos
         }
 
         [Command("yuri"), Description("Sexo entre mujeres")]
-        public async Task Yuri(CommandContext ctx, [Description("Tu compañera")] DiscordMember usuario = null)
+        public async Task Yuri(CommandContext ctx, [Description("User")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152538906230795);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** está teniendo pensamientos yuri",
+                    Title = $"**{ctx.Member.DisplayName}** is having yuri fantasies",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -302,7 +302,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** tiene una fantasía yuri con **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** haves a yuri fantasy with **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -310,15 +310,15 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("futa"), Description("Sexo entre futanaris")]
-        public async Task Futa(CommandContext ctx, [Description("Tu compañer@")] DiscordMember usuario = null)
+        [Command("futa"), Description("Futanari sex")]
+        public async Task Futa(CommandContext ctx, [Description("User")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152813917962281);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** está teniendo pensamientos futas",
+                    Title = $"**{ctx.Member.DisplayName}** is having futanari fatasies",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -328,7 +328,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** tiene una fantasía futa con **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** haves a futanari fantasy with **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -336,15 +336,15 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("bdsm"), Description("Sexo con alguien mediante ataduras")]
-        public async Task Bdsm(CommandContext ctx, [Description("Tu compañero")] DiscordMember usuario = null)
+        [Command("bdsm"), Description("Bondage sex with someone")]
+        public async Task Bdsm(CommandContext ctx, [Description("User")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152852023476224);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** está teniendo pensamientos BDSM",
+                    Title = $"**{ctx.Member.DisplayName}** is having a bondage fantasy",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -354,7 +354,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** tiene una fantasía BDSM con **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** is having bondage sex with **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -362,15 +362,15 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("azotes"), Description("Sexo con alguien mediante el uso de latigos")]
-        public async Task Azotes(CommandContext ctx, [Description("Tu compañero")] DiscordMember usuario = null)
+        [Command("whipping"), Description("Sex with someone by using whips")]
+        public async Task Azotes(CommandContext ctx, [Description("User")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152880862986260);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** quiere que lo azoten",
+                    Title = $"**{ctx.Member.DisplayName}** wants to be spanked",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -380,7 +380,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** está azotando a **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** is spanking **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -388,15 +388,15 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("pisar"), Description("Pisas a otro")]
-        public async Task Pisotones(CommandContext ctx, [Description("Tu compañer@")] DiscordMember usuario = null)
+        [Command("step"), Description("Step someone")]
+        public async Task Pisotones(CommandContext ctx, [Description("User")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152907690672188);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** quiere que lo pisen",
+                    Title = $"**{ctx.Member.DisplayName}** wants to be stepped on",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -406,7 +406,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** está pisando a **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** is stepping on **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -414,12 +414,12 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("trio"), Description("Tienes un trio con otros dos usuarios")]
+        [Command("threesome"), Description("Have a threesome with two other users")]
         public async Task Trio(CommandContext ctx, [Description("Tu compañero")] DiscordMember usuario1 = null, [Description("Tu compañero")] DiscordMember usuario2 = null)
         {
             if (usuario1 == null || usuario2 == null)
             {
-                var msg = await ctx.RespondAsync("Debes mencionar a dos personas");
+                var msg = await ctx.RespondAsync("You have to mention two other users");
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msg.Id);
             }
@@ -427,7 +427,7 @@ namespace Discord_Bot.Modulos
             {
                 if (ctx.User.Id == usuario1.Id || ctx.User.Id == usuario2.Id)
                 {
-                    var msg = await ctx.RespondAsync("No puedes hacerte eso a ti mismo");
+                    var msg = await ctx.RespondAsync("You can do this to yourself");
                     await Task.Delay(3000);
                     await funciones.BorrarMensaje(ctx, msg.Id);
                 }
@@ -436,7 +436,7 @@ namespace Discord_Bot.Modulos
                     Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816152926535417906);
                     await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                     {
-                        Title = $"**{ctx.Member.DisplayName}** tiene un trio con **{usuario1.DisplayName}** y **{usuario2.DisplayName}**",
+                        Title = $"**{ctx.Member.DisplayName}** have a threesome with **{usuario1.DisplayName}** and **{usuario2.DisplayName}**",
                         Footer = funciones.GetFooter(ctx),
                         Color = funciones.GetColor(),
                         ImageUrl = elegida.Url
@@ -445,7 +445,7 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("orgia"), Description("Provocas una orgia")]
+        [Command("orgy"), Description("You provoke an orgy")]
         public async Task Orgia(CommandContext ctx, params DiscordMember[] miembros)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154197790687263);
@@ -453,7 +453,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** ha iniciado una orgia en el servidor",
+                    Title = $"**{ctx.Member.DisplayName}** has started an orgy on the guild",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -461,7 +461,7 @@ namespace Discord_Bot.Modulos
             }
             else
             {
-                string mentions = "Con ";
+                string mentions = "With ";
                 foreach (var miembro in miembros)
                 {
                     mentions += $"**{miembro.DisplayName}**, ";
@@ -469,7 +469,7 @@ namespace Discord_Bot.Modulos
                 mentions = mentions.Remove(mentions.Length - 2);
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** ha iniciado una orgia en el servidor",
+                    Title = $"**{ctx.Member.DisplayName}** has started an orgy on the guild",
                     Description = mentions,
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
@@ -478,14 +478,14 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("gangbang"), Description("Te hacen un gangbang")]
-        public async Task Gangbang(CommandContext ctx, [Description("A quien quieres que se lo hagan")] DiscordMember usuario = null)
+        [Command("gangbang"), Description("Do a gangbang")]
+        public async Task Gangbang(CommandContext ctx, [Description("User")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154217864888340);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder {
-                    Title = $"Le están haciendo un ganbang a **{ctx.Member.DisplayName}**",
+                    Title = $"The guild members are doing a ganbang to **{ctx.Member.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -495,7 +495,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** quiere que le hagan un ganbang a **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** wants to gangbang **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -503,15 +503,15 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("footjob"), Description("Masturbas a otro con los pies")]
-        public async Task Footjob(CommandContext ctx, [Description("Tu compañer@")] DiscordMember usuario = null)
+        [Command("footjob"), Description("You masturbate another with your feet")]
+        public async Task Footjob(CommandContext ctx, [Description("User")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154242997551104);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** quiere que le hagan footjob",
+                    Title = $"**{ctx.Member.DisplayName}** wants to get a footjob",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -521,7 +521,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** masturba con su pie a **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** footjobs **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -529,15 +529,15 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("erection"), Description("Tienes una ereccion")]
-        public async Task Erection(CommandContext ctx, [Description("Tu compañer@")] DiscordMember usuario = null)
+        [Command("erection"), Description("Have an erection")]
+        public async Task Erection(CommandContext ctx, [Description("User")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154258503630918);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** ha tenido una erección",
+                    Title = $"**{ctx.Member.DisplayName}** just had an erection",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -547,7 +547,7 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{usuario.DisplayName}** le ha provocado una erección a **{ctx.Member.DisplayName}**",
+                    Title = $"**{usuario.DisplayName}** has caused an erection to **{ctx.Member.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -555,15 +555,15 @@ namespace Discord_Bot.Modulos
             }
         }
 
-        [Command("cosplay"), Description("Haces cosplay")]
-        public async Task Cosplay(CommandContext ctx, [Description("Tu compañer@")] DiscordMember usuario = null)
+        [Command("cosplay"), Description("Fuck with cosplay")]
+        public async Task Cosplay(CommandContext ctx, [Description("User")] DiscordMember usuario = null)
         {
             Imagen elegida = await funciones.GetImagenDiscordYumiko(ctx, 816154286551597086);
             if (usuario == null || ctx.User.Id == usuario.Id)
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** está haciendo cosplay para hacer cosas impuras",
+                    Title = $"**{ctx.Member.DisplayName}** is cosplaying to do impure things",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
@@ -573,121 +573,11 @@ namespace Discord_Bot.Modulos
             {
                 await ctx.RespondAsync(embed: new DiscordEmbedBuilder
                 {
-                    Title = $"**{ctx.Member.DisplayName}** está haciendo cosplay para hacer cosas impuras con **{usuario.DisplayName}**",
+                    Title = $"**{ctx.Member.DisplayName}** is cosplaying to do impure things with **{usuario.DisplayName}**",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor(),
                     ImageUrl = elegida.Url
                 });
-            }
-        }
-
-        [Command("fakensfw"), Description("Fake NSFW"), RequireOwner, Hidden]
-        public async Task FakeNSFW(CommandContext ctx, [Description("Usuario fake")] DiscordMember usuarioFake, [Description("Usuario destinatario")] DiscordMember usuario)
-        {
-            var interactivity = ctx.Client.GetInteractivity();
-
-            DiscordComponentEmoji emote = new(DiscordEmoji.FromName(ctx.Client, ":game_die:"));
-            DiscordButtonComponent button0 = new(ButtonStyle.Primary, "0", string.Empty, emoji: emote);
-            DiscordButtonComponent button1 = new(ButtonStyle.Primary, "1", "fuck");
-            DiscordButtonComponent button2 = new(ButtonStyle.Primary, "2", "gcum");
-            DiscordButtonComponent button3 = new(ButtonStyle.Primary, "3", "bcum");
-            DiscordButtonComponent button4 = new(ButtonStyle.Primary, "4", "boobjob");
-            DiscordButtonComponent button5 = new(ButtonStyle.Primary, "5", "gmasturbate");
-            DiscordButtonComponent button6 = new(ButtonStyle.Primary, "6", "bmasturbate");
-            DiscordButtonComponent button7 = new(ButtonStyle.Primary, "7", "gsuck");
-            DiscordButtonComponent button8 = new(ButtonStyle.Primary, "8", "bsuck");
-            DiscordButtonComponent button9 = new(ButtonStyle.Primary, "9", "yaoi");
-            DiscordButtonComponent button10 = new(ButtonStyle.Primary, "10", "yuri");
-            DiscordButtonComponent button11 = new(ButtonStyle.Primary, "11", "futa");
-            DiscordButtonComponent button12 = new(ButtonStyle.Primary, "12", "bdsm");
-            DiscordButtonComponent button13 = new(ButtonStyle.Primary, "13", "azotes");
-            DiscordButtonComponent button14 = new(ButtonStyle.Primary, "14", "pisar");
-            DiscordButtonComponent button15 = new(ButtonStyle.Primary, "15", "footjob");
-            DiscordButtonComponent button16 = new(ButtonStyle.Primary, "16", "erection");
-            DiscordButtonComponent button17 = new(ButtonStyle.Primary, "17", "cosplay");
-
-            DiscordMessageBuilder mensaje = new()
-            {
-                Embed = new DiscordEmbedBuilder
-                {
-                    Title = "Elije el tipo de juego",
-                    Description = $"{ctx.User.Mention}, haz click en un boton para continuar"
-                }
-            };
-
-            mensaje.AddComponents(button0, button1, button2, button3, button4);
-            mensaje.AddComponents(button5, button6, button7, button8, button9);
-            mensaje.AddComponents(button10, button11, button12, button13, button14);
-            mensaje.AddComponents(button15, button16, button17);
-
-            DiscordMessage msgElegir = await mensaje.SendAsync(ctx.Channel);
-            var interComando = await interactivity.WaitForButtonAsync(msgElegir, ctx.User, TimeSpan.FromSeconds(Convert.ToDouble(ConfigurationManager.AppSettings["TimeoutGeneral"])));
-            await ctx.Message.DeleteAsync("Auto borrado de Yumiko");
-            await msgElegir.DeleteAsync("Auto borrado de Yumiko");
-            if (!interComando.TimedOut)
-            {
-                var resultComando = interComando.Result;
-                string comando = resultComando.Id;
-                if (comando == "0")
-                {
-                    var dificultadNum = funciones.GetNumeroRandom(1, 17);
-                    comando = dificultadNum.ToString();
-                }
-                var cNext = ctx.Client.GetCommandsNext();
-                switch (comando)
-                {
-                    case "1":
-                        await Fuck(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("fuck", out _)), usuario);
-                        break;
-                    case "2":
-                        await GCum(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("gcum", out _)), usuario);
-                        break;
-                    case "3":
-                        await BCum(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("bcum", out _)), usuario);
-                        break;
-                    case "4":
-                        await Boobjob(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("boobjob", out _)), usuario);
-                        break;
-                    case "5":
-                        await GMasturbate(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("gmasturbate", out _)), usuario);
-                        break;
-                    case "6":
-                        await BMasturbate(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("bmasturbate", out _)), usuario);
-                        break;
-                    case "7":
-                        await GSuck(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("gsuck", out _)), usuario);
-                        break;
-                    case "8":
-                        await BSuck(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("bsuck", out _)), usuario);
-                        break;
-                    case "9":
-                        await Yaoi(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("yaoi", out _)), usuario);
-                        break;
-                    case "10":
-                        await Yuri(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("yuri", out _)), usuario);
-                        break;
-                    case "11":
-                        await Futa(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("futa", out _)), usuario);
-                        break;
-                    case "12":
-                        await Bdsm(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("bdsm", out _)), usuario);
-                        break;
-                    case "13":
-                        await Azotes(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("azotes", out _)), usuario);
-                        break;
-                    case "14":
-                        await Pisotones(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("pisotones", out _)), usuario);
-                        break;
-                    case "15":
-                        await Footjob(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("footjob", out _)), usuario);
-                        break;
-                    case "16":
-                        await Erection(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("erection", out _)), usuario);
-                        break;
-                    case "17":
-                        await Cosplay(cNext.CreateFakeContext(usuarioFake, ctx.Channel, "", ctx.Prefix, cNext.FindCommand("cosplay", out _)), usuario);
-                        break;
-                }
             }
         }
     }

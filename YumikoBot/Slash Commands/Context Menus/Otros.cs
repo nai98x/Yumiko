@@ -14,7 +14,7 @@ namespace Discord_Bot.Modulos
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                Title = $"Avatar de {ctx.TargetMember.DisplayName}",
+                Title = $"{ctx.TargetMember.DisplayName}'s avatar",
                 ImageUrl = ctx.TargetMember.AvatarUrl,
                 Color = funciones.GetColor()
             }).AsEphemeral(true));

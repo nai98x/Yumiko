@@ -24,12 +24,6 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new();
 
-        [Command("ping"), Description("Muestra el ping de Yumiko."), Hidden]
-        public async Task Ping(CommandContext ctx)
-        {
-            await funciones.MovidoASlashCommand(ctx);
-        }
-
         [Command("test"), Description("Testeos varios."), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {

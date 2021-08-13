@@ -12,7 +12,7 @@ namespace YumikoBot
     {
         private readonly FuncionesAuxiliares funciones = new();
 
-        [SlashCommand("help", "Informacion y ayuda de Yumiko")]
+        [SlashCommand("help", "Information and help from Yumiko")]
         public async Task Help(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -32,9 +32,9 @@ namespace YumikoBot
             string comandos = string.Empty;
 
             string descGeneral = "```Yumiko es un bot completamente en español enfocado a comandos de anime como juegos de adivina el personaje, anime o manga```\n";
-            string comandosCNext = $"```Para ver otros comandos (como los NSFW) escribe el siguiente comando: {prefix}help```";
+            string comandosCNext = $"```To see other commands (as NSFW) type the following command: {prefix}help```";
 
-            comandos += "**Comandos Disponibles**\n";
+            comandos += "**Available Commands**\n";
             foreach(var cmdPairTopLevel in comandosTopLevel)
             {
                 var cmdTopLevel = cmdPairTopLevel.Value;
@@ -49,16 +49,16 @@ namespace YumikoBot
 
             var embed = new DiscordEmbedBuilder
             {
-                Title = "Acerca de Yumiko",
+                Title = "About Yumiko",
                 Description = descGeneral + comandos + comandosCNext,
                 Color = funciones.GetColor()
             };
 
             string web = ConfigurationManager.AppSettings["Web"];
-            DiscordLinkButtonComponent invite = new(ConfigurationManager.AppSettings["Invite"], "Invítame");
-            DiscordLinkButtonComponent commands = new($"{web}#commands", "Comandos");
+            DiscordLinkButtonComponent invite = new(ConfigurationManager.AppSettings["Invite"], "Invite me");
+            DiscordLinkButtonComponent commands = new($"{web}#commands", "Commands");
             DiscordLinkButtonComponent faq = new($"{web}#faq", "FAQ");
-            DiscordLinkButtonComponent vote = new($"https://top.gg/bot/295182825521545218/vote", "Vótame");
+            DiscordLinkButtonComponent vote = new($"https://top.gg/bot/295182825521545218/vote", "Vote me");
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed).AddComponents(invite, commands, faq, vote));
         }

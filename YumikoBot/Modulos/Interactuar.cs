@@ -11,14 +11,8 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new();
 
-        [Command("say"), Aliases("s"), Description("Yumiko habla en el chat."), Hidden]
-        public async Task Say(CommandContext ctx, [Description("Mensaje para replicar")][RemainingText] string mensaje = null)
-        {
-            await funciones.MovidoASlashCommand(ctx);
-        }
-
-        [Command("sayO"), Description("Yumiko habla en el chat."), Hidden, RequireOwner]
-        public async Task SayO(CommandContext ctx, ulong guildId, ulong channelId, [Description("Mensaje para replicar")][RemainingText] string mensaje)
+        [Command("sayO"), Description("Administrator message by Yumiko."), Hidden, RequireOwner]
+        public async Task SayO(CommandContext ctx, ulong guildId, ulong channelId, [Description("Mssage to send")][RemainingText] string mensaje)
         {
             var guild = await ctx.Client.GetGuildAsync(guildId);
             if (guild != null)
@@ -31,37 +25,25 @@ namespace Discord_Bot.Modulos
                         Footer = new DiscordEmbedBuilder.EmbedFooter
                         {
                             IconUrl = ctx.User.AvatarUrl,
-                            Text = $"Enviado por {ctx.User.Username}"
+                            Text = $"Sent by {ctx.User.Username}"
                         },
-                        Title = "Mensaje del administrador",
+                        Title = "Message from Yumiko's owner",
                         Description = mensaje
                     }).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ctx.Channel.SendMessageAsync("Canal no encontrado");
+                    await ctx.Channel.SendMessageAsync("Channel not found");
                 }
             }
             else
             {
-                await ctx.Channel.SendMessageAsync("Servidor no encontrado");
+                await ctx.Channel.SendMessageAsync("Guild not found");
             }
         }
 
-        [Command("pregunta"), Aliases("p", "question", "siono"), Description("Responde con SI O NO."), Hidden]
-        public async Task Sisonon(CommandContext ctx, [Description("La pregunta que le quieres hacer")][RemainingText] string pregunta)
-        {
-            await funciones.MovidoASlashCommand(ctx);
-        }
-
-        [Command("elegir"), Aliases("e"), Description("Elige entre varias opciones."), Hidden]
-        public async Task Elegir(CommandContext ctx, [Description("La pregunta de la cuál se eligirá una respuesta")][RemainingText] string pregunta)
-        {
-            await funciones.MovidoASlashCommand(ctx);
-        }
-
-        [Command("emote"), Aliases("emoji"), Description("Muestra un emote en grande."), RequireGuild]
-        public async Task Emote(CommandContext ctx, [Description("El emote para agrandar")] DiscordEmoji emote = null)
+        [Command("emote"), Aliases("emoji"), Description("Shows an emote."), RequireGuild]
+        public async Task Emote(CommandContext ctx, [Description("Emote")] DiscordEmoji emote = null)
         {
             if (emote != null)
             {
@@ -69,7 +51,7 @@ namespace Discord_Bot.Modulos
                 {
                     string animado = emote.IsAnimated switch
                     {
-                        true => "Si",
+                        true => "Yes",
                         false => "No",
                     };
                     string dia = emote.CreationTimestamp.ToString("dddd", CultureInfo.CreateSpecificCulture("es"));
@@ -81,10 +63,10 @@ namespace Discord_Bot.Modulos
                         Color = funciones.GetColor(),
                         Title = "Emote",
                         ImageUrl = emote.Url
-                    }.AddField("Nombre", $"{emote.Name}", true)
-                    .AddField("Identificador", $"{emote.Id}", true)
-                    .AddField("Animado", $"{animado}", true)
-                    .AddField("Fecha de creación", $"{funciones.UppercaseFirst(dia)} {emote.CreationTimestamp.Day} de {mes} del {emote.CreationTimestamp.Year}")
+                    }.AddField("Name", $"{emote.Name}", true)
+                    .AddField("Id", $"{emote.Id}", true)
+                    .AddField("Animated", $"{animado}", true)
+                    .AddField("Creation date", $"{funciones.UppercaseFirst(dia)} {emote.CreationTimestamp.Day} de {mes} del {emote.CreationTimestamp.Year}")
                     );
                 }
                 else
@@ -94,13 +76,13 @@ namespace Discord_Bot.Modulos
             }
             else
                 {
-                DiscordMessage msgError = await ctx.Channel.SendMessageAsync("Debes pasar un emote").ConfigureAwait(false);
+                DiscordMessage msgError = await ctx.Channel.SendMessageAsync("You must pass an emotee").ConfigureAwait(false);
                 await Task.Delay(3000);
                 await funciones.BorrarMensaje(ctx, msgError.Id);
             }
         }
 
-        [Command("sticker"), Description("Muestra un sticker."), RequireGuild]
+        [Command("sticker"), Description("Shows a sticker."), RequireGuild]
         public async Task Sticker(CommandContext ctx)
         {
             int cantStickers = ctx.Message.Stickers.Count;
@@ -118,34 +100,16 @@ namespace Discord_Bot.Modulos
                     });
                     break;
                 case 0:
-                    DiscordMessage msgError = await ctx.Channel.SendMessageAsync("Debes pasar un sticker").ConfigureAwait(false);
+                    DiscordMessage msgError = await ctx.Channel.SendMessageAsync("You must pass a sticker").ConfigureAwait(false);
                     await Task.Delay(3000);
                     await funciones.BorrarMensaje(ctx, msgError.Id);
                     break;
                 default:
-                    DiscordMessage msgError1 = await ctx.Channel.SendMessageAsync("Solo puedes pasar un sticker").ConfigureAwait(false);
+                    DiscordMessage msgError1 = await ctx.Channel.SendMessageAsync("You can only pass one sticker").ConfigureAwait(false);
                     await Task.Delay(3000);
                     await funciones.BorrarMensaje(ctx, msgError1.Id);
                     break;
             }
-        }
-
-        [Command("avatar"), Description("Muestra el avatar de un usuario."), RequireGuild, Hidden]
-        public async Task Avatar(CommandContext ctx, DiscordMember usuario = null)
-        {
-            await funciones.MovidoASlashCommand(ctx);
-        }
-
-        [Command("waifu"), Description("Te dice mi nivel de waifu hacia un usuario."), Hidden]
-        public async Task Waifu(CommandContext ctx, [Description("Miembro para ver su nivel de waifu, si se deja vacío lo hace de tí")] DiscordMember miembro = null)
-        {
-            await funciones.MovidoASlashCommand(ctx);
-        }
-
-        [Command("love"), Description("Muestra el porcentaje de amor entre dos usuarios."), RequireGuild, Hidden]
-        public async Task Love(CommandContext ctx, DiscordMember user1 = null, DiscordMember user2 = null)
-        {
-            await funciones.MovidoASlashCommand(ctx);
         }
     }
 }

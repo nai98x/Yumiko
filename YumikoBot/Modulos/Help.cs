@@ -12,8 +12,8 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new();
 
-        [Command("help"), Aliases("ayuda", "commands", "comandos")]
-        public async Task Ayuda(CommandContext ctx, [Description("Comando para ver en detalle, si se deja vacío se muestran todos los comandos")] string comando = null)
+        [Command("help"), Aliases("commands")]
+        public async Task Ayuda(CommandContext ctx, [Description("Command to see in detail, if it is left empty it shows all the commands")] string comando = null)
         {
             var commandsNext = ctx.CommandsNext;
 
@@ -26,9 +26,9 @@ namespace Discord_Bot.Modulos
                 string comandosDesc = string.Empty;
                 var builder = new DiscordEmbedBuilder
                 {
-                    Title = "Comandos disponibles",
-                    Description = $"Puedes llamarme con `{ctx.Prefix}` o con {ctx.Client.CurrentUser.Mention}\n\n" +
-                    $"**Importante:** Para ver el resto de comandos, escribe `/help`",
+                    Title = "Available commands",
+                    Description = $"You can invoke me using `{ctx.Prefix}` or with {ctx.Client.CurrentUser.Mention}\n\n" +
+                    $"**Important note:** To see the rest of the commands, type `/help`",
                     Footer = funciones.GetFooter(ctx),
                     Color = funciones.GetColor()
                 };
@@ -47,7 +47,7 @@ namespace Discord_Bot.Modulos
                     }
                     comandosDesc = string.Join(", ", listaComandos);
                     if (nomGrupo == "NSFW" && !ctx.Channel.IsNSFW)
-                        comandosDesc = "`Para ver estos comandos ejecutalo en un canal NSFW`";
+                        comandosDesc = "`To see these commands run it on a NSFW channel`";
                     if(nomGrupo != "Help" && ! string.IsNullOrEmpty(comandosDesc))
                     {
                         builder.AddField(nomGrupo, comandosDesc, false);
@@ -87,7 +87,7 @@ namespace Discord_Bot.Modulos
                                 }
                                 comandosDesc = string.Join(", ", listaComandos1);
                                 if (nomGrupo == "NSFW" && !ctx.Channel.IsNSFW)
-                                    comandosDesc = "`Para ver estos comandos ejecutalo en un canal NSFW`";
+                                    comandosDesc = "`To see these commands run it on a NSFW channel`";
                             }
                         }
                         await ctx.Channel.SendMessageAsync(embed: new DiscordEmbedBuilder
@@ -101,7 +101,7 @@ namespace Discord_Bot.Modulos
                     }
                     else
                     {
-                        var msgError = await ctx.Channel.SendMessageAsync($"No se ha encontrado el comando `{comando}`").ConfigureAwait(false);
+                        var msgError = await ctx.Channel.SendMessageAsync($"Command `{comando}` not found").ConfigureAwait(false);
                         await Task.Delay(3000);
                         await funciones.BorrarMensaje(ctx, msgError.Id);
                     }

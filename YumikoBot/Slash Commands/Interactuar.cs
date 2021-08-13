@@ -13,28 +13,27 @@ namespace YumikoBot
     {
         private readonly FuncionesAuxiliares funciones = new();
 
-        [SlashCommand("Say", "Replica un texto")]
-        public async Task Say(InteractionContext ctx, [Option("Texto", "El texto que quieres replicar")] string texto)
+        [SlashCommand("Say", "Replicates the input")]
+        public async Task Say(InteractionContext ctx, [Option("Text", "The input you want to replicate ")] string texto)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             await ctx.DeleteResponseAsync();
             await ctx.Channel.SendMessageAsync(texto);
         }
 
-        [SlashCommand("pregunta", "Responde con si o no")]
-        public async Task Pregunta(InteractionContext ctx, [Option("Texto", "La pregunta que le quieres hacer")] string texto, [Option("Secreto", "Si quieres ver solo tu el comando")] bool secreto = false)
+        [SlashCommand("question", "Answer with yes or no")]
+        public async Task Pregunta(InteractionContext ctx, [Option("Question", "The question you want to ask")] string texto)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
-            { IsEphemeral = secreto }.AddEmbed(funciones.Pregunta(texto)));
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(funciones.Pregunta(texto)));
         }
 
-        [SlashCommand("elegir", "Elije entre varias opciones separadas por comas")]
-        public async Task Elegir(InteractionContext ctx, [Option("Pregunta", "La pregunta que le quieres hacer")] string pregunta, [Option("Opciones", "Opciones separadas por comas")] string opc)
+        [SlashCommand("choose", "Choose from several options separated by commas")]
+        public async Task Elegir(InteractionContext ctx, [Option("Question", "The question you want to ask")] string pregunta, [Option("Options", "Options separated by commas")] string opc)
         {
             List<string> opciones = opc.Split(',').ToList();
             Random rnd = new();
             int random = rnd.Next(opciones.Count);
-            string options = "**Opciones:**";
+            string options = "**Options:**";
             foreach (string msj in opciones)
             {
                 options += "\n   - " + msj;
@@ -42,8 +41,8 @@ namespace YumikoBot
             var embed = new DiscordEmbedBuilder
             {
                 Color = funciones.GetColor(),
-                Title = "Pregunta",
-                Description = "** " + pregunta + "**\n\n" + options + "\n\n**Respuesta:** " + opciones[random]
+                Title = "Question",
+                Description = "** " + pregunta + "**\n\n" + options + "\n\n**Answer:** " + opciones[random]
             };
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
@@ -69,7 +68,7 @@ namespace YumikoBot
             }
         }*/
 
-        [SlashCommand("avatar", "Obtiene un avatar")]
+        [SlashCommand("avatar", "Get an avatar")]
         public async Task Avatar(InteractionContext ctx, [Option("Usuario", "El usuario del avatar")] DiscordUser usuario = null, [Option("Secreto", "Si quieres ver solo tu el comando")] bool secreto = true)
         {
             usuario ??= ctx.Member;
@@ -77,7 +76,7 @@ namespace YumikoBot
 
             var embed = new DiscordEmbedBuilder
             {
-                Title = $"Avatar de {member.DisplayName}",
+                Title = $"{member.DisplayName}'s avatar",
                 ImageUrl = usuario.AvatarUrl,
                 Footer = funciones.GetFooter(ctx)
             };
@@ -88,8 +87,8 @@ namespace YumikoBot
             }.AddEmbed(embed));
         }
 
-        [SlashCommand("waifu", "Te dice mi nivel de waifu hacia un usuario")]
-        public async Task Waifu(InteractionContext ctx, [Option("Usuario", "Usuario del que quieres saber el nivel de waifu")] DiscordUser usuario = null)
+        [SlashCommand("waifu", "My waifu level towards a user ")]
+        public async Task Waifu(InteractionContext ctx, [Option("User", "User whose waifu level you want to know")] DiscordUser usuario = null)
         {
             usuario ??= ctx.Member;
             DiscordMember miembro = (DiscordMember)usuario;
@@ -97,8 +96,8 @@ namespace YumikoBot
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(builder));
         }
 
-        [SlashCommand("love", "Muestra el porcentaje de amor entre dos usuarios")]
-        public async Task Love(InteractionContext ctx, [Option("Usuario1", "Primer usuario")] DiscordUser user1 = null, [Option("Usuario2", "Segundo usuario")] DiscordUser user2 = null)
+        [SlashCommand("love", "Shows the percentage of love between two users")]
+        public async Task Love(InteractionContext ctx, [Option("User1", "First user")] DiscordUser user1 = null, [Option("User2", "Second user")] DiscordUser user2 = null)
         {
             int porcentajeAmor;
             string titulo;
@@ -108,7 +107,7 @@ namespace YumikoBot
             }
             if ((user2 == null && user1.Id == ctx.Member.Id) || (user2 != null && user1.Id == user2.Id))
             {
-                titulo = $"Amor propio de **{user1.Username}#{user1.Discriminator}**";
+                titulo = $"Self love of **{user1.Username}#{user1.Discriminator}**";
             }
             else
             {
@@ -117,7 +116,7 @@ namespace YumikoBot
                     user2 = user1;
                     user1 = ctx.Member;
                 }
-                titulo = $"Amor entre **{user1.Username}#{user1.Discriminator}** y **{user2.Username}#{user2.Discriminator}**";
+                titulo = $"Love between **{user1.Username}#{user1.Discriminator}** and **{user2.Username}#{user2.Discriminator}**";
             }
             porcentajeAmor = funciones.GetNumeroRandom(0, 100);
             string descripcion = $"**{porcentajeAmor}%** [";
@@ -134,21 +133,21 @@ namespace YumikoBot
             if ((user2 == null && user1.Id != ctx.Member.Id) || (user2 != null && user1.Id != user2.Id))
             {
                 if (porcentajeAmor == 0)
-                    descripcion += "¡Aléjense ya! Ustedes dos se van a matar.\n";
+                    descripcion += "Get away now! You two are going to kill each other.\n";
                 else if (porcentajeAmor > 0 && porcentajeAmor <= 10)
-                    descripcion += "Se odiarán mutuamente, no son para nada compatibles.\n";
+                    descripcion += "You will hate each other, you two are not compatible at all.\n";
                 else if (porcentajeAmor > 10 && porcentajeAmor <= 25)
-                    descripcion += "Lo mejor es que se alejen uno del otro, no encajan.\n";
+                    descripcion += "The best thing is that they move away from each other, you do not fit.\n";
                 else if (porcentajeAmor > 25 && porcentajeAmor <= 50)
-                    descripcion += "Serán buenos amigos, pero veo dificil el amor.\n";
+                    descripcion += "You will be good friends, but I see love difficult.\n";
                 else if (porcentajeAmor > 50 && porcentajeAmor <= 75)
-                    descripcion += "Lo más probable es que sean mejores amigos y con suerte algo más.\n";
+                    descripcion += "You are most likely best friends and hopefully something more.\n";
                 else if (porcentajeAmor > 75 && porcentajeAmor <= 90)
-                    descripcion += "Tienen mucha química, tienen que darse una oportunidad.\n";
+                    descripcion += "You guys have a lot of chemistry, you have to give a chance.\n";
                 else if (porcentajeAmor > 90 && porcentajeAmor <= 99)
-                    descripcion += "Ustedes dos están destinados a estar juntos.\n";
+                    descripcion += "You two are meant to be together.\n";
                 else
-                    descripcion += "¡Relación perfecta! Se casarán y tendran muchos hijos.\n";
+                    descripcion += "Perfect relationship! You will marry and have many children.\n";
             }
             if (porcentajeAmor <= 25)
                 imagenUrl = "https://i.imgur.com/BOxbruw.png";

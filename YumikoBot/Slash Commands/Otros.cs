@@ -8,12 +8,12 @@ namespace Discord_Bot.Modulos
     {
         private readonly FuncionesAuxiliares funciones = new();
 
-        [SlashCommand("ping", "Muestra el tiempo de respuesta de Yumiko")]
+        [SlashCommand("ping", "Shows Yumiko's latency")]
         public async Task Ping(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(DSharpPlus.InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                Title = "Latencia",
+                Title = "Ping",
                 Description = "🏓 Pong! `" + ctx.Client.Ping.ToString() + " ms" + "`",
                 Color = funciones.GetColor()
             }));
