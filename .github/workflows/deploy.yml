@@ -10,8 +10,9 @@ jobs:
     runs-on: self-hosted
     if: "!contains(format('{0} {1}', github.event.head_commit.message, github.event.pull_request.title), '[ci-skip]')"
     steps:
-      - name: Setup SSH
-      - uses: webfactory/ssh-agent@v0.5.4
+      - uses: actions/checkout@v2
+      - name: Setup key
+        uses: webfactory/ssh-agent@v0.5.4
         with:
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       
