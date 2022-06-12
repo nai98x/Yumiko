@@ -1,0 +1,8 @@
+<p align="center"><img src="https://i.imgur.com/sNUQoqf.png" width="200px" height="200px"></p>
+<h1 align="center">Yumiko</h1>
+<p align="center">
+  <a href="https://www.codefactor.io/repository/github/nai98x/yumiko" target="_blank"><img src="https://www.codefactor.io/repository/github/nai98x/yumiko/badge?s=92181f030fc6101fb54afa74167809713aa4d060" alt="Codefactor"></a>
+  <a href="https://top.gg/bot/295182825521545218" target="_blank"><img src="https://top.gg/api/widget/status/295182825521545218.svg" alt="Top.gg"></a>
+  <a href="https://github.com/nai98x/yumiko/actions/workflows/deploy.yml" target="_blank"><img src="https://github.com/nai98x/yumiko/actions/workflows/deploy.yml/badge.svg?branch=master" alt="CI"></a>
+  <img alt="Bot status" src="https://img.shields.io/website?down_color=red&down_message=offline&label=Bot%20Status&up_color=green&up_message=Online&url=https%3A%2F%2Fyumikobot.carrd.co%2F">
+</p>

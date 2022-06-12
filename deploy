@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Stop previous instance of the bot if it's running
+pkill Yumiko;
+
+# Build the bot
+cd ~/yumiko/Yumiko;
+dotnet build -c Release --source=https://api.nuget.org/v3/index.json;
+
+# Start the bot
+cd ~/yumiko/Yumiko/bin/Release/net6.0/;
+./Yumiko;

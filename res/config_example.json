@@ -1,0 +1,33 @@
+{
+  "website": "BOT_WEBSITE_URL",
+  "invite_url": "DISCORD_BOT_INVITE_URL",
+  "tokens": {
+    "discord": {
+      "prod": "TOKEN_DISCORD_BOT_PROD",
+      "test": "TOKEN_DISCORD_BOT_TEST"
+    },
+    "topgg": "TOKEN_TOP.GG",
+    "openweathermap": "TOKEN_OPENWEATHERMAP",
+    "thecatapi": "TOKEN_THECATAPI",
+    "thedogapi": "TOKEN_THEDOGAPI"
+  },
+  "loggin": {
+    "guild_id": "LOGGIN_GUILD_ID",
+    "production": {
+      "application_commands": "PRODUCTION_APPLICATION_COMMANDS_CHANNEL_ID",
+      "guilds": "PRODUCTION_GUILDS_CHANNEL_ID",
+      "errors": "PRODUCTION_ERRORS_CHANNEL_ID"
+    },
+    "testing": {
+      "application_commands": "TESTING_APPLICATION_COMMANDS_CHANNEL_ID",
+      "guilds": "TESTING_GUILDS_CHANNEL_ID",
+      "errors": "TESTING_ERRORS_CHANNEL_ID"
+    }
+  },
+  "firebase_database_name": "FIREBASE_DATABASE_NAME",
+  "topgg_enabled": "true_OR_false",
+  "timeouts": {
+    "general": "TIMEOUT_IN_SECONDS",
+    "games": "TIMEOUT_IN_SECONDS"
+  }
+}

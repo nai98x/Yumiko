@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+
+  build:
+    runs-on: self-hosted
+    if: "!contains(format('{0} {1}', github.event.head_commit.message, github.event.pull_request.title), '[ci-skip]')"
+    steps:
+      - name: Run SSH command
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+            command: cd ~/yumiko/Yumiko && git reset --hard && git pull && chmod +x deploy && (./deploy >& yumiko-log.txt &disown);
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USERNAME }}
+            privateKey: ${{ secrets.PRIVATE_KEY}}
