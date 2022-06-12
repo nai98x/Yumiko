@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using System.Diagnostics;
 using System.Globalization;
 using Yumiko.Commands;
 using Yumiko.Services;
@@ -21,8 +22,7 @@ namespace Yumiko
 {
     public class Program
     {
-        internal static DiscordClient DiscordClient { get; set; } = null!;
-        internal static SlashCommandsExtension ApplicationCommands { get; set; } = null!;
+        internal static DiscordShardedClient DiscordShardedClient { get; set; } = null!;
         internal static ServiceProvider ServiceProvider { get; set; } = null!;
         internal static IConfigurationRoot Configuration { get; private set; } = null!;
         public static bool Debug { get; private set; }
@@ -30,6 +30,7 @@ namespace Yumiko
         public static DiscordChannel LogChannelApplicationCommands { get; private set; } = null!;
         public static DiscordChannel LogChannelGuilds { get; private set; } = null!;
         public static DiscordChannel LogChannelErrors { get; private set; } = null!;
+        public static Stopwatch Stopwatch { get; private set; } = null!;
 
         public static async Task Main(string[] args)
         {
@@ -63,7 +64,7 @@ namespace Yumiko
                 return;
             }
 
-            DiscordClient = new DiscordClient(new()
+            DiscordShardedClient = new DiscordShardedClient(new()
             {
                 Token = Configuration.GetValue<string>(Debug ? "tokens:discord:testing" : "tokens:discord:production"),
                 Intents = DiscordIntents.Guilds,
@@ -71,7 +72,7 @@ namespace Yumiko
                 ReconnectIndefinitely = true
             });
 
-            DiscordClient.UseInteractivity(new InteractivityConfiguration()
+            await DiscordShardedClient.UseInteractivityAsync(new InteractivityConfiguration()
             {
                 AckPaginationButtons = true,
                 ButtonBehavior = ButtonPaginationBehavior.DeleteMessage,
@@ -79,49 +80,61 @@ namespace Yumiko
                 Timeout = TimeSpan.FromSeconds(Configuration.GetValue<double>("timeouts:general", 60))
             });
 
-            DiscordClient.Ready += Client_Ready;
-            DiscordClient.Resumed += Client_Resumed;
-            DiscordClient.GuildDownloadCompleted += Client_GuildDownloadCompleted;
-            DiscordClient.GuildCreated += Client_GuildCreated;
-            DiscordClient.GuildDeleted += Client_GuildDeleted;
-            DiscordClient.ClientErrored += Client_ClientError;
-            DiscordClient.ComponentInteractionCreated += Client_ComponentInteractionCreated;
-            DiscordClient.ModalSubmitted += Client_ModalSubmitted;
+            DiscordShardedClient.Ready += Client_Ready;
+            DiscordShardedClient.Resumed += Client_Resumed;
+            DiscordShardedClient.GuildDownloadCompleted += Client_GuildDownloadCompleted;
+            DiscordShardedClient.GuildCreated += Client_GuildCreated;
+            DiscordShardedClient.GuildDeleted += Client_GuildDeleted;
+            DiscordShardedClient.ClientErrored += Client_ClientError;
+            DiscordShardedClient.ComponentInteractionCreated += Client_ComponentInteractionCreated;
+            DiscordShardedClient.ModalSubmitted += Client_ModalSubmitted;
 
-            ApplicationCommands = DiscordClient.UseSlashCommands(new()
+            await DiscordShardedClient.StartAsync();
+
+            ulong logGuildId = Configuration.GetValue<ulong>("loggin:guild_id");
+            int shardCount = DiscordShardedClient.ShardClients.Count;
+            int logGuildShard = ((int)logGuildId >> 22) % shardCount;
+
+            var config = new SlashCommandsConfiguration()
             {
                 Services = ServiceProvider
-            });
+            };
 
-            ApplicationCommands.SlashCommandExecuted += SlashCommands_SlashCommandExecuted;
-            ApplicationCommands.SlashCommandErrored += SlashCommands_SlashCommandErrored;
-
-            var logGuildId = Configuration.GetValue<ulong>("loggin:guild_id");
-
-            if (Debug)
+            foreach (var keyValuePair in (await DiscordShardedClient.UseSlashCommandsAsync(config)))
             {
-                ApplicationCommands.RegisterCommands<Games>(logGuildId);
-                ApplicationCommands.RegisterCommands<Interact>(logGuildId);
-                ApplicationCommands.RegisterCommands<Anilist>(logGuildId);
-                ApplicationCommands.RegisterCommands<Other>(logGuildId);
-                ApplicationCommands.RegisterCommands<Help>(logGuildId);
+                var slashShardExtension = keyValuePair.Value;
+
+                slashShardExtension.SlashCommandExecuted += SlashCommands_SlashCommandExecuted;
+                slashShardExtension.SlashCommandErrored += SlashCommands_SlashCommandErrored;
+
+                if (Debug && keyValuePair.Key == logGuildShard)
+                {
+                    slashShardExtension.RegisterCommands<Games>(logGuildId);
+                    slashShardExtension.RegisterCommands<Interact>(logGuildId);
+                    slashShardExtension.RegisterCommands<Anilist>(logGuildId);
+                    slashShardExtension.RegisterCommands<Other>(logGuildId);
+                    slashShardExtension.RegisterCommands<Help>(logGuildId);
+                }
+                else
+                {
+                    slashShardExtension.RegisterCommands<Games>();
+                    slashShardExtension.RegisterCommands<Interact>();
+                    slashShardExtension.RegisterCommands<Anilist>();
+                    slashShardExtension.RegisterCommands<Other>();
+                    slashShardExtension.RegisterCommands<Help>();
+                }
+
+                if (keyValuePair.Key == logGuildShard)
+                {
+                    slashShardExtension.RegisterCommands<Owner>(logGuildId);
+                }
             }
-            else
-            {
-                ApplicationCommands.RegisterCommands<Games>();
-                ApplicationCommands.RegisterCommands<Interact>();
-                ApplicationCommands.RegisterCommands<Anilist>();
-                ApplicationCommands.RegisterCommands<Other>();
-                ApplicationCommands.RegisterCommands<Help>();
-            }
 
-            ApplicationCommands.RegisterCommands<Owner>(logGuildId);
-
-            await DiscordClient.ConnectAsync(new DiscordActivity { ActivityType = ActivityType.ListeningTo, Name = "/help" }, UserStatus.Online);
-
+            Stopwatch = Stopwatch.StartNew();
+            
             await Task.Delay(-1);
         }
-
+            
         internal static bool ConfigFilesCheck()
         {
             var configPath = Path.Join("res", "config.json");
@@ -154,6 +167,10 @@ namespace Yumiko
 
         private static Task Client_Ready(DiscordClient sender, ReadyEventArgs e)
         {
+            _ = Task.Run(async () =>
+            {
+                await DiscordShardedClient.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.ListeningTo, Name = "/help" }, UserStatus.Online);
+            });
             sender.Logger.LogInformation("DiscordClient ready to fire events");
             return Task.CompletedTask;
         }
@@ -169,9 +186,13 @@ namespace Yumiko
             _ = Task.Run(async () =>
             {
                 string env = Debug ? "testing" : "production";
-                try
+
+                var logGuildId = Configuration.GetValue<ulong>("loggin:guild_id");
+                var client = DiscordShardedClient.GetShard(logGuildId);
+
+                if (client != null)
                 {
-                    var logGuild = await DiscordClient.GetGuildAsync(Configuration.GetValue<ulong>("loggin:guild_id"));
+                    var logGuild = await client.GetGuildAsync(logGuildId);
 
                     LogChannelApplicationCommands = logGuild.GetChannel(Configuration.GetValue<ulong>($"loggin:{env}:application_commands"));
                     LogChannelGuilds = logGuild.GetChannel(Configuration.GetValue<ulong>($"loggin:{env}:guilds"));
@@ -179,10 +200,10 @@ namespace Yumiko
 
                     sender.Logger.LogInformation("Log guild and channels initialized", DateTime.Now);
                 }
-                catch (Exception)
+                else
                 {
                     sender.Logger.LogCritical("Could not get loggin guild and channels");
-                    await DiscordClient.DisconnectAsync();
+                    await DiscordShardedClient.StopAsync();
                 }
             });
             return Task.CompletedTask;

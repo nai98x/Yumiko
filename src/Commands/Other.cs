@@ -3,14 +3,19 @@
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.SlashCommands;
+    using Humanizer;
+    using Humanizer.Localisation;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
     using RestSharp;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
     using System.Threading.Tasks;
     using System.Web;
     using Yumiko.Providers;
     using Yumiko.Utils;
 
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not with D#+ Command classes")]
     public class Other : ApplicationCommandModule
     {
         public IConfigurationRoot Configuration { private get; set; } = null!;
@@ -179,6 +184,28 @@
                 Color = DiscordColor.Red,
             }));
             await Common.GrabarLogErrorAsync(ctx, $"Unknown error in `/dog`\n\n`{response.StatusCode}: {response.StatusDescription}`");
+        }
+        
+        [SlashCommand("info", "Shows Yumiko's information and stats")]
+        public async Task Information(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            var embed = new DiscordEmbedBuilder()
+            {
+                Title = "Information",
+                Color = Constants.YumikoColor
+            };
+            
+            embed.AddField("Author", ctx.Client.CurrentApplication.Owners.First().FullName(), true);
+            embed.AddField("Library", $"DSharpPlus {ctx.Client.VersionString}", true);
+            embed.AddField("Memory", $"{GC.GetTotalMemory(true) / 1024 / 1024:n0} MB", true);
+            embed.AddField("Latency", $"{ctx.Client.Ping} ms", true);
+            embed.AddField("Current shard", $"{ctx.Client.ShardId}", true);
+            embed.AddField("Guilds", $"{ctx.Client.Guilds.Count}", true);
+            embed.AddField("Uptime", $"{Program.Stopwatch.Elapsed.Humanize(2, minUnit: TimeUnit.Second, maxUnit: TimeUnit.Day, culture: new CultureInfo("en-US"))}", true);
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
         }
     }
 }

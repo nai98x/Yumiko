@@ -59,10 +59,13 @@
             List<DiscordLinkButtonComponent> components = new()
             {
                 new(Configuration.GetValue<string>("invite_url"), "Invite"),
-                new($"{Configuration.GetValue<string>("website")}#commands", "Commands"),
-                new($"{Configuration.GetValue<string>("website")}#faq", "FAQ"),
-                new($"{Configuration.GetValue<string>("website")}#privacy", "Privacy Policy")
+                new(Configuration.GetValue<string>("website"), "Website"),
             };
+
+            if (!string.IsNullOrEmpty(ctx.Client.CurrentApplication.PrivacyPolicyUrl))
+            {
+                components.Add(new(ctx.Client.CurrentApplication.PrivacyPolicyUrl, "Privacy Policy"));
+            }
 
             if (Program.TopggEnabled)
             {
