@@ -26,7 +26,7 @@
             {
                 builder = await GameUtils.GetEstadisticasAsync(context, Configuration, gamemode);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
-                await Common.ChequearVotoTopGGAsync(ctx);
+                await Common.ChequearVotoTopGGAsync(ctx, Configuration);
             }
             else
             {
@@ -35,7 +35,7 @@
                 {
                     builder = await GameUtils.GetEstadisticasGeneroAsync(context, Configuration, respuesta.Genre);
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
-                    await Common.ChequearVotoTopGGAsync(ctx);
+                    await Common.ChequearVotoTopGGAsync(ctx, Configuration);
                 }
                 else
                 {
@@ -56,7 +56,7 @@
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var builder = await GameUtils.GetEstadisticasHoLAsync(ctx, Configuration);
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
-            await Common.ChequearVotoTopGGAsync(ctx);
+            await Common.ChequearVotoTopGGAsync(ctx, Configuration);
         }
 
         [SlashCommand("delete", "Deletes user statistics on the guild")]
