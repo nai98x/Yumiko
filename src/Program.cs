@@ -416,7 +416,7 @@ namespace Yumiko
             e.Handled = true;
             _ = Task.Run(async () =>
             {
-                await LogChannelApplicationCommands.SendMessageAsync(Common.LogInteractionCommand(e, "Slash Command executed", true, false));
+                await LogChannelApplicationCommands.SendMessageAsync(LogUtils.LogSlashCommand(e));
             });
             return Task.CompletedTask;
         }
@@ -486,7 +486,7 @@ namespace Yumiko
                 }
                 else
                 {
-                    await LogChannelErrors.SendMessageAsync(Common.LogInteractionCommand(e, "Unknown error (Application Commands)", true, true));
+                    await LogChannelErrors.SendMessageAsync(LogUtils.LogSlashCommandError(e));
 
                     // If the error is from a trivia game // TODO: check this
                     Singleton.GetInstance().RemoveCurrentTrivia(e.Context.Guild.Id, e.Context.Channel.Id);

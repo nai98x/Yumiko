@@ -3,7 +3,6 @@
     using DiscordBotsList.Api;
     using DSharpPlus;
     using DSharpPlus.Entities;
-    using DSharpPlus.Exceptions;
     using DSharpPlus.Interactivity;
     using DSharpPlus.Interactivity.Extensions;
     using DSharpPlus.SlashCommands;
@@ -30,7 +29,7 @@
 
         public static FirestoreDb GetFirestoreClient(IConfiguration Configuration)
         {
-            string path = Path.Join(AppDomain.CurrentDomain.BaseDirectory, "res", @"firebase.json");
+            string path = Path.Join(AppDomain.CurrentDomain.BaseDirectory, "res", "firebase.json");
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
             return FirestoreDb.Create(Configuration.GetValue<string>("firebase_database_name"));
         }
@@ -169,38 +168,28 @@
             }
         }
 
-        public static async Task ChequearVotoTopGGAsync(InteractionContext ctx)
+        public static async Task ChequearVotoTopGGAsync(InteractionContext ctx, IConfiguration Configuration)
         {
             if (Program.TopggEnabled && !Program.Debug)
             {
-                if (GetNumeroRandom(1, 10) == 1)
+                AuthDiscordBotListApi DblApi = new(ctx.Client.CurrentApplication.Id, Configuration.GetValue<string>("tokens:topgg"));
+                bool voto = await DblApi.HasVoted(ctx.User.Id);
+
+                if (voto)
                 {
-                    /*
-                    var json = string.Empty;
-                    using (var fs = File.OpenRead("config.json"))
+                    string url = $"https://top.gg/bot/{ctx.Client.CurrentUser.Id}/vote";
+                    var mensaje = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                     {
-                        using var sr = new StreamReader(fs, new UTF8Encoding(false));
-                        json = await sr.ReadToEndAsync();
-                    }
-                    var configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
-
-                    AuthDiscordBotListApi DblApi = new AuthDiscordBotListApi(ctx.Client.CurrentUser.Id, configJson.TopGG_token);
-                    bool voto = await DblApi.HasVoted(ctx.User.Id);
-                    */
-                    bool voto = true;
-
-                    if (voto)
-                    {
-                        string url = $"https://top.gg/bot/{ctx.Client.CurrentUser.Id}/vote";
-                        var mensaje = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
+                        Title = $"Vote me in Top.gg!",
+                        Description = $"You can help a lot voting in [this website]({url}). Thanks!",
+                        Color = Constants.YumikoColor,
+                        Footer = new()
                         {
-                            Title = $"¡Votame en Top.gg!",
-                            Description = $"Puedes ayudarme votando en [este sitio web]({url}). ¡Gracias!",
-                            Color = Constants.YumikoColor,
-                        }));
-                        await Task.Delay(10000);
-                        await BorrarMensajeAsync(ctx, mensaje.Id);
-                    }
+                            Text = "This message will not be triggered if the user has voted in the past 12 hours"
+                        }
+                    }));
+                    await Task.Delay(10000);
+                    await BorrarMensajeAsync(ctx, mensaje.Id);
                 }
             }
         }
@@ -497,76 +486,6 @@
                     ImageUrl = "https://i.imgur.com/Vk6JMJi.jpg",
                 },
             };
-        }
-
-        public static DiscordEmbedBuilder LogInteractionCommand(dynamic e, string titulo, bool parms, bool errored)
-        {
-            var builder = new DiscordEmbedBuilder()
-            {
-                Author = new()
-                {
-                    IconUrl = e.Context.Guild.IconUrl,
-                    Name = e.Context.Guild.Name,
-                },
-                Title = titulo,
-            }.AddField("Guild Id", $"{e.Context.Guild.Id}", true)
-            .AddField("Channel Id", $"{e.Context.Channel.Id}", true)
-            .AddField("Channel", $"#{e.Context.Channel.Name}", false);
-
-            if (errored)
-            {
-                string desc = $"{e.Exception.Message}\n{Formatter.BlockCode(e.Exception.StackTrace)}";
-                switch (e.Exception)
-                {
-                    case BadRequestException br:
-                        dynamic? parsedJson = JsonConvert.DeserializeObject(br.Errors);
-                        desc += $"\n{Formatter.BlockCode($"{br.JsonMessage}\n{JsonConvert.SerializeObject(parsedJson, Formatting.Indented)}")}";
-                        break;
-                    case NotFoundException nf:
-                        desc += $"\n{Formatter.BlockCode(nf.JsonMessage)}";
-                        break;
-                    case RateLimitException rl:
-                        desc += $"\n{Formatter.BlockCode(rl.JsonMessage)}";
-                        break;
-                    case RequestSizeException rz:
-                        desc += $"\n{Formatter.BlockCode(rz.JsonMessage)}";
-                        break;
-                    case ServerErrorException se:
-                        desc += $"\n{Formatter.BlockCode(se.JsonMessage)}";
-                        break;
-                    case UnauthorizedException ue:
-                        desc += $"\n{Formatter.BlockCode(ue.JsonMessage)}";
-                        break;
-                }
-
-                builder.WithDescription(desc);
-                builder.WithColor(DiscordColor.Red);
-            }
-            else
-            {
-                builder.WithColor(DiscordColor.Green);
-            }
-
-            if (parms)
-            {
-                string options = string.Empty;
-                var args = e.Context.Interaction.Data.Options;
-                if (args != null)
-                {
-                    foreach (var arg in args)
-                    {
-                        options += $"{Formatter.InlineCode($"{arg.Name}: {arg.Value}")} ";
-                    }
-                }
-
-                builder.AddField("Command", $"/{e.Context.CommandName} {options}", false);
-            }
-            else
-            {
-                builder.AddField("Command", $"/{e.Context.CommandName}", false);
-            }
-
-            return builder;
         }
 
         public static async Task<MemoryStream> MergeImage(string link1, string link2, int x, int y)
