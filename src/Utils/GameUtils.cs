@@ -79,7 +79,7 @@
                     Text = "You can see the statistics using the /stats command",
                 },
             }));
-            await Common.ChequearVotoTopGGAsync(ctx);
+            await Common.ChequearVotoTopGGAsync(ctx, Configuration);
         }
 
         public static async Task JugarQuizAsync(InteractionContext ctx, IConfigurationRoot Configuration, dynamic lista, GameSettings settings)
