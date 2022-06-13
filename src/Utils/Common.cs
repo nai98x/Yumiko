@@ -23,8 +23,6 @@
     using System.Net.Http;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-    using Yumiko.Datatypes;
-    using Yumiko.Enums;
 
     public static class Common
     {

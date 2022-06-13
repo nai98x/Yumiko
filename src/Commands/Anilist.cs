@@ -16,10 +16,6 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Net;
     using System.Threading.Tasks;
-    using Yumiko.Datatypes;
-    using Yumiko.Enums;
-    using Yumiko.Services.Firebase;
-    using Yumiko.Utils;
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not with D#+ Command classes")]
     [SlashCommandGroup("anilist", "Anilist queries")]
@@ -866,7 +862,7 @@
                                     Color = Constants.YumikoColor,
                                 };
                                 embed.WithFooter("Retrieved from trace.moe", "https://trace.moe/favicon.png");
-                                if(msg == "OK")
+                                if (msg == "OK")
                                 {
                                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                                     return;
@@ -905,7 +901,7 @@
             {
                 msg = "You must enter the link of an image";
             }
-            
+
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder()
             {
                 Title = "Error",

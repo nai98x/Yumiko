@@ -2,7 +2,6 @@
 {
     using DSharpPlus.Entities;
     using Humanizer;
-    using Yumiko.Enums;
 
     public static class ExtensionMethods
     {

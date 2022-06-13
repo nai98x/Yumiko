@@ -9,7 +9,6 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
-    using Yumiko.Utils;
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not with D#+ Command classes")]
     public class Interact : ApplicationCommandModule

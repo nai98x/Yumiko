@@ -1,4 +1,12 @@
-﻿using DSharpPlus;
+﻿global using Yumiko.Commands;
+global using Yumiko.Datatypes;
+global using Yumiko.Datatypes.Firebase;
+global using Yumiko.Enums;
+global using Yumiko.Providers;
+global using Yumiko.Services;
+global using Yumiko.Services.Firebase;
+global using Yumiko.Utils;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
@@ -14,9 +22,6 @@ using Serilog;
 using Serilog.Events;
 using System.Diagnostics;
 using System.Globalization;
-using Yumiko.Commands;
-using Yumiko.Services;
-using Yumiko.Utils;
 
 namespace Yumiko
 {
@@ -47,6 +52,7 @@ namespace Yumiko
             services.AddLogging(loggingBuilder =>
             {
                 LoggerConfiguration loggerConfiguration = new LoggerConfiguration()
+                    .Filter.ByExcluding("StartsWith(Message, 'Unknown')")
                     .MinimumLevel.Is(Debug ? LogEventLevel.Debug : LogEventLevel.Information)
                     .WriteTo.Console(outputTemplate: "[{Timestamp:dd-MM-yyyy HH:mm:ss}] [{Level:u4}]: {Message:lj}{NewLine}{Exception}")
                     .WriteTo.File($"logs/{DateTime.Now.ToString("dd'-'MM'-'yyyy' 'HH'_'mm'_'ss", CultureInfo.InvariantCulture)}.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u4}]: {Message:lj}{NewLine}{Exception}");
@@ -110,17 +116,19 @@ namespace Yumiko
                 if (Debug && keyValuePair.Key == logGuildShard)
                 {
                     slashShardExtension.RegisterCommands<Games>(logGuildId);
+                    slashShardExtension.RegisterCommands<Stats>(logGuildId);
                     slashShardExtension.RegisterCommands<Interact>(logGuildId);
                     slashShardExtension.RegisterCommands<Anilist>(logGuildId);
-                    slashShardExtension.RegisterCommands<Other>(logGuildId);
+                    slashShardExtension.RegisterCommands<Misc>(logGuildId);
                     slashShardExtension.RegisterCommands<Help>(logGuildId);
                 }
                 else
                 {
                     slashShardExtension.RegisterCommands<Games>();
+                    slashShardExtension.RegisterCommands<Stats>();
                     slashShardExtension.RegisterCommands<Interact>();
                     slashShardExtension.RegisterCommands<Anilist>();
-                    slashShardExtension.RegisterCommands<Other>();
+                    slashShardExtension.RegisterCommands<Misc>();
                     slashShardExtension.RegisterCommands<Help>();
                 }
 
@@ -131,10 +139,10 @@ namespace Yumiko
             }
 
             Stopwatch = Stopwatch.StartNew();
-            
+
             await Task.Delay(-1);
         }
-            
+
         internal static bool ConfigFilesCheck()
         {
             var configPath = Path.Join("res", "config.json");

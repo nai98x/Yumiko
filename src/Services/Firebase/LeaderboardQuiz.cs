@@ -5,9 +5,6 @@
     using Microsoft.Extensions.Configuration;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Yumiko.Datatypes;
-    using Yumiko.Datatypes.Firebase;
-    using Yumiko.Utils;
 
     public static class LeaderboardQuiz
     {

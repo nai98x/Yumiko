@@ -14,10 +14,6 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-    using Yumiko.Datatypes;
-    using Yumiko.Enums;
-    using Yumiko.Services;
-    using Yumiko.Services.Firebase;
 
     public static class GameUtils
     {

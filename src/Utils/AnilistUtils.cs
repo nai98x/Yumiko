@@ -9,8 +9,6 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Yumiko.Datatypes;
-    using Yumiko.Enums;
 
     public static class AnilistUtils
     {

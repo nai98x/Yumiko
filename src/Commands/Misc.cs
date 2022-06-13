@@ -12,11 +12,9 @@
     using System.Globalization;
     using System.Threading.Tasks;
     using System.Web;
-    using Yumiko.Providers;
-    using Yumiko.Utils;
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not with D#+ Command classes")]
-    public class Other : ApplicationCommandModule
+    public class Misc : ApplicationCommandModule
     {
         public IConfigurationRoot Configuration { private get; set; } = null!;
 
@@ -185,7 +183,7 @@
             }));
             await Common.GrabarLogErrorAsync(ctx, $"Unknown error in `/dog`\n\n`{response.StatusCode}: {response.StatusDescription}`");
         }
-        
+
         [SlashCommand("info", "Shows Yumiko's information and stats")]
         public async Task Information(InteractionContext ctx)
         {
@@ -196,7 +194,7 @@
                 Title = "Information",
                 Color = Constants.YumikoColor
             };
-            
+
             embed.AddField("Author", ctx.Client.CurrentApplication.Owners.First().FullName(), true);
             embed.AddField("Library", $"DSharpPlus {ctx.Client.VersionString}", true);
             embed.AddField("Memory", $"{GC.GetTotalMemory(true) / 1024 / 1024:n0} MB", true);

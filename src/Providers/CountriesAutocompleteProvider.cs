@@ -7,7 +7,6 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using Yumiko.Datatypes;
 
     public class CountriesAutocompleteProvider : IAutocompleteProvider
     {

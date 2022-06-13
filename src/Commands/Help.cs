@@ -6,7 +6,6 @@
     using Microsoft.Extensions.Configuration;
     using System.Globalization;
     using System.Threading.Tasks;
-    using Yumiko.Utils;
 
     public class Help : ApplicationCommandModule
     {

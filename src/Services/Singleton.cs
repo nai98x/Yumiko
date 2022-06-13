@@ -1,7 +1,6 @@
 ﻿namespace Yumiko.Services
 {
     using System.Collections.Generic;
-    using Yumiko.Datatypes;
 
     public class Singleton
     {

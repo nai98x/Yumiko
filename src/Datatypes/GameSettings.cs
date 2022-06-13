@@ -1,7 +1,5 @@
 ﻿namespace Yumiko.Datatypes
 {
-    using Yumiko.Enums;
-
     public class GameSettings
     {
         public bool Ok { get; set; }

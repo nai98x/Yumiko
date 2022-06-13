@@ -12,7 +12,6 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Yumiko.Utils;
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not with D#+ Command classes")]
     [SlashCommandGroup("owner", "Comandos solo disponibles para el owner de Yumiko")]
