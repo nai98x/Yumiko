@@ -67,7 +67,6 @@
                 Ok = true,
             };
 
-            string firebaseDatabaseName = ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName);
             double timeoutGames = ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGames);
             string topggToken = ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg);
 
@@ -84,7 +83,7 @@
                     }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetCharactersAsync(ctx, settings);
-                    await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
+                    await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Animes:
                     embebido = new DiscordEmbedBuilder
@@ -94,7 +93,7 @@
                     }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, true);
-                    await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
+                    await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Mangas:
                     embebido = new DiscordEmbedBuilder
@@ -104,7 +103,7 @@
                     }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.MANGA, settings, false, false, false, false);
-                    await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
+                    await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
 
                     break;
                 case Gamemode.Studios:
@@ -115,7 +114,7 @@
                     }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, true, false, false);
-                    await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
+                    await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Protagonists:
                     embebido = new DiscordEmbedBuilder
@@ -125,7 +124,7 @@
                     }.AddField("Genre", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, true, false, false, false);
-                    await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
+                    await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Genres:
                     await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -142,7 +141,7 @@
                         }.AddField("Rounds", $"{settings.Rondas}").AddField("Genre", $"{settings.Difficulty}");
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embebido));
                         list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, true, true);
-                        await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
+                        await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
                     }
                     else
                     {
@@ -350,7 +349,7 @@
 
             if (puntuacion > 0)
             {
-                bool record = await LeaderboardHoL.AddRegistroAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), ctx.User.Id, ctx.Guild.Id, puntuacion);
+                bool record = await LeaderboardHoL.AddRegistroAsync(ctx.User.Id, ctx.Guild.Id, puntuacion);
                 if (record)
                 {
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder

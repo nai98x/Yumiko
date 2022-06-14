@@ -6,9 +6,9 @@
 
     public static class LeaderboardQuiz
     {
-        public static async Task<List<DtLeaderboardQuiz>> GetLeaderboardFirebaseAsync(string firebaseDatabaseName, long guildId, string juego, string dificultad, int cantidad)
+        public static async Task<List<DtLeaderboardQuiz>> GetLeaderboardFirebaseAsync(long guildId, string juego, string dificultad, int cantidad)
         {
-            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
+            FirestoreDb db = Common.GetFirestoreClient();
             var ret = new List<DtLeaderboardQuiz>();
 
             var col = db.Collection("Estadisticas").Document($"{guildId}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios").OrderByDescending("porcentajeAciertos").OrderByDescending("rondasTotales").Limit(cantidad);
@@ -25,9 +25,9 @@
             return ret;
         }
 
-        public static async Task AddRegistroAsync(string firebaseDatabaseName, long guildId, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)
+        public static async Task AddRegistroAsync(long guildId, long userId, string dificultad, int rondasAcertadas, int rondasTotales, string juego)
         {
-            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
+            FirestoreDb db = Common.GetFirestoreClient();
             DocumentReference doc = db.Collection("Estadisticas").Document($"{guildId}").Collection($"Juegos").Document($"{juego}").Collection($"Dificultad").Document($"{dificultad}").Collection("Usuarios").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
             DtLeaderboardQuiz registro;
@@ -61,10 +61,10 @@
             }
         }
 
-        public static async Task<List<GameStats>> GetLeaderboardAsync(InteractionContext ctx, string firebaseDatabaseName, string dificultad, string juego)
+        public static async Task<List<GameStats>> GetLeaderboardAsync(InteractionContext ctx, string dificultad, string juego)
         {
             List<GameStats> lista = new();
-            var listaFirebase = await GetLeaderboardFirebaseAsync(firebaseDatabaseName, (long)ctx.Guild.Id, juego, dificultad, 10);
+            var listaFirebase = await GetLeaderboardFirebaseAsync((long)ctx.Guild.Id, juego, dificultad, 10);
             listaFirebase.ForEach(x =>
             {
                 lista.Add(new GameStats()
@@ -79,9 +79,9 @@
             return lista;
         }
 
-        public static async Task EliminarEstadisticasAsync(InteractionContext ctx, string firebaseDatabaseName, string juego)
+        public static async Task EliminarEstadisticasAsync(InteractionContext ctx, string juego)
         {
-            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
+            FirestoreDb db = Common.GetFirestoreClient();
             DocumentReference docFacil = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document(juego).Collection("Dificultad").Document("Fácil").Collection("Usuarios").Document($"{ctx.User.Id}");
             var snapFacil = await docFacil.GetSnapshotAsync();
             DocumentReference docMedia = db.Collection("Estadisticas").Document($"{ctx.Guild.Id}").Collection("Juegos").Document(juego).Collection("Dificultad").Document("Media").Collection("Usuarios").Document($"{ctx.User.Id}");

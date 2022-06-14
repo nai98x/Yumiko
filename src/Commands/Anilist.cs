@@ -81,7 +81,7 @@
                     var confirmar = await Common.GetYesNoInteractivityAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), ctx.Client.GetInteractivity(), "Confirm that you want to save this profile", $"**Your Anilist profile is:**\n\n   **Nickname:** {name}\n   **Url:** {siteurl}");
                     if (confirmar)
                     {
-                        await UsuariosAnilist.SetAnilistAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), idAnilist, ctx.Member.Id);
+                        await UsuariosAnilist.SetAnilistAsync(idAnilist, ctx.Member.Id);
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed: new DiscordEmbedBuilder
                         {
                             Color = DiscordColor.Green,
@@ -130,7 +130,7 @@
             var confirmar = await Common.GetYesNoInteractivityAsync(context, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), ctx.Client.GetInteractivity(), "Confirm that you want to delete your profile", "This action can not be undone");
             if (confirmar)
             {
-                var borrado = await UsuariosAnilist.DeleteAnilistAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), ctx.User.Id);
+                var borrado = await UsuariosAnilist.DeleteAnilistAsync(ctx.User.Id);
                 if (borrado)
                 {
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
@@ -164,7 +164,7 @@
 
             user ??= ctx.User;
             var miembro = await ctx.Guild.GetMemberAsync(user.Id);
-            var userAnilist = await UsuariosAnilist.GetPerfilAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), miembro.Id);
+            var userAnilist = await UsuariosAnilist.GetPerfilAsync(miembro.Id);
             if (userAnilist != null)
             {
                 var anilistId = userAnilist.AnilistId;
@@ -489,7 +489,7 @@
                     DiscordWebhookBuilder whbuilder = new();
                     whbuilder.AddEmbed(builder);
 
-                    var usuarioB = await UsuariosAnilist.GetPerfilAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), usuario.Id);
+                    var usuarioB = await UsuariosAnilist.GetPerfilAsync(usuario.Id);
                     if (usuarioB != null)
                     {
                         var embedN = await AnilistServices.GetInfoMediaUser(ctx, usuarioB.AnilistId, media.Id);
@@ -591,7 +591,7 @@
                     DiscordWebhookBuilder whbuilder = new();
                     whbuilder.AddEmbed(builder);
 
-                    var usuarioB = await UsuariosAnilist.GetPerfilAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), usuario.Id);
+                    var usuarioB = await UsuariosAnilist.GetPerfilAsync(usuario.Id);
                     if (usuarioB != null)
                     {
                         var embedN = await AnilistServices.GetInfoMediaUser(ctx, usuarioB.AnilistId, media.Id);

@@ -17,7 +17,7 @@
         [SlashCommand("ping", "Shows Yumiko´s ping")]
         public async Task Ping(InteractionContext ctx)
         {
-            Common.GetFirestoreClient(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName));
+            Common.GetFirestoreClient();
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
             {
                 Title = "Ping",

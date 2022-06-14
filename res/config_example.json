@@ -24,7 +24,6 @@
       "errors": "TESTING_ERRORS_CHANNEL_ID"
     }
   },
-  "firebase_database_name": "FIREBASE_DATABASE_NAME",
   "topgg_enabled": "true_OR_false",
   "timeouts": {
     "general": "TIMEOUT_IN_SECONDS",

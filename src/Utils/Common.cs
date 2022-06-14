@@ -2,10 +2,12 @@
 {
     using DiscordBotsList.Api;
     using Google.Cloud.Firestore;
+    using Google.Cloud.Firestore.V1;
     using GraphQL;
     using GraphQL.Client.Http;
     using GraphQL.Client.Serializer.Newtonsoft;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using SixLabors.ImageSharp;
     using SixLabors.ImageSharp.Formats.Png;
     using SixLabors.ImageSharp.PixelFormats;
@@ -21,11 +23,27 @@
     {
         private static readonly GraphQLHttpClient GraphQlClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        public static FirestoreDb GetFirestoreClient(string firebaseDatabaseName)
+        public static FirestoreDb GetFirestoreClient()
         {
             string path = Path.Join(AppDomain.CurrentDomain.BaseDirectory, "res", "firebase.json");
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            return FirestoreDb.Create(firebaseDatabaseName);
+            string jsonString = File.ReadAllText(path);
+
+            if(jsonString!= null)
+            {
+                var deserialized = JsonConvert.DeserializeObject(jsonString);
+                if(deserialized != null)
+                {
+                    JObject? data = (JObject)deserialized;
+                    var projectId = data.SelectToken("project_id")?.Value<string>();
+                    if(projectId != null)
+                    {
+                        var builder = new FirestoreClientBuilder { JsonCredentials = jsonString };
+                        return FirestoreDb.Create(projectId, builder.Build());
+                    }
+                }
+            }
+
+            throw new NullReferenceException("Something go wrong with firease.json");
         }
 
         public static int GetNumeroRandom(int min, int max)

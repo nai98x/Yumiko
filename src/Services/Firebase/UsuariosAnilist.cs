@@ -6,9 +6,9 @@
 
     public static class UsuariosAnilist
     {
-        public static async Task<DtAnilistUser?> GetPerfilAsync(string firebaseDatabaseName, ulong userId)
+        public static async Task<DtAnilistUser?> GetPerfilAsync(ulong userId)
         {
-            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
+            FirestoreDb db = Common.GetFirestoreClient();
             DocumentReference doc = db.Collection("AnilistUsers").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
             if (snap.Exists)
@@ -21,9 +21,9 @@
             }
         }
 
-        public static async Task SetAnilistAsync(string firebaseDatabaseName, int anilistId, ulong userId)
+        public static async Task SetAnilistAsync(int anilistId, ulong userId)
         {
-            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
+            FirestoreDb db = Common.GetFirestoreClient();
             DocumentReference doc = db.Collection("AnilistUsers").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
             DtAnilistUser registro;
@@ -51,9 +51,9 @@
             }
         }
 
-        public static async Task<bool> DeleteAnilistAsync(string firebaseDatabaseName, ulong userId)
+        public static async Task<bool> DeleteAnilistAsync(ulong userId)
         {
-            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
+            FirestoreDb db = Common.GetFirestoreClient();
             DocumentReference doc = db.Collection("AnilistUsers").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
             if (snap.Exists)

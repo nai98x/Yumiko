@@ -6,9 +6,9 @@
 
     public static class LeaderboardHoL
     {
-        internal static async Task<List<DtLeaderboardHoL>> GetLeaderboardFirebaseAsync(string firebaseDatabaseName, long guildId)
+        internal static async Task<List<DtLeaderboardHoL>> GetLeaderboardFirebaseAsync(long guildId)
         {
-            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
+            FirestoreDb db = Common.GetFirestoreClient();
             var ret = new List<DtLeaderboardHoL>();
             var col = db.Collection("HigherOrLower").Document($"{guildId}").Collection("Usuarios").OrderByDescending("puntuacion").Limit(20);
             var snap = await col.GetSnapshotAsync();
@@ -24,9 +24,9 @@
             return ret;
         }
 
-        public static async Task<bool> AddRegistroAsync(string firebaseDatabaseName, ulong userId, ulong guildId, int puntuacion)
+        public static async Task<bool> AddRegistroAsync(ulong userId, ulong guildId, int puntuacion)
         {
-            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
+            FirestoreDb db = Common.GetFirestoreClient();
             bool actualizar = false;
             DocumentReference doc = db.Collection("HigherOrLower").Document($"{guildId}").Collection("Usuarios").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
@@ -61,14 +61,14 @@
             return actualizar;
         }
 
-        public static async Task<List<DtLeaderboardHoL>> GetLeaderboardAsync(InteractionContext ctx, string firebaseDatabaseName)
+        public static async Task<List<DtLeaderboardHoL>> GetLeaderboardAsync(InteractionContext ctx)
         {
-            return await GetLeaderboardFirebaseAsync(firebaseDatabaseName, (long)ctx.Guild.Id);
+            return await GetLeaderboardFirebaseAsync((long)ctx.Guild.Id);
         }
 
-        public static async Task EliminarEstadisticasAsync(InteractionContext ctx, string firebaseDatabaseName)
+        public static async Task EliminarEstadisticasAsync(InteractionContext ctx)
         {
-            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
+            FirestoreDb db = Common.GetFirestoreClient();
             DocumentReference doc = db.Collection("HigherOrLower").Document($"{ctx.Guild.Id}").Collection("Usuarios").Document($"{ctx.User.Id}");
             var snap = await doc.GetSnapshotAsync();
 
