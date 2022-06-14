@@ -1,10 +1,5 @@
 ﻿namespace Yumiko.Commands
 {
-    using DSharpPlus;
-    using DSharpPlus.Entities;
-    using DSharpPlus.Interactivity.Extensions;
-    using DSharpPlus.SlashCommands;
-    using Microsoft.Extensions.Configuration;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -72,6 +67,10 @@
                 Ok = true,
             };
 
+            string firebaseDatabaseName = ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName);
+            double timeoutGames = ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGames);
+            string topggToken = ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg);
+
             var interactivity = ctx.Client.GetInteractivity();
             DiscordEmbed embebido;
             dynamic list;
@@ -84,8 +83,8 @@
                         Color = Constants.YumikoColor,
                     }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
-                    list = await GameUtils.GetCharactersAsync(ctx, settings);
-                    await GameUtils.JugarQuizAsync(ctx, Configuration, list, settings);
+                    list = await GameServices.GetCharactersAsync(ctx, settings);
+                    await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Animes:
                     embebido = new DiscordEmbedBuilder
@@ -94,8 +93,8 @@
                         Color = Constants.YumikoColor,
                     }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
-                    list = await GameUtils.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, true);
-                    await GameUtils.JugarQuizAsync(ctx, Configuration, list, settings);
+                    list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, true);
+                    await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Mangas:
                     embebido = new DiscordEmbedBuilder
@@ -104,8 +103,8 @@
                         Color = Constants.YumikoColor,
                     }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
-                    list = await GameUtils.GetMediaAsync(ctx, MediaType.MANGA, settings, false, false, false, false);
-                    await GameUtils.JugarQuizAsync(ctx, Configuration, list, settings);
+                    list = await GameServices.GetMediaAsync(ctx, MediaType.MANGA, settings, false, false, false, false);
+                    await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
 
                     break;
                 case Gamemode.Studios:
@@ -115,8 +114,8 @@
                         Color = Constants.YumikoColor,
                     }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
-                    list = await GameUtils.GetMediaAsync(ctx, MediaType.ANIME, settings, false, true, false, false);
-                    await GameUtils.JugarQuizAsync(ctx, Configuration, list, settings);
+                    list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, true, false, false);
+                    await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Protagonists:
                     embebido = new DiscordEmbedBuilder
@@ -125,12 +124,12 @@
                         Color = Constants.YumikoColor,
                     }.AddField("Genre", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
-                    list = await GameUtils.GetMediaAsync(ctx, MediaType.ANIME, settings, true, false, false, false);
-                    await GameUtils.JugarQuizAsync(ctx, Configuration, list, settings);
+                    list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, true, false, false, false);
+                    await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Genres:
                     await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-                    GameSettings settingsGenero = await GameUtils.ElegirGeneroAsync(ctx, Configuration, interactivity);
+                    GameSettings settingsGenero = await GameServices.ElegirGeneroAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity);
                     settings.Ok = settingsGenero.Ok;
                     if (settings.Ok)
                     {
@@ -142,8 +141,8 @@
                             Color = Constants.YumikoColor,
                         }.AddField("Rounds", $"{settings.Rondas}").AddField("Genre", $"{settings.Difficulty}");
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embebido));
-                        list = await GameUtils.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, true, true);
-                        await GameUtils.JugarQuizAsync(ctx, Configuration, list, settings);
+                        list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, true, true);
+                        await GameServices.JugarQuizAsync(ctx, firebaseDatabaseName, timeoutGames, topggToken, list, settings);
                     }
                     else
                     {
@@ -168,7 +167,7 @@
                     Character? personaje = await Common.GetRandomCharacterAsync(ctx, pag);
                     if (personaje != null)
                     {
-                        await GameUtils.JugarAhorcadoAsync(ctx, personaje, gamemode);
+                        await GameServices.JugarAhorcadoAsync(ctx, personaje, gamemode);
                     }
 
                     break;
@@ -177,7 +176,7 @@
                     Anime? anime = await Common.GetRandomMediaAsync(ctx, pag, MediaType.ANIME);
                     if (anime != null)
                     {
-                        await GameUtils.JugarAhorcadoAsync(ctx, anime, gamemode);
+                        await GameServices.JugarAhorcadoAsync(ctx, anime, gamemode);
                     }
 
                     break;
@@ -204,7 +203,7 @@
             };
             DiscordEmbed? embedAux = null;
 
-            var listaAux = await GameUtils.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, false);
+            var listaAux = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, false);
             List<Anime> lista = new();
             foreach (var item in listaAux)
             {
@@ -338,7 +337,7 @@
                 // Vuelvo a rellenar la lista si se queda sin items
                 if (lista.Count < 2)
                 {
-                    listaAux = await GameUtils.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, false);
+                    listaAux = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, false);
                     foreach (var item in listaAux)
                     {
                         if (item.AvarageScore > -1)
@@ -351,7 +350,7 @@
 
             if (puntuacion > 0)
             {
-                bool record = await LeaderboardHoL.AddRegistroAsync(Configuration, ctx.User.Id, ctx.Guild.Id, puntuacion);
+                bool record = await LeaderboardHoL.AddRegistroAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), ctx.User.Id, ctx.Guild.Id, puntuacion);
                 if (record)
                 {
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
@@ -428,7 +427,7 @@
                 {
                     var result = interaction.Result;
 
-                    var aux = GameUtils.GetBotonesTicTacToe(result.Id, botones, turnoPrimerJugador);
+                    var aux = GameServices.GetBotonesTicTacToe(result.Id, botones, turnoPrimerJugador);
                     botones = aux.Item1;
                     cambiarTurno = aux.Item2;
                     var listaBotones = botones.Chunk(3);
@@ -440,7 +439,7 @@
                         whBuilder.AddComponents(n);
                     }
 
-                    var resultPartidaTerminada = GameUtils.PartidaTerminadaTicTacToe(botones, player1, player2);
+                    var resultPartidaTerminada = GameServices.PartidaTerminadaTicTacToe(botones, player1, player2);
                     terminada = resultPartidaTerminada.Item1;
                     DiscordUser? ganador = resultPartidaTerminada.Item2;
 

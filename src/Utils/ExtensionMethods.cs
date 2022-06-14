@@ -1,6 +1,5 @@
 ﻿namespace Yumiko.Utils
 {
-    using DSharpPlus.Entities;
     using Humanizer;
 
     public static class ExtensionMethods

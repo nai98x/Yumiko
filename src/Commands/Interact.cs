@@ -1,9 +1,5 @@
 ﻿namespace Yumiko.Commands
 {
-    using DSharpPlus;
-    using DSharpPlus.Entities;
-    using DSharpPlus.SlashCommands;
-    using DSharpPlus.SlashCommands.Attributes;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -13,6 +9,8 @@
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not with D#+ Command classes")]
     public class Interact : ApplicationCommandModule
     {
+        public IConfigurationRoot Configuration { private get; set; } = null!;
+
         [SlashCommand("Say", "Replicates a text")]
         [SlashRequirePermissions(Permissions.SendMessages)]
         public async Task Say(InteractionContext ctx, [Option("Message", "The text you want to replicate")] string texto)

@@ -1,9 +1,5 @@
 ﻿namespace Yumiko.Commands
 {
-    using DSharpPlus;
-    using DSharpPlus.Entities;
-    using DSharpPlus.SlashCommands;
-    using Microsoft.Extensions.Configuration;
     using System.Globalization;
     using System.Threading.Tasks;
 
@@ -20,7 +16,7 @@
             var commandTypes = types.Where(type => type.FullName!.StartsWith("Yumiko.Commands", true, CultureInfo.InvariantCulture));
 
             var sections = GetCategories(commandTypes);
-            bool debugGuild = ctx.Guild.Id == Configuration.GetValue<ulong>("loggin:guild_id");
+            bool debugGuild = ctx.Guild.Id == ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginGuildId);
 
             string description = $"{Formatter.BlockCode($"{ctx.Client.CurrentUser.Username} is an anime trivia bot, with other games and funcionalities.")}\n";
 
@@ -57,8 +53,8 @@
 
             List<DiscordLinkButtonComponent> components = new()
             {
-                new(Configuration.GetValue<string>("invite_url"), "Invite"),
-                new(Configuration.GetValue<string>("website"), "Website"),
+                new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.InviteUrl), "Invite"),
+                new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.Website), "Website"),
             };
 
             if (!string.IsNullOrEmpty(ctx.Client.CurrentApplication.PrivacyPolicyUrl))

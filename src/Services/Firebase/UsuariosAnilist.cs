@@ -1,15 +1,14 @@
 ﻿namespace Yumiko.Services.Firebase
 {
     using Google.Cloud.Firestore;
-    using Microsoft.Extensions.Configuration;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public static class UsuariosAnilist
     {
-        public static async Task<DtAnilistUser?> GetPerfilAsync(IConfiguration Configuration, ulong userId)
+        public static async Task<DtAnilistUser?> GetPerfilAsync(string firebaseDatabaseName, ulong userId)
         {
-            FirestoreDb db = Common.GetFirestoreClient(Configuration);
+            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
             DocumentReference doc = db.Collection("AnilistUsers").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
             if (snap.Exists)
@@ -22,9 +21,9 @@
             }
         }
 
-        public static async Task SetAnilistAsync(IConfiguration Configuration, int anilistId, ulong userId)
+        public static async Task SetAnilistAsync(string firebaseDatabaseName, int anilistId, ulong userId)
         {
-            FirestoreDb db = Common.GetFirestoreClient(Configuration);
+            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
             DocumentReference doc = db.Collection("AnilistUsers").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
             DtAnilistUser registro;
@@ -52,9 +51,9 @@
             }
         }
 
-        public static async Task<bool> DeleteAnilistAsync(IConfiguration Configuration, ulong userId)
+        public static async Task<bool> DeleteAnilistAsync(string firebaseDatabaseName, ulong userId)
         {
-            FirestoreDb db = Common.GetFirestoreClient(Configuration);
+            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
             DocumentReference doc = db.Collection("AnilistUsers").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
             if (snap.Exists)

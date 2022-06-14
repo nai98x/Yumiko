@@ -1,11 +1,7 @@
 ﻿namespace Yumiko.Commands
 {
-    using DSharpPlus;
-    using DSharpPlus.Entities;
-    using DSharpPlus.SlashCommands;
     using Humanizer;
     using Humanizer.Localisation;
-    using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
     using RestSharp;
     using System.Diagnostics.CodeAnalysis;
@@ -21,7 +17,7 @@
         [SlashCommand("ping", "Shows Yumiko´s ping")]
         public async Task Ping(InteractionContext ctx)
         {
-            Common.GetFirestoreClient(Configuration);
+            Common.GetFirestoreClient(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName));
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
             {
                 Title = "Ping",
@@ -39,7 +35,7 @@
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
             string baseUrl = "https://api.openweathermap.org/data/2.5/weather";
-            var client = new RestClient(baseUrl + $"?q={HttpUtility.UrlEncode(localidad)},{pais}&appid={Configuration.GetValue<string>("tokens:openweathermap")}&lang=en&units=metric");
+            var client = new RestClient(baseUrl + $"?q={HttpUtility.UrlEncode(localidad)},{pais}&appid={ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenOpenWeatherMap)}&lang=en&units=metric");
             var request = new RestRequest();
 
             var response = await client.ExecuteAsync(request);
@@ -118,7 +114,7 @@
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
             var client = new RestClient(@"https://api.thecatapi.com/v1/images/search?limit=1");
-            client.AddDefaultHeader("x-api-key", Configuration.GetValue<string>("tokens:thecatapi"));
+            client.AddDefaultHeader("x-api-key", ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTheCatApi));
             var request = new RestRequest();
 
             var response = await client.ExecuteAsync(request);
@@ -154,7 +150,7 @@
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
             var client = new RestClient(@"https://api.thedogapi.com/v1/images/search?limit=1");
-            client.AddDefaultHeader("x-api-key", Configuration.GetValue<string>("tokens:thedogapi"));
+            client.AddDefaultHeader("x-api-key", ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTheDogApi));
             var request = new RestRequest();
 
             var response = await client.ExecuteAsync(request);

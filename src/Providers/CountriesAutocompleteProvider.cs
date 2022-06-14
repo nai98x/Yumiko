@@ -1,7 +1,5 @@
 ﻿namespace Yumiko.Providers
 {
-    using DSharpPlus.Entities;
-    using DSharpPlus.SlashCommands;
     using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.IO;

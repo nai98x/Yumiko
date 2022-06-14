@@ -1,7 +1,4 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.Exceptions;
-using DSharpPlus.SlashCommands.EventArgs;
+﻿using DSharpPlus.Exceptions;
 using Newtonsoft.Json;
 
 namespace Yumiko.Utils
@@ -27,7 +24,7 @@ namespace Yumiko.Utils
 
             return builder;
         }
-        
+
         public static DiscordEmbedBuilder LogSlashCommandError(SlashCommandErrorEventArgs e)
         {
             var builder = new DiscordEmbedBuilder()

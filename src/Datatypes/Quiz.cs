@@ -1,7 +1,5 @@
 ﻿namespace Yumiko.Datatypes
 {
-    using DSharpPlus.Entities;
-
     public class Quiz
     {
         public string? Title { get; set; }

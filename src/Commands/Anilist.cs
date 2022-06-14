@@ -1,9 +1,5 @@
 ﻿namespace Yumiko.Commands
 {
-    using DSharpPlus;
-    using DSharpPlus.Entities;
-    using DSharpPlus.Interactivity.Extensions;
-    using DSharpPlus.SlashCommands;
     using GraphQL;
     using GraphQL.Client.Abstractions.Utilities;
     using GraphQL.Client.Http;
@@ -82,10 +78,10 @@
                     string name = data.Data.User.name;
                     string idString = data.Data.User.id;
                     var idAnilist = int.Parse(idString);
-                    var confirmar = await Common.GetYesNoInteractivityAsync(ctx, Configuration, ctx.Client.GetInteractivity(), "Confirm that you want to save this profile", $"**Your Anilist profile is:**\n\n   **Nickname:** {name}\n   **Url:** {siteurl}");
+                    var confirmar = await Common.GetYesNoInteractivityAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), ctx.Client.GetInteractivity(), "Confirm that you want to save this profile", $"**Your Anilist profile is:**\n\n   **Nickname:** {name}\n   **Url:** {siteurl}");
                     if (confirmar)
                     {
-                        await UsuariosAnilist.SetAnilistAsync(Configuration, idAnilist, ctx.Member.Id);
+                        await UsuariosAnilist.SetAnilistAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), idAnilist, ctx.Member.Id);
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed: new DiscordEmbedBuilder
                         {
                             Color = DiscordColor.Green,
@@ -131,10 +127,10 @@
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var context = ctx;
-            var confirmar = await Common.GetYesNoInteractivityAsync(context, Configuration, ctx.Client.GetInteractivity(), "Confirm that you want to delete your profile", "This action can not be undone");
+            var confirmar = await Common.GetYesNoInteractivityAsync(context, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), ctx.Client.GetInteractivity(), "Confirm that you want to delete your profile", "This action can not be undone");
             if (confirmar)
             {
-                var borrado = await UsuariosAnilist.DeleteAnilistAsync(Configuration, ctx.User.Id);
+                var borrado = await UsuariosAnilist.DeleteAnilistAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), ctx.User.Id);
                 if (borrado)
                 {
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
@@ -168,7 +164,7 @@
 
             user ??= ctx.User;
             var miembro = await ctx.Guild.GetMemberAsync(user.Id);
-            var userAnilist = await UsuariosAnilist.GetPerfilAsync(Configuration, miembro.Id);
+            var userAnilist = await UsuariosAnilist.GetPerfilAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), miembro.Id);
             if (userAnilist != null)
             {
                 var anilistId = userAnilist.AnilistId;
@@ -414,7 +410,7 @@
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var context = ctx;
             usuario ??= ctx.User;
-            var media = await AnilistUtils.GetAniListMedia(ctx, Configuration, anime, MediaType.ANIME);
+            var media = await AnilistServices.GetAniListMedia(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), anime, MediaType.ANIME);
             if (media.Ok == true)
             {
                 string titulos;
@@ -493,10 +489,10 @@
                     DiscordWebhookBuilder whbuilder = new();
                     whbuilder.AddEmbed(builder);
 
-                    var usuarioB = await UsuariosAnilist.GetPerfilAsync(Configuration, usuario.Id);
+                    var usuarioB = await UsuariosAnilist.GetPerfilAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), usuario.Id);
                     if (usuarioB != null)
                     {
-                        var embedN = await AnilistUtils.GetInfoMediaUser(ctx, usuarioB.AnilistId, media.Id);
+                        var embedN = await AnilistServices.GetInfoMediaUser(ctx, usuarioB.AnilistId, media.Id);
                         if (embedN != null)
                         {
                             whbuilder.AddEmbed(embedN);
@@ -526,7 +522,7 @@
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var context = ctx;
             usuario ??= ctx.User;
-            var media = await AnilistUtils.GetAniListMedia(ctx, Configuration, manga, MediaType.MANGA);
+            var media = await AnilistServices.GetAniListMedia(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), manga, MediaType.MANGA);
             if (media.Ok == true)
             {
                 string titulos;
@@ -595,10 +591,10 @@
                     DiscordWebhookBuilder whbuilder = new();
                     whbuilder.AddEmbed(builder);
 
-                    var usuarioB = await UsuariosAnilist.GetPerfilAsync(Configuration, usuario.Id);
+                    var usuarioB = await UsuariosAnilist.GetPerfilAsync(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), usuario.Id);
                     if (usuarioB != null)
                     {
-                        var embedN = await AnilistUtils.GetInfoMediaUser(ctx, usuarioB.AnilistId, media.Id);
+                        var embedN = await AnilistServices.GetInfoMediaUser(ctx, usuarioB.AnilistId, media.Id);
                         if (embedN != null)
                         {
                             whbuilder.AddEmbed(embedN);
@@ -707,7 +703,7 @@
                     }
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-                    var elegido = await Common.GetElegidoAsync(ctx, Configuration, opc);
+                    var elegido = await Common.GetElegidoAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), opc);
                     if (elegido > 0)
                     {
                         var datos = data.Data.Page.characters[elegido - 1];
@@ -830,7 +826,7 @@
                                     {
                                         encontro = true;
                                         int id = resultado.anilist;
-                                        var media = await AnilistUtils.GetAniListMediaTitleAndNsfwFromId(ctx, id, MediaType.ANIME);
+                                        var media = await AnilistServices.GetAniListMediaTitleAndNsfwFromId(ctx, id, MediaType.ANIME);
                                         string mediaTitle = media.Item1;
                                         bool nsfw = media.Item2;
                                         int from = resultado.from;

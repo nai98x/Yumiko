@@ -1,16 +1,14 @@
 ﻿namespace Yumiko.Services.Firebase
 {
-    using DSharpPlus.SlashCommands;
     using Google.Cloud.Firestore;
-    using Microsoft.Extensions.Configuration;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public static class LeaderboardHoL
     {
-        internal static async Task<List<DtLeaderboardHoL>> GetLeaderboardFirebaseAsync(IConfiguration Configuration, long guildId)
+        internal static async Task<List<DtLeaderboardHoL>> GetLeaderboardFirebaseAsync(string firebaseDatabaseName, long guildId)
         {
-            FirestoreDb db = Common.GetFirestoreClient(Configuration);
+            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
             var ret = new List<DtLeaderboardHoL>();
             var col = db.Collection("HigherOrLower").Document($"{guildId}").Collection("Usuarios").OrderByDescending("puntuacion").Limit(20);
             var snap = await col.GetSnapshotAsync();
@@ -26,9 +24,9 @@
             return ret;
         }
 
-        public static async Task<bool> AddRegistroAsync(IConfiguration Configuration, ulong userId, ulong guildId, int puntuacion)
+        public static async Task<bool> AddRegistroAsync(string firebaseDatabaseName, ulong userId, ulong guildId, int puntuacion)
         {
-            FirestoreDb db = Common.GetFirestoreClient(Configuration);
+            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
             bool actualizar = false;
             DocumentReference doc = db.Collection("HigherOrLower").Document($"{guildId}").Collection("Usuarios").Document($"{userId}");
             var snap = await doc.GetSnapshotAsync();
@@ -63,14 +61,14 @@
             return actualizar;
         }
 
-        public static async Task<List<DtLeaderboardHoL>> GetLeaderboardAsync(InteractionContext ctx, IConfiguration Configuration)
+        public static async Task<List<DtLeaderboardHoL>> GetLeaderboardAsync(InteractionContext ctx, string firebaseDatabaseName)
         {
-            return await GetLeaderboardFirebaseAsync(Configuration, (long)ctx.Guild.Id);
+            return await GetLeaderboardFirebaseAsync(firebaseDatabaseName, (long)ctx.Guild.Id);
         }
 
-        public static async Task EliminarEstadisticasAsync(InteractionContext ctx, IConfiguration Configuration)
+        public static async Task EliminarEstadisticasAsync(InteractionContext ctx, string firebaseDatabaseName)
         {
-            FirestoreDb db = Common.GetFirestoreClient(Configuration);
+            FirestoreDb db = Common.GetFirestoreClient(firebaseDatabaseName);
             DocumentReference doc = db.Collection("HigherOrLower").Document($"{ctx.Guild.Id}").Collection("Usuarios").Document($"{ctx.User.Id}");
             var snap = await doc.GetSnapshotAsync();
 

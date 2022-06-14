@@ -1,11 +1,5 @@
 ﻿namespace Yumiko.Commands
 {
-    using DSharpPlus;
-    using DSharpPlus.Entities;
-    using DSharpPlus.Interactivity;
-    using DSharpPlus.Interactivity.Extensions;
-    using DSharpPlus.SlashCommands;
-    using DSharpPlus.SlashCommands.Attributes;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -18,6 +12,8 @@
     [SlashRequireOwner]
     public class Owner : ApplicationCommandModule
     {
+        public IConfigurationRoot Configuration { private get; set; } = null!;
+
         [SlashCommand("test", "Testing command")]
         public async Task Test(InteractionContext ctx)
         {

@@ -1,25 +1,19 @@
-﻿namespace Yumiko.Utils
+﻿namespace Yumiko.Services
 {
-    using DSharpPlus;
-    using DSharpPlus.Entities;
-    using DSharpPlus.Interactivity;
-    using DSharpPlus.Interactivity.Extensions;
-    using DSharpPlus.SlashCommands;
     using GraphQL;
     using GraphQL.Client.Http;
     using GraphQL.Client.Serializer.Newtonsoft;
-    using Microsoft.Extensions.Configuration;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
-    public static class GameUtils
+    public static class GameServices
     {
         private static readonly GraphQLHttpClient GraphQlClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        public static async Task GetResultadosAsync(InteractionContext ctx, IConfigurationRoot Configuration, List<GameUser> participantes, int rondas, GameSettings settings)
+        public static async Task GetResultadosAsync(InteractionContext ctx, string firebaseDatabaseName, string topggToken, List<GameUser> participantes, int rondas, GameSettings settings)
         {
             string resultados;
             if (settings.Gamemode == Gamemode.Genres)
@@ -64,7 +58,7 @@
 
                 lastScore = uj.Puntaje;
                 tot += uj.Puntaje;
-                await LeaderboardQuiz.AddRegistroAsync(Configuration, (long)ctx.Guild.Id, long.Parse(uj.Usuario.Id.ToString()), settings.Difficulty.ToSpanish(), uj.Puntaje, rondas, settings.Gamemode.ToSpanish());
+                await LeaderboardQuiz.AddRegistroAsync(firebaseDatabaseName, (long)ctx.Guild.Id, long.Parse(uj.Usuario.Id.ToString()), settings.Difficulty.ToSpanish(), uj.Puntaje, rondas, settings.Gamemode.ToSpanish());
             }
 
             resultados += $"\n{Formatter.Bold($"Total ({tot}/{rondas})")}";
@@ -79,10 +73,10 @@
                     Text = "You can see the statistics using the /stats command",
                 },
             }));
-            await Common.ChequearVotoTopGGAsync(ctx, Configuration);
+            await Common.ChequearVotoTopGGAsync(ctx, topggToken);
         }
 
-        public static async Task JugarQuizAsync(InteractionContext ctx, IConfigurationRoot Configuration, dynamic lista, GameSettings settings)
+        public static async Task JugarQuizAsync(InteractionContext ctx, string firebaseDatabaseName, double timeoutGames, string topggToken, dynamic lista, GameSettings settings)
         {
             DiscordEmbedBuilder? embedAux = null;
             if (settings.Rondas > lista.Count)
@@ -105,7 +99,6 @@
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
             List<GameUser> participantes = new();
-            double time = Configuration.GetValue<double>("timeouts:games");
             int lastRonda;
             QuizRound quizRound;
 
@@ -121,7 +114,7 @@
                 {
                     GuildId = ctx.Guild.Id,
                     ChannelId = ctx.Channel.Id,
-                    TimeoutTotal = time,
+                    TimeoutTotal = timeoutGames,
                     Title = juegoMostrar,
                     CreatedBy = ctx.User,
                 });
@@ -233,7 +226,7 @@
                 singleton.UpdateCurrentRoundTrivia(ctx.Guild.Id, ctx.Channel.Id, quizRound);
                 desc = Common.NormalizarDescription(desc);
 
-                for (int cont = 0; cont <= time * 10; cont++)
+                for (int cont = 0; cont <= timeoutGames * 10; cont++)
                 {
                     var partida = singleton.GetCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
                     if (partida == null)
@@ -259,7 +252,7 @@
                         };
 
                         await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embed));
-                        await GetResultadosAsync(ctx, Configuration, participantes, lastRonda, settings);
+                        await GetResultadosAsync(ctx, firebaseDatabaseName, topggToken, participantes, lastRonda, settings);
                         singleton.RemoveCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
                         return;
                     }
@@ -298,7 +291,7 @@
                         break;
                     }
 
-                    if (!rondaActual.Guessed && (cont == (time * 10) / 2))
+                    if (!rondaActual.Guessed && (cont == (timeoutGames * 10) / 2))
                     {
                         // Hora de hacer un tip
                         var rnd = new Random();
@@ -356,13 +349,13 @@
                 await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embedAux));
             }
 
-            await GetResultadosAsync(ctx, Configuration, participantes, settings.Rondas, settings);
+            await GetResultadosAsync(ctx, firebaseDatabaseName, topggToken, participantes, settings.Rondas, settings);
             singleton.RemoveCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
         }
 
-        public static async Task<string> GetEstadisticasDificultadAsync(InteractionContext ctx, IConfigurationRoot Configuration, string tipoStats, string dificultad)
+        public static async Task<string> GetEstadisticasDificultadAsync(InteractionContext ctx, string firebaseDatabaseName, string tipoStats, string dificultad)
         {
-            var res = await LeaderboardQuiz.GetLeaderboardAsync(ctx, Configuration, dificultad, tipoStats);
+            var res = await LeaderboardQuiz.GetLeaderboardAsync(ctx, firebaseDatabaseName, dificultad, tipoStats);
             string stats = string.Empty;
             int pos = 0;
             int lastScore = 0;
@@ -413,22 +406,22 @@
             return stats;
         }
 
-        public static async Task<DiscordEmbedBuilder> GetEstadisticasAsync(InteractionContext ctx, IConfigurationRoot Configuration, Gamemode gamemode)
+        public static async Task<DiscordEmbedBuilder> GetEstadisticasAsync(InteractionContext ctx, string firebaseDatabaseName, Gamemode gamemode)
         {
             string game = gamemode.ToSpanish();
 
-            string facil = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, Configuration, game, "Fácil"));
-            string media = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, Configuration, game, "Media"));
-            string dificil = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, Configuration, game, "Dificil"));
-            string extremo = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, Configuration, game, "Extremo"));
+            string facil = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, firebaseDatabaseName, game, "Fácil"));
+            string media = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, firebaseDatabaseName, game, "Media"));
+            string dificil = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, firebaseDatabaseName, game, "Dificil"));
+            string extremo = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, firebaseDatabaseName, game, "Extremo"));
 
             var builder = CrearEmbedStats($"Stats - Guess the {gamemode.GetName().ToLower()}", facil, media, dificil, extremo);
             return builder;
         }
 
-        public static async Task<DiscordEmbedBuilder> GetEstadisticasGeneroAsync(InteractionContext ctx, IConfigurationRoot Configuration, string genero)
+        public static async Task<DiscordEmbedBuilder> GetEstadisticasGeneroAsync(InteractionContext ctx, string firebaseDatabaseName, string genero)
         {
-            string stats = await GetEstadisticasDificultadAsync(ctx, Configuration, "genero", genero);
+            string stats = await GetEstadisticasDificultadAsync(ctx, firebaseDatabaseName, "genero", genero);
             return new DiscordEmbedBuilder
             {
                 Title = $"Stats - Guess the {genero}",
@@ -468,9 +461,9 @@
             return builder;
         }
 
-        public static async Task<DiscordEmbedBuilder> GetEstadisticasHoLAsync(InteractionContext ctx, IConfigurationRoot Configuration)
+        public static async Task<DiscordEmbedBuilder> GetEstadisticasHoLAsync(InteractionContext ctx, string firebaseDatabaseName)
         {
-            var res = await LeaderboardHoL.GetLeaderboardAsync(ctx, Configuration);
+            var res = await LeaderboardHoL.GetLeaderboardAsync(ctx, firebaseDatabaseName);
             string stats = string.Empty;
             int pos = 0;
             int lastScore = 0;
@@ -526,14 +519,14 @@
             };
         }
 
-        public static async Task EliminarEstadisticasAsync(InteractionContext ctx, IConfigurationRoot Configuration)
+        public static async Task EliminarEstadisticasAsync(InteractionContext ctx, string firebaseDatabaseName)
         {
-            await LeaderboardQuiz.EliminarEstadisticasAsync(ctx, Configuration, Gamemode.Characters.ToSpanish());
-            await LeaderboardQuiz.EliminarEstadisticasAsync(ctx, Configuration, Gamemode.Animes.ToSpanish());
-            await LeaderboardQuiz.EliminarEstadisticasAsync(ctx, Configuration, Gamemode.Mangas.ToSpanish());
-            await LeaderboardQuiz.EliminarEstadisticasAsync(ctx, Configuration, Gamemode.Studios.ToSpanish());
-            await LeaderboardQuiz.EliminarEstadisticasAsync(ctx, Configuration, Gamemode.Protagonists.ToSpanish());
-            await LeaderboardHoL.EliminarEstadisticasAsync(ctx, Configuration);
+            await LeaderboardQuiz.EliminarEstadisticasAsync(ctx, firebaseDatabaseName, Gamemode.Characters.ToSpanish());
+            await LeaderboardQuiz.EliminarEstadisticasAsync(ctx, firebaseDatabaseName, Gamemode.Animes.ToSpanish());
+            await LeaderboardQuiz.EliminarEstadisticasAsync(ctx, firebaseDatabaseName, Gamemode.Mangas.ToSpanish());
+            await LeaderboardQuiz.EliminarEstadisticasAsync(ctx, firebaseDatabaseName, Gamemode.Studios.ToSpanish());
+            await LeaderboardQuiz.EliminarEstadisticasAsync(ctx, firebaseDatabaseName, Gamemode.Protagonists.ToSpanish());
+            await LeaderboardHoL.EliminarEstadisticasAsync(ctx, firebaseDatabaseName);
         }
 
         public static async Task<List<Anime>> GetMediaAsync(InteractionContext ctx, MediaType type, GameSettings settings, bool personajes, bool estudios, bool genero, bool mediaRelacionada)
@@ -1217,7 +1210,7 @@
             }
         }
 
-        public static async Task<GameSettings> ElegirGeneroAsync(InteractionContext ctx, IConfigurationRoot Configuration, InteractivityExtension interactivity)
+        public static async Task<GameSettings> ElegirGeneroAsync(InteractionContext ctx, double timeoutGeneral, InteractivityExtension interactivity)
         {
             string query =
                     "query{" +
@@ -1275,7 +1268,7 @@
 
             DiscordMessage msgGenero = await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddComponents(dropdown).AddEmbed(embed));
 
-            var interGenero = await interactivity.WaitForSelectAsync(msgGenero, ctx.User, customId, TimeSpan.FromSeconds(Configuration.GetValue<double>("timeouts:general")));
+            var interGenero = await interactivity.WaitForSelectAsync(msgGenero, ctx.User, customId, TimeSpan.FromSeconds(timeoutGeneral));
             if (!interGenero.TimedOut)
             {
                 var resultado = interGenero.Result;

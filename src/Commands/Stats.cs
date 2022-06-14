@@ -1,11 +1,5 @@
 ﻿namespace Yumiko.Commands
 {
-    using DSharpPlus;
-    using DSharpPlus.Entities;
-    using DSharpPlus.Interactivity.Extensions;
-    using DSharpPlus.SlashCommands;
-    using DSharpPlus.SlashCommands.Attributes;
-    using Microsoft.Extensions.Configuration;
     using System.Threading.Tasks;
 
     [SlashCommandGroup("stats", "Statistics from different games")]
@@ -24,18 +18,18 @@
 
             if (gamemode != Gamemode.Genres)
             {
-                builder = await GameUtils.GetEstadisticasAsync(context, Configuration, gamemode);
+                builder = await GameServices.GetEstadisticasAsync(context, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), gamemode);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
-                await Common.ChequearVotoTopGGAsync(ctx, Configuration);
+                await Common.ChequearVotoTopGGAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
             }
             else
             {
-                var respuesta = await GameUtils.ElegirGeneroAsync(ctx, Configuration, interactivity);
+                var respuesta = await GameServices.ElegirGeneroAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity);
                 if (respuesta.Ok && respuesta.Genre != null)
                 {
-                    builder = await GameUtils.GetEstadisticasGeneroAsync(context, Configuration, respuesta.Genre);
+                    builder = await GameServices.GetEstadisticasGeneroAsync(context, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName), respuesta.Genre);
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
-                    await Common.ChequearVotoTopGGAsync(ctx, Configuration);
+                    await Common.ChequearVotoTopGGAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
                 }
                 else
                 {
@@ -54,9 +48,9 @@
         public async Task HigherOrLower(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            var builder = await GameUtils.GetEstadisticasHoLAsync(ctx, Configuration);
+            var builder = await GameServices.GetEstadisticasHoLAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName));
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
-            await Common.ChequearVotoTopGGAsync(ctx, Configuration);
+            await Common.ChequearVotoTopGGAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
         }
 
         [SlashCommand("delete", "Deletes user statistics on the guild")]
@@ -68,10 +62,10 @@
 
             string titulo = "Confirm if you really want to delete your stats";
             string opciones = $"**This action cannont be undone**";
-            bool confirmar = await Common.GetYesNoInteractivityAsync(context, Configuration, interactivity, titulo, opciones);
+            bool confirmar = await Common.GetYesNoInteractivityAsync(context, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity, titulo, opciones);
             if (confirmar)
             {
-                await GameUtils.EliminarEstadisticasAsync(context, Configuration);
+                await GameServices.EliminarEstadisticasAsync(context, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.FirebaseDatabaseName));
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"You have deleted all your statistics on this guild"));
             }
             else

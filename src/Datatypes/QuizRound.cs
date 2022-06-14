@@ -1,6 +1,5 @@
 ﻿namespace Yumiko.Datatypes
 {
-    using DSharpPlus.Entities;
     using System;
     using System.Collections.Generic;
 

@@ -1,10 +1,8 @@
 ﻿namespace Yumiko.Datatypes
 {
-    using DSharpPlus.Entities;
-
     public class GameUser
     {
-        public DiscordUser Usuario { get; set; }
+        public DiscordUser Usuario { get; set; } = null!;
 
         public int Puntaje { get; set; }
     }

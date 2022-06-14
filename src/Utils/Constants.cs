@@ -1,6 +1,4 @@
-﻿using DSharpPlus.Entities;
-
-namespace Yumiko.Utils
+﻿namespace Yumiko.Utils
 {
     public static class Constants
     {

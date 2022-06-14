@@ -1,16 +1,10 @@
 ﻿namespace Yumiko.Utils
 {
     using DiscordBotsList.Api;
-    using DSharpPlus;
-    using DSharpPlus.Entities;
-    using DSharpPlus.Interactivity;
-    using DSharpPlus.Interactivity.Extensions;
-    using DSharpPlus.SlashCommands;
     using Google.Cloud.Firestore;
     using GraphQL;
     using GraphQL.Client.Http;
     using GraphQL.Client.Serializer.Newtonsoft;
-    using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
     using SixLabors.ImageSharp;
     using SixLabors.ImageSharp.Formats.Png;
@@ -27,11 +21,11 @@
     {
         private static readonly GraphQLHttpClient GraphQlClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        public static FirestoreDb GetFirestoreClient(IConfiguration Configuration)
+        public static FirestoreDb GetFirestoreClient(string firebaseDatabaseName)
         {
             string path = Path.Join(AppDomain.CurrentDomain.BaseDirectory, "res", "firebase.json");
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            return FirestoreDb.Create(Configuration.GetValue<string>("firebase_database_name"));
+            return FirestoreDb.Create(firebaseDatabaseName);
         }
 
         public static int GetNumeroRandom(int min, int max)
@@ -168,11 +162,11 @@
             }
         }
 
-        public static async Task ChequearVotoTopGGAsync(InteractionContext ctx, IConfiguration Configuration)
+        public static async Task ChequearVotoTopGGAsync(InteractionContext ctx, string topggToken)
         {
             if (Program.TopggEnabled && !Program.Debug)
             {
-                AuthDiscordBotListApi DblApi = new(ctx.Client.CurrentApplication.Id, Configuration.GetValue<string>("tokens:topgg"));
+                AuthDiscordBotListApi DblApi = new(ctx.Client.CurrentApplication.Id, topggToken);
                 bool voto = await DblApi.HasVoted(ctx.User.Id);
 
                 if (voto)
@@ -194,13 +188,13 @@
             }
         }
 
-        public static async Task UpdateStatsTopGGAsync(DiscordClient c, IConfiguration Configuration)
+        public static async Task UpdateStatsTopGGAsync(DiscordClient c, string topggToken)
         {
-            AuthDiscordBotListApi dblApi = new(c.CurrentUser.Id, Configuration.GetValue<string>("tokens:topgg"));
+            AuthDiscordBotListApi dblApi = new(c.CurrentUser.Id, topggToken);
             await dblApi.UpdateStats(guildCount: c.Guilds.Count);
         }
 
-        public static async Task<int> GetElegidoAsync(InteractionContext ctx, IConfiguration Configuration, List<AnimeShort> opciones)
+        public static async Task<int> GetElegidoAsync(InteractionContext ctx, double timeoutGeneral, List<AnimeShort> opciones)
         {
             int cantidadOpciones = opciones.Count;
             if (cantidadOpciones == 1)
@@ -232,7 +226,7 @@
 
             DiscordMessage elegirMsg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddComponents(dropdown).AddEmbed(embed));
 
-            var msgElegirInter = await interactivity.WaitForSelectAsync(elegirMsg, ctx.User, customId, TimeSpan.FromSeconds(Configuration.GetValue<double>("timeouts:general")));
+            var msgElegirInter = await interactivity.WaitForSelectAsync(elegirMsg, ctx.User, customId, TimeSpan.FromSeconds(timeoutGeneral));
 
             if (!msgElegirInter.TimedOut)
             {
@@ -243,7 +237,7 @@
             return -1;
         }
 
-        public static async Task<bool> GetYesNoInteractivityAsync(InteractionContext ctx, IConfiguration Configuration, InteractivityExtension interactivity, string title, string description)
+        public static async Task<bool> GetYesNoInteractivityAsync(InteractionContext ctx, double timeoutGeneral, InteractivityExtension interactivity, string title, string description)
         {
             DiscordButtonComponent yesButton = new(ButtonStyle.Success, "true", "Yes");
             DiscordButtonComponent noButton = new(ButtonStyle.Danger, "false", "No");
@@ -260,7 +254,7 @@
             msgBuilder.AddComponents(yesButton, noButton);
 
             DiscordMessage chooseMsg = await msgBuilder.SendAsync(ctx.Channel);
-            var msgElegirInter = await interactivity.WaitForButtonAsync(chooseMsg, ctx.User, TimeSpan.FromSeconds(Configuration.GetValue<double>("timeouts:general")));
+            var msgElegirInter = await interactivity.WaitForButtonAsync(chooseMsg, ctx.User, TimeSpan.FromSeconds(timeoutGeneral));
             await BorrarMensajeAsync(ctx, chooseMsg.Id);
             if (!msgElegirInter.TimedOut)
             {

@@ -1,20 +1,17 @@
-﻿namespace Yumiko.Utils
+﻿namespace Yumiko.Services
 {
-    using DSharpPlus.Entities;
-    using DSharpPlus.SlashCommands;
     using GraphQL;
     using GraphQL.Client.Http;
     using GraphQL.Client.Serializer.Newtonsoft;
-    using Microsoft.Extensions.Configuration;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public static class AnilistUtils
+    public static class AnilistServices
     {
         private static readonly GraphQLHttpClient GraphQlClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        public static async Task<Media> GetAniListMedia(InteractionContext ctx, IConfigurationRoot Configuration, string busqueda, MediaType type)
+        public static async Task<Media> GetAniListMedia(InteractionContext ctx, double timeoutGeneral, string busqueda, MediaType type)
         {
             string query = "query($busqueda : String){" +
             "   Page(perPage:5){" +
@@ -103,7 +100,7 @@
                             });
                         }
 
-                        var elegido = await Common.GetElegidoAsync(ctx, Configuration, opc);
+                        var elegido = await Common.GetElegidoAsync(ctx, timeoutGeneral, opc);
                         if (elegido > 0)
                         {
                             var datos = data.Data.Page.media[elegido - 1];
