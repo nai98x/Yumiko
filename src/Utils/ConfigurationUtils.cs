@@ -6,7 +6,7 @@
         {
             T? configuration = GetConfigurationFromJson<T>(config, type);
 
-            if(configuration != null)
+            if (configuration != null)
             {
                 return configuration;
             }
@@ -15,7 +15,7 @@
                 throw new NullReferenceException($"config.json: Missing {Enum.GetName(type)}");
             }
         }
-        
+
         private static T GetConfigurationFromJson<T>(IConfigurationRoot config, Configurations type)
         {
             return type switch

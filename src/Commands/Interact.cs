@@ -228,7 +228,7 @@
                 waifuLevel = Common.GetNumeroRandom(0, 100);
             }
 
-            var builder =  waifuLevel switch
+            var builder = waifuLevel switch
             {
                 < 25 => new DiscordEmbedBuilder
                 {

@@ -28,14 +28,14 @@
             string path = Path.Join(AppDomain.CurrentDomain.BaseDirectory, "res", "firebase.json");
             string jsonString = File.ReadAllText(path);
 
-            if(jsonString!= null)
+            if (jsonString != null)
             {
                 var deserialized = JsonConvert.DeserializeObject(jsonString);
-                if(deserialized != null)
+                if (deserialized != null)
                 {
                     JObject? data = (JObject)deserialized;
                     var projectId = data.SelectToken("project_id")?.Value<string>();
-                    if(projectId != null)
+                    if (projectId != null)
                     {
                         var builder = new FirestoreClientBuilder { JsonCredentials = jsonString };
                         return FirestoreDb.Create(projectId, builder.Build());
