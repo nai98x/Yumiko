@@ -75,7 +75,9 @@ namespace Yumiko
                 Token = ConfigurationUtils.GetConfiguration<string>(Configuration, Debug ? Configurations.TokenDiscordTesting : Configurations.TokenDiscordProduction),
                 Intents = DiscordIntents.Guilds,
                 LoggerFactory = ServiceProvider.GetRequiredService<ILoggerFactory>(),
-                ReconnectIndefinitely = true
+                ReconnectIndefinitely = true,
+                MessageCacheSize = 0,
+                AlwaysCacheMembers = false
             });
 
             await DiscordShardedClient.UseInteractivityAsync(new InteractivityConfiguration()
