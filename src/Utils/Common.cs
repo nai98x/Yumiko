@@ -157,43 +157,20 @@
             return texto;
         }
 
-        public static bool ChequearPermisoYumiko(InteractionContext ctx, Permissions permiso)
-        {
-            return PermissionMethods.HasPermission(ctx.Channel.PermissionsFor(ctx.Guild.CurrentMember), permiso);
-        }
-
-        public static async Task BorrarMensajeAsync(InteractionContext ctx, ulong msgId)
-        {
-            if (ChequearPermisoYumiko(ctx, Permissions.ManageMessages))
-            {
-                try
-                {
-                    var mensaje = await ctx.Channel.GetMessageAsync(msgId);
-                    if (mensaje != null)
-                    {
-                        await mensaje.DeleteAsync("Yumiko auto delete");
-                    }
-                }
-                catch (Exception)
-                {
-                }
-            }
-        }
-
         public static async Task ChequearVotoTopGGAsync(InteractionContext ctx, string topggToken)
         {
             if (Program.TopggEnabled && !Program.Debug)
             {
                 AuthDiscordBotListApi DblApi = new(ctx.Client.CurrentApplication.Id, topggToken);
-                bool voto = await DblApi.HasVoted(ctx.User.Id);
+                bool hasVoted = await DblApi.HasVoted(ctx.User.Id);
 
-                if (voto)
+                if (!hasVoted)
                 {
                     string url = $"https://top.gg/bot/{ctx.Client.CurrentUser.Id}/vote";
                     var mensaje = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                     {
                         Title = $"Vote me in Top.gg!",
-                        Description = $"You can help a lot voting in [this website]({url}). Thanks!",
+                        Description = $"You can help a lot by voting me in [this website]({url}). Thanks!",
                         Color = Constants.YumikoColor,
                         Footer = new()
                         {
@@ -201,7 +178,7 @@
                         }
                     }));
                     await Task.Delay(10000);
-                    await BorrarMensajeAsync(ctx, mensaje.Id);
+                    await mensaje.DeleteAsync();
                 }
             }
         }
@@ -273,7 +250,7 @@
 
             DiscordMessage chooseMsg = await msgBuilder.SendAsync(ctx.Channel);
             var msgElegirInter = await interactivity.WaitForButtonAsync(chooseMsg, ctx.User, TimeSpan.FromSeconds(timeoutGeneral));
-            await BorrarMensajeAsync(ctx, chooseMsg.Id);
+            await chooseMsg.DeleteAsync();
             if (!msgElegirInter.TimedOut)
             {
                 return bool.Parse(msgElegirInter.Result.Id);
@@ -353,8 +330,8 @@
                 {
                     _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Unknown error: {ex.Message}")),
                 };
-                await Task.Delay(3000);
-                await BorrarMensajeAsync(ctx, msg.Id);
+                await Task.Delay(10000);
+                await msg.DeleteAsync();
                 throw;
             }
 
@@ -413,8 +390,8 @@
                 {
                     _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Unknown error: {ex.Message}")),
                 };
-                await Task.Delay(3000);
-                await BorrarMensajeAsync(ctx, msg.Id);
+                await Task.Delay(10000);
+                await msg.DeleteAsync();
                 throw;
             }
 
@@ -436,68 +413,6 @@
             }.AddField("Guild Id", $"{ctx.Guild.Id}", true)
             .AddField("Channel Id", $"{ctx.Channel.Id}", true)
             .AddField("Channel", $"#{ctx.Channel.Name}", false));
-        }
-
-        public static DiscordEmbedBuilder Waifu(DiscordMember miembro, bool real)
-        {
-            string nombre;
-            string titulo = "Waifu";
-            nombre = miembro.DisplayName;
-            int waifuLevel;
-            if (real)
-            {
-                Random rnd = new((int)miembro.Id);
-                waifuLevel = rnd.Next(0, 100);
-                titulo += " (REAL)";
-            }
-            else
-            {
-                waifuLevel = GetNumeroRandom(0, 100);
-            }
-
-            return waifuLevel switch
-            {
-                < 25 => new DiscordEmbedBuilder
-                {
-                    Color = DiscordColor.Red,
-                    Title = titulo,
-                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}% ")}\n" +
-                                    $"I will shot myself before touch you.",
-                    ImageUrl = "https://i.imgur.com/BOxbruw.png",
-                },
-                < 50 => new DiscordEmbedBuilder
-                {
-                    Color = DiscordColor.Orange,
-                    Title = titulo,
-                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
-                                    $"You make me sick, I better get away from you.",
-                    ImageUrl = "https://i.imgur.com/ys2HoiL.jpg",
-                },
-                < 75 => new DiscordEmbedBuilder
-                {
-                    Color = DiscordColor.Yellow,
-                    Title = titulo,
-                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
-                                    $"You're not bad, maybe you have a chance with me.",
-                    ImageUrl = "https://i.imgur.com/h7Ic2rk.jpg",
-                },
-                < 100 => new DiscordEmbedBuilder
-                {
-                    Color = DiscordColor.Green,
-                    Title = titulo,
-                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
-                                    $"I am your waifu, you can do what you want with me.",
-                    ImageUrl = "https://i.imgur.com/dhXR8mV.png",
-                },
-                _ => new DiscordEmbedBuilder
-                {
-                    Color = DiscordColor.Blue,
-                    Title = titulo,
-                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
-                                    $"I am completely in love with you, when do we get married?",
-                    ImageUrl = "https://i.imgur.com/Vk6JMJi.jpg",
-                },
-            };
         }
 
         public static async Task<MemoryStream> MergeImage(string link1, string link2, int x, int y)

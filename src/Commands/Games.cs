@@ -162,7 +162,7 @@
             switch (gamemode)
             {
                 case HangmanGamemode.Characters:
-                    pag = Common.GetNumeroRandom(1, 5000);
+                    pag = Common.GetNumeroRandom(1, 10000);
                     Character? personaje = await Common.GetRandomCharacterAsync(ctx, pag);
                     if (personaje != null)
                     {
@@ -171,7 +171,7 @@
 
                     break;
                 case HangmanGamemode.Animes:
-                    pag = Common.GetNumeroRandom(1, 5000);
+                    pag = Common.GetNumeroRandom(1, 10000);
                     Anime? anime = await Common.GetRandomMediaAsync(ctx, pag, MediaType.ANIME);
                     if (anime != null)
                     {

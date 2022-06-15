@@ -17,7 +17,6 @@
         LogginTestingApplicationCommands,
         LogginTestingGuilds,
         LogginTestingErrors,
-        FirebaseDatabaseName,
         TopggEnabled,
         TimeoutGeneral,
         TimeoutGames

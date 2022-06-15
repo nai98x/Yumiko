@@ -101,8 +101,8 @@
                         foreach (var x in data.Errors)
                         {
                             var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Error: {x.Message}"));
-                            await Task.Delay(3000);
-                            await Common.BorrarMensajeAsync(ctx, msg.Id);
+                            await Task.Delay(10000);
+                            await msg.DeleteAsync();
                         }
                     }
 
@@ -116,8 +116,8 @@
                     "The HTTP request failed with status code NotFound" => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Profile not found: `{perfil}`")),
                     _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Unknown error: {ex.Message}")),
                 };
-                await Task.Delay(5000);
-                await Common.BorrarMensajeAsync(ctx, msg.Id);
+                await Task.Delay(10000);
+                await msg.DeleteAsync();
                 await ctx.DeleteResponseAsync();
             }
         }
@@ -160,7 +160,6 @@
         public async Task Profile(InteractionContext ctx, [Option("Member", "Member whose Anilist profile you want to see")] DiscordUser user)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            var context = ctx;
 
             user ??= ctx.User;
             var miembro = await ctx.Guild.GetMemberAsync(user.Id);
@@ -368,8 +367,8 @@
                             foreach (var x in data.Errors)
                             {
                                 var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Error: {x.Message}"));
-                                await Task.Delay(5000);
-                                await Common.BorrarMensajeAsync(context, msg.Id);
+                                await Task.Delay(10000);
+                                await msg.DeleteAsync();
                             }
                         }
                     }
@@ -387,8 +386,8 @@
                         Description = mensaje,
                         Color = DiscordColor.Red,
                     }));
-                    await Task.Delay(5000);
-                    await Common.BorrarMensajeAsync(context, msg.Id);
+                    await Task.Delay(10000);
+                    await msg.DeleteAsync();
                 }
             }
             else
@@ -408,7 +407,6 @@
         public async Task Anime(InteractionContext ctx, [Option("Anime", "Anime to search")] string anime, [Option("User", "User's Anilist stats")] DiscordUser? usuario = null)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            var context = ctx;
             usuario ??= ctx.User;
             var media = await AnilistServices.GetAniListMedia(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), anime, MediaType.ANIME);
             if (media.Ok == true)
@@ -504,15 +502,15 @@
                 else
                 {
                     var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(Constants.NsfwWarning));
-                    await Task.Delay(3000);
-                    await Common.BorrarMensajeAsync(context, msg.Id);
+                    await Task.Delay(10000);
+                    await msg.DeleteAsync();
                 }
             }
             else
             {
                 var msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(media.MsgError));
-                await Task.Delay(5000);
-                await Common.BorrarMensajeAsync(context, msg.Id);
+                await Task.Delay(10000);
+                await msg.DeleteAsync();
             }
         }
 
@@ -520,7 +518,6 @@
         public async Task Manga(InteractionContext ctx, [Option("Manga", "Manga to search")] string manga, [Option("User", "User's Anilist stats")] DiscordUser? usuario = null)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            var context = ctx;
             usuario ??= ctx.User;
             var media = await AnilistServices.GetAniListMedia(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), manga, MediaType.MANGA);
             if (media.Ok == true)
@@ -606,15 +603,15 @@
                 else
                 {
                     var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(Constants.NsfwWarning));
-                    await Task.Delay(3000);
-                    await Common.BorrarMensajeAsync(context, msg.Id);
+                    await Task.Delay(10000);
+                    await msg.DeleteAsync();
                 }
             }
             else
             {
                 var msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(media.MsgError));
-                await Task.Delay(5000);
-                await Common.BorrarMensajeAsync(context, msg.Id);
+                await Task.Delay(10000);
+                await msg.DeleteAsync();
             }
         }
 
@@ -622,7 +619,6 @@
         public async Task Character(InteractionContext ctx, [Option("Character", "character to search")] string personaje)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            var context = ctx;
             var request = new GraphQLRequest
             {
                 Query =
@@ -773,8 +769,8 @@
                         foreach (var x in data.Errors)
                         {
                             var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Error: {x.Message}"));
-                            await Task.Delay(3000);
-                            await Common.BorrarMensajeAsync(context, msg.Id);
+                            await Task.Delay(10000);
+                            await msg.DeleteAsync();
                         }
                     }
                 }
@@ -787,8 +783,8 @@
                     _ => $"Unknown error, message: [{ex.Message}"
                 };
                 var msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(mensaje));
-                await Task.Delay(5000);
-                await Common.BorrarMensajeAsync(context, msg.Id);
+                await Task.Delay(10000);
+                await msg.DeleteAsync();
             }
         }
 
@@ -910,7 +906,7 @@
         public async Task Pj(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            var pag = Common.GetNumeroRandom(1, 5000);
+            var pag = Common.GetNumeroRandom(1, 10000);
             var personaje = await Common.GetRandomCharacterAsync(ctx, pag);
             if (personaje != null)
             {

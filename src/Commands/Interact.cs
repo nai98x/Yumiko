@@ -12,19 +12,12 @@
         public IConfigurationRoot Configuration { private get; set; } = null!;
 
         [SlashCommand("Say", "Replicates a text")]
-        [SlashRequirePermissions(Permissions.SendMessages)]
+        [SlashRequirePermissions(Permissions.SendMessages | Permissions.SendMessagesInThreads | Permissions.AccessChannels)]
         public async Task Say(InteractionContext ctx, [Option("Message", "The text you want to replicate")] string texto)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            if (Common.ChequearPermisoYumiko(ctx, Permissions.SendMessages))
-            {
-                await ctx.DeleteResponseAsync();
-                await ctx.Channel.SendMessageAsync(texto);
-            }
-            else
-            {
-                await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent(texto));
-            }
+            await ctx.DeleteResponseAsync();
+            await ctx.Channel.SendMessageAsync(texto);
         }
 
         [SlashCommand("question", "Responds with yes or no")]
@@ -220,7 +213,64 @@
         {
             usuario ??= ctx.User;
             DiscordMember miembro = await ctx.Guild.GetMemberAsync(usuario.Id);
-            var builder = Common.Waifu(miembro, real);
+            string nombre;
+            string titulo = "Waifu";
+            nombre = miembro.DisplayName;
+            int waifuLevel;
+            if (real)
+            {
+                Random rnd = new((int)miembro.Id);
+                waifuLevel = rnd.Next(0, 100);
+                titulo += " (REAL)";
+            }
+            else
+            {
+                waifuLevel = Common.GetNumeroRandom(0, 100);
+            }
+
+            var builder =  waifuLevel switch
+            {
+                < 25 => new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Red,
+                    Title = titulo,
+                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}% ")}\n" +
+                                    $"I will shot myself before touch you.",
+                    ImageUrl = "https://i.imgur.com/BOxbruw.png",
+                },
+                < 50 => new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Orange,
+                    Title = titulo,
+                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
+                                    $"You make me sick, I better get away from you.",
+                    ImageUrl = "https://i.imgur.com/ys2HoiL.jpg",
+                },
+                < 75 => new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Yellow,
+                    Title = titulo,
+                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
+                                    $"You're not bad, maybe you have a chance with me.",
+                    ImageUrl = "https://i.imgur.com/h7Ic2rk.jpg",
+                },
+                < 100 => new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Green,
+                    Title = titulo,
+                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
+                                    $"I am your waifu, you can do what you want with me.",
+                    ImageUrl = "https://i.imgur.com/dhXR8mV.png",
+                },
+                _ => new DiscordEmbedBuilder
+                {
+                    Color = DiscordColor.Blue,
+                    Title = titulo,
+                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
+                                    $"I am completely in love with you, when do we get married?",
+                    ImageUrl = "https://i.imgur.com/Vk6JMJi.jpg",
+                },
+            };
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(builder));
         }
 
