@@ -812,7 +812,7 @@
                 }
             }
             while (hasNextValue.ToLower() == "true" && (firstloop || secondloop));
-            await mensaje.DeleteAsync();
+            await ctx.DeleteFollowupAsync(mensaje.Id);
             return animeList;
         }
 
@@ -929,7 +929,7 @@
                 }
             }
             while (hasNextValue.ToLower() == "true" && (firstloop || secondloop));
-            await mensaje.DeleteAsync();
+            await ctx.DeleteFollowupAsync(mensaje.Id);
             return characterList;
         }
 
@@ -1283,7 +1283,7 @@
             }
             else
             {
-                await msgGenero.DeleteAsync();
+                await ctx.DeleteResponseAsync();
                 return new()
                 {
                     Ok = false,

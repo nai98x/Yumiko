@@ -91,7 +91,12 @@
                     }
                     else
                     {
-                        await ctx.DeleteResponseAsync();
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed: new DiscordEmbedBuilder
+                        {
+                            Color = DiscordColor.Red,
+                            Title = "Action cancelled",
+                            Description = $"{ctx.User.Mention}, you decided to not save your Anilist profile",
+                        }));
                     }
                 }
                 else
@@ -101,24 +106,17 @@
                         foreach (var x in data.Errors)
                         {
                             var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Error: {x.Message}"));
-                            await Task.Delay(10000);
-                            await msg.DeleteAsync();
                         }
                     }
-
-                    await ctx.DeleteResponseAsync();
                 }
             }
             catch (Exception ex)
             {
-                var msg = ex.Message switch
+                _ = ex.Message switch
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Profile not found: `{perfil}`")),
-                    _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Unknown error: {ex.Message}")),
+                    "The HTTP request failed with status code NotFound" => await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Profile not found: `{perfil}`")),
+                    _ => await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Unknown error: {ex.Message}")),
                 };
-                await Task.Delay(10000);
-                await msg.DeleteAsync();
-                await ctx.DeleteResponseAsync();
             }
         }
 
@@ -327,7 +325,7 @@
                             Color = Constants.YumikoColor,
                             ImageUrl = data.Data.User.bannerImage,
                         };
-                        
+
                         builder.AddField("Anime Stats", animeStats, true);
                         builder.AddField("Manga Stats", mangaStats, true);
                         builder.AddField("Settings", options, true);
@@ -350,7 +348,7 @@
                             {
                                 var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Error: {x.Message}"));
                                 await Task.Delay(10000);
-                                await msg.DeleteAsync();
+                                await ctx.DeleteFollowupAsync(msg.Id);
                             }
                         }
                     }
@@ -362,14 +360,12 @@
                         "The HTTP request failed with status code NotFound" => $"Anilist profile not found, {user.Mention}",
                         _ => $"Unknown error, message: [{ex.Message}"
                     };
-                    var msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
                         Title = "Error",
                         Description = mensaje,
                         Color = DiscordColor.Red,
                     }));
-                    await Task.Delay(10000);
-                    await msg.DeleteAsync();
                 }
             }
             else
@@ -445,16 +441,12 @@
                 }
                 else
                 {
-                    var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(Constants.NsfwWarning));
-                    await Task.Delay(10000);
-                    await msg.DeleteAsync();
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(Constants.NsfwWarning));
                 }
             }
             else
             {
-                var msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(media.MsgError));
-                await Task.Delay(10000);
-                await msg.DeleteAsync();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(media.MsgError));
             }
         }
 
@@ -489,7 +481,7 @@
                         Color = Constants.YumikoColor,
                         Description = media.Descripcion,
                     };
-                    
+
                     if (!string.IsNullOrEmpty(media.Chapters)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} Chapters", Common.NormalizarField(media.Chapters), true);
                     if (!string.IsNullOrEmpty(media.Formato)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Format", Common.NormalizarField(media.Formato), true);
                     if (!string.IsNullOrEmpty(media.Estado)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Status", Common.NormalizarField(media.Estado.ToLower().ToUpperFirst()), true);
@@ -516,16 +508,12 @@
                 }
                 else
                 {
-                    var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(Constants.NsfwWarning));
-                    await Task.Delay(10000);
-                    await msg.DeleteAsync();
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(Constants.NsfwWarning));
                 }
             }
             else
             {
-                var msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(media.MsgError));
-                await Task.Delay(10000);
-                await msg.DeleteAsync();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(media.MsgError));
             }
         }
 
@@ -683,8 +671,6 @@
                         foreach (var x in data.Errors)
                         {
                             var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Error: {x.Message}"));
-                            await Task.Delay(10000);
-                            await msg.DeleteAsync();
                         }
                     }
                 }
@@ -696,9 +682,7 @@
                     "The HTTP request failed with status code NotFound" => $"No se ha encontrado el personaje `{personaje}`",
                     _ => $"Unknown error, message: [{ex.Message}"
                 };
-                var msg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(mensaje));
-                await Task.Delay(10000);
-                await msg.DeleteAsync();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(mensaje));
             }
         }
 

@@ -167,7 +167,7 @@
                 if (!hasVoted)
                 {
                     string url = $"https://top.gg/bot/{ctx.Client.CurrentUser.Id}/vote";
-                    var mensaje = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                     {
                         Title = $"Vote me in Top.gg!",
                         Description = $"You can help a lot by voting me in [this website]({url}). Thanks!",
@@ -177,8 +177,6 @@
                             Text = "This message will not be triggered if the user has voted in the past 12 hours"
                         }
                     }));
-                    await Task.Delay(10000);
-                    await mensaje.DeleteAsync();
                 }
             }
         }
@@ -237,20 +235,17 @@
             DiscordButtonComponent yesButton = new(ButtonStyle.Success, "true", "Yes");
             DiscordButtonComponent noButton = new(ButtonStyle.Danger, "false", "No");
 
-            DiscordMessageBuilder msgBuilder = new()
+            var msgBuilder = new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                Embed = new DiscordEmbedBuilder
-                {
-                    Title = title,
-                    Description = description,
-                },
-            };
+                Title = title,
+                Description = description,
+            });
 
             msgBuilder.AddComponents(yesButton, noButton);
 
-            DiscordMessage chooseMsg = await msgBuilder.SendAsync(ctx.Channel);
+            DiscordMessage chooseMsg = await ctx.FollowUpAsync(msgBuilder);
             var msgElegirInter = await interactivity.WaitForButtonAsync(chooseMsg, ctx.User, TimeSpan.FromSeconds(timeoutGeneral));
-            await chooseMsg.DeleteAsync();
+            await ctx.DeleteFollowupAsync(chooseMsg.Id);
             if (!msgElegirInter.TimedOut)
             {
                 return bool.Parse(msgElegirInter.Result.Id);
@@ -326,12 +321,10 @@
             catch (Exception ex)
             {
                 await GrabarLogErrorAsync(ctx, $"Unknown error in GetRandomCharacter");
-                DiscordMessage msg = ex.Message switch
+                _ = ex.Message switch
                 {
                     _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Unknown error: {ex.Message}")),
                 };
-                await Task.Delay(10000);
-                await msg.DeleteAsync();
                 throw;
             }
 
@@ -386,12 +379,10 @@
             catch (Exception ex)
             {
                 await GrabarLogErrorAsync(ctx, $"Unknown error in GetRandomMedia");
-                DiscordMessage msg = ex.Message switch
+                _ = ex.Message switch
                 {
                     _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Unknown error: {ex.Message}")),
                 };
-                await Task.Delay(10000);
-                await msg.DeleteAsync();
                 throw;
             }
 
