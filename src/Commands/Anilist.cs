@@ -327,33 +327,15 @@
                             Color = Constants.YumikoColor,
                             ImageUrl = data.Data.User.bannerImage,
                         };
+                        
                         builder.AddField("Anime Stats", animeStats, true);
                         builder.AddField("Manga Stats", mangaStats, true);
                         builder.AddField("Settings", options, true);
-                        if (favoriteAnime != string.Empty)
-                        {
-                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Favorite animes", favoriteAnime, true);
-                        }
-
-                        if (favoriteManga != string.Empty)
-                        {
-                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Favorite mangas", favoriteManga, true);
-                        }
-
-                        if (favoriteCharacters != string.Empty)
-                        {
-                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":bust_in_silhouette:")} ", favoriteCharacters, true);
-                        }
-
-                        if (favoriteStaff != string.Empty)
-                        {
-                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":man_artist:")} Favorite staff", favoriteStaff, true);
-                        }
-
-                        if (favoriteStudios != string.Empty)
-                        {
-                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Favorite studios", favoriteStudios, true);
-                        }
+                        if (!string.IsNullOrEmpty(favoriteAnime)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Favorite animes", favoriteAnime, true);
+                        if (!string.IsNullOrEmpty(favoriteManga)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Favorite mangas", favoriteManga, true);
+                        if (!string.IsNullOrEmpty(favoriteCharacters)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":bust_in_silhouette:")} ", favoriteCharacters, true);
+                        if (!string.IsNullOrEmpty(favoriteStaff)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":man_artist:")} Favorite staff", favoriteStaff, true);
+                        if (!string.IsNullOrEmpty(favoriteStudios)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Favorite studios", favoriteStudios, true);
 
                         DiscordLinkButtonComponent perfil = new($"{siteurl}", "Profile", false, new DiscordComponentEmoji("👤"));
                         DiscordLinkButtonComponent animeList = new($"{siteurl}/animelist", "Anime List", false, new DiscordComponentEmoji("📺"));
@@ -434,55 +416,17 @@
                         Color = Constants.YumikoColor,
                         Description = media.Descripcion
                     };
-                    if (media.Episodios != null && media.Episodios.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} Episodes", Common.NormalizarField(media.Episodios), true);
-                    }
 
-                    if (media.Formato != null && media.Formato.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Format", Common.NormalizarField(media.Formato), true);
-                    }
-
-                    if (media.Estado != null && media.Estado.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Status", Common.NormalizarField(media.Estado.ToLower().ToUpperFirst()), true);
-                    }
-
-                    if (media.Score != null && media.Score.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Score", Common.NormalizarField(media.Score), false);
-                    }
-
-                    if (media.Fechas != null && media.Fechas.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Start date", Common.NormalizarField(media.Fechas), false);
-                    }
-
-                    if (media.Generos != null && media.Generos.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Genres", Common.NormalizarField(media.Generos), false);
-                    }
-
-                    if (media.Tags != null && media.Tags.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Tags", Common.NormalizarField(media.Tags), false);
-                    }
-
-                    if (media.Titulos != null && media.Titulos.Count > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Synonyms", Common.NormalizarField(titulos), false);
-                    }
-
-                    if (media.Estudios != null && media.Estudios.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Studios", Common.NormalizarField(media.Estudios), false);
-                    }
-
-                    if (media.LinksExternos != null && media.LinksExternos.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} External & Streaming links", Common.NormalizarField(media.LinksExternos), false);
-                    }
+                    if (!string.IsNullOrEmpty(media.Episodios)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} Episodes", Common.NormalizarField(media.Episodios), true);
+                    if (!string.IsNullOrEmpty(media.Formato)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Format", Common.NormalizarField(media.Formato), true);
+                    if (!string.IsNullOrEmpty(media.Estado)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Status", Common.NormalizarField(media.Estado.ToLower().ToUpperFirst()), true);
+                    if (!string.IsNullOrEmpty(media.Score)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Score", Common.NormalizarField(media.Score), false);
+                    if (!string.IsNullOrEmpty(media.Fechas)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Start date", Common.NormalizarField(media.Fechas), false);
+                    if (!string.IsNullOrEmpty(media.Generos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Genres", Common.NormalizarField(media.Generos), false);
+                    if (!string.IsNullOrEmpty(media.Tags)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Tags", Common.NormalizarField(media.Tags), false);
+                    if (!string.IsNullOrEmpty(titulos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Synonyms", Common.NormalizarField(titulos), false);
+                    if (!string.IsNullOrEmpty(media.Estudios)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} Studios", Common.NormalizarField(media.Estudios), false);
+                    if (!string.IsNullOrEmpty(media.LinksExternos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} External & Streaming links", Common.NormalizarField(media.LinksExternos), false);
 
                     DiscordWebhookBuilder whbuilder = new();
                     whbuilder.AddEmbed(builder);
@@ -545,45 +489,15 @@
                         Color = Constants.YumikoColor,
                         Description = media.Descripcion,
                     };
-                    if (media.Chapters != null && media.Chapters.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} Chapters", Common.NormalizarField(media.Chapters), true);
-                    }
-
-                    if (media.Formato != null && media.Formato.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Format", Common.NormalizarField(media.Formato), true);
-                    }
-
-                    if (media.Estado != null && media.Estado.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Status", Common.NormalizarField(media.Estado.ToLower().ToUpperFirst()), true);
-                    }
-
-                    if (media.Score != null && media.Score.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Score", Common.NormalizarField(media.Score), true);
-                    }
-
-                    if (media.Fechas != null && media.Fechas.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Publication date", Common.NormalizarField(media.Fechas), false);
-                    }
-
-                    if (media.Generos != null && media.Generos.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Genres", Common.NormalizarField(media.Generos), false);
-                    }
-
-                    if (media.Tags != null && media.Tags.Length > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Tags", Common.NormalizarField(media.Tags), false);
-                    }
-
-                    if (media.Titulos != null && media.Titulos.Count > 0)
-                    {
-                        builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Synonyms", Common.NormalizarField(titulos), false);
-                    }
+                    
+                    if (!string.IsNullOrEmpty(media.Chapters)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} Chapters", Common.NormalizarField(media.Chapters), true);
+                    if (!string.IsNullOrEmpty(media.Formato)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} Format", Common.NormalizarField(media.Formato), true);
+                    if (!string.IsNullOrEmpty(media.Estado)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} Status", Common.NormalizarField(media.Estado.ToLower().ToUpperFirst()), true);
+                    if (!string.IsNullOrEmpty(media.Score)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} Score", Common.NormalizarField(media.Score), true);
+                    if (!string.IsNullOrEmpty(media.Fechas)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} Publication date", Common.NormalizarField(media.Fechas), false);
+                    if (!string.IsNullOrEmpty(media.Generos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} Genres", Common.NormalizarField(media.Generos), false);
+                    if (!string.IsNullOrEmpty(media.Tags)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} Tags", Common.NormalizarField(media.Tags), false);
+                    if (!string.IsNullOrEmpty(titulos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} Synonyms", Common.NormalizarField(titulos), false);
 
                     DiscordWebhookBuilder whbuilder = new();
                     whbuilder.AddEmbed(builder);
