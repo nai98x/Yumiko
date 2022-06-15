@@ -17,7 +17,7 @@
         InteractionContext ctx,
         [Option("Gamemode", "The type of game you want to play")] Gamemode gamemode,
         [Option("Difficulty", "Choose the difficulty of the trivia")] Difficulty difficulty,
-        [Option("Rounds", "Rounds to play (minimum is 1 y and maximum is 100)")][Minimum(1)][Maximum(100)] long rounds)
+        [Option("Rounds", "Rounds to play (minimum is 1 y and maximum is 30)")][Minimum(1)][Maximum(30)] long rounds)
         {
             if (Singleton.GetInstance().GetCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id) != null)
             {
