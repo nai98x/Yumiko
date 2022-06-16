@@ -14,12 +14,10 @@
   "loggin": {
     "guild_id": "LOGGIN_GUILD_ID",
     "production": {
-      "application_commands": "PRODUCTION_APPLICATION_COMMANDS_CHANNEL_ID",
       "guilds": "PRODUCTION_GUILDS_CHANNEL_ID",
       "errors": "PRODUCTION_ERRORS_CHANNEL_ID"
     },
     "testing": {
-      "application_commands": "TESTING_APPLICATION_COMMANDS_CHANNEL_ID",
       "guilds": "TESTING_GUILDS_CHANNEL_ID",
       "errors": "TESTING_ERRORS_CHANNEL_ID"
     }

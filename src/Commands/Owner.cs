@@ -154,6 +154,33 @@
             }
         }
 
+        [SlashCommand("logs", "Shows the lastest log file")]
+        public async Task Logs(InteractionContext ctx)
+        {
+            await ctx.DeferAsync();
+            
+            FileInfo? log = Common.GetNewestFile(new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "logs")));
+            if (log != null)
+            {
+                using FileStream fs = File.Open(log.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite); ;
+
+                await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
+                    .WithContent("Lastest log file")
+                    .AddFile(log.Name, fs));
+
+                fs.Close();
+            }
+            else
+            {
+                await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
+                {
+                    Title = "Error",
+                    Description = "No logs found",
+                    Color = DiscordColor.Red
+                }));
+            }
+        }
+
         [SlashCommand("poweroff", "Turn off the bot")]
         public async Task Shutdown(InteractionContext ctx)
         {

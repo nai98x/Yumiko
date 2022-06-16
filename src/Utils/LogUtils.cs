@@ -5,24 +5,16 @@ namespace Yumiko.Utils
 {
     public static class LogUtils
     {
-        public static DiscordEmbedBuilder LogSlashCommand(SlashCommandExecutedEventArgs e)
+        public static string GetSlashCommandArgs(SlashCommandExecutedEventArgs e)
         {
-            var builder = new DiscordEmbedBuilder()
-            {
-                Title = "Slash Command executed",
-                Color = DiscordColor.Green
-            };
-
             string options = string.Empty;
             var args = e.Context.Interaction.Data.Options;
             if (args != null)
             {
-                options = GetCommandArgs(args);
+                options = GetCommandArgs(args, false);
             }
 
-            builder.AddField("Command", $"/{e.Context.CommandName} {options}", false);
-
-            return builder;
+            return $"/{e.Context.CommandName} {options}";
         }
 
         public static DiscordEmbedBuilder LogSlashCommandError(SlashCommandErrorEventArgs e)
@@ -33,12 +25,12 @@ namespace Yumiko.Utils
                 Description = GetErrorString(e),
                 Color = DiscordColor.Red
             };
-
+            
             string options = string.Empty;
             var args = e.Context.Interaction.Data.Options;
             if (args != null)
             {
-                options = GetCommandArgs(args);
+                options = GetCommandArgs(args, true);
             }
 
             builder.AddField("Command", $"/{e.Context.CommandName} {options}", false);
@@ -46,7 +38,7 @@ namespace Yumiko.Utils
             return builder;
         }
 
-        private static string GetCommandArgs(IEnumerable<DiscordInteractionDataOption> args)
+        private static string GetCommandArgs(IEnumerable<DiscordInteractionDataOption> args, bool format)
         {
             string options = string.Empty;
 
@@ -57,12 +49,27 @@ namespace Yumiko.Utils
                     options += $"{arg.Name} ";
                     foreach (var arg2 in arg.Options)
                     {
-                        options += $"{Formatter.InlineCode($"{arg2.Name}: {arg2.Value}")} ";
+                        if (format)
+                        {
+                            options += $"{Formatter.InlineCode($"{arg2.Name}: {arg2.Value}")} ";
+                        }
+                        else
+                        {
+                            options += $"[{arg2.Name}: {arg2.Value}] ";
+                        }
+                        
                     }
                 }
                 else
                 {
-                    options += $"{Formatter.InlineCode($"{arg.Name}: {arg.Value}")} ";
+                    if (format)
+                    {
+                        options += $"{Formatter.InlineCode($"{arg.Name}: {arg.Value}")} ";
+                    }
+                    else
+                    {
+                        options += $"[{arg.Name}: {arg.Value}] ";
+                    }
                 }
             }
 

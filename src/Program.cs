@@ -19,7 +19,9 @@ global using Yumiko.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Core;
 using Serilog.Events;
+using Serilog.Filters;
 using System.Diagnostics;
 using System.Globalization;
 
@@ -32,7 +34,6 @@ namespace Yumiko
         internal static IConfigurationRoot Configuration { get; private set; } = null!;
         public static bool Debug { get; private set; }
         public static bool TopggEnabled { get; private set; }
-        public static DiscordChannel LogChannelApplicationCommands { get; private set; } = null!;
         public static DiscordChannel LogChannelGuilds { get; private set; } = null!;
         public static DiscordChannel LogChannelErrors { get; private set; } = null!;
         public static Stopwatch Stopwatch { get; private set; } = null!;
@@ -41,6 +42,7 @@ namespace Yumiko
         {
             IServiceCollection services = new ServiceCollection();
             DebugMode();
+            Console.Title = "Yumiko";
 
             ConfigurationBuilder configurationBuilder = new();
             configurationBuilder.Sources.Clear();
@@ -52,10 +54,18 @@ namespace Yumiko
             services.AddLogging(loggingBuilder =>
             {
                 LoggerConfiguration loggerConfiguration = new LoggerConfiguration()
-                    .Filter.ByExcluding("StartsWith(Message, 'Unknown')")
+                    .Enrich.FromLogContext()
+                    .Enrich.WithProcessId()
+                    .Filter.ByExcluding(Matching.WithProperty<string>("@Message", m => m.ToLowerInvariant().Contains("unknown event")))
                     .MinimumLevel.Is(Debug ? LogEventLevel.Debug : LogEventLevel.Information)
-                    .WriteTo.Console(outputTemplate: "[{Timestamp:dd-MM-yyyy HH:mm:ss}] [{Level:u4}]: {Message:lj}{NewLine}{Exception}")
-                    .WriteTo.File($"logs/{DateTime.Now.ToString("dd'-'MM'-'yyyy' 'HH'_'mm'_'ss", CultureInfo.InvariantCulture)}.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u4}]: {Message:lj}{NewLine}{Exception}");
+                    .WriteTo.Console(outputTemplate: "[{Timestamp:dd-MM-yyyy HH:mm:ss}] [{ProcessId}] [{Level:u4}]: {Message:lj}{NewLine}{Exception}")
+                    .WriteTo.File(
+                        path: $"logs/{DateTime.Now.ToString("dd'-'MM'-'yyyy' 'HH'_'mm'_'ss", CultureInfo.InvariantCulture)}.log", 
+                        levelSwitch: new LoggingLevelSwitch(LogEventLevel.Information),
+                        outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u4}]: {Message:lj}{NewLine}{Exception}",
+                        fileSizeLimitBytes: 8_388_608, /* 8 megabytes */
+                        rollOnFileSizeLimit: true,
+                        retainedFileCountLimit: 50);
 
                 Log.Logger = loggerConfiguration.CreateLogger().ForContext<Program>();
 

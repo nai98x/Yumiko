@@ -31,7 +31,6 @@
                 {
                     var logGuild = await client.GetGuildAsync(logGuildId);
 
-                    LogChannelApplicationCommands = logGuild.GetChannel(Debug ? ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginTestingApplicationCommands) : ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginProductionApplicationCommands));
                     LogChannelGuilds = logGuild.GetChannel(Debug ? ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginTestingGuilds) : ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginProductionGuilds));
                     LogChannelErrors = logGuild.GetChannel(Debug ? ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginTestingErrors) : ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginProductionErrors));
 
@@ -48,6 +47,7 @@
 
         private static Task Client_GuildCreated(DiscordClient sender, GuildCreateEventArgs e)
         {
+            sender.Logger.LogInformation("Guild added: {Name} | Guild count: {Count}", e.Guild.Name, sender.Guilds.Count);
             _ = Task.Run(async () =>
             {
                 await LogChannelGuilds.SendMessageAsync(embed: new DiscordEmbedBuilder()
@@ -57,7 +57,7 @@
                         IconUrl = e.Guild.IconUrl,
                         Name = $"{e.Guild.Name}",
                     },
-                    Title = "New Guild",
+                    Title = "Guild added",
                     Description =
                     $"   **Id**: {e.Guild.Id}\n" +
                     $"   **Members**: {e.Guild.MemberCount - 1}\n" +
@@ -79,6 +79,7 @@
 
         private static Task Client_GuildDeleted(DiscordClient sender, GuildDeleteEventArgs e)
         {
+            sender.Logger.LogInformation("Guild removed: {Name} | Guild count: {Count}", e.Guild.Name, sender.Guilds.Count);
             _ = Task.Run(async () =>
             {
                 await LogChannelGuilds.SendMessageAsync(embed: new DiscordEmbedBuilder()
@@ -88,7 +89,7 @@
                         IconUrl = e.Guild.IconUrl,
                         Name = $"{e.Guild.Name}",
                     },
-                    Title = "Bye-bye guild",
+                    Title = "Guild removed",
                     Description =
                     $"   **Id**: {e.Guild.Id}\n" +
                     $"   **Members**: {e.Guild.MemberCount - 1}\n" +
@@ -242,11 +243,8 @@
 
         private static Task SlashCommands_SlashCommandExecuted(SlashCommandsExtension sender, SlashCommandExecutedEventArgs e)
         {
-            e.Handled = true;
-            _ = Task.Run(async () =>
-            {
-                await LogChannelApplicationCommands.SendMessageAsync(LogUtils.LogSlashCommand(e));
-            });
+            string args = LogUtils.GetSlashCommandArgs(e);
+            sender.Client.Logger.LogInformation("Slash command executed: {args}", args);
             return Task.CompletedTask;
         }
 
