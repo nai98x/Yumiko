@@ -8,6 +8,7 @@ global using DSharpPlus.SlashCommands;
 global using DSharpPlus.SlashCommands.Attributes;
 global using DSharpPlus.SlashCommands.EventArgs;
 global using Microsoft.Extensions.Configuration;
+global using System.Globalization;
 global using Yumiko.Commands;
 global using Yumiko.Datatypes;
 global using Yumiko.Datatypes.Firebase;
@@ -21,7 +22,6 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
-using Serilog.Filters;
 using System.Diagnostics;
 using System.Globalization;
 

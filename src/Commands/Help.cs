@@ -7,6 +7,12 @@
     {
         public IConfigurationRoot Configuration { private get; set; } = null!;
 
+        public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("help", "Help and information about Yumiko")]
         public async Task HelpAsync(InteractionContext ctx)
         {

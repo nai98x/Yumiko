@@ -11,6 +11,12 @@
     {
         public IConfigurationRoot Configuration { private get; set; } = null!;
 
+        public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("Say", "Replicates a text")]
         [SlashRequirePermissions(Permissions.SendMessages | Permissions.SendMessagesInThreads | Permissions.AccessChannels)]
         public async Task Say(InteractionContext ctx, [Option("Message", "The text you want to replicate")] string texto)

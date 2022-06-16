@@ -7,6 +7,12 @@
     {
         public IConfigurationRoot Configuration { private get; set; } = null!;
 
+        public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("trivia", "Shows the statistics of the trivia game")]
         [SlashRequirePermissions(Permissions.SendMessages)]
         public async Task Trivia(InteractionContext ctx, [Option("Game", "The gamemode you want to see the stats")] Gamemode gamemode)

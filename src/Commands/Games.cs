@@ -12,6 +12,12 @@
     {
         public IConfigurationRoot Configuration { private get; set; } = null!;
 
+        public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("trivia", "Plays an anime trivia game")]
         public async Task Trivia(
         InteractionContext ctx,

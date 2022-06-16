@@ -20,6 +20,12 @@
         public IConfigurationRoot Configuration { private get; set; } = null!;
         private readonly GraphQLHttpClient graphQlClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
+        public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("setprofile", "Sets your AniList profile")]
         public async Task SetAnilist(InteractionContext ctx, [Option("Profile", "Nickname or URL of your AniList profile (must be public)")] string perfil)
         {
