@@ -56,7 +56,7 @@ namespace Yumiko
                 LoggerConfiguration loggerConfiguration = new LoggerConfiguration()
                     .Enrich.FromLogContext()
                     .Enrich.WithProcessId()
-                    .Filter.ByExcluding(Matching.WithProperty<string>("@Message", m => m.ToLowerInvariant().Contains("unknown event")))
+                    .Filter.ByExcluding("EventId.Id = 105") /* Discord Unknown events */
                     .MinimumLevel.Is(Debug ? LogEventLevel.Debug : LogEventLevel.Information)
                     .WriteTo.Console(outputTemplate: "[{Timestamp:dd-MM-yyyy HH:mm:ss}] [{ProcessId}] [{Level:u4}]: {Message:lj}{NewLine}{Exception}")
                     .WriteTo.File(
