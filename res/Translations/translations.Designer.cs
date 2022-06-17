@@ -232,6 +232,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose an option.
+        /// </summary>
+        public static string choose_an_option {
+            get {
+                return ResourceManager.GetString("choose_an_option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color.
         /// </summary>
         public static string color {
@@ -844,6 +853,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This message will not be triggered if the user has voted in the past 12 hours.
+        /// </summary>
+        public static string message_will_not_be_triggered {
+            get {
+                return ResourceManager.GetString("message_will_not_be_triggered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Min/Max.
         /// </summary>
         public static string min_max {
@@ -1186,6 +1204,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select an option.
+        /// </summary>
+        public static string select_an_option {
+            get {
+                return ResourceManager.GetString("select_an_option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string settings {
@@ -1452,6 +1479,24 @@ namespace Yumiko {
         public static string vote {
             get {
                 return ResourceManager.GetString("vote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vote me in Top.gg!.
+        /// </summary>
+        public static string vote_me_on_topgg {
+            get {
+                return ResourceManager.GetString("vote_me_on_topgg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can help a lot by voting me in [this website]({0}). Thanks!.
+        /// </summary>
+        public static string vote_me_on_topgg_desc {
+            get {
+                return ResourceManager.GetString("vote_me_on_topgg_desc", resourceCulture);
             }
         }
         

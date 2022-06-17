@@ -169,12 +169,12 @@
                     string url = $"https://top.gg/bot/{ctx.Client.CurrentUser.Id}/vote";
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                     {
-                        Title = $"Vote me in Top.gg!",
-                        Description = $"You can help a lot by voting me in [this website]({url}). Thanks!",
+                        Title = translations.vote_me_on_topgg,
+                        Description = string.Format(translations.vote_me_on_topgg_desc, url),
                         Color = Constants.YumikoColor,
                         Footer = new()
                         {
-                            Text = "This message will not be triggered if the user has voted in the past 12 hours"
+                            Text = translations.message_will_not_be_triggered
                         }
                     }));
                 }
@@ -209,12 +209,12 @@
                 }
             });
 
-            var dropdown = new DiscordSelectComponent(customId, "Select an option", options);
+            var dropdown = new DiscordSelectComponent(customId, translations.select_an_option, options);
 
             var embed = new DiscordEmbedBuilder
             {
                 Color = Constants.YumikoColor,
-                Title = "Choose an option",
+                Title = translations.choose_an_option,
             };
 
             DiscordMessage elegirMsg = await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddComponents(dropdown).AddEmbed(embed));
@@ -232,8 +232,8 @@
 
         public static async Task<bool> GetYesNoInteractivityAsync(InteractionContext ctx, double timeoutGeneral, InteractivityExtension interactivity, string title, string description)
         {
-            DiscordButtonComponent yesButton = new(ButtonStyle.Success, "true", "Yes");
-            DiscordButtonComponent noButton = new(ButtonStyle.Danger, "false", "No");
+            DiscordButtonComponent yesButton = new(ButtonStyle.Success, "true", translations.yes);
+            DiscordButtonComponent noButton = new(ButtonStyle.Danger, "false", translations.no);
 
             var msgBuilder = new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
             {
@@ -323,7 +323,7 @@
                 await GrabarLogErrorAsync(ctx, $"Unknown error in GetRandomCharacter");
                 _ = ex.Message switch
                 {
-                    _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Unknown error: {ex.Message}")),
+                    _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}: {ex.Message}")),
                 };
                 throw;
             }
@@ -381,7 +381,7 @@
                 await GrabarLogErrorAsync(ctx, $"Unknown error in GetRandomMedia");
                 _ = ex.Message switch
                 {
-                    _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Unknown error: {ex.Message}")),
+                    _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}: {ex.Message}")),
                 };
                 throw;
             }
