@@ -117,11 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="action_cancelled" xml:space="preserve">
+    <value>Acción cancelada</value>
+  </data>
+  <data name="action_cannont_be_undone" xml:space="preserve">
+    <value>Esta acción no se puede deshacer</value>
+  </data>
+  <data name="anilist_profile_deleted_successfully" xml:space="preserve">
+    <value>Perfil de Anilist eliminado correctamente</value>
+  </data>
+  <data name="anilist_profile_not_found" xml:space="preserve">
+    <value>Perfil de Anilist no encontrado</value>
+  </data>
+  <data name="anime_list" xml:space="preserve">
+    <value>Lista de anime</value>
+  </data>
+  <data name="anime_stats" xml:space="preserve">
+    <value>Estadísticas de anime</value>
+  </data>
   <data name="bot_guilds" xml:space="preserve">
     <value>Servidores de {0}</value>
   </data>
   <data name="bot_left_guild" xml:space="preserve">
     <value>Me he salido del servidor `{0}` ({1})</value>
+  </data>
+  <data name="chapters" xml:space="preserve">
+    <value>Capítulos</value>
+  </data>
+  <data name="character_not_found" xml:space="preserve">
+    <value>Personaje no encontrado</value>
+  </data>
+  <data name="color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="confirm_delete_profile" xml:space="preserve">
+    <value>Confirma que quieres eliminar tu perfil</value>
+  </data>
+  <data name="confirm_save_profile" xml:space="preserve">
+    <value>Confirma que quieres guardar este perfil</value>
+  </data>
+  <data name="episode" xml:space="preserve">
+    <value>Episodio</value>
+  </data>
+  <data name="episodes" xml:space="preserve">
+    <value>Episodios</value>
   </data>
   <data name="error" xml:space="preserve">
     <value>Error</value>
@@ -129,11 +168,50 @@
   <data name="error_retrieving_guild_with_id" xml:space="preserve">
     <value>Ha sucedido un error obteniendo el servidor con el Id: `{0}`</value>
   </data>
+  <data name="example" xml:space="preserve">
+    <value>Ejemplo</value>
+  </data>
+  <data name="external_links" xml:space="preserve">
+    <value>Links externos</value>
+  </data>
+  <data name="favorite_animes" xml:space="preserve">
+    <value>Animes favoritos</value>
+  </data>
+  <data name="favorite_characters" xml:space="preserve">
+    <value>Personajes favoritos</value>
+  </data>
+  <data name="favorite_mangas" xml:space="preserve">
+    <value>Mangas favoritos</value>
+  </data>
+  <data name="favorite_staff" xml:space="preserve">
+    <value>Staff favoritos</value>
+  </data>
+  <data name="favorite_studios" xml:space="preserve">
+    <value>Estudios favoritos</value>
+  </data>
+  <data name="format" xml:space="preserve">
+    <value>Formato</value>
+  </data>
+  <data name="genres" xml:space="preserve">
+    <value>Géneros</value>
+  </data>
   <data name="guild_with_id_not_found" xml:space="preserve">
     <value>Servidor con la id `{0}` no encontrado</value>
   </data>
   <data name="id_not_valid" xml:space="preserve">
     <value>Id `{0}` no valida</value>
+  </data>
+  <data name="image_format_error" xml:space="preserve">
+    <value>La extensión de la imagen debe ser JPG, PNG o JPEG</value>
+  </data>
+  <data name="image_from_nsfw_anime" xml:space="preserve">
+    <value>Esta imagen es de un anime NSFW</value>
+  </data>
+  <data name="image_must_enter_link" xml:space="preserve">
+    <value>Debes ingresar el link de una imagen</value>
+  </data>
+  <data name="in_popularity_rank" xml:space="preserve">
+    <value>en el ranking de popularidad</value>
   </data>
   <data name="joined_date" xml:space="preserve">
     <value>Fecha en la que entró Yumiko</value>
@@ -141,19 +219,142 @@
   <data name="lastest_log_file" xml:space="preserve">
     <value>Archivo de log más reciente</value>
   </data>
+  <data name="link" xml:space="preserve">
+    <value>Enlace</value>
+  </data>
+  <data name="manga_list" xml:space="preserve">
+    <value>Lista de manga</value>
+  </data>
+  <data name="manga_stats" xml:space="preserve">
+    <value>Estadísticas de manga</value>
+  </data>
+  <data name="mean_score" xml:space="preserve">
+    <value>Puntuación media</value>
+  </data>
   <data name="member_count" xml:space="preserve">
     <value>Cantidad de miembros</value>
+  </data>
+  <data name="message" xml:space="preserve">
+    <value>mensaje</value>
+  </data>
+  <data name="minute" xml:space="preserve">
+    <value>Minuto</value>
+  </data>
+  <data name="must_enter_anilist_profile_url" xml:space="preserve">
+    <value>{0}, debes ingresar la URL de tu perfil de Anilist</value>
+  </data>
+  <data name="name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="new_profile_cancelled_mention" xml:space="preserve">
+    <value>{0}, decidiste no guardar tu perfil de Anilist</value>
+  </data>
+  <data name="new_profile_saved" xml:space="preserve">
+    <value>Nuevo perfil guardado exitosamente</value>
+  </data>
+  <data name="new_profile_saved_mention" xml:space="preserve">
+    <value>{0}, has guardado tu perfil de Anilist correctamente</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="no_anilist_profile_vinculated" xml:space="preserve">
+    <value>{0}, no tienes ningún perfil de Anilist vinculado</value>
   </data>
   <data name="no_logs_found" xml:space="preserve">
     <value>No se han encontrado logs</value>
   </data>
+  <data name="no_results_found_image" xml:space="preserve">
+    <value>No se encontraron resultados para esta imagen</value>
+  </data>
+  <data name="processing_image" xml:space="preserve">
+    <value>Procesando imagen</value>
+  </data>
+  <data name="profile" xml:space="preserve">
+    <value>Perfil</value>
+  </data>
+  <data name="publication_date" xml:space="preserve">
+    <value>Fecha de publicación</value>
+  </data>
+  <data name="retrieved_from" xml:space="preserve">
+    <value>Obtenido de</value>
+  </data>
+  <data name="sauce_remember" xml:space="preserve">
+    <value>Recuerda que solo funciona con imágenes que son partes de un episodio de anime</value>
+  </data>
+  <data name="score" xml:space="preserve">
+    <value>Puntuación</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
   <data name="shutting_down" xml:space="preserve">
     <value>Apagando</value>
+  </data>
+  <data name="similarity" xml:space="preserve">
+    <value>Similaridad</value>
+  </data>
+  <data name="start_date" xml:space="preserve">
+    <value>Fecha de inicio</value>
+  </data>
+  <data name="status" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="studios" xml:space="preserve">
+    <value>Estudios</value>
+  </data>
+  <data name="success" xml:space="preserve">
+    <value>Éxito</value>
+  </data>
+  <data name="synonyms" xml:space="preserve">
+    <value>Sinónimos</value>
+  </data>
+  <data name="tags" xml:space="preserve">
+    <value>Etiquetas</value>
+  </data>
+  <data name="the_possible_anime_is" xml:space="preserve">
+    <value>El posible anime de la imagen es</value>
+  </data>
+  <data name="titles_language" xml:space="preserve">
+    <value>Idioma de títulos</value>
+  </data>
+  <data name="total" xml:space="preserve">
+    <value>Total</value>
   </data>
   <data name="total_guilds" xml:space="preserve">
     <value>Total de servidores</value>
   </data>
   <data name="total_users" xml:space="preserve">
     <value>Total de usuarios</value>
+  </data>
+  <data name="to_vinculate_anilist_profile" xml:space="preserve">
+    <value>Para vincular tu perfil, debes usar el siguiente comando</value>
+  </data>
+  <data name="unknown_error" xml:space="preserve">
+    <value>Error desconocido</value>
+  </data>
+  <data name="unknown_error_tracemoe" xml:space="preserve">
+    <value>Error desconocido obteniendo imagen desde trace.moe</value>
+  </data>
+  <data name="use_command_in_nsfw_channel" xml:space="preserve">
+    <value>por favor usa este comando en un canal con restricción de edad</value>
+  </data>
+  <data name="video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="without_animes_or_mangas" xml:space="preserve">
+    <value>(Sin animes ni mangas)</value>
+  </data>
+  <data name="without_description" xml:space="preserve">
+    <value>(Sin descripción)</value>
+  </data>
+  <data name="without_titles" xml:space="preserve">
+    <value>Sin títulos</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>Si</value>
+  </data>
+  <data name="your_anilist_profile_is" xml:space="preserve">
+    <value>Tu perfil de Anilist es</value>
   </data>
 </root>

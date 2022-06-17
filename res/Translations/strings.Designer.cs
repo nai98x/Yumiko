@@ -61,6 +61,60 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Action cancelled.
+        /// </summary>
+        public static string action_cancelled {
+            get {
+                return ResourceManager.GetString("action_cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This action cannot be undone.
+        /// </summary>
+        public static string action_cannont_be_undone {
+            get {
+                return ResourceManager.GetString("action_cannont_be_undone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anilist profile deleted successfully.
+        /// </summary>
+        public static string anilist_profile_deleted_successfully {
+            get {
+                return ResourceManager.GetString("anilist_profile_deleted_successfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anilist profile not found.
+        /// </summary>
+        public static string anilist_profile_not_found {
+            get {
+                return ResourceManager.GetString("anilist_profile_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anime list.
+        /// </summary>
+        public static string anime_list {
+            get {
+                return ResourceManager.GetString("anime_list", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anime stats.
+        /// </summary>
+        public static string anime_stats {
+            get {
+                return ResourceManager.GetString("anime_stats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}&apos;s guilds.
         /// </summary>
         public static string bot_guilds {
@@ -75,6 +129,69 @@ namespace Yumiko {
         public static string bot_left_guild {
             get {
                 return ResourceManager.GetString("bot_left_guild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chapters.
+        /// </summary>
+        public static string chapters {
+            get {
+                return ResourceManager.GetString("chapters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Character not found.
+        /// </summary>
+        public static string character_not_found {
+            get {
+                return ResourceManager.GetString("character_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color.
+        /// </summary>
+        public static string color {
+            get {
+                return ResourceManager.GetString("color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm that you want to delete your profile.
+        /// </summary>
+        public static string confirm_delete_profile {
+            get {
+                return ResourceManager.GetString("confirm_delete_profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm that you want to save this profile.
+        /// </summary>
+        public static string confirm_save_profile {
+            get {
+                return ResourceManager.GetString("confirm_save_profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Episode.
+        /// </summary>
+        public static string episode {
+            get {
+                return ResourceManager.GetString("episode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Episodes.
+        /// </summary>
+        public static string episodes {
+            get {
+                return ResourceManager.GetString("episodes", resourceCulture);
             }
         }
         
@@ -97,6 +214,87 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Example.
+        /// </summary>
+        public static string example {
+            get {
+                return ResourceManager.GetString("example", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External &amp; Streaming links.
+        /// </summary>
+        public static string external_links {
+            get {
+                return ResourceManager.GetString("external_links", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorite animes.
+        /// </summary>
+        public static string favorite_animes {
+            get {
+                return ResourceManager.GetString("favorite_animes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorite characters.
+        /// </summary>
+        public static string favorite_characters {
+            get {
+                return ResourceManager.GetString("favorite_characters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorite mangas.
+        /// </summary>
+        public static string favorite_mangas {
+            get {
+                return ResourceManager.GetString("favorite_mangas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorite staff.
+        /// </summary>
+        public static string favorite_staff {
+            get {
+                return ResourceManager.GetString("favorite_staff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorite studios.
+        /// </summary>
+        public static string favorite_studios {
+            get {
+                return ResourceManager.GetString("favorite_studios", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Format.
+        /// </summary>
+        public static string format {
+            get {
+                return ResourceManager.GetString("format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Genres.
+        /// </summary>
+        public static string genres {
+            get {
+                return ResourceManager.GetString("genres", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Guild with id `{0}` not found.
         /// </summary>
         public static string guild_with_id_not_found {
@@ -111,6 +309,42 @@ namespace Yumiko {
         public static string id_not_valid {
             get {
                 return ResourceManager.GetString("id_not_valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The image extension must be JPG, PNG or JPEG.
+        /// </summary>
+        public static string image_format_error {
+            get {
+                return ResourceManager.GetString("image_format_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This image is from an adult anime.
+        /// </summary>
+        public static string image_from_nsfw_anime {
+            get {
+                return ResourceManager.GetString("image_from_nsfw_anime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must enter the link of an image.
+        /// </summary>
+        public static string image_must_enter_link {
+            get {
+                return ResourceManager.GetString("image_must_enter_link", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to in popularity rank.
+        /// </summary>
+        public static string in_popularity_rank {
+            get {
+                return ResourceManager.GetString("in_popularity_rank", resourceCulture);
             }
         }
         
@@ -133,11 +367,128 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Link.
+        /// </summary>
+        public static string link {
+            get {
+                return ResourceManager.GetString("link", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manga list.
+        /// </summary>
+        public static string manga_list {
+            get {
+                return ResourceManager.GetString("manga_list", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manga stats.
+        /// </summary>
+        public static string manga_stats {
+            get {
+                return ResourceManager.GetString("manga_stats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mean score.
+        /// </summary>
+        public static string mean_score {
+            get {
+                return ResourceManager.GetString("mean_score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member count.
         /// </summary>
         public static string member_count {
             get {
                 return ResourceManager.GetString("member_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to message.
+        /// </summary>
+        public static string message {
+            get {
+                return ResourceManager.GetString("message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minute.
+        /// </summary>
+        public static string minute {
+            get {
+                return ResourceManager.GetString("minute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}, you must enter the URL of your Anilist profile.
+        /// </summary>
+        public static string must_enter_anilist_profile_url {
+            get {
+                return ResourceManager.GetString("must_enter_anilist_profile_url", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string name {
+            get {
+                return ResourceManager.GetString("name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}, you decided to not save your Anilist profile.
+        /// </summary>
+        public static string new_profile_cancelled_mention {
+            get {
+                return ResourceManager.GetString("new_profile_cancelled_mention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New profile saved successfully.
+        /// </summary>
+        public static string new_profile_saved {
+            get {
+                return ResourceManager.GetString("new_profile_saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}, you have successfully saved your Anilist profile.
+        /// </summary>
+        public static string new_profile_saved_mention {
+            get {
+                return ResourceManager.GetString("new_profile_saved_mention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string no {
+            get {
+                return ResourceManager.GetString("no", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}, you don&apos;t have any Anilist profile vinculated .
+        /// </summary>
+        public static string no_anilist_profile_vinculated {
+            get {
+                return ResourceManager.GetString("no_anilist_profile_vinculated", resourceCulture);
             }
         }
         
@@ -151,11 +502,182 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No results found for this image.
+        /// </summary>
+        public static string no_results_found_image {
+            get {
+                return ResourceManager.GetString("no_results_found_image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processing image.
+        /// </summary>
+        public static string processing_image {
+            get {
+                return ResourceManager.GetString("processing_image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile.
+        /// </summary>
+        public static string profile {
+            get {
+                return ResourceManager.GetString("profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publication date.
+        /// </summary>
+        public static string publication_date {
+            get {
+                return ResourceManager.GetString("publication_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieved from.
+        /// </summary>
+        public static string retrieved_from {
+            get {
+                return ResourceManager.GetString("retrieved_from", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remember that it only works with images that are part of an anime episode.
+        /// </summary>
+        public static string sauce_remember {
+            get {
+                return ResourceManager.GetString("sauce_remember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Score.
+        /// </summary>
+        public static string score {
+            get {
+                return ResourceManager.GetString("score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string settings {
+            get {
+                return ResourceManager.GetString("settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shutting down.
         /// </summary>
         public static string shutting_down {
             get {
                 return ResourceManager.GetString("shutting_down", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Similarity.
+        /// </summary>
+        public static string similarity {
+            get {
+                return ResourceManager.GetString("similarity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start date.
+        /// </summary>
+        public static string start_date {
+            get {
+                return ResourceManager.GetString("start_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string status {
+            get {
+                return ResourceManager.GetString("status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Studios.
+        /// </summary>
+        public static string studios {
+            get {
+                return ResourceManager.GetString("studios", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success.
+        /// </summary>
+        public static string success {
+            get {
+                return ResourceManager.GetString("success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Synonyms.
+        /// </summary>
+        public static string synonyms {
+            get {
+                return ResourceManager.GetString("synonyms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tags.
+        /// </summary>
+        public static string tags {
+            get {
+                return ResourceManager.GetString("tags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The possible anime of the image is.
+        /// </summary>
+        public static string the_possible_anime_is {
+            get {
+                return ResourceManager.GetString("the_possible_anime_is", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Titles language.
+        /// </summary>
+        public static string titles_language {
+            get {
+                return ResourceManager.GetString("titles_language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To vinculate your profile, you must use the following command.
+        /// </summary>
+        public static string to_vinculate_anilist_profile {
+            get {
+                return ResourceManager.GetString("to_vinculate_anilist_profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        public static string total {
+            get {
+                return ResourceManager.GetString("total", resourceCulture);
             }
         }
         
@@ -174,6 +696,87 @@ namespace Yumiko {
         public static string total_users {
             get {
                 return ResourceManager.GetString("total_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown error.
+        /// </summary>
+        public static string unknown_error {
+            get {
+                return ResourceManager.GetString("unknown_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown error retrieving image from trace.moe.
+        /// </summary>
+        public static string unknown_error_tracemoe {
+            get {
+                return ResourceManager.GetString("unknown_error_tracemoe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to please use this command in a age-restricted channel.
+        /// </summary>
+        public static string use_command_in_nsfw_channel {
+            get {
+                return ResourceManager.GetString("use_command_in_nsfw_channel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video.
+        /// </summary>
+        public static string video {
+            get {
+                return ResourceManager.GetString("video", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Without animes or mangas).
+        /// </summary>
+        public static string without_animes_or_mangas {
+            get {
+                return ResourceManager.GetString("without_animes_or_mangas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Without description).
+        /// </summary>
+        public static string without_description {
+            get {
+                return ResourceManager.GetString("without_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Without titles.
+        /// </summary>
+        public static string without_titles {
+            get {
+                return ResourceManager.GetString("without_titles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string yes {
+            get {
+                return ResourceManager.GetString("yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Anilist profile is.
+        /// </summary>
+        public static string your_anilist_profile_is {
+            get {
+                return ResourceManager.GetString("your_anilist_profile_is", resourceCulture);
             }
         }
     }
