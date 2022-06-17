@@ -31,8 +31,8 @@
                     .AsEphemeral(true)
                     .AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = "Another trivia is already running in this channel",
-                        Description = "If you want to play a new trivia game, cancel de actual one or run this command on another channel",
+                        Title = strings.another_trivia_playing,
+                        Description = strings.another_trivia_playing_desc,
                         Color = DiscordColor.Red,
                     }));
                 return;
@@ -84,9 +84,9 @@
                 case Gamemode.Characters:
                     embebido = new DiscordEmbedBuilder
                     {
-                        Title = "Guess the character",
+                        Title = strings.guess_the_character,
                         Color = Constants.YumikoColor,
-                    }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
+                    }.AddField(strings.rounds, $"{settings.Rondas}").AddField(strings.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetCharactersAsync(ctx, settings);
                     await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
@@ -94,9 +94,9 @@
                 case Gamemode.Animes:
                     embebido = new DiscordEmbedBuilder
                     {
-                        Title = "Guess the anime",
+                        Title = strings.guess_the_anime,
                         Color = Constants.YumikoColor,
-                    }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
+                    }.AddField(strings.rounds, $"{settings.Rondas}").AddField(strings.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, true);
                     await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
@@ -104,9 +104,9 @@
                 case Gamemode.Mangas:
                     embebido = new DiscordEmbedBuilder
                     {
-                        Title = "Guess the manga",
+                        Title = strings.guess_the_manga,
                         Color = Constants.YumikoColor,
-                    }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
+                    }.AddField(strings.rounds, $"{settings.Rondas}").AddField(strings.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.MANGA, settings, false, false, false, false);
                     await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
@@ -115,9 +115,9 @@
                 case Gamemode.Studios:
                     embebido = new DiscordEmbedBuilder
                     {
-                        Title = "Guess the anime studio",
+                        Title = strings.guess_the_studio,
                         Color = Constants.YumikoColor,
-                    }.AddField("Rounds", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
+                    }.AddField(strings.rounds, $"{settings.Rondas}").AddField(strings.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, true, false, false);
                     await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
@@ -125,9 +125,9 @@
                 case Gamemode.Protagonists:
                     embebido = new DiscordEmbedBuilder
                     {
-                        Title = "Guess the protagonist",
+                        Title = strings.guess_the_protagonist,
                         Color = Constants.YumikoColor,
-                    }.AddField("Genre", $"{settings.Rondas}").AddField("Difficulty", $"{settings.Difficulty}");
+                    }.AddField(strings.rounds, $"{settings.Rondas}").AddField(strings.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, true, false, false, false);
                     await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
@@ -142,9 +142,9 @@
                         settings.Difficulty = settingsGenero.Difficulty;
                         embebido = new DiscordEmbedBuilder
                         {
-                            Title = $"Guess the genre",
+                            Title = strings.guess_the_genre,
                             Color = Constants.YumikoColor,
-                        }.AddField("Rounds", $"{settings.Rondas}").AddField("Genre", $"{settings.Difficulty}");
+                        }.AddField(strings.rounds, $"{settings.Rondas}").AddField(strings.genre, $"{settings.Genre}");
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embebido));
                         list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, true, true);
                         await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
@@ -194,7 +194,7 @@
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
             {
                 Title = "Higher or Lower",
-                Description = $"Choose the anime with the best score to win!",
+                Description = strings.higher_or_lower_desc,
                 Color = Constants.YumikoColor,
             }));
 
@@ -235,7 +235,7 @@
 
                 DiscordButtonComponent button1 = new(ButtonStyle.Primary, $"{elegido1.Id}", $"{Common.NormalizarBoton(elegido1.TitleRomaji)}");
                 DiscordButtonComponent button2 = new(ButtonStyle.Primary, $"{elegido2.Id}", $"{Common.NormalizarBoton(elegido2.TitleRomaji)}");
-                DiscordButtonComponent buttonc = new(ButtonStyle.Danger, $"hol-cancel", "Finish game");
+                DiscordButtonComponent buttonc = new(ButtonStyle.Danger, $"hol-cancel", strings.finish_game);
 
                 var msgBuilder = new DiscordFollowupMessageBuilder().AddComponents(button1, button2, buttonc);
 
@@ -252,7 +252,7 @@
 
                 msgBuilder.AddEmbed(new DiscordEmbedBuilder
                 {
-                    Title = "Which one has the best score?",
+                    Title = strings.which_one_has_better_score,
                     Color = Constants.YumikoColor,
                     ImageUrl = "attachment://image.png",
                 });
@@ -268,7 +268,7 @@
                     {
                         await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                         {
-                            Title = $"Game cancelled",
+                            Title = strings.game_cancelled,
                             Color = DiscordColor.Red
                         }));
                         jugar = false;
@@ -298,13 +298,13 @@
                             puntuacion++;
                             embedAux = new DiscordEmbedBuilder
                             {
-                                Title = $"¡{ctx.Member.DisplayName} got it right!",
-                                Description = $"**{seleccionado.TitleRomaji}** has **{puntajeSel}/10** avarage score while **{otro.TitleRomaji}** has **{puntajeOtro}/10**\n\nScore: **{puntuacion}**",
+                                Title = string.Format(strings.guess_user, ctx.Member.DisplayName),
+                                Description = $"{string.Format(strings.higher_or_lower_round_win, seleccionado.TitleRomaji, puntajeSel, otro.TitleRomaji, puntajeOtro)}\n\n{strings.score}: **{puntuacion}**",
                                 Color = DiscordColor.Green,
                                 Footer = new()
                                 {
                                     IconUrl = ctx.Member.AvatarUrl,
-                                    Text = $"Tiempo: {tiempo.TotalSeconds}s",
+                                    Text = $"{strings.time}: {tiempo.TotalSeconds}s",
                                 },
                             };
                         }
@@ -312,13 +312,13 @@
                         {
                             await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                             {
-                                Title = $"{ctx.Member.DisplayName}, wrong choice!",
-                                Description = $"**Defeat!**\n\n**{seleccionado.TitleRomaji}** has lower avarage score **({puntajeSel}/10)** than **{otro.TitleRomaji} ({puntajeOtro}/10)**\n\nScore: **{puntuacion}**",
+                                Title = string.Format(strings.miss_user_games, ctx.Member.DisplayName),
+                                Description = $"**{strings.defeat}**\n\n{string.Format(strings.higher_or_lower_round_defeat, seleccionado.TitleRomaji, puntajeSel, otro.TitleRomaji, puntajeOtro)}\n\n{strings.score}: **{puntuacion}**",
                                 Color = DiscordColor.Red,
                                 Footer = new()
                                 {
                                     IconUrl = ctx.Member.AvatarUrl,
-                                    Text = $"Time: {tiempo.TotalSeconds}s",
+                                    Text = $"{strings.time}: {tiempo.TotalSeconds}s",
                                 },
                             }));
                             jugar = false;
@@ -329,10 +329,10 @@
                 {
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = "Defeat",
-                        Description = $"{timeout} seconds have passed and no answer has been given in time\n\nScore: **{puntuacion}**",
+                        Title = strings.defeat,
+                        Description = $"{string.Format(strings.no_answser_in_time, timeout)}\n\n{strings.score}: **{puntuacion}**",
                         Color = DiscordColor.Red,
-                    }.WithFooter($"Game started by {ctx.User.FullName()}", ctx.User.AvatarUrl)));
+                    }));
                     jugar = false;
                 }
 
@@ -360,8 +360,8 @@
                 {
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = "New record",
-                        Description = $"Congratulations {ctx.User.Mention}! You have beaten your best score. \n\nYour new record is: **{puntuacion}**",
+                        Title = strings.new_record,
+                        Description = string.Format(strings.new_record_desc, ctx.User.Mention, puntuacion),
                         Color = Constants.YumikoColor,
                     }));
                 }
@@ -377,8 +377,8 @@
             {
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AsEphemeral(true).AddEmbed(new DiscordEmbedBuilder
                 {
-                    Title = "Error",
-                    Description = "You cant play versus a bot",
+                    Title = strings.error,
+                    Description = strings.cant_play_vs_bot,
                     Color = DiscordColor.Red,
                 }));
                 return;
@@ -412,9 +412,9 @@
 
             var embed = new DiscordEmbedBuilder
             {
-                Title = "Tic-Tac-Toe",
+                Title = strings.tictactoe,
                 Color = colorTurno,
-                Description = $"{jugadorTurno.Mention}'s turn",
+                Description = string.Format(strings.player_turn, jugadorTurno.Mention)
             };
 
             var builder = new DiscordFollowupMessageBuilder().AddEmbed(embed).AddComponents(row1).AddComponents(row2).AddComponents(row3);
@@ -450,7 +450,7 @@
 
                     if (!terminada)
                     {
-                        embed.Description = $"{jugadorProxTurno.Mention}'s turn";
+                        embed.Description = string.Format(strings.player_turn, jugadorProxTurno.Mention);
                         embed.Color = colorTurno;
                         whBuilder.AddEmbed(embed);
                         mensaje = await ctx.EditFollowupAsync(mensaje.Id, whBuilder);
@@ -476,16 +476,16 @@
 
                         if (ganador != null)
                         {
-                            embed.Title = "We have a winner!";
-                            embed.Description = $"{ganador.Mention} has won the game";
+                            embed.Title = strings.we_have_a_winner;
+                            embed.Description = string.Format(strings.user_won_the_game, ganador.Mention);
                             embed.Color = turnoPrimerJugador ? DiscordColor.Green : DiscordColor.Red;
                             whBuilder.AddEmbed(embed);
                             mensaje = await ctx.EditFollowupAsync(mensaje.Id, whBuilder);
                         }
                         else
                         {
-                            embed.Title = "Tie!";
-                            embed.Description = "No one has managed to win";
+                            embed.Title = strings.tie;
+                            embed.Description = strings.tie_desc;
                             embed.Color = Constants.YumikoColor;
                             whBuilder.AddEmbed(embed);
                             mensaje = await ctx.EditFollowupAsync(mensaje.Id, whBuilder);
@@ -496,8 +496,8 @@
                 {
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = "Game cancelled",
-                        Description = "Nobody has clicked any button",
+                        Title = strings.game_cancelled,
+                        Description = strings.no_click_button,
                         Color = DiscordColor.Red,
                     }));
                     terminada = true;

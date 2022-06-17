@@ -141,6 +141,12 @@
   <data name="anime_stats" xml:space="preserve">
     <value>Estadísticas de anime</value>
   </data>
+  <data name="another_trivia_playing" xml:space="preserve">
+    <value>Otra trivia se está jugando en este canal</value>
+  </data>
+  <data name="another_trivia_playing_desc" xml:space="preserve">
+    <value>Si quieres empezar una nueva trivia, cancela la actual o ejecuta este comando en otro canal</value>
+  </data>
   <data name="answer" xml:space="preserve">
     <value>Respuesta</value>
   </data>
@@ -158,6 +164,9 @@
   </data>
   <data name="bot_stats" xml:space="preserve">
     <value>Estadísticas de {0}</value>
+  </data>
+  <data name="cant_play_vs_bot" xml:space="preserve">
+    <value>No puedes jugar en contra de un bot</value>
   </data>
   <data name="chapters" xml:space="preserve">
     <value>Capítulos</value>
@@ -180,11 +189,17 @@
   <data name="creation_date" xml:space="preserve">
     <value>Fecha de creación</value>
   </data>
+  <data name="defeat" xml:space="preserve">
+    <value>¡Derrota!</value>
+  </data>
   <data name="delete_stats_cancelled" xml:space="preserve">
     <value>Elegiste no eliminar tus estadísticas</value>
   </data>
   <data name="delete_stats_done" xml:space="preserve">
     <value>Has eliminado todas tus estadísticas en este servidor</value>
+  </data>
+  <data name="difficulty" xml:space="preserve">
+    <value>Dificultad</value>
   </data>
   <data name="emote_not_found" xml:space="preserve">
     <value>Emote `{0}` no encontrado</value>
@@ -225,14 +240,53 @@
   <data name="feels_like" xml:space="preserve">
     <value>Sensación térmica</value>
   </data>
+  <data name="finish_game" xml:space="preserve">
+    <value>Finalizar partida</value>
+  </data>
   <data name="format" xml:space="preserve">
     <value>Formato</value>
+  </data>
+  <data name="game_cancelled" xml:space="preserve">
+    <value>Partida cancelada</value>
+  </data>
+  <data name="genre" xml:space="preserve">
+    <value>Genero</value>
   </data>
   <data name="genres" xml:space="preserve">
     <value>Géneros</value>
   </data>
+  <data name="guess_the_anime" xml:space="preserve">
+    <value>Adivina el anime</value>
+  </data>
+  <data name="guess_the_character" xml:space="preserve">
+    <value>Adivina el personaje</value>
+  </data>
+  <data name="guess_the_genre" xml:space="preserve">
+    <value>Adivina el genero</value>
+  </data>
+  <data name="guess_the_manga" xml:space="preserve">
+    <value>Adivina el manga</value>
+  </data>
+  <data name="guess_the_protagonist" xml:space="preserve">
+    <value>Adivina el protagonista</value>
+  </data>
+  <data name="guess_the_studio" xml:space="preserve">
+    <value>Adivina el estudio de animación</value>
+  </data>
+  <data name="guess_user" xml:space="preserve">
+    <value>¡{0} le ha acertado!</value>
+  </data>
   <data name="guild_with_id_not_found" xml:space="preserve">
     <value>Servidor con la id `{0}` no encontrado</value>
+  </data>
+  <data name="higher_or_lower_desc" xml:space="preserve">
+    <value>¡Elige el anime con mejor puntuación para ganar!</value>
+  </data>
+  <data name="higher_or_lower_round_defeat" xml:space="preserve">
+    <value>**{0}** tiene menor puntuación promedio **({1}/10)** que **{2} ({3}/10)**</value>
+  </data>
+  <data name="higher_or_lower_round_win" xml:space="preserve">
+    <value>**{0}** tiene **{1}/10** de puntuación promedio mientras que **{2}** tiene **{3}/10**</value>
   </data>
   <data name="humidity" xml:space="preserve">
     <value>Humedad</value>
@@ -330,6 +384,9 @@
   <data name="min_max" xml:space="preserve">
     <value>Min/Máx</value>
   </data>
+  <data name="miss_user_games" xml:space="preserve">
+    <value>¡{0} le ha errado!</value>
+  </data>
   <data name="must_enter_anilist_profile_url" xml:space="preserve">
     <value>{0}, debes ingresar la URL de tu perfil de Anilist</value>
   </data>
@@ -348,11 +405,23 @@
   <data name="new_profile_saved_mention" xml:space="preserve">
     <value>{0}, has guardado tu perfil de Anilist correctamente</value>
   </data>
+  <data name="new_record" xml:space="preserve">
+    <value>Nuevo record</value>
+  </data>
+  <data name="new_record_desc" xml:space="preserve">
+    <value>¡Felicitaciones {0}! Superaste tu mejor puntuación.\n\nTu nuevo record es: **{1}**</value>
+  </data>
   <data name="no" xml:space="preserve">
     <value>No</value>
   </data>
   <data name="no_anilist_profile_vinculated" xml:space="preserve">
     <value>{0}, no tienes ningún perfil de Anilist vinculado</value>
+  </data>
+  <data name="no_answser_in_time" xml:space="preserve">
+    <value>Pasaron {0} segundos y nadie ha respondido a tiempo</value>
+  </data>
+  <data name="no_click_button" xml:space="preserve">
+    <value>Nadie apretó ningún botón</value>
   </data>
   <data name="no_genre_selected" xml:space="preserve">
     <value>No has elegido ningún genero</value>
@@ -365,6 +434,9 @@
   </data>
   <data name="options" xml:space="preserve">
     <value>Options</value>
+  </data>
+  <data name="player_turn" xml:space="preserve">
+    <value>Turno de {0}</value>
   </data>
   <data name="pressure" xml:space="preserve">
     <value>Presión atmosférica</value>
@@ -411,6 +483,9 @@
   <data name="roles" xml:space="preserve">
     <value>Roles</value>
   </data>
+  <data name="rounds" xml:space="preserve">
+    <value>Rondas</value>
+  </data>
   <data name="sauce_remember" xml:space="preserve">
     <value>Recuerda que solo funciona con imágenes que son partes de un episodio de anime</value>
   </data>
@@ -456,6 +531,18 @@
   <data name="the_possible_anime_is" xml:space="preserve">
     <value>El posible anime de la imagen es</value>
   </data>
+  <data name="tictactoe" xml:space="preserve">
+    <value>Ta-Te-Ti</value>
+  </data>
+  <data name="tie" xml:space="preserve">
+    <value>Empate!</value>
+  </data>
+  <data name="tie_desc" xml:space="preserve">
+    <value>Nadie alcanzó la victoria</value>
+  </data>
+  <data name="time" xml:space="preserve">
+    <value>Tiempo</value>
+  </data>
   <data name="titles_language" xml:space="preserve">
     <value>Idioma de títulos</value>
   </data>
@@ -482,6 +569,9 @@
   </data>
   <data name="uptime" xml:space="preserve">
     <value>Uptime</value>
+  </data>
+  <data name="user_won_the_game" xml:space="preserve">
+    <value>{0} ganó la partida</value>
   </data>
   <data name="use_command_in_nsfw_channel" xml:space="preserve">
     <value>por favor usa este comando en un canal con restricción de edad</value>
@@ -515,6 +605,12 @@
   </data>
   <data name="website" xml:space="preserve">
     <value>Sitio Web</value>
+  </data>
+  <data name="we_have_a_winner" xml:space="preserve">
+    <value>¡Tenemos un ganador!</value>
+  </data>
+  <data name="which_one_has_better_score" xml:space="preserve">
+    <value>¿Cuál tiene mayor puntuación?</value>
   </data>
   <data name="wind_speed" xml:space="preserve">
     <value>Velocidad del viento</value>

@@ -133,6 +133,24 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Another trivia is already running in this channel.
+        /// </summary>
+        public static string another_trivia_playing {
+            get {
+                return ResourceManager.GetString("another_trivia_playing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you want to play a new trivia game, cancel de actual one or run this command on another channel.
+        /// </summary>
+        public static string another_trivia_playing_desc {
+            get {
+                return ResourceManager.GetString("another_trivia_playing_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Answer.
         /// </summary>
         public static string answer {
@@ -183,6 +201,15 @@ namespace Yumiko {
         public static string bot_stats {
             get {
                 return ResourceManager.GetString("bot_stats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cant play versus a bot.
+        /// </summary>
+        public static string cant_play_vs_bot {
+            get {
+                return ResourceManager.GetString("cant_play_vs_bot", resourceCulture);
             }
         }
         
@@ -250,6 +277,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Defeat!.
+        /// </summary>
+        public static string defeat {
+            get {
+                return ResourceManager.GetString("defeat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have chosen not to delete their statistics.
         /// </summary>
         public static string delete_stats_cancelled {
@@ -264,6 +300,15 @@ namespace Yumiko {
         public static string delete_stats_done {
             get {
                 return ResourceManager.GetString("delete_stats_done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Difficulty.
+        /// </summary>
+        public static string difficulty {
+            get {
+                return ResourceManager.GetString("difficulty", resourceCulture);
             }
         }
         
@@ -385,11 +430,38 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Finish game.
+        /// </summary>
+        public static string finish_game {
+            get {
+                return ResourceManager.GetString("finish_game", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Format.
         /// </summary>
         public static string format {
             get {
                 return ResourceManager.GetString("format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game cancelled.
+        /// </summary>
+        public static string game_cancelled {
+            get {
+                return ResourceManager.GetString("game_cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Genre.
+        /// </summary>
+        public static string genre {
+            get {
+                return ResourceManager.GetString("genre", resourceCulture);
             }
         }
         
@@ -403,11 +475,101 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Guess the anime.
+        /// </summary>
+        public static string guess_the_anime {
+            get {
+                return ResourceManager.GetString("guess_the_anime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guess the character.
+        /// </summary>
+        public static string guess_the_character {
+            get {
+                return ResourceManager.GetString("guess_the_character", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guess the genre.
+        /// </summary>
+        public static string guess_the_genre {
+            get {
+                return ResourceManager.GetString("guess_the_genre", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guess the manga.
+        /// </summary>
+        public static string guess_the_manga {
+            get {
+                return ResourceManager.GetString("guess_the_manga", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guess the protagonist.
+        /// </summary>
+        public static string guess_the_protagonist {
+            get {
+                return ResourceManager.GetString("guess_the_protagonist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guess the anime studio.
+        /// </summary>
+        public static string guess_the_studio {
+            get {
+                return ResourceManager.GetString("guess_the_studio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} has guessed it!.
+        /// </summary>
+        public static string guess_user {
+            get {
+                return ResourceManager.GetString("guess_user", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Guild with id `{0}` not found.
         /// </summary>
         public static string guild_with_id_not_found {
             get {
                 return ResourceManager.GetString("guild_with_id_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose the anime with the best score to win!.
+        /// </summary>
+        public static string higher_or_lower_desc {
+            get {
+                return ResourceManager.GetString("higher_or_lower_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to **{0}** has lower avarage score **({1}/10)** than **{2} ({3}/10)**.
+        /// </summary>
+        public static string higher_or_lower_round_defeat {
+            get {
+                return ResourceManager.GetString("higher_or_lower_round_defeat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to **{0}** has **{1}/10** avarage score while **{2}** has **{3}/10**.
+        /// </summary>
+        public static string higher_or_lower_round_win {
+            get {
+                return ResourceManager.GetString("higher_or_lower_round_win", resourceCulture);
             }
         }
         
@@ -700,6 +862,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}, wrong choice!.
+        /// </summary>
+        public static string miss_user_games {
+            get {
+                return ResourceManager.GetString("miss_user_games", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}, you must enter the URL of your Anilist profile.
         /// </summary>
         public static string must_enter_anilist_profile_url {
@@ -754,6 +925,24 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New record.
+        /// </summary>
+        public static string new_record {
+            get {
+                return ResourceManager.GetString("new_record", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Congratulations {0}! You have beaten your best score.\n\nYour new record is: **{1}**.
+        /// </summary>
+        public static string new_record_desc {
+            get {
+                return ResourceManager.GetString("new_record_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         public static string no {
@@ -768,6 +957,24 @@ namespace Yumiko {
         public static string no_anilist_profile_vinculated {
             get {
                 return ResourceManager.GetString("no_anilist_profile_vinculated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} seconds have passed and no answer has been given in time.
+        /// </summary>
+        public static string no_answser_in_time {
+            get {
+                return ResourceManager.GetString("no_answser_in_time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nobody has clicked any button.
+        /// </summary>
+        public static string no_click_button {
+            get {
+                return ResourceManager.GetString("no_click_button", resourceCulture);
             }
         }
         
@@ -804,6 +1011,15 @@ namespace Yumiko {
         public static string options {
             get {
                 return ResourceManager.GetString("options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}&apos;s turn.
+        /// </summary>
+        public static string player_turn {
+            get {
+                return ResourceManager.GetString("player_turn", resourceCulture);
             }
         }
         
@@ -943,6 +1159,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rounds.
+        /// </summary>
+        public static string rounds {
+            get {
+                return ResourceManager.GetString("rounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remember that it only works with images that are part of an anime episode.
         /// </summary>
         public static string sauce_remember {
@@ -1078,6 +1303,42 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tic-Tac-Toe.
+        /// </summary>
+        public static string tictactoe {
+            get {
+                return ResourceManager.GetString("tictactoe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tie!.
+        /// </summary>
+        public static string tie {
+            get {
+                return ResourceManager.GetString("tie", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No one has managed to win.
+        /// </summary>
+        public static string tie_desc {
+            get {
+                return ResourceManager.GetString("tie_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string time {
+            get {
+                return ResourceManager.GetString("time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Titles language.
         /// </summary>
         public static string titles_language {
@@ -1168,6 +1429,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} has won the game.
+        /// </summary>
+        public static string user_won_the_game {
+            get {
+                return ResourceManager.GetString("user_won_the_game", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Video.
         /// </summary>
         public static string video {
@@ -1231,6 +1501,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to We have a winner!.
+        /// </summary>
+        public static string we_have_a_winner {
+            get {
+                return ResourceManager.GetString("we_have_a_winner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Weather.
         /// </summary>
         public static string weather {
@@ -1254,6 +1533,15 @@ namespace Yumiko {
         public static string website {
             get {
                 return ResourceManager.GetString("website", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Which one has the best score?.
+        /// </summary>
+        public static string which_one_has_better_score {
+            get {
+                return ResourceManager.GetString("which_one_has_better_score", resourceCulture);
             }
         }
         
