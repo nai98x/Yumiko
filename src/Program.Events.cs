@@ -143,7 +143,7 @@
 
                         var modal = new DiscordInteractionResponseBuilder()
                             .WithCustomId(modalId)
-                            .WithTitle($"Guess the {trivia.Title}")
+                            .WithTitle($"{translations.guess_the} {trivia.Title}")
                             .AddComponents(new TextInputComponent(label: trivia.Title?.UppercaseFirst(), customId: "guess"));
 
                         await btnInteraction.CreateResponseAsync(InteractionResponseType.Modal, modal);
@@ -166,7 +166,7 @@
                                 .AsEphemeral(true)
                                 .AddEmbed(new DiscordEmbedBuilder
                                 {
-                                    Title = $"You have canceled the game!",
+                                    Title = translations.you_have_cancelled_the_game,
                                     Color = DiscordColor.Red,
                                 }));
                         }
@@ -204,7 +204,7 @@
                                 .AsEphemeral(true)
                                 .AddEmbed(new DiscordEmbedBuilder
                                 {
-                                    Title = "You guessed it",
+                                    Title = translations.you_guessed,
                                     Color = DiscordColor.Green,
                                 }));
 
@@ -218,8 +218,8 @@
                                 .AsEphemeral(true)
                                 .AddEmbed(new DiscordEmbedBuilder
                                 {
-                                    Title = "Wrong choice",
-                                    Description = $"Your attempt: `{value}`",
+                                    Title = translations.wrong_choice,
+                                    Description = $"{translations.your_attempt}: `{value}`",
                                     Color = DiscordColor.Red,
                                 }));
                         }
@@ -230,8 +230,8 @@
                                 .AsEphemeral(true)
                                 .AddEmbed(new DiscordEmbedBuilder
                                 {
-                                    Title = "No trivia",
-                                    Description = $"There is no trivia in this channel",
+                                    Title = translations.error,
+                                    Description = translations.no_current_trivia,
                                     Color = DiscordColor.Red,
                                 }));
                     }
@@ -263,48 +263,48 @@
                             case SlashRequireOwnerAttribute:
                                 await e.Context.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                                 {
-                                    Title = $"Access denied",
-                                    Description = $"Only the bot owner can execute this command",
+                                    Title = translations.access_denied,
+                                    Description = translations.only_bot_owner,
                                     Color = DiscordColor.Red,
                                 }));
                                 break;
                             case SlashRequireBotPermissionsAttribute bp:
                                 await e.Context.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                                 {
-                                    Title = $"Bot permission required",
-                                    Description = $"{e.Context.Client.CurrentUser.Username} need the {Formatter.InlineCode($"{bp.Permissions}")} to execute this command",
+                                    Title = translations.bot_permission_required,
+                                    Description = string.Format(translations.bot_permission_required_desc, e.Context.Client.CurrentUser.Username, bp.Permissions),
                                     Color = DiscordColor.Red,
                                 }));
                                 break;
                             case SlashRequireUserPermissionsAttribute up:
                                 await e.Context.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                                 {
-                                    Title = $"User Permission required",
-                                    Description = $"You need the {Formatter.InlineCode($"{up.Permissions}")} permission to execute this command",
+                                    Title = translations.user_permission_required,
+                                    Description = string.Format(translations.user_permission_required_desc, up.Permissions),
                                     Color = DiscordColor.Red,
                                 }));
                                 break;
                             case SlashRequirePermissionsAttribute ubp:
                                 await e.Context.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                                 {
-                                    Title = $"Permission required",
-                                    Description = $"You and {e.Context.Client.CurrentUser.Username} needs the {Formatter.InlineCode($"{ubp.Permissions}")} permission to execute this command",
+                                    Title = translations.permission_required,
+                                    Description = string.Format(translations.permission_required_desc, e.Context.Client.CurrentUser.Username, ubp.Permissions),
                                     Color = DiscordColor.Red,
                                 }));
                                 break;
                             case SlashRequireGuildAttribute:
                                 await e.Context.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                                 {
-                                    Title = $"Guild required",
-                                    Description = $"You can only execute this command in a guild",
+                                    Title = translations.guild_required,
+                                    Description = translations.guild_required_desc,
                                     Color = DiscordColor.Red,
                                 }));
                                 break;
                             case SlashRequireDirectMessageAttribute:
                                 await e.Context.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                                 {
-                                    Title = $"DM required",
-                                    Description = $"You can only execute this command in direct messages",
+                                    Title = translations.dm_required,
+                                    Description = translations.dm_required_desc,
                                     Color = DiscordColor.Red,
                                 }));
                                 break;

@@ -70,6 +70,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access denied.
+        /// </summary>
+        public static string access_denied {
+            get {
+                return ResourceManager.GetString("access_denied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Action cancelled.
         /// </summary>
         public static string action_cancelled {
@@ -201,6 +210,24 @@ namespace Yumiko {
         public static string bot_left_guild {
             get {
                 return ResourceManager.GetString("bot_left_guild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot permission required.
+        /// </summary>
+        public static string bot_permission_required {
+            get {
+                return ResourceManager.GetString("bot_permission_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} need the `{1}` permission to execute this command.
+        /// </summary>
+        public static string bot_permission_required_desc {
+            get {
+                return ResourceManager.GetString("bot_permission_required_desc", resourceCulture);
             }
         }
         
@@ -354,6 +381,24 @@ namespace Yumiko {
         public static string difficulty {
             get {
                 return ResourceManager.GetString("difficulty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Direct message required.
+        /// </summary>
+        public static string dm_required {
+            get {
+                return ResourceManager.GetString("dm_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can only execute this command in direct messages.
+        /// </summary>
+        public static string dm_required_desc {
+            get {
+                return ResourceManager.GetString("dm_required_desc", resourceCulture);
             }
         }
         
@@ -633,6 +678,24 @@ namespace Yumiko {
         public static string guesses {
             get {
                 return ResourceManager.GetString("guesses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guild required.
+        /// </summary>
+        public static string guild_required {
+            get {
+                return ResourceManager.GetString("guild_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can only execute this command in a guild.
+        /// </summary>
+        public static string guild_required_desc {
+            get {
+                return ResourceManager.GetString("guild_required_desc", resourceCulture);
             }
         }
         
@@ -1132,6 +1195,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is no trivia in this channel.
+        /// </summary>
+        public static string no_current_trivia {
+            get {
+                return ResourceManager.GetString("no_current_trivia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No genre has been selected.
         /// </summary>
         public static string no_genre_selected {
@@ -1204,11 +1276,38 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only the bot owner can execute this command.
+        /// </summary>
+        public static string only_bot_owner {
+            get {
+                return ResourceManager.GetString("only_bot_owner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Options.
         /// </summary>
         public static string options {
             get {
                 return ResourceManager.GetString("options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permission required.
+        /// </summary>
+        public static string permission_required {
+            get {
+                return ResourceManager.GetString("permission_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You and {0} needs the `{1}` permission to execute this command.
+        /// </summary>
+        public static string permission_required_desc {
+            get {
+                return ResourceManager.GetString("permission_required_desc", resourceCulture);
             }
         }
         
@@ -1803,6 +1902,24 @@ namespace Yumiko {
         public static string user_made_a_mistake {
             get {
                 return ResourceManager.GetString("user_made_a_mistake", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User permission required.
+        /// </summary>
+        public static string user_permission_required {
+            get {
+                return ResourceManager.GetString("user_permission_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need the `{0}` permission to execute this command.
+        /// </summary>
+        public static string user_permission_required_desc {
+            get {
+                return ResourceManager.GetString("user_permission_required_desc", resourceCulture);
             }
         }
         

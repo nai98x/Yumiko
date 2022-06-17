@@ -120,6 +120,9 @@
   <data name="about" xml:space="preserve">
     <value>About</value>
   </data>
+  <data name="access_denied" xml:space="preserve">
+    <value>Access denied</value>
+  </data>
   <data name="action_cancelled" xml:space="preserve">
     <value>Action cancelled</value>
   </data>
@@ -164,6 +167,12 @@
   </data>
   <data name="bot_left_guild" xml:space="preserve">
     <value>I have left the `{0}` guild ({1})</value>
+  </data>
+  <data name="bot_permission_required" xml:space="preserve">
+    <value>Bot permission required</value>
+  </data>
+  <data name="bot_permission_required_desc" xml:space="preserve">
+    <value>{0} need the `{1}` permission to execute this command</value>
   </data>
   <data name="bot_stats" xml:space="preserve">
     <value>{0}'s statistics</value>
@@ -215,6 +224,12 @@
   </data>
   <data name="difficulty" xml:space="preserve">
     <value>Difficulty</value>
+  </data>
+  <data name="dm_required" xml:space="preserve">
+    <value>Direct message required</value>
+  </data>
+  <data name="dm_required_desc" xml:space="preserve">
+    <value>You can only execute this command in direct messages</value>
   </data>
   <data name="emote_not_found" xml:space="preserve">
     <value>Emote `{0}` not found</value>
@@ -308,6 +323,12 @@
   </data>
   <data name="guess_user" xml:space="preserve">
     <value>{0} has guessed it!</value>
+  </data>
+  <data name="guild_required" xml:space="preserve">
+    <value>Guild required</value>
+  </data>
+  <data name="guild_required_desc" xml:space="preserve">
+    <value>You can only execute this command in a guild</value>
   </data>
   <data name="guild_with_id_not_found" xml:space="preserve">
     <value>Guild with id `{0}` not found</value>
@@ -486,6 +507,9 @@
   <data name="no_click_button" xml:space="preserve">
     <value>Nobody has clicked any button</value>
   </data>
+  <data name="no_current_trivia" xml:space="preserve">
+    <value>There is no trivia in this channel</value>
+  </data>
   <data name="no_genre_selected" xml:space="preserve">
     <value>No genre has been selected</value>
   </data>
@@ -498,8 +522,17 @@
   <data name="of" xml:space="preserve">
     <value>of</value>
   </data>
+  <data name="only_bot_owner" xml:space="preserve">
+    <value>Only the bot owner can execute this command</value>
+  </data>
   <data name="options" xml:space="preserve">
     <value>Options</value>
+  </data>
+  <data name="permission_required" xml:space="preserve">
+    <value>Permission required</value>
+  </data>
+  <data name="permission_required_desc" xml:space="preserve">
+    <value>You and {0} needs the `{1}` permission to execute this command</value>
   </data>
   <data name="player_turn" xml:space="preserve">
     <value>{0}'s turn</value>
@@ -696,6 +729,12 @@
   <data name="user_made_a_mistake" xml:space="preserve">
     <value>{0} has made a mistake!</value>
   </data>
+  <data name="user_permission_required" xml:space="preserve">
+    <value>User permission required</value>
+  </data>
+  <data name="user_permission_required_desc" xml:space="preserve">
+    <value>You need the `{0}` permission to execute this command</value>
+  </data>
   <data name="user_won_the_game" xml:space="preserve">
     <value>{0} has won the game</value>
   </data>
@@ -768,6 +807,9 @@
   <data name="write_any_letter_to_continue" xml:space="preserve">
     <value>Write any letter to continue with the game</value>
   </data>
+  <data name="wrong_choice" xml:space="preserve">
+    <value>Wrong choice!</value>
+  </data>
   <data name="yes" xml:space="preserve">
     <value>Yes</value>
   </data>
@@ -776,6 +818,12 @@
   </data>
   <data name="your_anilist_profile_is" xml:space="preserve">
     <value>Your Anilist profile is</value>
+  </data>
+  <data name="your_attempt" xml:space="preserve">
+    <value>Your attempt</value>
+  </data>
+  <data name="you_guessed" xml:space="preserve">
+    <value>You guessed it!</value>
   </data>
   <data name="you_have_cancelled_the_game" xml:space="preserve">
     <value>You have cancelled the game!</value>
