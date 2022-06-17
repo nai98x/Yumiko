@@ -45,20 +45,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="res\Translations\strings.Designer.cs">
+    <Compile Update="res\Translations\translations.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>strings.resx</DependentUpon>
+      <DependentUpon>translations.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="res\Translations\strings.es.resx">
+    <EmbeddedResource Update="res\Translations\translations.es.resx">
       <CustomToolNamespace>Yumiko</CustomToolNamespace>
     </EmbeddedResource>
-    <EmbeddedResource Update="res\Translations\strings.resx">
+    <EmbeddedResource Update="res\Translations\translations.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>strings.Designer.cs</LastGenOutput>
+      <LastGenOutput>translations.Designer.cs</LastGenOutput>
       <CustomToolNamespace>Yumiko</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>

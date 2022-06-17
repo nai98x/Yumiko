@@ -40,8 +40,8 @@
                 {
                     string desc =
                         $"  - {Formatter.Bold("Id")}: {guild?.Id}\n" +
-                        $"  - {Formatter.Bold(strings.joined_date)}: {guild?.JoinedAt}\n" +
-                        $"  - {Formatter.Bold(strings.member_count)}: {guild?.MemberCount}\n\n";
+                        $"  - {Formatter.Bold(translations.joined_date)}: {guild?.JoinedAt}\n" +
+                        $"  - {Formatter.Bold(translations.member_count)}: {guild?.MemberCount}\n\n";
 
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
@@ -54,8 +54,8 @@
                 {
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = strings.error,
-                        Description = string.Format(strings.guild_with_id_not_found, id),
+                        Title = translations.error,
+                        Description = string.Format(translations.guild_with_id_not_found, id),
                         Color = DiscordColor.Red,
                     }));
                 }
@@ -64,8 +64,8 @@
             {
                 await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
-                    Title = strings.error,
-                    Description = string.Format(strings.id_not_valid, id),
+                    Title = translations.error,
+                    Description = string.Format(translations.id_not_valid, id),
                     Color = DiscordColor.Red,
                 }));
             }
@@ -92,7 +92,7 @@
                     {
                         Embed = new DiscordEmbedBuilder
                         {
-                            Title = string.Format(strings.bot_guilds, ctx.Client.CurrentUser.Username),
+                            Title = string.Format(translations.bot_guilds, ctx.Client.CurrentUser.Username),
                             Description = servers,
                             Color = Constants.YumikoColor,
                         },
@@ -105,8 +105,8 @@
                 servers +=
                     $"{Formatter.Bold(guild.Name)}\n" +
                     $"  - {Formatter.Bold("Id")}: {guild.Id}\n" +
-                    $"  - {Formatter.Bold(strings.joined_date)}: {guild.JoinedAt}\n" +
-                    $"  - {Formatter.Bold(strings.member_count)}: {guild.MemberCount}\n\n";
+                    $"  - {Formatter.Bold(translations.joined_date)}: {guild.JoinedAt}\n" +
+                    $"  - {Formatter.Bold(translations.member_count)}: {guild.MemberCount}\n\n";
                 cont++;
             }
 
@@ -116,7 +116,7 @@
                 {
                     Embed = new DiscordEmbedBuilder
                     {
-                        Title = string.Format(strings.bot_guilds, ctx.Client.CurrentUser.Username),
+                        Title = string.Format(translations.bot_guilds, ctx.Client.CurrentUser.Username),
                         Description = servers,
                         Color = Constants.YumikoColor,
                     },
@@ -138,16 +138,16 @@
                     var guild = await ctx.Client.GetGuildAsync(id);
                     string nombre = guild.Name;
                     await guild.LeaveAsync();
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(string.Format(strings.bot_left_guild, nombre, id)));
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(string.Format(translations.bot_left_guild, nombre, id)));
                 }
                 else
                 {
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(string.Format(strings.id_not_valid, idStr)));
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(string.Format(translations.id_not_valid, idStr)));
                 }
             }
             catch
             {
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(string.Format(strings.error_retrieving_guild_with_id, idStr)));
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(string.Format(translations.error_retrieving_guild_with_id, idStr)));
             }
         }
 
@@ -162,7 +162,7 @@
                 using FileStream fs = File.Open(log.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite); ;
 
                 await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
-                    .WithContent(strings.lastest_log_file)
+                    .WithContent(translations.lastest_log_file)
                     .AddFile(log.Name, fs));
 
                 fs.Close();
@@ -171,8 +171,8 @@
             {
                 await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
-                    Title = strings.error,
-                    Description = strings.no_logs_found,
+                    Title = translations.error,
+                    Description = translations.no_logs_found,
                     Color = DiscordColor.Red
                 }));
             }
@@ -181,7 +181,7 @@
         [SlashCommand("poweroff", "Turn off the bot")]
         public async Task Shutdown(InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(strings.shutting_down).AsEphemeral(true));
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(translations.shutting_down).AsEphemeral(true));
             Environment.Exit(0);
         }
     }

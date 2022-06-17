@@ -71,25 +71,25 @@
 
                     var embed = new DiscordEmbedBuilder
                     {
-                        Title = $"{strings.weather_in} {localidadNombre}",
+                        Title = $"{translations.weather_in} {localidadNombre}",
                         Url = localidadUrl,
                         Color = Constants.YumikoColor,
                         Footer = new DiscordEmbedBuilder.EmbedFooter
                         {
-                            Text = $"{strings.retrieved_from} openweathermap.org",
+                            Text = $"{translations.retrieved_from} openweathermap.org",
                             IconUrl = "https://images-ext-1.discordapp.net/external/3NnHdaMyO7CZtz9QO16w_yjJGG_HYUvGvkIleOZe1VY/http/openweathermap.org/img/w/03d.png",
                         },
                     };
 
-                    embed.AddField($":cloud: {strings.weather}", $"{clima?.UppercaseFirst()}", true);
-                    embed.AddField($":sweat: {strings.humidity}", $"{humedad}%", true);
-                    embed.AddField($":ocean: {strings.pressure}", $"{presion} hPa", true);
-                    embed.AddField($":dash: {strings.wind_speed}", $"{viento} m/s", true);
-                    embed.AddField($":thermometer: {strings.temperature}", $"{temperatura} °C", true);
-                    embed.AddField($":thermometer_face: {strings.feels_like}", $"{sensasionTermica} °C", true);
-                    embed.AddField($":high_brightness: {strings.feels_like}", $"{min} °C - {max} °C", true);
-                    embed.AddField($":sunrise_over_mountains: {strings.sunrise}", $"<t:{sunrise}:t>", true);
-                    embed.AddField($":city_sunset: {strings.sunset}", $"<t:{sunset}:t>", true);
+                    embed.AddField($":cloud: {translations.weather}", $"{clima?.UppercaseFirst()}", true);
+                    embed.AddField($":sweat: {translations.humidity}", $"{humedad}%", true);
+                    embed.AddField($":ocean: {translations.pressure}", $"{presion} hPa", true);
+                    embed.AddField($":dash: {translations.wind_speed}", $"{viento} m/s", true);
+                    embed.AddField($":thermometer: {translations.temperature}", $"{temperatura} °C", true);
+                    embed.AddField($":thermometer_face: {translations.feels_like}", $"{sensasionTermica} °C", true);
+                    embed.AddField($":high_brightness: {translations.feels_like}", $"{min} °C - {max} °C", true);
+                    embed.AddField($":sunrise_over_mountains: {translations.sunrise}", $"<t:{sunrise}:t>", true);
+                    embed.AddField($":city_sunset: {translations.sunset}", $"<t:{sunset}:t>", true);
 
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                 }
@@ -100,8 +100,8 @@
                 {
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = strings.error,
-                        Description = string.Format(strings.location_not_found, localidad, pais),
+                        Title = translations.error,
+                        Description = string.Format(translations.location_not_found, localidad, pais),
                         Color = DiscordColor.Red,
                     }));
                 }
@@ -109,8 +109,8 @@
                 {
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = strings.error,
-                        Description = strings.unknown_error,
+                        Title = translations.error,
+                        Description = translations.unknown_error,
                         Color = DiscordColor.Red,
                     }));
                 }
@@ -136,7 +136,7 @@
                     string urlImagen = data[0].url;
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = $"{strings.random_cat} (๑✪ᆺ✪๑)",
+                        Title = $"{translations.random_cat} (๑✪ᆺ✪๑)",
                         ImageUrl = urlImagen,
                         Color = Constants.YumikoColor,
                     }));
@@ -146,8 +146,8 @@
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                Title = strings.unknown_error,
-                Description = $"{strings.random_cat_error} :c",
+                Title = translations.unknown_error,
+                Description = $"{translations.random_cat_error} :c",
                 Color = DiscordColor.Red,
             }));
             await Common.GrabarLogErrorAsync(ctx, $"Unknown error in `/cat`\n\n`{response.StatusCode}: {response.StatusDescription}`");
@@ -172,7 +172,7 @@
                     string urlImagen = data[0].url;
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = $"{strings.random_dog} (❍ᴥ❍ʋ)",
+                        Title = $"{translations.random_dog} (❍ᴥ❍ʋ)",
                         ImageUrl = urlImagen,
                         Color = Constants.YumikoColor,
                     }));
@@ -182,8 +182,8 @@
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                Title = strings.unknown_error,
-                Description = $"{strings.random_dog_error} :c",
+                Title = translations.unknown_error,
+                Description = $"{translations.random_dog_error} :c",
                 Color = DiscordColor.Red,
             }));
             await Common.GrabarLogErrorAsync(ctx, $"Unknown error in `/dog`\n\n`{response.StatusCode}: {response.StatusDescription}`");

@@ -45,8 +45,8 @@
                 {
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = strings.error,
-                        Description = strings.no_genre_selected,
+                        Title = translations.error,
+                        Description = translations.no_genre_selected,
                         Color = DiscordColor.Red,
                     }));
                 }
@@ -70,17 +70,17 @@
             var context = ctx;
             var interactivity = ctx.Client.GetInteractivity();
 
-            string titulo = strings.confirm_delete_stats;
-            string opciones = $"**{strings.action_cannont_be_undone}**";
+            string titulo = translations.confirm_delete_stats;
+            string opciones = $"**{translations.action_cannont_be_undone}**";
             bool confirmar = await Common.GetYesNoInteractivityAsync(context, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity, titulo, opciones);
             if (confirmar)
             {
                 await GameServices.EliminarEstadisticasAsync(context);
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(strings.delete_stats_done));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(translations.delete_stats_done));
             }
             else
             {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(strings.delete_stats_cancelled));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(translations.delete_stats_cancelled));
             }
         }
 
@@ -97,17 +97,17 @@
 
             var embed = new DiscordEmbedBuilder()
             {
-                Title = string.Format(strings.bot_stats, ctx.Client.CurrentUser.Username),
+                Title = string.Format(translations.bot_stats, ctx.Client.CurrentUser.Username),
                 Color = Constants.YumikoColor
             };
 
-            embed.AddField(strings.library, $"DSharpPlus {ctx.Client.VersionString}", true);
-            embed.AddField(strings.memory_usage, heapMemory, true);
-            embed.AddField(strings.latency, $"{ctx.Client.Ping} ms", true);
-            embed.AddField(strings.total_shards, $"{Program.DiscordShardedClient.ShardClients.Count}", true);
-            embed.AddField(strings.total_guilds, $"{Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Count)}", true);
-            embed.AddField(strings.total_users, $"{Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Sum(y => y.Value.MemberCount))}", true);
-            embed.AddField(strings.uptime, $"{Program.Stopwatch.Elapsed.Humanize(2, minUnit: TimeUnit.Second, maxUnit: TimeUnit.Day, culture: new CultureInfo(ctx.Interaction.Locale!))}", true);
+            embed.AddField(translations.library, $"DSharpPlus {ctx.Client.VersionString}", true);
+            embed.AddField(translations.memory_usage, heapMemory, true);
+            embed.AddField(translations.latency, $"{ctx.Client.Ping} ms", true);
+            embed.AddField(translations.total_shards, $"{Program.DiscordShardedClient.ShardClients.Count}", true);
+            embed.AddField(translations.total_guilds, $"{Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Count)}", true);
+            embed.AddField(translations.total_users, $"{Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Sum(y => y.Value.MemberCount))}", true);
+            embed.AddField(translations.uptime, $"{Program.Stopwatch.Elapsed.Humanize(2, minUnit: TimeUnit.Second, maxUnit: TimeUnit.Day, culture: new CultureInfo(ctx.Interaction.Locale!))}", true);
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
         }

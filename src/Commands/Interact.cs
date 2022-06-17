@@ -36,14 +36,14 @@
                 0 => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Red,
-                    Title = strings.yes_or_no,
-                    Description = $"{Formatter.Bold($"{strings.question}:")} {texto}\n{Formatter.Bold($"{strings.answer}:")} {strings.no.ToUpper()}",
+                    Title = translations.yes_or_no,
+                    Description = $"{Formatter.Bold($"{translations.question}:")} {texto}\n{Formatter.Bold($"{translations.answer}:")} {translations.no.ToUpper()}",
                 },
                 _ => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Green,
-                    Title = strings.yes_or_no,
-                    Description = $"{Formatter.Bold($"{strings.question}:")} {texto}\n{Formatter.Bold($"{strings.answer}:")} {strings.yes.ToUpper()}",
+                    Title = translations.yes_or_no,
+                    Description = $"{Formatter.Bold($"{translations.question}:")} {texto}\n{Formatter.Bold($"{translations.answer}:")} {translations.yes.ToUpper()}",
                 },
             };
 
@@ -55,7 +55,7 @@
         {
             List<string> opciones = opc.Split(',').ToList();
             int random = Common.GetNumeroRandom(0, opciones.Count - 1);
-            string options = Formatter.Bold($"{strings.options}:");
+            string options = Formatter.Bold($"{translations.options}:");
             foreach (string msj in opciones)
             {
                 options += "\n   - " + msj;
@@ -64,8 +64,8 @@
             var embed = new DiscordEmbedBuilder
             {
                 Color = Constants.YumikoColor,
-                Title = strings.question,
-                Description = $"{Formatter.Bold(pregunta)}\n\n{options}\n\n{Formatter.Bold($"{strings.answer} :")} {opciones[random]}",
+                Title = translations.question,
+                Description = $"{Formatter.Bold(pregunta)}\n\n{options}\n\n{Formatter.Bold($"{translations.answer} :")} {opciones[random]}",
             };
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
@@ -87,9 +87,9 @@
                         Title = "Emote",
                         ImageUrl = emote.Url,
                     }.AddField("Id", $"{emote.Id}", true)
-                    .AddField(strings.name, emote.Name, true)
-                    .AddField(strings.animated, emote.IsAnimated ? strings.yes : strings.no, true)
-                    .AddField(strings.creation_date, $"{Formatter.Timestamp(emote.CreationTimestamp.UtcDateTime, TimestampFormat.LongDate)}");
+                    .AddField(translations.name, emote.Name, true)
+                    .AddField(translations.animated, emote.IsAnimated ? translations.yes : translations.no, true)
+                    .AddField(translations.creation_date, $"{Formatter.Timestamp(emote.CreationTimestamp.UtcDateTime, TimestampFormat.LongDate)}");
 
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                 }
@@ -104,7 +104,7 @@
                 {
                     Color = Constants.YumikoColor,
                     Title = "Emote",
-                    Description = string.Format(strings.emote_not_found, emoji),
+                    Description = string.Format(translations.emote_not_found, emoji),
                 };
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
             }
@@ -129,7 +129,7 @@
 
             var embed = new DiscordEmbedBuilder
             {
-                Title = string.Format(strings.member_avatar, member.DisplayName),
+                Title = string.Format(translations.member_avatar, member.DisplayName),
                 ImageUrl = displayAvatar,
             };
 
@@ -150,8 +150,8 @@
                 IsEphemeral = secreto,
             }.AddEmbed(new DiscordEmbedBuilder
             {
-                Title = strings.processing,
-                Description = $"{strings.processing_desc}..",
+                Title = translations.processing,
+                Description = $"{translations.processing_desc}..",
             }));
 
             usuario = await ctx.Client.GetUserAsync(usuario.Id, true);
@@ -173,17 +173,17 @@
                 },
                 Color = member.Color,
             };
-            embed.AddField(strings.registered, $"{Formatter.Timestamp(usuario.CreationTimestamp, TimestampFormat.LongDate)} ({Formatter.Timestamp(usuario.CreationTimestamp, TimestampFormat.RelativeTime)})", true);
-            embed.AddField(strings.joined_date, $"{Formatter.Timestamp(member.JoinedAt, TimestampFormat.LongDate)} ({Formatter.Timestamp(member.JoinedAt, TimestampFormat.RelativeTime)})", true);
-            embed.AddField("Bot", usuario.IsBot ? strings.yes : strings.no, true);
+            embed.AddField(translations.registered, $"{Formatter.Timestamp(usuario.CreationTimestamp, TimestampFormat.LongDate)} ({Formatter.Timestamp(usuario.CreationTimestamp, TimestampFormat.RelativeTime)})", true);
+            embed.AddField(translations.joined_date, $"{Formatter.Timestamp(member.JoinedAt, TimestampFormat.LongDate)} ({Formatter.Timestamp(member.JoinedAt, TimestampFormat.RelativeTime)})", true);
+            embed.AddField("Bot", usuario.IsBot ? translations.yes : translations.no, true);
             if (usuario.Flags != null)
             {
-                embed.AddField(strings.badges, usuario.Flags.ToString());
+                embed.AddField(translations.badges, usuario.Flags.ToString());
             }
 
             if (!string.IsNullOrEmpty(roles))
             {
-                embed.AddField(strings.roles, roles);
+                embed.AddField(translations.roles, roles);
             }
 
             if (usuario.BannerUrl != null)
@@ -223,40 +223,40 @@
                 {
                     Color = DiscordColor.Red,
                     Title = titulo,
-                    Description = $"{string.Format(strings.my_love_to_user_is, nombre, waifuLevel)}\n" +
-                                    $"{strings.waifu_level_25}",
+                    Description = $"{string.Format(translations.my_love_to_user_is, nombre, waifuLevel)}\n" +
+                                    $"{translations.waifu_level_25}",
                     ImageUrl = "https://i.imgur.com/BOxbruw.png",
                 },
                 < 50 => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Orange,
                     Title = titulo,
-                    Description = $"{string.Format(strings.my_love_to_user_is, nombre, waifuLevel)}\n" +
-                                    $"{strings.waifu_level_50}",
+                    Description = $"{string.Format(translations.my_love_to_user_is, nombre, waifuLevel)}\n" +
+                                    $"{translations.waifu_level_50}",
                     ImageUrl = "https://i.imgur.com/ys2HoiL.jpg",
                 },
                 < 75 => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Yellow,
                     Title = titulo,
-                    Description = $"{string.Format(strings.my_love_to_user_is, nombre, waifuLevel)}\n" +
-                                    $"{strings.waifu_level_75}",
+                    Description = $"{string.Format(translations.my_love_to_user_is, nombre, waifuLevel)}\n" +
+                                    $"{translations.waifu_level_75}",
                     ImageUrl = "https://i.imgur.com/h7Ic2rk.jpg",
                 },
                 < 100 => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Green,
                     Title = titulo,
-                    Description = $"{string.Format(strings.my_love_to_user_is, nombre, waifuLevel)}\n" +
-                                    $"{strings.waifu_level_99}",
+                    Description = $"{string.Format(translations.my_love_to_user_is, nombre, waifuLevel)}\n" +
+                                    $"{translations.waifu_level_99}",
                     ImageUrl = "https://i.imgur.com/dhXR8mV.png",
                 },
                 _ => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Blue,
                     Title = titulo,
-                    Description = $"{string.Format(strings.my_love_to_user_is, nombre, waifuLevel)}\n" +
-                                    $"{strings.waifu_level_100}",
+                    Description = $"{string.Format(translations.my_love_to_user_is, nombre, waifuLevel)}\n" +
+                                    $"{translations.waifu_level_100}",
                     ImageUrl = "https://i.imgur.com/Vk6JMJi.jpg",
                 },
             };
@@ -293,7 +293,7 @@
                     user1 = ctx.Member;
                 }
 
-                titulo = string.Format(strings.love_between, user1.FullName(), user2.FullName());
+                titulo = string.Format(translations.love_between, user1.FullName(), user2.FullName());
 
                 string avatar1 = user1.GetAvatarUrl(ImageFormat.Png, 512);
                 string avatar2 = user2.GetAvatarUrl(ImageFormat.Png, 512);
@@ -341,28 +341,28 @@
                 switch (porcentajeAmor)
                 {
                     case 0:
-                        descripcion += strings.love_0;
+                        descripcion += translations.love_0;
                         break;
                     case <= 10:
-                        descripcion += strings.love_10;
+                        descripcion += translations.love_10;
                         break;
                     case <= 25:
-                        descripcion += strings.love_25;
+                        descripcion += translations.love_25;
                         break;
                     case <= 50:
-                        descripcion += strings.love_50;
+                        descripcion += translations.love_50;
                         break;
                     case <= 75:
-                        descripcion += strings.love_75;
+                        descripcion += translations.love_75;
                         break;
                     case <= 90:
-                        descripcion += strings.love_90;
+                        descripcion += translations.love_90;
                         break;
                     case < 100:
-                        descripcion += strings.love_99;
+                        descripcion += translations.love_99;
                         break;
                     case 100:
-                        descripcion += strings.love_100;
+                        descripcion += translations.love_100;
                         break;
                 }
             }
