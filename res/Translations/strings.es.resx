@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="about" xml:space="preserve">
+    <value>Sobre</value>
+  </data>
   <data name="action_cancelled" xml:space="preserve">
     <value>Acción cancelada</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="badges" xml:space="preserve">
     <value>Insignias</value>
+  </data>
+  <data name="bot_about" xml:space="preserve">
+    <value>{0} es un bot de trivia de animes, con otros juegos y funcionalidades</value>
   </data>
   <data name="bot_guilds" xml:space="preserve">
     <value>Servidores de {0}</value>
@@ -230,6 +236,9 @@
   </data>
   <data name="image_must_enter_link" xml:space="preserve">
     <value>Debes ingresar el link de una imagen</value>
+  </data>
+  <data name="invite" xml:space="preserve">
+    <value>Invítame</value>
   </data>
   <data name="in_popularity_rank" xml:space="preserve">
     <value>en el ranking de popularidad</value>
@@ -335,6 +344,9 @@
   </data>
   <data name="pressure" xml:space="preserve">
     <value>Presión atmosférica</value>
+  </data>
+  <data name="privacy_policy" xml:space="preserve">
+    <value>Política de Privacidad</value>
   </data>
   <data name="processing" xml:space="preserve">
     <value>Procesando</value>
@@ -447,6 +459,9 @@
   <data name="video" xml:space="preserve">
     <value>Video</value>
   </data>
+  <data name="vote" xml:space="preserve">
+    <value>Vótame</value>
+  </data>
   <data name="waifu_level_100" xml:space="preserve">
     <value>Estoy completamente enamorada de ti, ¿cuándo nos casamos?</value>
   </data>
@@ -467,6 +482,9 @@
   </data>
   <data name="weather_in" xml:space="preserve">
     <value>Clima en</value>
+  </data>
+  <data name="website" xml:space="preserve">
+    <value>Sitio Web</value>
   </data>
   <data name="wind_speed" xml:space="preserve">
     <value>Velocidad del viento</value>

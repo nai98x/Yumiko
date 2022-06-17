@@ -24,7 +24,7 @@
             var sections = GetCategories(commandTypes);
             bool debugGuild = ctx.Guild.Id == ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginGuildId);
 
-            string description = $"{Formatter.BlockCode($"{ctx.Client.CurrentUser.Username} is an anime trivia bot, with other games and funcionalities.")}\n";
+            string description = $"{Formatter.BlockCode($"{string.Format(strings.bot_about, ctx.Client.CurrentUser.Username)}")}\n";
 
             sections.ForEach(section =>
             {
@@ -52,25 +52,25 @@
 
             var embed = new DiscordEmbedBuilder
             {
-                Title = $"About {ctx.Client.CurrentUser.Username}",
+                Title = $"{strings.about} {ctx.Client.CurrentUser.Username}",
                 Description = Common.NormalizarDescription(description),
                 Color = Constants.YumikoColor,
             };
 
             List<DiscordLinkButtonComponent> components = new()
             {
-                new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.InviteUrl), "Invite"),
-                new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.Website), "Website"),
+                new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.InviteUrl), strings.invite),
+                new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.Website), strings.website),
             };
 
             if (!string.IsNullOrEmpty(ctx.Client.CurrentApplication.PrivacyPolicyUrl))
             {
-                components.Add(new(ctx.Client.CurrentApplication.PrivacyPolicyUrl, "Privacy Policy"));
+                components.Add(new(ctx.Client.CurrentApplication.PrivacyPolicyUrl, strings.privacy_policy));
             }
 
             if (Program.TopggEnabled)
             {
-                components.Add(new($"https://top.gg/bot/{ctx.Client.CurrentApplication.Id}/vote", "Vote"));
+                components.Add(new($"https://top.gg/bot/{ctx.Client.CurrentApplication.Id}/vote", strings.vote));
             }
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed).AddComponents(components));

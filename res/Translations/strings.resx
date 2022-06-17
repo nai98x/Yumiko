@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="about" xml:space="preserve">
+    <value>About</value>
+  </data>
   <data name="action_cancelled" xml:space="preserve">
     <value>Action cancelled</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="badges" xml:space="preserve">
     <value>Badges</value>
+  </data>
+  <data name="bot_about" xml:space="preserve">
+    <value>{0} is an anime trivia bot, with other games and funcionalities</value>
   </data>
   <data name="bot_guilds" xml:space="preserve">
     <value>{0}'s guilds</value>
@@ -230,6 +236,9 @@
   </data>
   <data name="image_must_enter_link" xml:space="preserve">
     <value>You must enter the link of an image</value>
+  </data>
+  <data name="invite" xml:space="preserve">
+    <value>Invite</value>
   </data>
   <data name="in_popularity_rank" xml:space="preserve">
     <value>in popularity rank</value>
@@ -335,6 +344,9 @@
   </data>
   <data name="pressure" xml:space="preserve">
     <value>Pressure</value>
+  </data>
+  <data name="privacy_policy" xml:space="preserve">
+    <value>Privacy Policy</value>
   </data>
   <data name="processing" xml:space="preserve">
     <value>Processing</value>
@@ -447,6 +459,9 @@
   <data name="video" xml:space="preserve">
     <value>Video</value>
   </data>
+  <data name="vote" xml:space="preserve">
+    <value>Vote</value>
+  </data>
   <data name="waifu_level_100" xml:space="preserve">
     <value>I am completely in love with you, when do we get married?</value>
   </data>
@@ -467,6 +482,9 @@
   </data>
   <data name="weather_in" xml:space="preserve">
     <value>Weather in</value>
+  </data>
+  <data name="website" xml:space="preserve">
+    <value>Website</value>
   </data>
   <data name="wind_speed" xml:space="preserve">
     <value>Wind speed</value>

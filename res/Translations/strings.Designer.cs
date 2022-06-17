@@ -61,6 +61,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string about {
+            get {
+                return ResourceManager.GetString("about", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Action cancelled.
         /// </summary>
         public static string action_cancelled {
@@ -138,6 +147,15 @@ namespace Yumiko {
         public static string badges {
             get {
                 return ResourceManager.GetString("badges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is an anime trivia bot, with other games and funcionalities.
+        /// </summary>
+        public static string bot_about {
+            get {
+                return ResourceManager.GetString("bot_about", resourceCulture);
             }
         }
         
@@ -408,6 +426,15 @@ namespace Yumiko {
         public static string in_popularity_rank {
             get {
                 return ResourceManager.GetString("in_popularity_rank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite.
+        /// </summary>
+        public static string invite {
+            get {
+                return ResourceManager.GetString("invite", resourceCulture);
             }
         }
         
@@ -714,6 +741,15 @@ namespace Yumiko {
         public static string pressure {
             get {
                 return ResourceManager.GetString("pressure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Privacy Policy.
+        /// </summary>
+        public static string privacy_policy {
+            get {
+                return ResourceManager.GetString("privacy_policy", resourceCulture);
             }
         }
         
@@ -1051,6 +1087,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vote.
+        /// </summary>
+        public static string vote {
+            get {
+                return ResourceManager.GetString("vote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to I am completely in love with you, when do we get married?.
         /// </summary>
         public static string waifu_level_100 {
@@ -1110,6 +1155,15 @@ namespace Yumiko {
         public static string weather_in {
             get {
                 return ResourceManager.GetString("weather_in", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Website.
+        /// </summary>
+        public static string website {
+            get {
+                return ResourceManager.GetString("website", resourceCulture);
             }
         }
         
