@@ -156,6 +156,9 @@
   <data name="bot_left_guild" xml:space="preserve">
     <value>Me he salido del servidor `{0}` ({1})</value>
   </data>
+  <data name="bot_stats" xml:space="preserve">
+    <value>Estadísticas de {0}</value>
+  </data>
   <data name="chapters" xml:space="preserve">
     <value>Capítulos</value>
   </data>
@@ -168,11 +171,20 @@
   <data name="confirm_delete_profile" xml:space="preserve">
     <value>Confirma que quieres eliminar tu perfil</value>
   </data>
+  <data name="confirm_delete_stats" xml:space="preserve">
+    <value>Confirma si realmente quieres eliminar tus estadísticas</value>
+  </data>
   <data name="confirm_save_profile" xml:space="preserve">
     <value>Confirma que quieres guardar este perfil</value>
   </data>
   <data name="creation_date" xml:space="preserve">
     <value>Fecha de creación</value>
+  </data>
+  <data name="delete_stats_cancelled" xml:space="preserve">
+    <value>Elegiste no eliminar tus estadísticas</value>
+  </data>
+  <data name="delete_stats_done" xml:space="preserve">
+    <value>Has eliminado todas tus estadísticas en este servidor</value>
   </data>
   <data name="emote_not_found" xml:space="preserve">
     <value>Emote `{0}` no encontrado</value>
@@ -252,6 +264,12 @@
   <data name="lastest_log_file" xml:space="preserve">
     <value>Archivo de log más reciente</value>
   </data>
+  <data name="latency" xml:space="preserve">
+    <value>Latencia</value>
+  </data>
+  <data name="library" xml:space="preserve">
+    <value>Libería</value>
+  </data>
   <data name="link" xml:space="preserve">
     <value>Enlace</value>
   </data>
@@ -300,6 +318,9 @@
   <data name="member_count" xml:space="preserve">
     <value>Cantidad de miembros</value>
   </data>
+  <data name="memory_usage" xml:space="preserve">
+    <value>Uso de memoria</value>
+  </data>
   <data name="message" xml:space="preserve">
     <value>mensaje</value>
   </data>
@@ -332,6 +353,9 @@
   </data>
   <data name="no_anilist_profile_vinculated" xml:space="preserve">
     <value>{0}, no tienes ningún perfil de Anilist vinculado</value>
+  </data>
+  <data name="no_genre_selected" xml:space="preserve">
+    <value>No has elegido ningún genero</value>
   </data>
   <data name="no_logs_found" xml:space="preserve">
     <value>No se han encontrado logs</value>
@@ -441,6 +465,9 @@
   <data name="total_guilds" xml:space="preserve">
     <value>Total de servidores</value>
   </data>
+  <data name="total_shards" xml:space="preserve">
+    <value>Total de shards</value>
+  </data>
   <data name="total_users" xml:space="preserve">
     <value>Total de usuarios</value>
   </data>
@@ -452,6 +479,9 @@
   </data>
   <data name="unknown_error_tracemoe" xml:space="preserve">
     <value>Error desconocido obteniendo imagen desde trace.moe</value>
+  </data>
+  <data name="uptime" xml:space="preserve">
+    <value>Uptime</value>
   </data>
   <data name="use_command_in_nsfw_channel" xml:space="preserve">
     <value>por favor usa este comando en un canal con restricción de edad</value>

@@ -178,6 +178,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}&apos;s statistics.
+        /// </summary>
+        public static string bot_stats {
+            get {
+                return ResourceManager.GetString("bot_stats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Chapters.
         /// </summary>
         public static string chapters {
@@ -214,6 +223,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm if you really want to delete your stats.
+        /// </summary>
+        public static string confirm_delete_stats {
+            get {
+                return ResourceManager.GetString("confirm_delete_stats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm that you want to save this profile.
         /// </summary>
         public static string confirm_save_profile {
@@ -228,6 +246,24 @@ namespace Yumiko {
         public static string creation_date {
             get {
                 return ResourceManager.GetString("creation_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have chosen not to delete their statistics.
+        /// </summary>
+        public static string delete_stats_cancelled {
+            get {
+                return ResourceManager.GetString("delete_stats_cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have deleted all your statistics on this guild.
+        /// </summary>
+        public static string delete_stats_done {
+            get {
+                return ResourceManager.GetString("delete_stats_done", resourceCulture);
             }
         }
         
@@ -466,6 +502,24 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Latency.
+        /// </summary>
+        public static string latency {
+            get {
+                return ResourceManager.GetString("latency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Library.
+        /// </summary>
+        public static string library {
+            get {
+                return ResourceManager.GetString("library", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Link.
         /// </summary>
         public static string link {
@@ -610,6 +664,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Memory usage.
+        /// </summary>
+        public static string memory_usage {
+            get {
+                return ResourceManager.GetString("memory_usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to message.
         /// </summary>
         public static string message {
@@ -705,6 +768,15 @@ namespace Yumiko {
         public static string no_anilist_profile_vinculated {
             get {
                 return ResourceManager.GetString("no_anilist_profile_vinculated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No genre has been selected.
+        /// </summary>
+        public static string no_genre_selected {
+            get {
+                return ResourceManager.GetString("no_genre_selected", resourceCulture);
             }
         }
         
@@ -1042,6 +1114,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total shards.
+        /// </summary>
+        public static string total_shards {
+            get {
+                return ResourceManager.GetString("total_shards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total users.
         /// </summary>
         public static string total_users {
@@ -1065,6 +1146,15 @@ namespace Yumiko {
         public static string unknown_error_tracemoe {
             get {
                 return ResourceManager.GetString("unknown_error_tracemoe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uptime.
+        /// </summary>
+        public static string uptime {
+            get {
+                return ResourceManager.GetString("uptime", resourceCulture);
             }
         }
         

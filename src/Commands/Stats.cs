@@ -2,8 +2,10 @@
 {
     using Humanizer;
     using Humanizer.Localisation;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not with D#+ Command classes")]
     [SlashCommandGroup("stats", "Statistics from different games")]
     public class Stats : ApplicationCommandModule
     {
@@ -31,7 +33,7 @@
                 await Common.ChequearVotoTopGGAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
             }
             else
-            {
+            {    
                 var respuesta = await GameServices.ElegirGeneroAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity);
                 if (respuesta.Ok && respuesta.Genre != null)
                 {
@@ -43,8 +45,8 @@
                 {
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = "Error",
-                        Description = "No genre has been selected",
+                        Title = strings.error,
+                        Description = strings.no_genre_selected,
                         Color = DiscordColor.Red,
                     }));
                 }
@@ -68,17 +70,17 @@
             var context = ctx;
             var interactivity = ctx.Client.GetInteractivity();
 
-            string titulo = "Confirm if you really want to delete your stats";
-            string opciones = $"**This action cannont be undone**";
+            string titulo = strings.confirm_delete_stats;
+            string opciones = $"**{strings.action_cannont_be_undone}**";
             bool confirmar = await Common.GetYesNoInteractivityAsync(context, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity, titulo, opciones);
             if (confirmar)
             {
                 await GameServices.EliminarEstadisticasAsync(context);
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"You have deleted all your statistics on this guild"));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(strings.delete_stats_done));
             }
             else
             {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"You have chosen not to delete their statistics"));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(strings.delete_stats_cancelled));
             }
         }
 
@@ -87,19 +89,25 @@
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
+            GC.Collect(2, GCCollectionMode.Forced, true, true);
+            GC.WaitForPendingFinalizers();
+            GC.Collect(2, GCCollectionMode.Forced, true, true);
+
+            var heapMemory = $"{GC.GetTotalMemory(true) / 1024 / 1024:n0} MB";
+
             var embed = new DiscordEmbedBuilder()
             {
-                Title = "Information",
+                Title = string.Format(strings.bot_stats, ctx.Client.CurrentUser.Username),
                 Color = Constants.YumikoColor
             };
 
-            embed.AddField("Author", ctx.Client.CurrentApplication.Owners.First().FullName(), true);
-            embed.AddField("Library", $"DSharpPlus {ctx.Client.VersionString}", true);
-            embed.AddField("Memory", $"{GC.GetTotalMemory(true) / 1024 / 1024:n0} MB", true);
-            embed.AddField("Latency", $"{ctx.Client.Ping} ms", true);
-            embed.AddField("Total shards", $"{Program.DiscordShardedClient.ShardClients.Count}", true);
-            embed.AddField("Total guilds", $"{Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Count)}", true);
-            embed.AddField("Uptime", $"{Program.Stopwatch.Elapsed.Humanize(2, minUnit: TimeUnit.Second, maxUnit: TimeUnit.Day, culture: new CultureInfo(ctx.Interaction.Locale!))}", true);
+            embed.AddField(strings.library, $"DSharpPlus {ctx.Client.VersionString}", true);
+            embed.AddField(strings.memory_usage, heapMemory, true);
+            embed.AddField(strings.latency, $"{ctx.Client.Ping} ms", true);
+            embed.AddField(strings.total_shards, $"{Program.DiscordShardedClient.ShardClients.Count}", true);
+            embed.AddField(strings.total_guilds, $"{Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Count)}", true);
+            embed.AddField(strings.total_users, $"{Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Sum(y => y.Value.MemberCount))}", true);
+            embed.AddField(strings.uptime, $"{Program.Stopwatch.Elapsed.Humanize(2, minUnit: TimeUnit.Second, maxUnit: TimeUnit.Day, culture: new CultureInfo(ctx.Interaction.Locale!))}", true);
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
         }

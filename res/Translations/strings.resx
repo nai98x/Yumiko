@@ -156,6 +156,9 @@
   <data name="bot_left_guild" xml:space="preserve">
     <value>I have left the `{0}` guild ({1})</value>
   </data>
+  <data name="bot_stats" xml:space="preserve">
+    <value>{0}'s statistics</value>
+  </data>
   <data name="chapters" xml:space="preserve">
     <value>Chapters</value>
   </data>
@@ -168,11 +171,20 @@
   <data name="confirm_delete_profile" xml:space="preserve">
     <value>Confirm that you want to delete your profile</value>
   </data>
+  <data name="confirm_delete_stats" xml:space="preserve">
+    <value>Confirm if you really want to delete your stats</value>
+  </data>
   <data name="confirm_save_profile" xml:space="preserve">
     <value>Confirm that you want to save this profile</value>
   </data>
   <data name="creation_date" xml:space="preserve">
     <value>Creation date</value>
+  </data>
+  <data name="delete_stats_cancelled" xml:space="preserve">
+    <value>You have chosen not to delete their statistics</value>
+  </data>
+  <data name="delete_stats_done" xml:space="preserve">
+    <value>You have deleted all your statistics on this guild</value>
   </data>
   <data name="emote_not_found" xml:space="preserve">
     <value>Emote `{0}` not found</value>
@@ -252,6 +264,12 @@
   <data name="lastest_log_file" xml:space="preserve">
     <value>Lastest log file</value>
   </data>
+  <data name="latency" xml:space="preserve">
+    <value>Latency</value>
+  </data>
+  <data name="library" xml:space="preserve">
+    <value>Library</value>
+  </data>
   <data name="link" xml:space="preserve">
     <value>Link</value>
   </data>
@@ -300,6 +318,9 @@
   <data name="member_count" xml:space="preserve">
     <value>Member count</value>
   </data>
+  <data name="memory_usage" xml:space="preserve">
+    <value>Memory usage</value>
+  </data>
   <data name="message" xml:space="preserve">
     <value>message</value>
   </data>
@@ -332,6 +353,9 @@
   </data>
   <data name="no_anilist_profile_vinculated" xml:space="preserve">
     <value>{0}, you don't have any Anilist profile vinculated </value>
+  </data>
+  <data name="no_genre_selected" xml:space="preserve">
+    <value>No genre has been selected</value>
   </data>
   <data name="no_logs_found" xml:space="preserve">
     <value>No logs found</value>
@@ -441,6 +465,9 @@
   <data name="total_guilds" xml:space="preserve">
     <value>Total guilds</value>
   </data>
+  <data name="total_shards" xml:space="preserve">
+    <value>Total shards</value>
+  </data>
   <data name="total_users" xml:space="preserve">
     <value>Total users</value>
   </data>
@@ -452,6 +479,9 @@
   </data>
   <data name="unknown_error_tracemoe" xml:space="preserve">
     <value>Unknown error retrieving image from trace.moe</value>
+  </data>
+  <data name="uptime" xml:space="preserve">
+    <value>Uptime</value>
   </data>
   <data name="use_command_in_nsfw_channel" xml:space="preserve">
     <value>please use this command in a age-restricted channel</value>
