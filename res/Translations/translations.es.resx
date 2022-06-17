@@ -126,6 +126,9 @@
   <data name="action_cannont_be_undone" xml:space="preserve">
     <value>Esta acción no se puede deshacer</value>
   </data>
+  <data name="airing_since" xml:space="preserve">
+    <value>En emisión desde {0}</value>
+  </data>
   <data name="anilist_profile_deleted_successfully" xml:space="preserve">
     <value>Perfil de Anilist eliminado correctamente</value>
   </data>
@@ -206,6 +209,9 @@
   </data>
   <data name="emote_not_found" xml:space="preserve">
     <value>Emote `{0}` no encontrado</value>
+  </data>
+  <data name="end_date" xml:space="preserve">
+    <value>Fecha de finalización</value>
   </data>
   <data name="episode" xml:space="preserve">
     <value>Episodio</value>
@@ -420,6 +426,18 @@
   <data name="no" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="notes" xml:space="preserve">
+    <value>Notas</value>
+  </data>
+  <data name="not_assigned" xml:space="preserve">
+    <value>Sin asignar</value>
+  </data>
+  <data name="not_found" xml:space="preserve">
+    <value>{0} no encontrado</value>
+  </data>
+  <data name="no_air_date" xml:space="preserve">
+    <value>Sin fecha de emisión</value>
+  </data>
   <data name="no_anilist_profile_vinculated" xml:space="preserve">
     <value>{0}, no tienes ningún perfil de Anilist vinculado</value>
   </data>
@@ -483,6 +501,9 @@
   <data name="registered" xml:space="preserve">
     <value>Registro en Discord</value>
   </data>
+  <data name="response_timed_out" xml:space="preserve">
+    <value>Tiempo agotado esperando la respuesta</value>
+  </data>
   <data name="retrieved_from" xml:space="preserve">
     <value>Obtenido de</value>
   </data>
@@ -512,6 +533,9 @@
   </data>
   <data name="start_date" xml:space="preserve">
     <value>Fecha de inicio</value>
+  </data>
+  <data name="stats" xml:space="preserve">
+    <value>Estadísticas</value>
   </data>
   <data name="status" xml:space="preserve">
     <value>Estado</value>
@@ -635,6 +659,9 @@
   </data>
   <data name="without_description" xml:space="preserve">
     <value>(Sin descripción)</value>
+  </data>
+  <data name="without_notes" xml:space="preserve">
+    <value>(Sin notas)</value>
   </data>
   <data name="without_titles" xml:space="preserve">
     <value>Sin títulos</value>

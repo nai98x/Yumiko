@@ -88,6 +88,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Airing since {0}.
+        /// </summary>
+        public static string airing_since {
+            get {
+                return ResourceManager.GetString("airing_since", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Anilist profile deleted successfully.
         /// </summary>
         public static string anilist_profile_deleted_successfully {
@@ -327,6 +336,15 @@ namespace Yumiko {
         public static string emote_not_found {
             get {
                 return ResourceManager.GetString("emote_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End date.
+        /// </summary>
+        public static string end_date {
+            get {
+                return ResourceManager.GetString("end_date", resourceCulture);
             }
         }
         
@@ -970,6 +988,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No air date available.
+        /// </summary>
+        public static string no_air_date {
+            get {
+                return ResourceManager.GetString("no_air_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}, you don&apos;t have any Anilist profile vinculated .
         /// </summary>
         public static string no_anilist_profile_vinculated {
@@ -1020,6 +1047,33 @@ namespace Yumiko {
         public static string no_results_found_image {
             get {
                 return ResourceManager.GetString("no_results_found_image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not assigned.
+        /// </summary>
+        public static string not_assigned {
+            get {
+                return ResourceManager.GetString("not_assigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} not found.
+        /// </summary>
+        public static string not_found {
+            get {
+                return ResourceManager.GetString("not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes.
+        /// </summary>
+        public static string notes {
+            get {
+                return ResourceManager.GetString("notes", resourceCulture);
             }
         }
         
@@ -1159,6 +1213,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response timed out.
+        /// </summary>
+        public static string response_timed_out {
+            get {
+                return ResourceManager.GetString("response_timed_out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retrieved from.
         /// </summary>
         public static string retrieved_from {
@@ -1245,6 +1308,15 @@ namespace Yumiko {
         public static string start_date {
             get {
                 return ResourceManager.GetString("start_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stats.
+        /// </summary>
+        public static string stats {
+            get {
+                return ResourceManager.GetString("stats", resourceCulture);
             }
         }
         
@@ -1614,6 +1686,15 @@ namespace Yumiko {
         public static string without_description {
             get {
                 return ResourceManager.GetString("without_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Without notes).
+        /// </summary>
+        public static string without_notes {
+            get {
+                return ResourceManager.GetString("without_notes", resourceCulture);
             }
         }
         

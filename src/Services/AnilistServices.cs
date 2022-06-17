@@ -111,7 +111,7 @@
                             return new()
                             {
                                 Ok = false,
-                                MsgError = $"Response timed out",
+                                MsgError = translations.response_timed_out,
                             };
                         }
                     }
@@ -120,7 +120,7 @@
                 return new()
                 {
                     Ok = false,
-                    MsgError = $"{type.GetName().ToLower()} not found: `{busqueda}`",
+                    MsgError = $"{string.Format(translations.not_found, type.GetName().ToLower())}: `{busqueda}`",
                 };
             }
             catch (Exception e)
@@ -194,7 +194,7 @@
                 media.Descripcion = Common.NormalizarDescription(Common.LimpiarTexto(media.Descripcion));
                 if (media.Descripcion == string.Empty)
                 {
-                    media.Descripcion = "(Without description)";
+                    media.Descripcion = translations.without_description;
                 }
 
                 media.Estado = datos.status;
@@ -274,12 +274,12 @@
                     }
                     else
                     {
-                        media.Fechas = $"Airing since {datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}";
+                        media.Fechas = string.Format(translations.airing_since, $"{datos.startDate.day}/{datos.startDate.month}/{datos.startDate.year}");
                     }
                 }
                 else
                 {
-                    media.Fechas = $"ENo air date available";
+                    media.Fechas = translations.no_air_date;
                 }
 
                 media.TituloRomaji = datos.title.romaji;
@@ -363,17 +363,17 @@
 
                     if (string.IsNullOrEmpty(notas))
                     {
-                        notas = "(Without notes)";
+                        notas = translations.without_notes;
                     }
 
                     var builderPers = new DiscordEmbedBuilder
                     {
-                        Title = $"Stats: {nameAl}",
-                        Description = Common.NormalizarDescription("**Notes**\n" + notas),
+                        Title = $"{translations.stats}: {nameAl}",
+                        Description = Common.NormalizarDescription($"**{translations.notes}**\n" + notas),
                         Color = Constants.YumikoColor,
                     }.WithThumbnail(avatarAl);
 
-                    builderPers.AddField("Status", status, true);
+                    builderPers.AddField(translations.status, status, true);
                     if (!string.IsNullOrEmpty(progress))
                     {
                         string episodios = progress;
@@ -387,7 +387,7 @@
                             episodios += $"/{chaptersMedia}";
                         }
 
-                        builderPers.AddField("Episodes", episodios, true);
+                        builderPers.AddField(translations.episodes, episodios, true);
                     }
 
                     string scoreMostrar = string.Empty;
@@ -429,11 +429,11 @@
                                 break;
                         }
 
-                        builderPers.AddField("Score", scoreF, true);
+                        builderPers.AddField(translations.score, scoreF, true);
                     }
                     else
                     {
-                        builderPers.AddField("Score", "Not assigned", true);
+                        builderPers.AddField(translations.score, translations.not_assigned, true);
                     }
 
                     if (!string.IsNullOrEmpty(rewatches))
@@ -443,12 +443,12 @@
 
                     if (!string.IsNullOrEmpty(startedd) && !string.IsNullOrEmpty(startedm) && !string.IsNullOrEmpty(startedy))
                     {
-                        builderPers.AddField("Start date", $"{startedd}/{startedm}/{startedy}", true);
+                        builderPers.AddField(translations.start_date, $"{startedd}/{startedm}/{startedy}", true);
                     }
 
                     if (!string.IsNullOrEmpty(completedd) && !string.IsNullOrEmpty(completedm) && !string.IsNullOrEmpty(completedy))
                     {
-                        builderPers.AddField("End date", $"{completedd}/{completedm}/{completedy}", true);
+                        builderPers.AddField(translations.end_date, $"{completedd}/{completedm}/{completedy}", true);
                     }
 
                     return builderPers;
