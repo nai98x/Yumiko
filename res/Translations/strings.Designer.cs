@@ -97,6 +97,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Animated.
+        /// </summary>
+        public static string animated {
+            get {
+                return ResourceManager.GetString("animated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Anime list.
         /// </summary>
         public static string anime_list {
@@ -111,6 +120,24 @@ namespace Yumiko {
         public static string anime_stats {
             get {
                 return ResourceManager.GetString("anime_stats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Answer.
+        /// </summary>
+        public static string answer {
+            get {
+                return ResourceManager.GetString("answer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Badges.
+        /// </summary>
+        public static string badges {
+            get {
+                return ResourceManager.GetString("badges", resourceCulture);
             }
         }
         
@@ -174,6 +201,24 @@ namespace Yumiko {
         public static string confirm_save_profile {
             get {
                 return ResourceManager.GetString("confirm_save_profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creation date.
+        /// </summary>
+        public static string creation_date {
+            get {
+                return ResourceManager.GetString("creation_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Emote `{0}` not found.
+        /// </summary>
+        public static string emote_not_found {
+            get {
+                return ResourceManager.GetString("emote_not_found", resourceCulture);
             }
         }
         
@@ -367,6 +412,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Join date.
+        /// </summary>
+        public static string join_date {
+            get {
+                return ResourceManager.GetString("join_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Joined date.
         /// </summary>
         public static string joined_date {
@@ -403,6 +457,87 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get away! You two are going to kill each other.
+        /// </summary>
+        public static string love_0 {
+            get {
+                return ResourceManager.GetString("love_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to They will hate each other, they are not compatible at all.
+        /// </summary>
+        public static string love_10 {
+            get {
+                return ResourceManager.GetString("love_10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Perfect relationship! They will marry and have many children.
+        /// </summary>
+        public static string love_100 {
+            get {
+                return ResourceManager.GetString("love_100", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It is best that they move away from each other, they do not fit.
+        /// </summary>
+        public static string love_25 {
+            get {
+                return ResourceManager.GetString("love_25", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to They will be good friends, but I find love difficult.
+        /// </summary>
+        public static string love_50 {
+            get {
+                return ResourceManager.GetString("love_50", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most likely they are best friends and hopefully something more.
+        /// </summary>
+        public static string love_75 {
+            get {
+                return ResourceManager.GetString("love_75", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to They have to give themselves a chance.
+        /// </summary>
+        public static string love_90 {
+            get {
+                return ResourceManager.GetString("love_90", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You two are meant to be together.
+        /// </summary>
+        public static string love_99 {
+            get {
+                return ResourceManager.GetString("love_99", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Love between **{0}** and **{1}**.
+        /// </summary>
+        public static string love_between {
+            get {
+                return ResourceManager.GetString("love_between", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manga list.
         /// </summary>
         public static string manga_list {
@@ -426,6 +561,15 @@ namespace Yumiko {
         public static string mean_score {
             get {
                 return ResourceManager.GetString("mean_score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}&apos;s avatar.
+        /// </summary>
+        public static string member_avatar {
+            get {
+                return ResourceManager.GetString("member_avatar", resourceCulture);
             }
         }
         
@@ -471,6 +615,15 @@ namespace Yumiko {
         public static string must_enter_anilist_profile_url {
             get {
                 return ResourceManager.GetString("must_enter_anilist_profile_url", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My love to **{0}** is **{1}%**.
+        /// </summary>
+        public static string my_love_to_user_is {
+            get {
+                return ResourceManager.GetString("my_love_to_user_is", resourceCulture);
             }
         }
         
@@ -547,11 +700,38 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string options {
+            get {
+                return ResourceManager.GetString("options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pressure.
         /// </summary>
         public static string pressure {
             get {
                 return ResourceManager.GetString("pressure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processing.
+        /// </summary>
+        public static string processing {
+            get {
+                return ResourceManager.GetString("processing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait while the command is processed.
+        /// </summary>
+        public static string processing_desc {
+            get {
+                return ResourceManager.GetString("processing_desc", resourceCulture);
             }
         }
         
@@ -579,6 +759,15 @@ namespace Yumiko {
         public static string publication_date {
             get {
                 return ResourceManager.GetString("publication_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Question.
+        /// </summary>
+        public static string question {
+            get {
+                return ResourceManager.GetString("question", resourceCulture);
             }
         }
         
@@ -619,11 +808,29 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Registered.
+        /// </summary>
+        public static string registered {
+            get {
+                return ResourceManager.GetString("registered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retrieved from.
         /// </summary>
         public static string retrieved_from {
             get {
                 return ResourceManager.GetString("retrieved_from", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roles.
+        /// </summary>
+        public static string roles {
+            get {
+                return ResourceManager.GetString("roles", resourceCulture);
             }
         }
         
@@ -844,6 +1051,51 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I am completely in love with you, when do we get married?.
+        /// </summary>
+        public static string waifu_level_100 {
+            get {
+                return ResourceManager.GetString("waifu_level_100", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I will shot myself before touch you.
+        /// </summary>
+        public static string waifu_level_25 {
+            get {
+                return ResourceManager.GetString("waifu_level_25", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You make me sick, I better get away from you.
+        /// </summary>
+        public static string waifu_level_50 {
+            get {
+                return ResourceManager.GetString("waifu_level_50", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You&apos;re not bad, maybe you have a chance with me.
+        /// </summary>
+        public static string waifu_level_75 {
+            get {
+                return ResourceManager.GetString("waifu_level_75", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I am your waifu, you can do what you want with me.
+        /// </summary>
+        public static string waifu_level_99 {
+            get {
+                return ResourceManager.GetString("waifu_level_99", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Weather.
         /// </summary>
         public static string weather {
@@ -903,6 +1155,15 @@ namespace Yumiko {
         public static string yes {
             get {
                 return ResourceManager.GetString("yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to YES OR NO?.
+        /// </summary>
+        public static string yes_or_no {
+            get {
+                return ResourceManager.GetString("yes_or_no", resourceCulture);
             }
         }
         

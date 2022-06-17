@@ -129,11 +129,20 @@
   <data name="anilist_profile_not_found" xml:space="preserve">
     <value>Perfil de Anilist no encontrado</value>
   </data>
+  <data name="animated" xml:space="preserve">
+    <value>Animado</value>
+  </data>
   <data name="anime_list" xml:space="preserve">
     <value>Lista de anime</value>
   </data>
   <data name="anime_stats" xml:space="preserve">
     <value>Estadísticas de anime</value>
+  </data>
+  <data name="answer" xml:space="preserve">
+    <value>Respuesta</value>
+  </data>
+  <data name="badges" xml:space="preserve">
+    <value>Insignias</value>
   </data>
   <data name="bot_guilds" xml:space="preserve">
     <value>Servidores de {0}</value>
@@ -155,6 +164,12 @@
   </data>
   <data name="confirm_save_profile" xml:space="preserve">
     <value>Confirma que quieres guardar este perfil</value>
+  </data>
+  <data name="creation_date" xml:space="preserve">
+    <value>Fecha de creación</value>
+  </data>
+  <data name="emote_not_found" xml:space="preserve">
+    <value>Emote `{0}` no encontrado</value>
   </data>
   <data name="episode" xml:space="preserve">
     <value>Episodio</value>
@@ -222,6 +237,9 @@
   <data name="joined_date" xml:space="preserve">
     <value>Fecha en la que entró Yumiko</value>
   </data>
+  <data name="join_date" xml:space="preserve">
+    <value>Fecha en la que entró al servidor</value>
+  </data>
   <data name="lastest_log_file" xml:space="preserve">
     <value>Archivo de log más reciente</value>
   </data>
@@ -231,6 +249,33 @@
   <data name="location_not_found" xml:space="preserve">
     <value>Localidad `{0}, {1}` no encontrada</value>
   </data>
+  <data name="love_0" xml:space="preserve">
+    <value>¡Alejense! Se terminarán asesinando mutuamente</value>
+  </data>
+  <data name="love_10" xml:space="preserve">
+    <value>Se odiarán mutuamente, no son para nada compatibles</value>
+  </data>
+  <data name="love_100" xml:space="preserve">
+    <value>¡Relación perfecta! Se casarán y tendrán muchos hijos</value>
+  </data>
+  <data name="love_25" xml:space="preserve">
+    <value>Lo mejor es que se alejen uno del otro, no encajan</value>
+  </data>
+  <data name="love_50" xml:space="preserve">
+    <value>Serán buenos amigos, pero encuentro difícil el amor</value>
+  </data>
+  <data name="love_75" xml:space="preserve">
+    <value>Serán mejores amigos y quizás algo más</value>
+  </data>
+  <data name="love_90" xml:space="preserve">
+    <value>Tienen que darse una oportunidad</value>
+  </data>
+  <data name="love_99" xml:space="preserve">
+    <value>Están destinados a estar juntos</value>
+  </data>
+  <data name="love_between" xml:space="preserve">
+    <value>Amor entre **{0}** y **{1}**</value>
+  </data>
   <data name="manga_list" xml:space="preserve">
     <value>Lista de manga</value>
   </data>
@@ -239,6 +284,9 @@
   </data>
   <data name="mean_score" xml:space="preserve">
     <value>Puntuación media</value>
+  </data>
+  <data name="member_avatar" xml:space="preserve">
+    <value>Avatar de {0}</value>
   </data>
   <data name="member_count" xml:space="preserve">
     <value>Cantidad de miembros</value>
@@ -254,6 +302,9 @@
   </data>
   <data name="must_enter_anilist_profile_url" xml:space="preserve">
     <value>{0}, debes ingresar la URL de tu perfil de Anilist</value>
+  </data>
+  <data name="my_love_to_user_is" xml:space="preserve">
+    <value>Mi amor hacia **{0}** es del **{1}%**</value>
   </data>
   <data name="name" xml:space="preserve">
     <value>Nombre</value>
@@ -279,8 +330,17 @@
   <data name="no_results_found_image" xml:space="preserve">
     <value>No se encontraron resultados para esta imagen</value>
   </data>
+  <data name="options" xml:space="preserve">
+    <value>Options</value>
+  </data>
   <data name="pressure" xml:space="preserve">
     <value>Presión atmosférica</value>
+  </data>
+  <data name="processing" xml:space="preserve">
+    <value>Procesando</value>
+  </data>
+  <data name="processing_desc" xml:space="preserve">
+    <value>Espera mientras se procesa el comando</value>
   </data>
   <data name="processing_image" xml:space="preserve">
     <value>Procesando imagen</value>
@@ -290,6 +350,9 @@
   </data>
   <data name="publication_date" xml:space="preserve">
     <value>Fecha de publicación</value>
+  </data>
+  <data name="question" xml:space="preserve">
+    <value>Pregunta</value>
   </data>
   <data name="random_cat" xml:space="preserve">
     <value>Gatito aleatorio</value>
@@ -303,8 +366,14 @@
   <data name="random_dog_error" xml:space="preserve">
     <value>Hubo un error tratando de obtener al perro</value>
   </data>
+  <data name="registered" xml:space="preserve">
+    <value>Registro en Discord</value>
+  </data>
   <data name="retrieved_from" xml:space="preserve">
     <value>Obtenido de</value>
+  </data>
+  <data name="roles" xml:space="preserve">
+    <value>Roles</value>
   </data>
   <data name="sauce_remember" xml:space="preserve">
     <value>Recuerda que solo funciona con imágenes que son partes de un episodio de anime</value>
@@ -378,6 +447,21 @@
   <data name="video" xml:space="preserve">
     <value>Video</value>
   </data>
+  <data name="waifu_level_100" xml:space="preserve">
+    <value>Estoy completamente enamorada de ti, ¿cuándo nos casamos?</value>
+  </data>
+  <data name="waifu_level_25" xml:space="preserve">
+    <value>Me pego un tiro antes de tocarte</value>
+  </data>
+  <data name="waifu_level_50" xml:space="preserve">
+    <value>Me das asquito, mejor me alejo de ti</value>
+  </data>
+  <data name="waifu_level_75" xml:space="preserve">
+    <value>No estás mal, quizas tengas una oportunidad conmigo</value>
+  </data>
+  <data name="waifu_level_99" xml:space="preserve">
+    <value>Soy tu waifu, puedes hacer lo que quieras conmigo</value>
+  </data>
   <data name="weather" xml:space="preserve">
     <value>Clima</value>
   </data>
@@ -398,6 +482,9 @@
   </data>
   <data name="yes" xml:space="preserve">
     <value>Si</value>
+  </data>
+  <data name="yes_or_no" xml:space="preserve">
+    <value>¿SI O NO?</value>
   </data>
   <data name="your_anilist_profile_is" xml:space="preserve">
     <value>Tu perfil de Anilist es</value>

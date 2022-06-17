@@ -36,14 +36,14 @@
                 0 => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Red,
-                    Title = "¿YES OR NO?",
-                    Description = $"{Formatter.Bold("Question:")} {texto}\n{Formatter.Bold("Answer:")} NO",
+                    Title = strings.yes_or_no,
+                    Description = $"{Formatter.Bold($"{strings.question}:")} {texto}\n{Formatter.Bold($"{strings.answer}:")} {strings.no.ToUpper()}",
                 },
                 _ => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Green,
-                    Title = "¿YES OR NO?",
-                    Description = $"{Formatter.Bold("Question:")} {texto}\n{Formatter.Bold("Answer:")} YES",
+                    Title = strings.yes_or_no,
+                    Description = $"{Formatter.Bold($"{strings.question}:")} {texto}\n{Formatter.Bold($"{strings.answer}:")} {strings.yes.ToUpper()}",
                 },
             };
 
@@ -55,7 +55,7 @@
         {
             List<string> opciones = opc.Split(',').ToList();
             int random = Common.GetNumeroRandom(0, opciones.Count - 1);
-            string options = Formatter.Bold("Options:");
+            string options = Formatter.Bold($"{strings.options}:");
             foreach (string msj in opciones)
             {
                 options += "\n   - " + msj;
@@ -64,8 +64,8 @@
             var embed = new DiscordEmbedBuilder
             {
                 Color = Constants.YumikoColor,
-                Title = "Question",
-                Description = $"{Formatter.Bold(pregunta)}\n\n{options}\n\n{Formatter.Bold("Answer:")} {opciones[random]}",
+                Title = strings.question,
+                Description = $"{Formatter.Bold(pregunta)}\n\n{options}\n\n{Formatter.Bold($"{strings.answer} :")} {opciones[random]}",
             };
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
@@ -81,22 +81,15 @@
             {
                 if (emote.Id != 0)
                 {
-                    string animado = emote.IsAnimated switch
-                    {
-                        true => "Yes",
-                        false => "No",
-                    };
-
                     var embed = new DiscordEmbedBuilder
                     {
                         Color = Constants.YumikoColor,
                         Title = "Emote",
                         ImageUrl = emote.Url,
-                    }.AddField("Name", $"{emote.Name}", true)
-                    .AddField("Id", $"{emote.Id}", true)
-                    .AddField("Animated", $"{animado}", true)
-                    .AddField("Creation Date", $"{Formatter.Timestamp(emote.CreationTimestamp.UtcDateTime, TimestampFormat.LongDate)}")
-                    ;
+                    }.AddField("Id", $"{emote.Id}", true)
+                    .AddField(strings.name, emote.Name, true)
+                    .AddField(strings.animated, emote.IsAnimated ? strings.yes : strings.no, true)
+                    .AddField(strings.creation_date, $"{Formatter.Timestamp(emote.CreationTimestamp.UtcDateTime, TimestampFormat.LongDate)}");
 
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                 }
@@ -111,7 +104,7 @@
                 {
                     Color = Constants.YumikoColor,
                     Title = "Emote",
-                    Description = $"Emote {Formatter.InlineCode(emoji)} not found",
+                    Description = string.Format(strings.emote_not_found, emoji),
                 };
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
             }
@@ -136,7 +129,7 @@
 
             var embed = new DiscordEmbedBuilder
             {
-                Title = $"{member.DisplayName}'s avatar",
+                Title = string.Format(strings.member_avatar, member.DisplayName),
                 ImageUrl = displayAvatar,
             };
 
@@ -157,22 +150,12 @@
                 IsEphemeral = secreto,
             }.AddEmbed(new DiscordEmbedBuilder
             {
-                Title = "Processing",
-                Description = "Wait while the command is processed..",
+                Title = strings.processing,
+                Description = $"{strings.processing_desc}..",
             }));
 
             usuario = await ctx.Client.GetUserAsync(usuario.Id, true);
             DiscordMember member = await ctx.Guild.GetMemberAsync(usuario.Id);
-
-            string esBot;
-            if (usuario.IsBot)
-            {
-                esBot = "Yes";
-            }
-            else
-            {
-                esBot = "No";
-            }
 
             string roles = string.Empty;
             var rolesCol = member.Roles.OrderByDescending(x => x.Position);
@@ -190,17 +173,17 @@
                 },
                 Color = member.Color,
             };
-            embed.AddField("Registered", $"{Formatter.Timestamp(usuario.CreationTimestamp, TimestampFormat.LongDate)} ({Formatter.Timestamp(usuario.CreationTimestamp, TimestampFormat.RelativeTime)})", true);
-            embed.AddField("Join date", $"{Formatter.Timestamp(member.JoinedAt, TimestampFormat.LongDate)} ({Formatter.Timestamp(member.JoinedAt, TimestampFormat.RelativeTime)})", true);
-            embed.AddField("Bot", esBot);
+            embed.AddField(strings.registered, $"{Formatter.Timestamp(usuario.CreationTimestamp, TimestampFormat.LongDate)} ({Formatter.Timestamp(usuario.CreationTimestamp, TimestampFormat.RelativeTime)})", true);
+            embed.AddField(strings.joined_date, $"{Formatter.Timestamp(member.JoinedAt, TimestampFormat.LongDate)} ({Formatter.Timestamp(member.JoinedAt, TimestampFormat.RelativeTime)})", true);
+            embed.AddField("Bot", usuario.IsBot ? strings.yes : strings.no, true);
             if (usuario.Flags != null)
             {
-                embed.AddField("Badges", usuario.Flags.ToString());
+                embed.AddField(strings.badges, usuario.Flags.ToString());
             }
 
             if (!string.IsNullOrEmpty(roles))
             {
-                embed.AddField("Roles", roles);
+                embed.AddField(strings.roles, roles);
             }
 
             if (usuario.BannerUrl != null)
@@ -240,40 +223,40 @@
                 {
                     Color = DiscordColor.Red,
                     Title = titulo,
-                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}% ")}\n" +
-                                    $"I will shot myself before touch you.",
+                    Description = $"{string.Format(strings.my_love_to_user_is, nombre, waifuLevel)}\n" +
+                                    $"{strings.waifu_level_25}",
                     ImageUrl = "https://i.imgur.com/BOxbruw.png",
                 },
                 < 50 => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Orange,
                     Title = titulo,
-                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
-                                    $"You make me sick, I better get away from you.",
+                    Description = $"{string.Format(strings.my_love_to_user_is, nombre, waifuLevel)}\n" +
+                                    $"{strings.waifu_level_50}",
                     ImageUrl = "https://i.imgur.com/ys2HoiL.jpg",
                 },
                 < 75 => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Yellow,
                     Title = titulo,
-                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
-                                    $"You're not bad, maybe you have a chance with me.",
+                    Description = $"{string.Format(strings.my_love_to_user_is, nombre, waifuLevel)}\n" +
+                                    $"{strings.waifu_level_75}",
                     ImageUrl = "https://i.imgur.com/h7Ic2rk.jpg",
                 },
                 < 100 => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Green,
                     Title = titulo,
-                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
-                                    $"I am your waifu, you can do what you want with me.",
+                    Description = $"{string.Format(strings.my_love_to_user_is, nombre, waifuLevel)}\n" +
+                                    $"{strings.waifu_level_99}",
                     ImageUrl = "https://i.imgur.com/dhXR8mV.png",
                 },
                 _ => new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Blue,
                     Title = titulo,
-                    Description = $"My love to {Formatter.Bold(nombre)} is {Formatter.Bold($"{waifuLevel}%")}\n" +
-                                    $"I am completely in love with you, when do we get married?",
+                    Description = $"{string.Format(strings.my_love_to_user_is, nombre, waifuLevel)}\n" +
+                                    $"{strings.waifu_level_100}",
                     ImageUrl = "https://i.imgur.com/Vk6JMJi.jpg",
                 },
             };
@@ -310,7 +293,7 @@
                     user1 = ctx.Member;
                 }
 
-                titulo = $"Love between {Formatter.Bold($"{user1.FullName()}")} and {Formatter.Bold($"{user2.FullName()}")}";
+                titulo = string.Format(strings.love_between, user1.FullName(), user2.FullName());
 
                 string avatar1 = user1.GetAvatarUrl(ImageFormat.Png, 512);
                 string avatar2 = user2.GetAvatarUrl(ImageFormat.Png, 512);
@@ -358,28 +341,28 @@
                 switch (porcentajeAmor)
                 {
                     case 0:
-                        descripcion += "Get away! You two are going to kill each other.";
+                        descripcion += strings.love_0;
                         break;
                     case <= 10:
-                        descripcion += "They will hate each other, they are not compatible at all.";
+                        descripcion += strings.love_10;
                         break;
                     case <= 25:
-                        descripcion += "It is best that they move away from each other, they do not fit.";
+                        descripcion += strings.love_25;
                         break;
                     case <= 50:
-                        descripcion += "They will be good friends, but I find love difficult.";
+                        descripcion += strings.love_50;
                         break;
                     case <= 75:
-                        descripcion += "Most likely they are best friends and hopefully something more.";
+                        descripcion += strings.love_75;
                         break;
                     case <= 90:
-                        descripcion += "They have to give themselves a chance.";
+                        descripcion += strings.love_90;
                         break;
                     case < 100:
-                        descripcion += "You two are meant to be together.";
+                        descripcion += strings.love_99;
                         break;
                     case 100:
-                        descripcion += "Perfect relationship! They will marry and have many children.";
+                        descripcion += strings.love_100;
                         break;
                 }
             }

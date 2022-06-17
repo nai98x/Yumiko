@@ -129,11 +129,20 @@
   <data name="anilist_profile_not_found" xml:space="preserve">
     <value>Anilist profile not found</value>
   </data>
+  <data name="animated" xml:space="preserve">
+    <value>Animated</value>
+  </data>
   <data name="anime_list" xml:space="preserve">
     <value>Anime list</value>
   </data>
   <data name="anime_stats" xml:space="preserve">
     <value>Anime stats</value>
+  </data>
+  <data name="answer" xml:space="preserve">
+    <value>Answer</value>
+  </data>
+  <data name="badges" xml:space="preserve">
+    <value>Badges</value>
   </data>
   <data name="bot_guilds" xml:space="preserve">
     <value>{0}'s guilds</value>
@@ -155,6 +164,12 @@
   </data>
   <data name="confirm_save_profile" xml:space="preserve">
     <value>Confirm that you want to save this profile</value>
+  </data>
+  <data name="creation_date" xml:space="preserve">
+    <value>Creation date</value>
+  </data>
+  <data name="emote_not_found" xml:space="preserve">
+    <value>Emote `{0}` not found</value>
   </data>
   <data name="episode" xml:space="preserve">
     <value>Episode</value>
@@ -222,6 +237,9 @@
   <data name="joined_date" xml:space="preserve">
     <value>Joined date</value>
   </data>
+  <data name="join_date" xml:space="preserve">
+    <value>Join date</value>
+  </data>
   <data name="lastest_log_file" xml:space="preserve">
     <value>Lastest log file</value>
   </data>
@@ -231,6 +249,33 @@
   <data name="location_not_found" xml:space="preserve">
     <value>Location `{0}, {1}` not found</value>
   </data>
+  <data name="love_0" xml:space="preserve">
+    <value>Get away! You two are going to kill each other</value>
+  </data>
+  <data name="love_10" xml:space="preserve">
+    <value>They will hate each other, they are not compatible at all</value>
+  </data>
+  <data name="love_100" xml:space="preserve">
+    <value>Perfect relationship! They will marry and have many children</value>
+  </data>
+  <data name="love_25" xml:space="preserve">
+    <value>It is best that they move away from each other, they do not fit</value>
+  </data>
+  <data name="love_50" xml:space="preserve">
+    <value>They will be good friends, but I find love difficult</value>
+  </data>
+  <data name="love_75" xml:space="preserve">
+    <value>Most likely they are best friends and hopefully something more</value>
+  </data>
+  <data name="love_90" xml:space="preserve">
+    <value>They have to give themselves a chance</value>
+  </data>
+  <data name="love_99" xml:space="preserve">
+    <value>You two are meant to be together</value>
+  </data>
+  <data name="love_between" xml:space="preserve">
+    <value>Love between **{0}** and **{1}**</value>
+  </data>
   <data name="manga_list" xml:space="preserve">
     <value>Manga list</value>
   </data>
@@ -239,6 +284,9 @@
   </data>
   <data name="mean_score" xml:space="preserve">
     <value>Mean score</value>
+  </data>
+  <data name="member_avatar" xml:space="preserve">
+    <value>{0}'s avatar</value>
   </data>
   <data name="member_count" xml:space="preserve">
     <value>Member count</value>
@@ -254,6 +302,9 @@
   </data>
   <data name="must_enter_anilist_profile_url" xml:space="preserve">
     <value>{0}, you must enter the URL of your Anilist profile</value>
+  </data>
+  <data name="my_love_to_user_is" xml:space="preserve">
+    <value>My love to **{0}** is **{1}%**</value>
   </data>
   <data name="name" xml:space="preserve">
     <value>Name</value>
@@ -279,8 +330,17 @@
   <data name="no_results_found_image" xml:space="preserve">
     <value>No results found for this image</value>
   </data>
+  <data name="options" xml:space="preserve">
+    <value>Options</value>
+  </data>
   <data name="pressure" xml:space="preserve">
     <value>Pressure</value>
+  </data>
+  <data name="processing" xml:space="preserve">
+    <value>Processing</value>
+  </data>
+  <data name="processing_desc" xml:space="preserve">
+    <value>Wait while the command is processed</value>
   </data>
   <data name="processing_image" xml:space="preserve">
     <value>Processing image</value>
@@ -290,6 +350,9 @@
   </data>
   <data name="publication_date" xml:space="preserve">
     <value>Publication date</value>
+  </data>
+  <data name="question" xml:space="preserve">
+    <value>Question</value>
   </data>
   <data name="random_cat" xml:space="preserve">
     <value>Random kitten</value>
@@ -303,8 +366,14 @@
   <data name="random_dog_error" xml:space="preserve">
     <value>There was an error trying to retrieve the dog</value>
   </data>
+  <data name="registered" xml:space="preserve">
+    <value>Registered</value>
+  </data>
   <data name="retrieved_from" xml:space="preserve">
     <value>Retrieved from</value>
+  </data>
+  <data name="roles" xml:space="preserve">
+    <value>Roles</value>
   </data>
   <data name="sauce_remember" xml:space="preserve">
     <value>Remember that it only works with images that are part of an anime episode</value>
@@ -378,6 +447,21 @@
   <data name="video" xml:space="preserve">
     <value>Video</value>
   </data>
+  <data name="waifu_level_100" xml:space="preserve">
+    <value>I am completely in love with you, when do we get married?</value>
+  </data>
+  <data name="waifu_level_25" xml:space="preserve">
+    <value>I will shot myself before touch you</value>
+  </data>
+  <data name="waifu_level_50" xml:space="preserve">
+    <value>You make me sick, I better get away from you</value>
+  </data>
+  <data name="waifu_level_75" xml:space="preserve">
+    <value>You're not bad, maybe you have a chance with me</value>
+  </data>
+  <data name="waifu_level_99" xml:space="preserve">
+    <value>I am your waifu, you can do what you want with me</value>
+  </data>
   <data name="weather" xml:space="preserve">
     <value>Weather</value>
   </data>
@@ -398,6 +482,9 @@
   </data>
   <data name="yes" xml:space="preserve">
     <value>Yes</value>
+  </data>
+  <data name="yes_or_no" xml:space="preserve">
+    <value>YES OR NO?</value>
   </data>
   <data name="your_anilist_profile_is" xml:space="preserve">
     <value>Your Anilist profile is</value>
