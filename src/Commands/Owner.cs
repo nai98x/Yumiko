@@ -72,7 +72,7 @@
         }
 
         [SlashCommand("guilds", "See Yumiko's guilds")]
-        public async Task Servers(InteractionContext ctx, [Option("Guilds", "See guild details")] bool mostrarServers = false)
+        public async Task Servers(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
@@ -83,7 +83,6 @@
             lista.Sort((x, y) => x.JoinedAt.CompareTo(y.JoinedAt));
             string servers = string.Empty;
             int cont = 1;
-            int usuarios = 0;
             int miembros;
             foreach (var guild in lista)
             {
@@ -108,7 +107,6 @@
                     $"  - {Formatter.Bold("Id")}: {guild.Id}\n" +
                     $"  - {Formatter.Bold(strings.joined_date)}: {guild.JoinedAt}\n" +
                     $"  - {Formatter.Bold(strings.member_count)}: {guild.MemberCount}\n\n";
-                usuarios += miembros;
                 cont++;
             }
 
@@ -125,16 +123,8 @@
                 });
             }
 
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
-            {
-                Title = string.Format(strings.bot_guilds, ctx.Client.CurrentUser.Username),
-                Description = $"{strings.total_guilds}: {ctx.Client.Guilds.Count}\n{strings.total_users}: {usuarios}",
-            }));
-
-            if (mostrarServers)
-            {
-                await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, pages, token: new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token);
-            }
+            await ctx.DeleteResponseAsync();
+            await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, pages, token: new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token);
         }
 
         [SlashCommand("deleteguild", "Yumiko leaves a guild")]
