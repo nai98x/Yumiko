@@ -1,5 +1,7 @@
 ﻿namespace Yumiko.Commands
 {
+    using Humanizer;
+    using Humanizer.Localisation;
     using System.Threading.Tasks;
 
     [SlashCommandGroup("stats", "Statistics from different games")]
@@ -78,6 +80,28 @@
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"You have chosen not to delete their statistics"));
             }
+        }
+
+        [SlashCommand("bot", "Shows Yumiko's information and stats")]
+        public async Task Information(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            var embed = new DiscordEmbedBuilder()
+            {
+                Title = "Information",
+                Color = Constants.YumikoColor
+            };
+
+            embed.AddField("Author", ctx.Client.CurrentApplication.Owners.First().FullName(), true);
+            embed.AddField("Library", $"DSharpPlus {ctx.Client.VersionString}", true);
+            embed.AddField("Memory", $"{GC.GetTotalMemory(true) / 1024 / 1024:n0} MB", true);
+            embed.AddField("Latency", $"{ctx.Client.Ping} ms", true);
+            embed.AddField("Total shards", $"{Program.DiscordShardedClient.ShardClients.Count}", true);
+            embed.AddField("Total guilds", $"{Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Count)}", true);
+            embed.AddField("Uptime", $"{Program.Stopwatch.Elapsed.Humanize(2, minUnit: TimeUnit.Second, maxUnit: TimeUnit.Day, culture: new CultureInfo(ctx.Interaction.Locale!))}", true);
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
         }
     }
 }

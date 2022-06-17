@@ -277,6 +277,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feels like.
+        /// </summary>
+        public static string feels_like {
+            get {
+                return ResourceManager.GetString("feels_like", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Format.
         /// </summary>
         public static string format {
@@ -300,6 +309,15 @@ namespace Yumiko {
         public static string guild_with_id_not_found {
             get {
                 return ResourceManager.GetString("guild_with_id_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Humidity.
+        /// </summary>
+        public static string humidity {
+            get {
+                return ResourceManager.GetString("humidity", resourceCulture);
             }
         }
         
@@ -376,6 +394,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Location `{0}, {1}` not found.
+        /// </summary>
+        public static string location_not_found {
+            get {
+                return ResourceManager.GetString("location_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manga list.
         /// </summary>
         public static string manga_list {
@@ -417,6 +444,15 @@ namespace Yumiko {
         public static string message {
             get {
                 return ResourceManager.GetString("message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min/Max.
+        /// </summary>
+        public static string min_max {
+            get {
+                return ResourceManager.GetString("min_max", resourceCulture);
             }
         }
         
@@ -511,6 +547,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pressure.
+        /// </summary>
+        public static string pressure {
+            get {
+                return ResourceManager.GetString("pressure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Processing image.
         /// </summary>
         public static string processing_image {
@@ -534,6 +579,42 @@ namespace Yumiko {
         public static string publication_date {
             get {
                 return ResourceManager.GetString("publication_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random kitten.
+        /// </summary>
+        public static string random_cat {
+            get {
+                return ResourceManager.GetString("random_cat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error trying to retrieve the kitten.
+        /// </summary>
+        public static string random_cat_error {
+            get {
+                return ResourceManager.GetString("random_cat_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random dog.
+        /// </summary>
+        public static string random_dog {
+            get {
+                return ResourceManager.GetString("random_dog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error trying to retrieve the dog.
+        /// </summary>
+        public static string random_dog_error {
+            get {
+                return ResourceManager.GetString("random_dog_error", resourceCulture);
             }
         }
         
@@ -628,6 +709,24 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sunrise.
+        /// </summary>
+        public static string sunrise {
+            get {
+                return ResourceManager.GetString("sunrise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sunset.
+        /// </summary>
+        public static string sunset {
+            get {
+                return ResourceManager.GetString("sunset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Synonyms.
         /// </summary>
         public static string synonyms {
@@ -642,6 +741,15 @@ namespace Yumiko {
         public static string tags {
             get {
                 return ResourceManager.GetString("tags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temperature.
+        /// </summary>
+        public static string temperature {
+            get {
+                return ResourceManager.GetString("temperature", resourceCulture);
             }
         }
         
@@ -732,6 +840,33 @@ namespace Yumiko {
         public static string video {
             get {
                 return ResourceManager.GetString("video", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weather.
+        /// </summary>
+        public static string weather {
+            get {
+                return ResourceManager.GetString("weather", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weather in.
+        /// </summary>
+        public static string weather_in {
+            get {
+                return ResourceManager.GetString("weather_in", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wind speed.
+        /// </summary>
+        public static string wind_speed {
+            get {
+                return ResourceManager.GetString("wind_speed", resourceCulture);
             }
         }
         

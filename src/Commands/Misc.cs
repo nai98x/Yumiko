@@ -1,7 +1,5 @@
 ﻿namespace Yumiko.Commands
 {
-    using Humanizer;
-    using Humanizer.Localisation;
     using Newtonsoft.Json;
     using RestSharp;
     using System.Diagnostics.CodeAnalysis;
@@ -41,7 +39,12 @@
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
             string baseUrl = "https://api.openweathermap.org/data/2.5/weather";
-            var client = new RestClient(baseUrl + $"?q={HttpUtility.UrlEncode(localidad)},{pais}&appid={ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenOpenWeatherMap)}&lang=en&units=metric");
+            string language = ctx.Interaction.Locale! switch
+            {
+                "es-ES" => "es",
+                _ => "en"
+            };
+            var client = new RestClient(baseUrl + $"?q={HttpUtility.UrlEncode(localidad)},{pais}&appid={ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenOpenWeatherMap)}&lang={language}&units=metric");
             var request = new RestRequest();
 
             var response = await client.ExecuteAsync(request);
@@ -68,25 +71,25 @@
 
                     var embed = new DiscordEmbedBuilder
                     {
-                        Title = $"Weather in {localidadNombre}",
+                        Title = $"{strings.weather_in} {localidadNombre}",
                         Url = localidadUrl,
                         Color = Constants.YumikoColor,
                         Footer = new DiscordEmbedBuilder.EmbedFooter
                         {
-                            Text = "Retrieved from openweathermap.org",
+                            Text = $"{strings.retrieved_from} openweathermap.org",
                             IconUrl = "https://images-ext-1.discordapp.net/external/3NnHdaMyO7CZtz9QO16w_yjJGG_HYUvGvkIleOZe1VY/http/openweathermap.org/img/w/03d.png",
                         },
                     };
 
-                    embed.AddField(":cloud: Weather", $"{clima?.UppercaseFirst()}", true);
-                    embed.AddField(":sweat: Humidity", $"{humedad}%", true);
-                    embed.AddField(":ocean: Pressure", $"{presion} hPa", true);
-                    embed.AddField(":dash: Wind speed", $"{viento} m/s", true);
-                    embed.AddField(":thermometer: Temperature", $"{temperatura} °C", true);
-                    embed.AddField(":thermometer_face: Feels like", $"{sensasionTermica} °C", true);
-                    embed.AddField(":high_brightness: Min/Max", $"{min} °C - {max} °C", true);
-                    embed.AddField(":sunrise_over_mountains: Sunrise", $"<t:{sunrise}:t>", true);
-                    embed.AddField(":city_sunset: Sunset", $"<t:{sunset}:t>", true);
+                    embed.AddField($":cloud: {strings.weather}", $"{clima?.UppercaseFirst()}", true);
+                    embed.AddField($":sweat: {strings.humidity}", $"{humedad}%", true);
+                    embed.AddField($":ocean: {strings.pressure}", $"{presion} hPa", true);
+                    embed.AddField($":dash: {strings.wind_speed}", $"{viento} m/s", true);
+                    embed.AddField($":thermometer: {strings.temperature}", $"{temperatura} °C", true);
+                    embed.AddField($":thermometer_face: {strings.feels_like}", $"{sensasionTermica} °C", true);
+                    embed.AddField($":high_brightness: {strings.feels_like}", $"{min} °C - {max} °C", true);
+                    embed.AddField($":sunrise_over_mountains: {strings.sunrise}", $"<t:{sunrise}:t>", true);
+                    embed.AddField($":city_sunset: {strings.sunset}", $"<t:{sunset}:t>", true);
 
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                 }
@@ -97,8 +100,8 @@
                 {
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = "Error",
-                        Description = $"Location `{localidad}, {pais}` not found",
+                        Title = strings.error,
+                        Description = string.Format(strings.location_not_found, localidad, pais),
                         Color = DiscordColor.Red,
                     }));
                 }
@@ -106,8 +109,8 @@
                 {
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = "Error",
-                        Description = "Unknown error",
+                        Title = strings.error,
+                        Description = strings.unknown_error,
                         Color = DiscordColor.Red,
                     }));
                 }
@@ -133,7 +136,7 @@
                     string urlImagen = data[0].url;
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = "Random kitten (๑✪ᆺ✪๑)",
+                        Title = $"{strings.random_cat} (๑✪ᆺ✪๑)",
                         ImageUrl = urlImagen,
                         Color = Constants.YumikoColor,
                     }));
@@ -143,8 +146,8 @@
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                Title = "Unknown error",
-                Description = "There was an error trying to get the kitten :c",
+                Title = strings.unknown_error,
+                Description = $"{strings.random_cat_error} :c",
                 Color = DiscordColor.Red,
             }));
             await Common.GrabarLogErrorAsync(ctx, $"Unknown error in `/cat`\n\n`{response.StatusCode}: {response.StatusDescription}`");
@@ -169,7 +172,7 @@
                     string urlImagen = data[0].url;
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        Title = "Random dog (❍ᴥ❍ʋ)",
+                        Title = $"{strings.random_dog} (❍ᴥ❍ʋ)",
                         ImageUrl = urlImagen,
                         Color = Constants.YumikoColor,
                     }));
@@ -179,33 +182,11 @@
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                Title = "Unknown error",
-                Description = "There was an error trying to get the dog :c",
+                Title = strings.unknown_error,
+                Description = $"{strings.random_dog_error} :c",
                 Color = DiscordColor.Red,
             }));
             await Common.GrabarLogErrorAsync(ctx, $"Unknown error in `/dog`\n\n`{response.StatusCode}: {response.StatusDescription}`");
-        }
-
-        [SlashCommand("info", "Shows Yumiko's information and stats")]
-        public async Task Information(InteractionContext ctx)
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-
-            var embed = new DiscordEmbedBuilder()
-            {
-                Title = "Information",
-                Color = Constants.YumikoColor
-            };
-
-            embed.AddField("Author", ctx.Client.CurrentApplication.Owners.First().FullName(), true);
-            embed.AddField("Library", $"DSharpPlus {ctx.Client.VersionString}", true);
-            embed.AddField("Memory", $"{GC.GetTotalMemory(true) / 1024 / 1024:n0} MB", true);
-            embed.AddField("Latency", $"{ctx.Client.Ping} ms", true);
-            embed.AddField("Current shard", $"{ctx.Client.ShardId}", true);
-            embed.AddField("Guilds", $"{ctx.Client.Guilds.Count}", true);
-            embed.AddField("Uptime", $"{Program.Stopwatch.Elapsed.Humanize(2, minUnit: TimeUnit.Second, maxUnit: TimeUnit.Day, culture: new CultureInfo("en-US"))}", true);
-
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
         }
     }
 }

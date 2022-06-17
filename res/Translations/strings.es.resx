@@ -189,6 +189,9 @@
   <data name="favorite_studios" xml:space="preserve">
     <value>Estudios favoritos</value>
   </data>
+  <data name="feels_like" xml:space="preserve">
+    <value>Sensación térmica</value>
+  </data>
   <data name="format" xml:space="preserve">
     <value>Formato</value>
   </data>
@@ -197,6 +200,9 @@
   </data>
   <data name="guild_with_id_not_found" xml:space="preserve">
     <value>Servidor con la id `{0}` no encontrado</value>
+  </data>
+  <data name="humidity" xml:space="preserve">
+    <value>Humedad</value>
   </data>
   <data name="id_not_valid" xml:space="preserve">
     <value>Id `{0}` no valida</value>
@@ -222,6 +228,9 @@
   <data name="link" xml:space="preserve">
     <value>Enlace</value>
   </data>
+  <data name="location_not_found" xml:space="preserve">
+    <value>Localidad `{0}, {1}` no encontrada</value>
+  </data>
   <data name="manga_list" xml:space="preserve">
     <value>Lista de manga</value>
   </data>
@@ -239,6 +248,9 @@
   </data>
   <data name="minute" xml:space="preserve">
     <value>Minuto</value>
+  </data>
+  <data name="min_max" xml:space="preserve">
+    <value>Min/Máx</value>
   </data>
   <data name="must_enter_anilist_profile_url" xml:space="preserve">
     <value>{0}, debes ingresar la URL de tu perfil de Anilist</value>
@@ -267,6 +279,9 @@
   <data name="no_results_found_image" xml:space="preserve">
     <value>No se encontraron resultados para esta imagen</value>
   </data>
+  <data name="pressure" xml:space="preserve">
+    <value>Presión atmosférica</value>
+  </data>
   <data name="processing_image" xml:space="preserve">
     <value>Procesando imagen</value>
   </data>
@@ -275,6 +290,18 @@
   </data>
   <data name="publication_date" xml:space="preserve">
     <value>Fecha de publicación</value>
+  </data>
+  <data name="random_cat" xml:space="preserve">
+    <value>Gatito aleatorio</value>
+  </data>
+  <data name="random_cat_error" xml:space="preserve">
+    <value>Hubo un error tratando de obtener el gatito</value>
+  </data>
+  <data name="random_dog" xml:space="preserve">
+    <value>Perro aleatorio</value>
+  </data>
+  <data name="random_dog_error" xml:space="preserve">
+    <value>Hubo un error tratando de obtener al perro</value>
   </data>
   <data name="retrieved_from" xml:space="preserve">
     <value>Obtenido de</value>
@@ -306,11 +333,20 @@
   <data name="success" xml:space="preserve">
     <value>Éxito</value>
   </data>
+  <data name="sunrise" xml:space="preserve">
+    <value>Salida del sol</value>
+  </data>
+  <data name="sunset" xml:space="preserve">
+    <value>Puesta del sol</value>
+  </data>
   <data name="synonyms" xml:space="preserve">
     <value>Sinónimos</value>
   </data>
   <data name="tags" xml:space="preserve">
     <value>Etiquetas</value>
+  </data>
+  <data name="temperature" xml:space="preserve">
+    <value>Temperatura</value>
   </data>
   <data name="the_possible_anime_is" xml:space="preserve">
     <value>El posible anime de la imagen es</value>
@@ -341,6 +377,15 @@
   </data>
   <data name="video" xml:space="preserve">
     <value>Video</value>
+  </data>
+  <data name="weather" xml:space="preserve">
+    <value>Clima</value>
+  </data>
+  <data name="weather_in" xml:space="preserve">
+    <value>Clima en</value>
+  </data>
+  <data name="wind_speed" xml:space="preserve">
+    <value>Velocidad del viento</value>
   </data>
   <data name="without_animes_or_mangas" xml:space="preserve">
     <value>(Sin animes ni mangas)</value>
