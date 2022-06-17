@@ -22,7 +22,7 @@
             }
             else
             {
-                resultados = $"Difficulty: {Formatter.Bold(settings.Difficulty.GetName())}\n\n";
+                resultados = $"{translations.difficulty}: {Formatter.Bold(settings.Difficulty.GetName())}\n\n";
             }
 
             participantes.Sort((x, y) => y.Puntaje.CompareTo(x.Puntaje));
@@ -41,18 +41,18 @@
                 {
                     case 1:
                         DiscordEmoji emoji1 = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                        resultados += $"{emoji1} - {uj.Usuario.Mention}: {uj.Puntaje} guesses ({porcentaje}%)\n";
+                        resultados += $"{emoji1} - {uj.Usuario.Mention}: {uj.Puntaje} {translations.guesses} ({porcentaje}%)\n";
                         break;
                     case 2:
                         DiscordEmoji emoji2 = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                        resultados += $"{emoji2} - {uj.Usuario.Mention}: {uj.Puntaje} guesses ({porcentaje}%)\n";
+                        resultados += $"{emoji2} - {uj.Usuario.Mention}: {uj.Puntaje} {translations.guesses} ({porcentaje}%)\n";
                         break;
                     case 3:
                         DiscordEmoji emoji3 = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                        resultados += $"{emoji3} - {uj.Usuario.Mention}: {uj.Puntaje} guesses ({porcentaje}%)\n";
+                        resultados += $"{emoji3} - {uj.Usuario.Mention}: {uj.Puntaje} {translations.guesses} ({porcentaje}%)\n";
                         break;
                     default:
-                        resultados += $"{Formatter.Bold($"#{pos}")} - {uj.Usuario.Mention}: {uj.Puntaje} guesses ({porcentaje}%)\n";
+                        resultados += $"{Formatter.Bold($"#{pos}")} - {uj.Usuario.Mention}: {uj.Puntaje} {translations.guesses} ({porcentaje}%)\n";
                         break;
                 }
 
@@ -61,16 +61,16 @@
                 await LeaderboardQuiz.AddRegistroAsync((long)ctx.Guild.Id, long.Parse(uj.Usuario.Id.ToString()), settings.Difficulty.ToSpanish(), uj.Puntaje, rondas, settings.Gamemode.ToSpanish());
             }
 
-            resultados += $"\n{Formatter.Bold($"Total ({tot}/{rondas})")}";
+            resultados += $"\n{Formatter.Bold($"{translations.total} ({tot}/{rondas})")}";
 
             await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                Title = $"Results - Guess the {settings.Gamemode.GetName()}",
+                Title = $"{translations.results} - {translations.guess_the} {settings.Gamemode.GetName()}",
                 Description = resultados,
                 Color = Constants.YumikoColor,
                 Footer = new()
                 {
-                    Text = "You can see the statistics using the /stats command",
+                    Text = translations.see_stats,
                 },
             }));
             await Common.ChequearVotoTopGGAsync(ctx, topggToken);
@@ -89,14 +89,22 @@
                 return;
             }
 
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            string juegoMostrar = settings.Gamemode switch
+            string juegoMostrar;
+            if(ctx.Interaction.Locale!.StartsWith("es"))
             {
-                Gamemode.Genres => settings.Genre,
-                Gamemode.Studios => $"{settings.Studio} from the anime",
-                _ => settings.Gamemode.GetName(),
-            };
+                juegoMostrar = settings.Gamemode.ToSpanish();
+            }
+            else
+            {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+                juegoMostrar = settings.Gamemode switch
+                {
+                    Gamemode.Genres => settings.Genre,
+                    Gamemode.Studios => $"{settings.Studio} {translations.from_the_anime}",
+                    _ => settings.Gamemode.GetName(),
+                };
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            }
 
             List<GameUser> participantes = new();
             int lastRonda;
@@ -133,8 +141,8 @@
                 embedAcertar = new DiscordEmbedBuilder
                 {
                     Color = DiscordColor.Gold,
-                    Title = $"Guess the {juegoMostrar}",
-                    Description = $"Round {ronda} of {settings.Rondas}",
+                    Title = $"{translations.guess_the} {juegoMostrar}",
+                    Description = $"{translations.round} {ronda} {translations.of} {settings.Rondas}",
                     ImageUrl = elegido.Image,
                     Footer = new()
                     {
@@ -150,8 +158,8 @@
 
                 builder.AddEmbed(embedAcertar);
                 builder.AddComponents(
-                    new DiscordButtonComponent(ButtonStyle.Primary, $"quiz-modal-{guid}", "Guess"),
-                    new DiscordButtonComponent(ButtonStyle.Danger, $"quiz-cancel-{guid}", "Finish game"));
+                    new DiscordButtonComponent(ButtonStyle.Primary, $"quiz-modal-{guid}", translations.guess),
+                    new DiscordButtonComponent(ButtonStyle.Danger, $"quiz-cancel-{guid}", translations.finish_game));
 
                 var msgAcertar = await ctx.FollowUpAsync(builder);
                 string desc = string.Empty;
@@ -160,29 +168,29 @@
                 switch (settings.Gamemode)
                 {
                     case Gamemode.Characters:
-                        desc = $"The character is: {Formatter.Bold($"[{elegido.NameFull}]({elegido.SiteUrl})")} de [{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})";
+                        desc = string.Format(translations.the_character_is, Formatter.Bold($"[{elegido.NameFull}]({elegido.SiteUrl})"), $"[{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})");
                         elegidoNom = elegido.NameFull;
                         break;
                     case Gamemode.Animes:
-                        desc = $"The anime is:: {Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})")}";
+                        desc = string.Format(translations.the_anime_is, Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})"));
                         if (elegido.TitleEnglish != null)
                         {
-                            desc += $"\nIn english: `{elegido.TitleEnglish}`";
+                            desc += $"\n{translations.in_english}: `{elegido.TitleEnglish}`";
                         }
-
+                        
                         elegidoNom = elegido.TitleRomaji;
                         break;
                     case Gamemode.Mangas:
-                        desc = $"The manga is: {Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})")}";
+                        desc = string.Format(translations.the_manga_is, Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})"));
                         if (elegido.TitleEnglish != null)
                         {
-                            desc += $"\nIn english: `{elegido.TitleEnglish}`";
+                            desc += $"\n{translations.in_english}: `{elegido.TitleEnglish}`";
                         }
 
                         elegidoNom = elegido.TitleRomaji;
                         break;
                     case Gamemode.Studios:
-                        string estudiosStr = $"The studies of [{elegido.TitleRomaji}]({elegido.SiteUrl}) are:\n";
+                        string estudiosStr = string.Format(translations.the_studios_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";
                         foreach (var studio in elegido.Estudios)
                         {
                             estudiosStr += $"- {Formatter.Bold($"[{studio.Nombre}]({studio.SiteUrl})")}\n";
@@ -191,7 +199,7 @@
                         elegidoNom = elegido.TitleRomaji;
                         break;
                     case Gamemode.Protagonists:
-                        desc = $"The protagonists of [{elegido.TitleRomaji}]({elegido.SiteUrl}) are:\n";
+                        desc = string.Format(translations.the_protagonists_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";
                         foreach (var personaje in elegido.Personajes)
                         {
                             desc += $"- {Formatter.Bold($"[{personaje.NameFull}]({personaje.SiteUrl})")}\n";
@@ -200,15 +208,15 @@
                         elegidoNom = elegido.Personajes[0].NameFull;
                         break;
                     case Gamemode.Genres:
-                        desc = $"The anime is: {Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})")}";
+                        desc = string.Format(translations.the_anime_is, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})");
                         if (elegido.TitleEnglish != null)
                         {
-                            desc += $"\nIn english: `{elegido.TitleEnglish}`";
+                            desc += $"\n{translations.in_english}: `{elegido.TitleEnglish}`";
                         }
 
                         if (elegido.MediaRelacionada.Count > 0)
                         {
-                            desc += "\n\nRelated:\n";
+                            desc += $"\n\n{translations.related}:\n";
                             foreach (Anime anim in elegido.MediaRelacionada)
                             {
                                 desc += $"- {Formatter.Bold($"[{anim.TitleRomaji}]({anim.SiteUrl})")} ({anim.Tipo?.UppercaseFirst()})\n";
@@ -233,8 +241,8 @@
                     {
                         await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                         {
-                            Title = "Error",
-                            Description = "There is no active game in this channel",
+                            Title = translations.error,
+                            Description = translations.no_active_game,
                             Color = DiscordColor.Red,
                         }));
                         return;
@@ -246,7 +254,7 @@
                     {
                         var embed = new DiscordEmbedBuilder
                         {
-                            Title = $"Game cancelled by {ctx.User.FullName()}",
+                            Title =  translations.game_cancelled,
                             Description = desc,
                             Color = DiscordColor.Red,
                         };
@@ -278,13 +286,13 @@
 
                         embedAux = new DiscordEmbedBuilder
                         {
-                            Title = $"¡{Formatter.Bold(acertador.FullName())} has guessed!",
+                            Title = string.Format(translations.user_has_guessed, acertador.FullName()),
                             Description = $"{desc}",
                             Color = DiscordColor.Green,
                             Footer = new()
                             {
                                 IconUrl = acertador.AvatarUrl,
-                                Text = $"Guess time: {tiempo.TotalSeconds}s",
+                                Text = $"{translations.time}: {tiempo.TotalSeconds}s",
                             },
                         };
 
@@ -323,7 +331,7 @@
 
                         await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                         {
-                            Title = $"Tip!",
+                            Title = translations.tip,
                             Description = $"{Formatter.InlineCode(stringRes)}",
                             Color = Constants.YumikoColor,
                         }));
@@ -337,7 +345,7 @@
                 {
                     embedAux = new DiscordEmbedBuilder
                     {
-                        Title = "Nobody has guessed",
+                        Title = translations.nobody_has_guessed,
                         Description = desc,
                         Color = DiscordColor.Red,
                     };
@@ -379,18 +387,18 @@
                         {
                             case 1:
                                 emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                                stats += $"{emoji} - {miembro.Mention} - Guesses: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - Games: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
+                                stats += $"{emoji} - {miembro.Mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
                                 break;
                             case 2:
                                 emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                                stats += $"{emoji} - {miembro.Mention} - Guesses: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - Games: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
+                                stats += $"{emoji} - {miembro.Mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
                                 break;
                             case 3:
                                 emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                                stats += $"{emoji} - {miembro.Mention} - Guesses: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - Games: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
+                                stats += $"{emoji} - {miembro.Mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
                                 break;
                             default:
-                                stats += $"{Formatter.Bold($"#{pos}")} - {miembro.Mention} - Guesses: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - Games: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
+                                stats += $"{Formatter.Bold($"#{pos}")} - {miembro.Mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
                                 break;
                         }
 
@@ -415,16 +423,27 @@
             string dificil = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, game, "Dificil"));
             string extremo = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, game, "Extremo"));
 
-            var builder = CrearEmbedStats($"Stats - Guess the {gamemode.GetName().ToLower()}", facil, media, dificil, extremo);
+            string juegoMostrar;
+            if (ctx.Interaction.Locale!.StartsWith("es"))
+            {
+                juegoMostrar = gamemode.ToSpanish();
+            }
+            else
+            {
+                juegoMostrar = $"{translations.guess_the} {gamemode.GetName().ToLower()}";
+            }
+
+            var builder = CrearEmbedStats($"{translations.stats} - {juegoMostrar}", facil, media, dificil, extremo);
             return builder;
         }
 
         public static async Task<DiscordEmbedBuilder> GetEstadisticasGeneroAsync(InteractionContext ctx, string genero)
         {
             string stats = await GetEstadisticasDificultadAsync(ctx, "genero", genero);
+
             return new DiscordEmbedBuilder
             {
-                Title = $"Stats - Guess the {genero}",
+                Title = $"{translations.stats} - {translations.guess_the} {genero}",
                 Color = Constants.YumikoColor,
                 Description = stats,
             };
@@ -489,18 +508,18 @@
                     {
                         case 1:
                             emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            stats += $"{emoji} - {miembro.Mention} - Score: {Formatter.Bold($"{jugador.puntuacion}")}\n";
+                            stats += $"{emoji} - {miembro.Mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
                             break;
                         case 2:
                             emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            stats += $"{emoji} - {miembro.Mention} - Score: {Formatter.Bold($"{jugador.puntuacion}")}\n";
+                            stats += $"{emoji} - {miembro.Mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
                             break;
                         case 3:
                             emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            stats += $"{emoji} - {miembro.Mention} - Score: {Formatter.Bold($"{jugador.puntuacion}")}\n";
+                            stats += $"{emoji} - {miembro.Mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
                             break;
                         default:
-                            stats += $"{Formatter.Bold($"#{pos}")} - {miembro.Mention} - Score: {Formatter.Bold($"{jugador.puntuacion}")}\n";
+                            stats += $"{Formatter.Bold($"#{pos}")} - {miembro.Mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
                             break;
                     }
 
@@ -513,7 +532,7 @@
 
             return new DiscordEmbedBuilder()
             {
-                Title = "Stats - Higher or Lower",
+                Title = $"{translations.stats} - Higher or Lower",
                 Description = stats,
                 Color = Constants.YumikoColor,
             };
@@ -534,13 +553,13 @@
             List<Anime> animeList = new();
             DiscordMessage mensaje = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                Title = $"Retrieving {type.GetName().ToLower()}s",
-                Description = "Please wait while everything is prepared",
+                Title = $"{translations.retrieving} {type.GetName().ToLower()}s",
+                Description = translations.please_wait,
                 Color = Constants.YumikoColor,
                 Footer = new()
                 {
                     IconUrl = Constants.AnilistAvatarUrl,
-                    Text = "Retrieved from AniList",
+                    Text = $"{translations.retrieved_from} AniList",
                 },
             }));
             string mediaFiltros;
@@ -807,7 +826,7 @@
                 catch (Exception ex)
                 {
                     await Common.GrabarLogErrorAsync(ctx, $"{ex.Message}");
-                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Unknown error in GetMedia: {ex.Message}"));
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}: {ex.Message}"));
                     return animeList;
                 }
             }
@@ -821,13 +840,13 @@
             var characterList = new List<Character>();
             DiscordMessage mensaje = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                Title = "Obteniendo personajes",
-                Description = "Por favor espera mientras se prepara todo",
+                Title = $"{translations.retrieving} {translations.characters}",
+                Description = translations.please_wait,
                 Color = Constants.YumikoColor,
                 Footer = new()
                 {
                     IconUrl = Constants.AnilistAvatarUrl,
-                    Text = "Obtenido desde AniList",
+                    Text = $"{translations.retrieved_from} AniList",
                 },
             }));
             string query = "query($pagina : Int){" +
@@ -924,7 +943,7 @@
                 catch (Exception ex)
                 {
                     await Common.GrabarLogErrorAsync(ctx, $"Unknown error in GetCharacters: {ex.Message}");
-                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"Unknown error: {ex.Message}"));
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}: {ex.Message}"));
                     return characterList;
                 }
             }
@@ -976,8 +995,8 @@
             DiscordMessage msgAcertar;
             DiscordEmbedBuilder embedBuilder = new()
             {
-                Title = $"Hangman ({gamemode.GetName()})",
-                Description = $"Write a letter!",
+                Title = $"{translations.hangman} ({gamemode.GetName()})",
+                Description = translations.type_a_letter,
                 Color = Constants.YumikoColor,
             };
             DiscordUser ganador = ctx.Member;
@@ -988,8 +1007,8 @@
             string desc1 = string.Empty;
             desc1 = gamemode switch
             {
-                HangmanGamemode.Characters => $"The character is [{elegido.NameFull}]({elegido.SiteUrl}) from [{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})",
-                HangmanGamemode.Animes => $"The anime is [{elegido.TitleRomaji}]({elegido.SiteUrl})",
+                HangmanGamemode.Characters => $"{translations.the_character_is} [{elegido.NameFull}]({elegido.SiteUrl}) {translations.from_the_anime} [{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})",
+                HangmanGamemode.Animes => $"{translations.the_anime_is} [{elegido.TitleRomaji}]({elegido.SiteUrl})",
                 _ => throw new ArgumentException("Programming error"),
             };
             do
@@ -997,9 +1016,9 @@
                 var guid = Guid.NewGuid();
                 msgAcertar = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
                     .AddComponents(
-                        new DiscordButtonComponent(ButtonStyle.Primary, $"modal-letter-{guid}", "Type a letter"),
-                        new DiscordButtonComponent(ButtonStyle.Success, $"modal-guess-{guid}", "Guess"),
-                        new DiscordButtonComponent(ButtonStyle.Danger, $"cancel-{guid}", "Finish game"))
+                        new DiscordButtonComponent(ButtonStyle.Primary, $"modal-letter-{guid}", translations.type_a_letter),
+                        new DiscordButtonComponent(ButtonStyle.Success, $"modal-guess-{guid}", translations.guess),
+                        new DiscordButtonComponent(ButtonStyle.Danger, $"cancel-{guid}", translations.finish_game))
                     .AddEmbed(embedBuilder));
 
                 var resultBtn = await interactivity.WaitForButtonAsync(msgAcertar, TimeSpan.FromSeconds(30));
@@ -1019,8 +1038,8 @@
 
                         var modal = new DiscordInteractionResponseBuilder()
                             .WithCustomId(modalId)
-                            .WithTitle("Ahorcado")
-                            .AddComponents(new TextInputComponent(label: "Valor", customId: "value"));
+                            .WithTitle(translations.hangman)
+                            .AddComponents(new TextInputComponent(label: translations.guess, customId: "value"));
 
                         await btnInteraction.CreateResponseAsync(InteractionResponseType.Modal, modal);
 
@@ -1039,7 +1058,7 @@
                                 if (acierto != null)
                                 {
                                     acierto.Acertado = true;
-                                    titRonda = $"{modalInteraction.User.FullName()} has guessed!";
+                                    titRonda = $"{string.Format(translations.user_has_guessed, modalInteraction.User.FullName())}";
                                     colRonda = DiscordColor.Green;
                                     GameUser? usr = participantes.Find(x => x.Usuario.Id == modalInteraction.User.Id);
                                     if (usr != null)
@@ -1059,7 +1078,7 @@
                                 {
                                     errores++;
                                     rondasPerdidas++;
-                                    titRonda = $"{modalInteraction.User.FullName()} has made a mistake!";
+                                    titRonda = string.Format(translations.user_made_a_mistake, modalInteraction.User.FullName());
                                     colRonda = DiscordColor.Red;
                                     GameUser? usr = participantes.Find(x => x.Usuario.Id == modalInteraction.User.Id);
                                     if (usr == null)
@@ -1105,7 +1124,7 @@
                                 string desc = string.Empty;
                                 desc += letras;
                                 desc += GetErroresAhorcado(errores);
-                                desc += $"\n{Formatter.Bold("Letters used:")}\n";
+                                desc += $"\n{Formatter.Bold($"{translations.letters_used}:")}\n";
                                 foreach (var cc in letrasUsadas)
                                 {
                                     desc += $"{Formatter.InlineCode(cc)} ";
@@ -1118,7 +1137,7 @@
                                     Color = colRonda,
                                     Footer = new()
                                     {
-                                        Text = $"Time: {tiempo.TotalSeconds}s",
+                                        Text = $"{translations.time}: {tiempo.TotalSeconds}s",
                                         IconUrl = modalInteraction.User.AvatarUrl,
                                     },
                                 };
@@ -1161,8 +1180,8 @@
                             errores++;
                             embedBuilder = new DiscordEmbedBuilder()
                             {
-                                Title = "You did not write on time!",
-                                Description = "Write any letter to continue with the game",
+                                Title = translations.did_not_write_on_time,
+                                Description = translations.write_any_letter_to_continue,
                                 Color = DiscordColor.Red,
                             };
                         }
@@ -1173,8 +1192,8 @@
                     errores++;
                     embedBuilder = new DiscordEmbedBuilder()
                     {
-                        Title = "You did not press the button to write!",
-                        Description = "Write any letter to continue with the game",
+                        Title = translations.did_not_press_button_to_write,
+                        Description = translations.write_any_letter_to_continue,
                         Color = DiscordColor.Red,
                     };
                 }
@@ -1191,7 +1210,7 @@
             {
                 await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                 {
-                    Title = "Defeat!",
+                    Title = translations.defeat,
                     Description = $"{desc1}",
                     ImageUrl = elegido.Image,
                     Color = DiscordColor.Red,
@@ -1201,9 +1220,9 @@
             {
                 await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                 {
-                    Title = "Victory!",
+                    Title = translations.victory,
                     Description = $"{desc1}\n\n" +
-                    $"Winner: {ganador.Mention}",
+                    $"{translations.winner}: {ganador.Mention}",
                     ImageUrl = elegido.Image,
                     Color = DiscordColor.Green,
                 }).AddMentions(Mentions.All));
@@ -1239,7 +1258,7 @@
                 return new()
                 {
                     Ok = false,
-                    MsgError = "Unexpected error choosing the genre",
+                    MsgError = translations.unknown_error,
                 };
             }
 
@@ -1258,12 +1277,12 @@
                 options.Add(new DiscordSelectComponentOption(Common.NormalizarBoton(nomGenero), $"{iter}"));
             }
 
-            var dropdown = new DiscordSelectComponent(customId, "Select a genre", options);
+            var dropdown = new DiscordSelectComponent(customId, translations.select_a_genre, options);
 
             var embed = new DiscordEmbedBuilder
             {
                 Color = Constants.YumikoColor,
-                Title = "Choose an option",
+                Title = translations.choose_an_option,
             };
 
             DiscordMessage msgGenero = await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddComponents(dropdown).AddEmbed(embed));
@@ -1287,7 +1306,7 @@
                 return new()
                 {
                     Ok = false,
-                    MsgError = "Time out waiting for the genre",
+                    MsgError = translations.timed_out_choosing_genre,
                 };
             }
         }
