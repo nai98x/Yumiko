@@ -131,6 +131,7 @@
 
         private static Task Client_ComponentInteractionCreated(DiscordClient sender, ComponentInteractionCreateEventArgs e)
         {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(e.Interaction.Locale!);
             if (e.Id.StartsWith("quiz-modal-"))
             {
                 _ = Task.Run(async () =>
@@ -193,6 +194,7 @@
             {
                 _ = Task.Run(async () =>
                 {
+                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(e.Interaction.Locale!);
                     var modalInteraction = e.Interaction;
                     var trivia = Singleton.GetInstance().GetCurrentTrivia(e.Interaction.Guild.Id, e.Interaction.Channel.Id);
                     if (trivia != null)
@@ -255,6 +257,7 @@
             {
                 if (e.Exception is SlashExecutionChecksFailedException ex)
                 {
+                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(e.Context.Interaction.Locale!);
                     await e.Context.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
                     foreach (SlashCheckBaseAttribute check in ex.FailedChecks)
                     {
