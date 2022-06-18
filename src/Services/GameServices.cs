@@ -480,10 +480,10 @@
             return builder;
         }
 
-        public static async Task<DiscordEmbedBuilder> GetUserTriviaStats(InteractionContext ctx, ulong userId)
+        public static async Task<DiscordEmbedBuilder> GetUserTriviaStats(InteractionContext ctx, DiscordUser user)
         {
             var builder = new DiscordEmbedBuilder();
-            var stats = await LeaderboardQuiz.GetStatsUserAsync(ctx.Guild.Id, userId);
+            var stats = await LeaderboardQuiz.GetStatsUserAsync(ctx.Guild.Id, user.Id);
             if (stats != null && stats.Count > 0)
             {
                 string desc = string.Empty;
@@ -501,14 +501,14 @@
                 }
                 if (!string.IsNullOrEmpty(desc))
                 {
-                    builder.Title = string.Format(translations.user_game_stats, ctx.User.FullName());
+                    builder.Title = string.Format(translations.user_game_stats, user.FullName());
                     builder.Description = desc;
                     builder.Color = Constants.YumikoColor;
                 }
             }
             else
             {
-                builder.Title = string.Format(translations.user_game_stats, ctx.User.FullName());
+                builder.Title = string.Format(translations.user_game_stats, user.FullName());
                 builder.Description = translations.no_stats_available;
                 builder.Color = DiscordColor.Red;
             }

@@ -25,7 +25,7 @@
         {
             await ctx.DeferAsync();
             user ??= ctx.User;
-            var builder1 = await GameServices.GetUserTriviaStats(ctx, user.Id);
+            var builder1 = await GameServices.GetUserTriviaStats(ctx, user);
             var builder2 = await GameServices.GetUserTriviaGenreStats(ctx, user.Id);
             var builder3 = await GameServices.GetUserHoLStats(ctx, user.Id);
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder1).AddEmbed(builder2).AddEmbed(builder3));
