@@ -671,7 +671,7 @@
             string query = "query($pagina : Int){" +
                     "   Page(page: $pagina){" +
                    $"       media({mediaFiltros}){{" +
-                   $"           id," +
+                    "           id," +
                     "           siteUrl," +
                     "           type," +
                     "           favourites," +
@@ -740,10 +740,23 @@
                     },
                 });
 
-                string lastPage = dataPre.Data.Page.pageInfo.lastPage;
+                string lastPageStr = dataPre.Data.Page.pageInfo.lastPage;
+                int lastPage = int.Parse(lastPageStr);
 
                 settings.IterIni = 0;
-                settings.IterFin = int.Parse(lastPage) - 1;
+
+                if(lastPage < 3)
+                {
+                    settings.IterFin = 1;
+                }
+                else
+                {
+                    settings.IterFin = Common.GetNumeroRandom(1, 9);
+                    if (lastPage < settings.IterFin)
+                    {
+                        settings.IterFin = lastPage;
+                    }
+                }
             }
 
             if (settings.IterIni != settings.IterFin)
