@@ -9,5 +9,5 @@
   <a href="https://top.gg/bot/295182825521545218" target="_blank"><img src="https://top.gg/api/widget/servers/295182825521545218.svg?noavatar=true" alt="Top.gg"></a>
   <a href="https://top.gg/bot/295182825521545218/vote" target="_blank"><img src="https://top.gg/api/widget/upvotes/295182825521545218.svg?noavatar=true" alt="Top.gg"></a>
   <br><br>
-  <a href="https://discord.gg/dtkmFT8BaD" target="_blank"><img src="https://discord.com/api/guilds/713809173573271613/embed.png?style=banner2" alt="Yumiko support server"></a>
+  <a href="https://discord.gg/nhabKQ5FS8" target="_blank"><img src="https://discord.com/api/guilds/713809173573271613/embed.png?style=banner2" alt="Yumiko support server"></a>
 </p>
