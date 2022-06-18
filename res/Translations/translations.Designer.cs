@@ -133,6 +133,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Anime.
+        /// </summary>
+        public static string anime {
+            get {
+                return ResourceManager.GetString("anime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Anime list.
         /// </summary>
         public static string anime_list {
@@ -255,6 +264,15 @@ namespace Yumiko {
         public static string chapters {
             get {
                 return ResourceManager.GetString("chapters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Character.
+        /// </summary>
+        public static string character {
+            get {
+                return ResourceManager.GetString("character", resourceCulture);
             }
         }
         
@@ -970,6 +988,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manga.
+        /// </summary>
+        public static string manga {
+            get {
+                return ResourceManager.GetString("manga", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manga list.
         /// </summary>
         public static string manga_list {
@@ -1231,6 +1258,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have not played any game yet.
+        /// </summary>
+        public static string no_stats_available {
+            get {
+                return ResourceManager.GetString("no_stats_available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nobody has guessed.
         /// </summary>
         public static string nobody_has_guessed {
@@ -1380,6 +1416,15 @@ namespace Yumiko {
         public static string profile {
             get {
                 return ResourceManager.GetString("profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protagonist.
+        /// </summary>
+        public static string protagonist {
+            get {
+                return ResourceManager.GetString("protagonist", resourceCulture);
             }
         }
         
@@ -1614,6 +1659,15 @@ namespace Yumiko {
         public static string status {
             get {
                 return ResourceManager.GetString("status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Studio.
+        /// </summary>
+        public static string studio {
+            get {
+                return ResourceManager.GetString("studio", resourceCulture);
             }
         }
         
@@ -1884,6 +1938,15 @@ namespace Yumiko {
         public static string use_command_in_nsfw_channel {
             get {
                 return ResourceManager.GetString("use_command_in_nsfw_channel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}&apos;s game statistics.
+        /// </summary>
+        public static string user_game_stats {
+            get {
+                return ResourceManager.GetString("user_game_stats", resourceCulture);
             }
         }
         

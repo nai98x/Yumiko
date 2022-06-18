@@ -480,6 +480,88 @@
             return builder;
         }
 
+        public static async Task<DiscordEmbedBuilder> GetUserTriviaStats(InteractionContext ctx, ulong userId)
+        {
+            var builder = new DiscordEmbedBuilder();
+            var stats = await LeaderboardQuiz.GetStatsUserAsync(ctx.Guild.Id, userId);
+            if (stats != null && stats.Count > 0)
+            {
+                string desc = string.Empty;
+                foreach(var stat in stats)
+                {
+                    if (stat.Stats.Count > 0)
+                    {
+                        desc += $"**{translations.guess_the} {GetGamemodeLocalizatedSingular(stat.Gamemode).ToLower()}:**\n";
+                        foreach(var s in stat.Stats)
+                        {
+                            desc += $"{translations.difficulty}: {Formatter.Bold(s.Dificultad)} - {translations.guesses}: {Formatter.Bold($"{s.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{s.PartidasTotales}")}\n";
+                        }
+                        desc += "\n";
+                    }
+                }
+                if (!string.IsNullOrEmpty(desc))
+                {
+                    builder.Title = string.Format(translations.user_game_stats, ctx.User.FullName());
+                    builder.Description = desc;
+                    builder.Color = Constants.YumikoColor;
+                }
+            }
+            else
+            {
+                builder.Title = string.Format(translations.user_game_stats, ctx.User.FullName());
+                builder.Description = translations.no_stats_available;
+                builder.Color = DiscordColor.Red;
+            }
+
+            return builder;
+        }
+
+        public static async Task<DiscordEmbedBuilder> GetUserTriviaGenreStats(InteractionContext ctx, ulong userId)
+        {
+            var builder = new DiscordEmbedBuilder();
+            var stats = await LeaderboardQuiz.GetGenreStatsUserAsync(ctx.Guild.Id, userId);
+
+            if (stats != null && stats.Count > 0)
+            {
+                string desc = string.Empty;
+                foreach (var stat in stats)
+                {
+                    desc += $"{Formatter.Bold(stat.Dificultad)} - {translations.guesses}: {Formatter.Bold($"{stat.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{stat.PartidasTotales}")}\n";
+                }
+                
+                builder.Title = translations.genres;
+                builder.Description = desc;
+                builder.Color = Constants.YumikoColor;
+            }
+            else
+            {
+                builder.Title = translations.genres;
+                builder.Description = translations.no_stats_available;
+                builder.Color = DiscordColor.Red;
+            }
+
+            return builder;
+        }
+
+        public static async Task<DiscordEmbedBuilder> GetUserHoLStats(InteractionContext ctx, ulong userId)
+        {
+            var builder = new DiscordEmbedBuilder();
+            var stats = await LeaderboardHoL.GetStatsUserAsync(ctx.Guild.Id, userId);
+            builder.Title = "Higher or Lower";
+            if (stats != null)
+            {
+                builder.Description = $"{translations.score}: {Formatter.Bold($"{stats.puntuacion}")}\n";
+                builder.Color = Constants.YumikoColor;
+            }
+            else
+            {
+                builder.Description = translations.no_stats_available;
+                builder.Color = DiscordColor.Red;
+            }
+            
+            return builder;
+        }
+
         public static async Task<DiscordEmbedBuilder> GetEstadisticasHoLAsync(InteractionContext ctx)
         {
             var res = await LeaderboardHoL.GetLeaderboardAsync(ctx);
@@ -1745,6 +1827,20 @@
             }
 
             return matches;
+        }
+
+        private static string GetGamemodeLocalizatedSingular(Gamemode gamemode)
+        {
+            return gamemode switch
+            {
+                Gamemode.Characters => translations.character,
+                Gamemode.Animes => translations.anime,
+                Gamemode.Mangas => translations.manga,
+                Gamemode.Protagonists => translations.protagonist,
+                Gamemode.Genres => translations.genre,
+                Gamemode.Studios => translations.studio,
+                _ => throw new ArgumentException("Programming error"),
+            };
         }
     }
 }

@@ -39,7 +39,7 @@
             [Option("Location", "City where you want to search the weather")] string localidad,
             [Option("Country", "Country where you want to search the weather", true)][Autocomplete(typeof(CountriesAutocompleteProvider))] string pais)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
 
             string baseUrl = "https://api.openweathermap.org/data/2.5/weather";
             string language = ctx.Interaction.Locale! switch
@@ -125,7 +125,7 @@
         [DescriptionLocalization(Localization.Spanish, "Gatito aleatorio")]
         public async Task Cat(InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
 
             var client = new RestClient(@"https://api.thecatapi.com/v1/images/search?limit=1");
             client.AddDefaultHeader("x-api-key", ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTheCatApi));
@@ -163,7 +163,7 @@
         [DescriptionLocalization(Localization.Spanish, "Perro aleatorio")]
         public async Task Dog(InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
 
             var client = new RestClient(@"https://api.thedogapi.com/v1/images/search?limit=1");
             client.AddDefaultHeader("x-api-key", ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTheDogApi));

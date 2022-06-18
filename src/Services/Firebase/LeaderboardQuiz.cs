@@ -111,5 +111,72 @@
                 await docExtremo.DeleteAsync();
             }
         }
+
+        public static async Task<List<GameStatsUser>> GetStatsUserAsync(ulong guildId, ulong userId)
+        {
+            List<GameStatsUser> ret = new();
+            FirestoreDb db = Common.GetFirestoreClient();
+
+            foreach (Gamemode gm in Enum.GetValues(typeof(Gamemode)))
+            {
+                var gamemode = gm.ToSpanish();
+                var gameStats = new GameStatsUser
+                {
+                    Gamemode = gm
+                };
+                foreach (Difficulty df in Enum.GetValues(typeof(Difficulty)))
+                {
+                    var difficulty = df.ToSpanish();
+                    DocumentReference doc = db.Collection("Estadisticas").Document($"{guildId}").Collection($"Juegos").Document($"{gamemode}").Collection($"Dificultad").Document($"{difficulty}").Collection("Usuarios").Document($"{userId}");
+                    var snap = await doc.GetSnapshotAsync();
+                    if (snap.Exists)
+                    {
+                        DtLeaderboardQuiz registro = snap.ConvertTo<DtLeaderboardQuiz>();
+                        gameStats.Stats.Add(new GameStats()
+                        {
+                            UserId = registro.user_id,
+                            PartidasTotales = registro.partidasJugadas,
+                            RondasTotales = registro.rondasTotales,
+                            RondasAcertadas = registro.rondasAcertadas,
+                            PorcentajeAciertos = registro.porcentajeAciertos,
+                            Dificultad = df.GetName()
+                        });
+                    }
+                }
+                ret.Add(gameStats);
+            }
+
+            return ret;
+        }
+
+        public static async Task<List<GameStats>> GetGenreStatsUserAsync(ulong guildId, ulong userId)
+        {
+            List<GameStats> ret = new();
+            FirestoreDb db = Common.GetFirestoreClient();
+            CollectionReference colGenres = db.Collection("Estadisticas").Document($"{guildId}").Collection($"Juegos").Document($"genero").Collection($"Dificultad");
+            IAsyncEnumerable<DocumentReference> subcollectionsGenres = colGenres.ListDocumentsAsync();
+            IAsyncEnumerator<DocumentReference> subcollectionsEnumerator = subcollectionsGenres.GetAsyncEnumerator(default);
+            while (await subcollectionsEnumerator.MoveNextAsync())
+            {
+                DocumentReference subcollectionRef = subcollectionsEnumerator.Current;
+                DocumentReference doc = db.Collection("Estadisticas").Document($"{guildId}").Collection("Juegos").Document("genero").Collection("Dificultad").Document(subcollectionRef.Id).Collection("Usuarios").Document($"{userId}");
+                var snap = await doc.GetSnapshotAsync();
+                if (snap.Exists)
+                {
+                    DtLeaderboardQuiz registro = snap.ConvertTo<DtLeaderboardQuiz>();
+                    ret.Add(new GameStats()
+                    {
+                        UserId = registro.user_id,
+                        PartidasTotales = registro.partidasJugadas,
+                        RondasTotales = registro.rondasTotales,
+                        RondasAcertadas = registro.rondasAcertadas,
+                        PorcentajeAciertos = registro.porcentajeAciertos,
+                        Dificultad = subcollectionRef.Id
+                    });
+                }
+            }
+                
+            return ret;
+        }
     }
 }

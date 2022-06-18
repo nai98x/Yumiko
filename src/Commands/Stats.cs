@@ -17,19 +17,33 @@
             return Task.FromResult(true);
         }
 
+        [SlashCommand("user", "Shows the statistics of all games of a user")]
+        [NameLocalization(Localization.Spanish, "usuario")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra las estadisticas de todos los juegos de un usuario")]
+        [SlashRequirePermissions(Permissions.SendMessages)]
+        public async Task User(InteractionContext ctx, [Option("User", "The user's stats to retrieve")] DiscordUser? user = null)
+        {
+            await ctx.DeferAsync();
+            user ??= ctx.User;
+            var builder1 = await GameServices.GetUserTriviaStats(ctx, user.Id);
+            var builder2 = await GameServices.GetUserTriviaGenreStats(ctx, user.Id);
+            var builder3 = await GameServices.GetUserHoLStats(ctx, user.Id);
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder1).AddEmbed(builder2).AddEmbed(builder3));
+            await Common.ChequearVotoTopGGAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
+        }
+
         [SlashCommand("trivia", "Shows the statistics of the trivia game")]
         [DescriptionLocalization(Localization.Spanish, "Muestra las estadísticas del juego trivia")]
         [SlashRequirePermissions(Permissions.SendMessages)]
         public async Task Trivia(InteractionContext ctx, [Option("Game", "The gamemode you want to see the stats")] Gamemode gamemode)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            var context = ctx;
+            await ctx.DeferAsync();
             var interactivity = ctx.Client.GetInteractivity();
             DiscordEmbedBuilder builder;
 
             if (gamemode != Gamemode.Genres)
             {
-                builder = await GameServices.GetEstadisticasAsync(context, gamemode);
+                builder = await GameServices.GetEstadisticasAsync(ctx, gamemode);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                 await Common.ChequearVotoTopGGAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
             }
@@ -38,7 +52,7 @@
                 var respuesta = await GameServices.ElegirGeneroAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity);
                 if (respuesta.Ok && respuesta.Genre != null)
                 {
-                    builder = await GameServices.GetEstadisticasGeneroAsync(context, respuesta.Genre);
+                    builder = await GameServices.GetEstadisticasGeneroAsync(ctx, respuesta.Genre);
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
                     await Common.ChequearVotoTopGGAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
                 }
@@ -59,7 +73,7 @@
         [SlashRequirePermissions(Permissions.SendMessages)]
         public async Task HigherOrLower(InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             var builder = await GameServices.GetEstadisticasHoLAsync(ctx);
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
             await Common.ChequearVotoTopGGAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
@@ -70,7 +84,7 @@
         [DescriptionLocalization(Localization.Spanish, "Elimina tus estadísticas del servidor")]
         public async Task Delete(InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             var context = ctx;
             var interactivity = ctx.Client.GetInteractivity();
 
@@ -92,7 +106,7 @@
         [DescriptionLocalization(Localization.Spanish, "Muestra información y estadísticas del bot")]
         public async Task Information(InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
 
             GC.Collect(2, GCCollectionMode.Forced, true, true);
             GC.WaitForPendingFinalizers();

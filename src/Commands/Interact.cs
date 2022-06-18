@@ -22,7 +22,7 @@
         [SlashRequirePermissions(Permissions.SendMessages | Permissions.SendMessagesInThreads | Permissions.AccessChannels)]
         public async Task Say(InteractionContext ctx, [Option("Message", "The text you want to replicate")] string texto)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             await ctx.DeleteResponseAsync();
             await ctx.Channel.SendMessageAsync(texto);
         }
@@ -79,7 +79,7 @@
         [DescriptionLocalization(Localization.Spanish, "Muestra información sobre un emote")]
         public async Task Emote(InteractionContext ctx, [Option("Emote", "The emote")] string emoji)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
 
             DiscordEmoji? emote = Common.ToEmoji(emoji);
 
@@ -282,7 +282,7 @@
             [Option("User2", "Second user")] DiscordUser? user2 = null,
             [Option("Real", "Shows the real percentage, it doesn't change")] bool real = false)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             DiscordWebhookBuilder builder = new();
             int porcentajeAmor;
             string titulo;

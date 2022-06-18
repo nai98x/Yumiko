@@ -141,6 +141,9 @@
   <data name="animated" xml:space="preserve">
     <value>Animado</value>
   </data>
+  <data name="anime" xml:space="preserve">
+    <value>Anime</value>
+  </data>
   <data name="anime_list" xml:space="preserve">
     <value>Lista de anime</value>
   </data>
@@ -182,6 +185,9 @@
   </data>
   <data name="chapters" xml:space="preserve">
     <value>Capítulos</value>
+  </data>
+  <data name="character" xml:space="preserve">
+    <value>Personaje</value>
   </data>
   <data name="characters" xml:space="preserve">
     <value>personajes</value>
@@ -420,6 +426,9 @@
   <data name="love_between" xml:space="preserve">
     <value>Amor entre **{0}** y **{1}**</value>
   </data>
+  <data name="manga" xml:space="preserve">
+    <value>Manga</value>
+  </data>
   <data name="manga_list" xml:space="preserve">
     <value>Lista de manga</value>
   </data>
@@ -519,6 +528,9 @@
   <data name="no_results_found_image" xml:space="preserve">
     <value>No se encontraron resultados para esta imagen</value>
   </data>
+  <data name="no_stats_available" xml:space="preserve">
+    <value>No has jugado ninguna partida todavía</value>
+  </data>
   <data name="of" xml:space="preserve">
     <value>de</value>
   </data>
@@ -557,6 +569,9 @@
   </data>
   <data name="profile" xml:space="preserve">
     <value>Perfil</value>
+  </data>
+  <data name="protagonist" xml:space="preserve">
+    <value>Protagonista</value>
   </data>
   <data name="publication_date" xml:space="preserve">
     <value>Fecha de publicación</value>
@@ -635,6 +650,9 @@
   </data>
   <data name="status" xml:space="preserve">
     <value>Estado</value>
+  </data>
+  <data name="studio" xml:space="preserve">
+    <value>Estudio</value>
   </data>
   <data name="studios" xml:space="preserve">
     <value>Estudios</value>
@@ -719,6 +737,9 @@
   </data>
   <data name="uptime" xml:space="preserve">
     <value>Uptime</value>
+  </data>
+  <data name="user_game_stats" xml:space="preserve">
+    <value>Estadísticas de juegos de {0}</value>
   </data>
   <data name="user_has_guessed" xml:space="preserve">
     <value>¡{0} le ha acertado!</value>

@@ -17,7 +17,7 @@
         [DescriptionLocalization(Localization.Spanish, "Ayuda e información sobre Yumiko")]
         public async Task HelpAsync(InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
 
             var types = typeof(Program).Assembly.GetTypes();
             var commandTypes = types.Where(type => type.FullName!.StartsWith("Yumiko.Commands", true, CultureInfo.InvariantCulture));

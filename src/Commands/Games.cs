@@ -134,7 +134,7 @@
                     await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Genres:
-                    await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+                    await ctx.DeferAsync();
                     GameSettings settingsGenero = await GameServices.ElegirGeneroAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity);
                     settings.Ok = settingsGenero.Ok;
                     if (settings.Ok)
@@ -166,7 +166,7 @@
         InteractionContext ctx,
         [Option("Game", "If the game is about anime characters or anime titles")] HangmanGamemode gamemode)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             int pag;
             switch (gamemode)
             {
@@ -390,7 +390,7 @@
                 return;
             }
 
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
 
             Random rand = new();
             bool turnoPrimerJugador = Convert.ToBoolean(rand.NextDouble() >= 0.5);

@@ -33,7 +33,7 @@
         [DescriptionLocalization(Localization.Spanish, "Información sobre un servidor")]
         public async Task Guild(InteractionContext ctx, [Option("guild_id", "Guild Id to see details")] string id)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
 
             bool validId = ulong.TryParse(id, out ulong guildId);
             if (validId)
@@ -79,7 +79,7 @@
         [DescriptionLocalization(Localization.Spanish, "Muestra los servidores de Yumiko")]
         public async Task Servers(InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
 
             var interactivity = ctx.Client.GetInteractivity();
             List<Page> pages = new();

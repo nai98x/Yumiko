@@ -77,5 +77,21 @@
                 await doc.DeleteAsync();
             }
         }
+
+        public static async Task<DtLeaderboardHoL?> GetStatsUserAsync(ulong guildId, ulong userId)
+        {
+            FirestoreDb db = Common.GetFirestoreClient();
+            DocumentReference doc = db.Collection("HigherOrLower").Document($"{guildId}").Collection("Usuarios").Document($"{userId}");
+            var snap = await doc.GetSnapshotAsync();
+
+            if (snap.Exists)
+            {
+                return snap.ConvertTo<DtLeaderboardHoL>();
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

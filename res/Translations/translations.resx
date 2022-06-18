@@ -141,6 +141,9 @@
   <data name="animated" xml:space="preserve">
     <value>Animated</value>
   </data>
+  <data name="anime" xml:space="preserve">
+    <value>Anime</value>
+  </data>
   <data name="anime_list" xml:space="preserve">
     <value>Anime list</value>
   </data>
@@ -182,6 +185,9 @@
   </data>
   <data name="chapters" xml:space="preserve">
     <value>Chapters</value>
+  </data>
+  <data name="character" xml:space="preserve">
+    <value>Character</value>
   </data>
   <data name="characters" xml:space="preserve">
     <value>characters</value>
@@ -420,6 +426,9 @@
   <data name="love_between" xml:space="preserve">
     <value>Love between **{0}** and **{1}**</value>
   </data>
+  <data name="manga" xml:space="preserve">
+    <value>Manga</value>
+  </data>
   <data name="manga_list" xml:space="preserve">
     <value>Manga list</value>
   </data>
@@ -519,6 +528,9 @@
   <data name="no_results_found_image" xml:space="preserve">
     <value>No results found for this image</value>
   </data>
+  <data name="no_stats_available" xml:space="preserve">
+    <value>You have not played any game yet</value>
+  </data>
   <data name="of" xml:space="preserve">
     <value>of</value>
   </data>
@@ -557,6 +569,9 @@
   </data>
   <data name="profile" xml:space="preserve">
     <value>Profile</value>
+  </data>
+  <data name="protagonist" xml:space="preserve">
+    <value>Protagonist</value>
   </data>
   <data name="publication_date" xml:space="preserve">
     <value>Publication date</value>
@@ -635,6 +650,9 @@
   </data>
   <data name="status" xml:space="preserve">
     <value>Status</value>
+  </data>
+  <data name="studio" xml:space="preserve">
+    <value>Studio</value>
   </data>
   <data name="studios" xml:space="preserve">
     <value>Studios</value>
@@ -722,6 +740,9 @@
   </data>
   <data name="uptime" xml:space="preserve">
     <value>Uptime</value>
+  </data>
+  <data name="user_game_stats" xml:space="preserve">
+    <value>{0}'s game statistics</value>
   </data>
   <data name="user_has_guessed" xml:space="preserve">
     <value>**{0}** has guessed!</value>

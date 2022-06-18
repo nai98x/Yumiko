@@ -31,7 +31,7 @@
         [DescriptionLocalization(Localization.Spanish, "Asigna tu perfil de AniList")]
         public async Task SetAnilist(InteractionContext ctx, [Option("Profile", "Nickname or URL of your AniList profile (must be public)")] string perfil)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             var porUrl = Uri.TryCreate(perfil, UriKind.Absolute, out var uriResult)
                          && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
             if (porUrl)
@@ -133,7 +133,7 @@
         [DescriptionLocalization(Localization.Spanish, "Elimina tu perfil de AniList")]
         public async Task DeleteAnilist(InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             var context = ctx;
             var confirmar = await Common.GetYesNoInteractivityAsync(context, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), ctx.Client.GetInteractivity(), translations.confirm_delete_profile, translations.action_cannont_be_undone);
             if (confirmar)
@@ -169,8 +169,7 @@
         [DescriptionLocalization(Localization.Spanish, "Busca un perfil de AniList")]
         public async Task Profile(InteractionContext ctx, [Option("Member", "Member whose Anilist profile you want to see")] DiscordUser user)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-
+            await ctx.DeferAsync();
             user ??= ctx.User;
             var miembro = await ctx.Guild.GetMemberAsync(user.Id);
             var userAnilist = await UsuariosAnilist.GetPerfilAsync(miembro.Id);
@@ -397,7 +396,7 @@
         [DescriptionLocalization(Localization.Spanish, "Busca un anime")]
         public async Task Anime(InteractionContext ctx, [Option("Anime", "Anime to search")] string anime, [Option("User", "User's Anilist stats")] DiscordUser? usuario = null)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             usuario ??= ctx.User;
             var media = await AnilistServices.GetAniListMedia(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), anime, MediaType.ANIME);
             if (media.Ok == true)
@@ -467,7 +466,7 @@
         [DescriptionLocalization(Localization.Spanish, "Busca un manga")]
         public async Task Manga(InteractionContext ctx, [Option("Manga", "Manga to search")] string manga, [Option("User", "User's Anilist stats")] DiscordUser? usuario = null)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             usuario ??= ctx.User;
             var media = await AnilistServices.GetAniListMedia(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), manga, MediaType.MANGA);
             if (media.Ok == true)
@@ -536,7 +535,7 @@
         [DescriptionLocalization(Localization.Spanish, "Busca un personaje")]
         public async Task Character(InteractionContext ctx, [Option("Character", "character to search")] string personaje)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             var request = new GraphQLRequest
             {
                 Query =
@@ -707,7 +706,7 @@
         [DescriptionLocalization(Localization.Spanish, "Busca el anime de una imágen")]
         public async Task Sauce(InteractionContext ctx, [Option("Image", "Image link")] string url)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             var msg = "OK";
             if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {
@@ -821,7 +820,7 @@
         [DescriptionLocalization(Localization.Spanish, "Personaje aleatorio")]
         public async Task Pj(InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync();
             var pag = Common.GetNumeroRandom(1, 10000);
             var personaje = await Common.GetRandomCharacterAsync(ctx, pag);
             if (personaje != null)
