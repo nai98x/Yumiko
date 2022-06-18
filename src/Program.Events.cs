@@ -60,7 +60,7 @@
                     Title = "Guild added",
                     Description =
                     $"   **Id**: {e.Guild.Id}\n" +
-                    $"   **Members**: {e.Guild.MemberCount - 1}\n" +
+                    $"   **Members**: {e.Guild.MemberCount}\n" +
                     $"   **Owner**: {e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator}\n\n" +
                     $"   **Guild count**: {sender.Guilds.Count}",
                     Footer = new()
@@ -71,7 +71,7 @@
                 });
                 if (TopggEnabled && !Debug)
                 {
-                    await Common.UpdateStatsTopGGAsync(sender.CurrentApplication.Id, ConfigurationUtils.GetConfiguration<string>(Configuration, Enums.Configurations.TokenTopgg));
+                    await Common.UpdateStatsTopGGAsync(sender.CurrentApplication.Id, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
                 }
             });
             return Task.CompletedTask;
@@ -92,7 +92,7 @@
                     Title = "Guild removed",
                     Description =
                     $"   **Id**: {e.Guild.Id}\n" +
-                    $"   **Members**: {e.Guild.MemberCount - 1}\n" +
+                    $"   **Members**: {e.Guild.MemberCount}\n" +
                     $"   **Guild count**: {sender.Guilds.Count}",
                     Footer = new()
                     {
@@ -102,7 +102,7 @@
                 });
                 if (TopggEnabled && !Debug)
                 {
-                    await Common.UpdateStatsTopGGAsync(sender.CurrentApplication.Id, ConfigurationUtils.GetConfiguration<string>(Configuration, Enums.Configurations.TokenTopgg));
+                    await Common.UpdateStatsTopGGAsync(sender.CurrentApplication.Id, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
                 }
             });
             return Task.CompletedTask;

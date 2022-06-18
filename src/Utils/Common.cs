@@ -180,12 +180,12 @@
                 }
             }
         }
-        
+
         public static async Task UpdateStatsTopGGAsync(ulong applicationId, string topggToken)
         {
             AuthDiscordBotListApi DblApi = new(applicationId, topggToken);
-            var totalGuilds = Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Count);
-            var totalShards = Program.DiscordShardedClient.ShardClients.Count;
+            var totalGuilds = Program.DiscordShardedClient.GuildCount();
+            var totalShards = Program.DiscordShardedClient.ShardCount();
 
             await DblApi.UpdateStats(guildCount: totalGuilds, shardCount: totalShards);
         }

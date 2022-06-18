@@ -109,9 +109,9 @@
             embed.AddField(translations.library, $"DSharpPlus {ctx.Client.VersionString}", true);
             embed.AddField(translations.memory_usage, heapMemory, true);
             embed.AddField(translations.latency, $"{ctx.Client.Ping} ms", true);
-            embed.AddField(translations.total_shards, $"{Program.DiscordShardedClient.ShardClients.Count}", true);
-            embed.AddField(translations.total_guilds, $"{Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Count)}", true);
-            embed.AddField(translations.total_users, $"{Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Sum(y => y.Value.MemberCount))}", true);
+            embed.AddField(translations.total_shards, $"{Program.DiscordShardedClient.ShardCount()}", true);
+            embed.AddField(translations.total_guilds, $"{Program.DiscordShardedClient.GuildCount()}", true);
+            embed.AddField(translations.total_users, $"{Program.DiscordShardedClient.UserCount()}", true);
             embed.AddField(translations.uptime, $"{Program.Stopwatch.Elapsed.Humanize(2, minUnit: TimeUnit.Second, maxUnit: TimeUnit.Day, culture: new CultureInfo(ctx.Interaction.Locale!))}", true);
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));

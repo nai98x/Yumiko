@@ -43,5 +43,11 @@
                 _ => throw new ArgumentException("Programming error"),
             };
         }
+
+        public static int ShardCount(this DiscordShardedClient client) => client.ShardClients.Count;
+
+        public static int GuildCount(this DiscordShardedClient client) => client.ShardClients.Values.Sum(x => x.Guilds.Count);
+
+        public static int UserCount(this DiscordShardedClient client) => client.ShardClients.Values.Sum(x => x.Guilds.Sum(y => y.Value.MemberCount));
     }
 }
