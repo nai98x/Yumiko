@@ -71,7 +71,7 @@
                 });
                 if (TopggEnabled && !Debug)
                 {
-                    await Common.UpdateStatsTopGGAsync(sender, ConfigurationUtils.GetConfiguration<string>(Configuration, Enums.Configurations.TokenTopgg));
+                    await Common.UpdateStatsTopGGAsync(sender.CurrentApplication.Id, ConfigurationUtils.GetConfiguration<string>(Configuration, Enums.Configurations.TokenTopgg));
                 }
             });
             return Task.CompletedTask;
@@ -102,7 +102,7 @@
                 });
                 if (TopggEnabled && !Debug)
                 {
-                    await Common.UpdateStatsTopGGAsync(sender, ConfigurationUtils.GetConfiguration<string>(Configuration, Enums.Configurations.TokenTopgg));
+                    await Common.UpdateStatsTopGGAsync(sender.CurrentApplication.Id, ConfigurationUtils.GetConfiguration<string>(Configuration, Enums.Configurations.TokenTopgg));
                 }
             });
             return Task.CompletedTask;

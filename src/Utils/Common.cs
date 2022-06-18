@@ -180,11 +180,14 @@
                 }
             }
         }
-
-        public static async Task UpdateStatsTopGGAsync(DiscordClient c, string topggToken)
+        
+        public static async Task UpdateStatsTopGGAsync(ulong applicationId, string topggToken)
         {
-            AuthDiscordBotListApi dblApi = new(c.CurrentUser.Id, topggToken);
-            await dblApi.UpdateStats(guildCount: c.Guilds.Count);
+            AuthDiscordBotListApi DblApi = new(applicationId, topggToken);
+            var totalGuilds = Program.DiscordShardedClient.ShardClients.Values.Sum(x => x.Guilds.Count);
+            var totalShards = Program.DiscordShardedClient.ShardClients.Count;
+
+            await DblApi.UpdateStats(guildCount: totalGuilds, shardCount: totalShards);
         }
 
         public static async Task<int> GetElegidoAsync(InteractionContext ctx, double timeoutGeneral, List<AnimeShort> opciones)
