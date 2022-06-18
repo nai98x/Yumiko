@@ -19,6 +19,7 @@
         }
 
         [SlashCommand("ping", "Shows Yumiko´s ping")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra el ping de Yumiko")]
         public async Task Ping(InteractionContext ctx)
         {
             Common.GetFirestoreClient();
@@ -30,7 +31,9 @@
             }));
         }
 
-        [SlashCommand("weather", "Shows the weather in your location")]
+        [SlashCommand("weather", "Shows the weather in a location")]
+        [NameLocalization(Localization.Spanish, "clima")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra el clima en una localidad")]
         public async Task Weather(
             InteractionContext ctx,
             [Option("Location", "City where you want to search the weather")] string localidad,
@@ -118,6 +121,8 @@
         }
 
         [SlashCommand("cat", "Random kitten")]
+        [NameLocalization(Localization.Spanish, "gato")]
+        [DescriptionLocalization(Localization.Spanish, "Gatito aleatorio")]
         public async Task Cat(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -154,6 +159,8 @@
         }
 
         [SlashCommand("dog", "Random dog")]
+        [NameLocalization(Localization.Spanish, "perro")]
+        [DescriptionLocalization(Localization.Spanish, "Perro aleatorio")]
         public async Task Dog(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);

@@ -14,6 +14,7 @@
         }
 
         [SlashCommand("help", "Help and information about Yumiko")]
+        [DescriptionLocalization(Localization.Spanish, "Ayuda e información sobre Yumiko")]
         public async Task HelpAsync(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);

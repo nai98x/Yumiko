@@ -27,6 +27,8 @@
         }
 
         [SlashCommand("setprofile", "Sets your AniList profile")]
+        [NameLocalization(Localization.Spanish, "asignarperfil")]
+        [DescriptionLocalization(Localization.Spanish, "Asigna tu perfil de AniList")]
         public async Task SetAnilist(InteractionContext ctx, [Option("Profile", "Nickname or URL of your AniList profile (must be public)")] string perfil)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -127,6 +129,8 @@
         }
 
         [SlashCommand("deleteprofile", "Deletes your AniList profile")]
+        [NameLocalization(Localization.Spanish, "eliminarperfil")]
+        [DescriptionLocalization(Localization.Spanish, "Elimina tu perfil de AniList")]
         public async Task DeleteAnilist(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -161,6 +165,8 @@
         }
 
         [SlashCommand("profile", "Searchs for an AniList profile")]
+        [NameLocalization(Localization.Spanish, "perfil")]
+        [DescriptionLocalization(Localization.Spanish, "Busca un perfil de AniList")]
         public async Task Profile(InteractionContext ctx, [Option("Member", "Member whose Anilist profile you want to see")] DiscordUser user)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -388,6 +394,7 @@
         }
 
         [SlashCommand("anime", "Searchs for an anime")]
+        [DescriptionLocalization(Localization.Spanish, "Busca un anime")]
         public async Task Anime(InteractionContext ctx, [Option("Anime", "Anime to search")] string anime, [Option("User", "User's Anilist stats")] DiscordUser? usuario = null)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -457,6 +464,7 @@
         }
 
         [SlashCommand("manga", "Searchs for a manga")]
+        [DescriptionLocalization(Localization.Spanish, "Busca un manga")]
         public async Task Manga(InteractionContext ctx, [Option("Manga", "Manga to search")] string manga, [Option("User", "User's Anilist stats")] DiscordUser? usuario = null)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -524,6 +532,8 @@
         }
 
         [SlashCommand("character", "Searchs for a Character")]
+        [NameLocalization(Localization.Spanish, "personaje")]
+        [DescriptionLocalization(Localization.Spanish, "Busca un personaje")]
         public async Task Character(InteractionContext ctx, [Option("Character", "character to search")] string personaje)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -694,6 +704,7 @@
 
         // Staff, algun dia
         [SlashCommand("sauce", "Searchs for the anime of an image")]
+        [DescriptionLocalization(Localization.Spanish, "Busca el anime de una imágen")]
         public async Task Sauce(InteractionContext ctx, [Option("Image", "Image link")] string url)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -807,6 +818,7 @@
         }
 
         [SlashCommand("pj", "Random character")]
+        [DescriptionLocalization(Localization.Spanish, "Personaje aleatorio")]
         public async Task Pj(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);

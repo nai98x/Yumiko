@@ -21,6 +21,7 @@
         }
 
         [SlashCommand("test", "Testing command")]
+        [DescriptionLocalization(Localization.Spanish, "Comando de pruebas")]
         public async Task Test(InteractionContext ctx)
         {
             await ctx.DeferAsync();
@@ -28,6 +29,8 @@
         }
 
         [SlashCommand("guild", "Information about a guild")]
+        [NameLocalization(Localization.Spanish, "servidor")]
+        [DescriptionLocalization(Localization.Spanish, "Información sobre un servidor")]
         public async Task Guild(InteractionContext ctx, [Option("guild_id", "Guild Id to see details")] string id)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -72,6 +75,8 @@
         }
 
         [SlashCommand("guilds", "See Yumiko's guilds")]
+        [NameLocalization(Localization.Spanish, "servidores")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra los servidores de Yumiko")]
         public async Task Servers(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -128,6 +133,8 @@
         }
 
         [SlashCommand("deleteguild", "Yumiko leaves a guild")]
+        [NameLocalization(Localization.Spanish, "eliminarservidor")]
+        [DescriptionLocalization(Localization.Spanish, "Yumiko deja un servidor")]
         public async Task EliminarServer(InteractionContext ctx, [Option("Id", "Guild Id to exit")] string idStr)
         {
             try
@@ -152,6 +159,7 @@
         }
 
         [SlashCommand("logs", "Shows the lastest log file")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra el último archivo de log")]
         public async Task Logs(InteractionContext ctx)
         {
             await ctx.DeferAsync();
@@ -179,6 +187,8 @@
         }
 
         [SlashCommand("poweroff", "Turn off the bot")]
+        [NameLocalization(Localization.Spanish, "apagar")]
+        [DescriptionLocalization(Localization.Spanish, "Apaga el bot")]
         public async Task Shutdown(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(translations.shutting_down).AsEphemeral(true));

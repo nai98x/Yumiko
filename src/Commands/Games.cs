@@ -19,6 +19,7 @@
         }
 
         [SlashCommand("trivia", "Plays an anime trivia game")]
+        [DescriptionLocalization(Localization.Spanish, "Juega una partida de trivia de anime")]
         public async Task Trivia(
         InteractionContext ctx,
         [Option("Gamemode", "The type of game you want to play")] Gamemode gamemode,
@@ -159,6 +160,8 @@
         }
 
         [SlashCommand("hangman", "Plays the hangman game")]
+        [NameLocalization(Localization.Spanish, "ahorcado")]
+        [DescriptionLocalization(Localization.Spanish, "Juega al juego del ahorcado")]
         public async Task Hangman(
         InteractionContext ctx,
         [Option("Game", "If the game is about anime characters or anime titles")] HangmanGamemode gamemode)
@@ -189,6 +192,7 @@
         }
 
         [SlashCommand("higherorlower", "Plays a Higher or Lower game")]
+        [DescriptionLocalization(Localization.Spanish, "Juega al juego de Higher or Lower")]
         public async Task HighrOrLower(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
@@ -369,6 +373,8 @@
         }
 
         [SlashCommand("tictactoe", "Starts a Tic-Tac-Toe game")]
+        [NameLocalization(Localization.Spanish, "tateti")]
+        [DescriptionLocalization(Localization.Spanish, "Juega al juego del Ta-Te-Ti")]
         public async Task TicTacToe(InteractionContext ctx, [Option("Player2", "The second player of the game")] DiscordUser player2)
         {
             var interactivity = ctx.Client.GetInteractivity();

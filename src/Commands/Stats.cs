@@ -18,6 +18,7 @@
         }
 
         [SlashCommand("trivia", "Shows the statistics of the trivia game")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra las estadísticas del juego trivia")]
         [SlashRequirePermissions(Permissions.SendMessages)]
         public async Task Trivia(InteractionContext ctx, [Option("Game", "The gamemode you want to see the stats")] Gamemode gamemode)
         {
@@ -54,6 +55,7 @@
         }
 
         [SlashCommand("higherorlower", "Shows the statistics of the Higher or Lower game")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra las estadísticas del juego Higher or Lower")]
         [SlashRequirePermissions(Permissions.SendMessages)]
         public async Task HigherOrLower(InteractionContext ctx)
         {
@@ -64,6 +66,8 @@
         }
 
         [SlashCommand("delete", "Deletes user statistics on the guild")]
+        [NameLocalization(Localization.Spanish, "eliminar")]
+        [DescriptionLocalization(Localization.Spanish, "Elimina tus estadísticas del servidor")]
         public async Task Delete(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -85,6 +89,7 @@
         }
 
         [SlashCommand("bot", "Shows Yumiko's information and stats")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra información y estadísticas del bot")]
         public async Task Information(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);

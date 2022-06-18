@@ -18,6 +18,7 @@
         }
 
         [SlashCommand("Say", "Replicates a text")]
+        [DescriptionLocalization(Localization.Spanish, "Replica un texto")]
         [SlashRequirePermissions(Permissions.SendMessages | Permissions.SendMessagesInThreads | Permissions.AccessChannels)]
         public async Task Say(InteractionContext ctx, [Option("Message", "The text you want to replicate")] string texto)
         {
@@ -27,6 +28,8 @@
         }
 
         [SlashCommand("question", "Responds with yes or no")]
+        [NameLocalization(Localization.Spanish, "pregunta")]
+        [DescriptionLocalization(Localization.Spanish, "Responde con si o no")]
         public async Task Question(InteractionContext ctx, [Option("Question", "The question you want to ask")] string texto)
         {
             Random rnd = new();
@@ -51,6 +54,8 @@
         }
 
         [SlashCommand("choose", "Choose from multiple options separated by commas")]
+        [NameLocalization(Localization.Spanish, "elegir")]
+        [DescriptionLocalization(Localization.Spanish, "Elige entre varias opciones separadas por comas")]
         public async Task Choose(InteractionContext ctx, [Option("Question", "The question you want to ask")] string pregunta, [Option("Options", "Comma Separated Options")] string opc)
         {
             List<string> opciones = opc.Split(',').ToList();
@@ -70,7 +75,8 @@
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [SlashCommand("emote", "Gives information about an emote")]
+        [SlashCommand("emote", "Shows information about an emote")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra información sobre un emote")]
         public async Task Emote(InteractionContext ctx, [Option("Emote", "The emote")] string emoji)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -111,6 +117,7 @@
         }
 
         [SlashCommand("avatar", "Shows an user's avatar")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra el avatar de un usuario")]
         [SlashRequireGuild]
         public async Task Avatar(
             InteractionContext ctx,
@@ -140,6 +147,8 @@
         }
 
         [SlashCommand("user", "Shows information about an user")]
+        [NameLocalization(Localization.Spanish, "usuario")]
+        [DescriptionLocalization(Localization.Spanish, "Busca información sobre un usuario")]
         public async Task User(
             InteractionContext ctx,
             [Option("Usuario", "The user you want to retrieve information")] DiscordUser usuario,
@@ -195,6 +204,7 @@
         }
 
         [SlashCommand("waifu", "My love level to a user")]
+        [DescriptionLocalization(Localization.Spanish, "Mi nivel de amor hacia un usuario")]
         public async Task Waifu(
             InteractionContext ctx,
             [Option("User", "User whose waifu level you want to know")] DiscordUser? usuario = null,
@@ -264,6 +274,8 @@
         }
 
         [SlashCommand("love", "Love percentage between two users")]
+        [NameLocalization(Localization.Spanish, "amor")]
+        [DescriptionLocalization(Localization.Spanish, "Porcentaje de amor entre dos usuarios")]
         public async Task Love(
             InteractionContext ctx,
             [Option("User1", "First user")] DiscordUser? user1 = null,
