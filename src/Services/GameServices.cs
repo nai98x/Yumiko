@@ -90,7 +90,7 @@
             }
 
             string juegoMostrar;
-            if(ctx.Interaction.Locale!.StartsWith("es"))
+            if (ctx.Interaction.Locale!.StartsWith("es"))
             {
                 juegoMostrar = settings.Gamemode.ToSpanish();
             }
@@ -177,7 +177,7 @@
                         {
                             desc += $"\n{translations.in_english}: `{elegido.TitleEnglish}`";
                         }
-                        
+
                         elegidoNom = elegido.TitleRomaji;
                         break;
                     case Gamemode.Mangas:
@@ -254,7 +254,7 @@
                     {
                         var embed = new DiscordEmbedBuilder
                         {
-                            Title =  translations.game_cancelled,
+                            Title = translations.game_cancelled,
                             Description = desc,
                             Color = DiscordColor.Red,
                         };

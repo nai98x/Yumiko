@@ -25,7 +25,7 @@ namespace Yumiko.Utils
                 Description = GetErrorString(e),
                 Color = DiscordColor.Red
             };
-            
+
             string options = string.Empty;
             var args = e.Context.Interaction.Data.Options;
             if (args != null)
@@ -57,7 +57,6 @@ namespace Yumiko.Utils
                         {
                             options += $"[{arg2.Name}: {arg2.Value}] ";
                         }
-                        
                     }
                 }
                 else

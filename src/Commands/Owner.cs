@@ -163,11 +163,11 @@
         public async Task Logs(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            
+
             FileInfo? log = Common.GetNewestFile(new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "logs")));
             if (log != null)
             {
-                using FileStream fs = File.Open(log.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite); ;
+                using FileStream fs = File.Open(log.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
                 await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
                     .WithContent(translations.lastest_log_file)

@@ -23,7 +23,6 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using System.Diagnostics;
-using System.Globalization;
 
 namespace Yumiko
 {
@@ -60,7 +59,7 @@ namespace Yumiko
                     .MinimumLevel.Is(Debug ? LogEventLevel.Debug : LogEventLevel.Information)
                     .WriteTo.Console(outputTemplate: "[{Timestamp:dd-MM-yyyy HH:mm:ss}] [{ProcessId}] [{Level:u4}]: {Message:lj}{NewLine}{Exception}")
                     .WriteTo.File(
-                        path: $"logs/{DateTime.Now.ToString("dd'-'MM'-'yyyy' 'HH'_'mm'_'ss", CultureInfo.InvariantCulture)}.log", 
+                        path: $"logs/{DateTime.Now.ToString("dd'-'MM'-'yyyy' 'HH'_'mm'_'ss", CultureInfo.InvariantCulture)}.log",
                         levelSwitch: new LoggingLevelSwitch(LogEventLevel.Information),
                         outputTemplate: "[{Timestamp:dd-MM-yyyy HH:mm:ss}] [{Level:u4}]: {Message:lj}{NewLine}{Exception}",
                         fileSizeLimitBytes: 8_388_608, /* 8 megabytes */

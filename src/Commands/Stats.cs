@@ -34,7 +34,7 @@
                 await Common.ChequearVotoTopGGAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
             }
             else
-            {    
+            {
                 var respuesta = await GameServices.ElegirGeneroAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity);
                 if (respuesta.Ok && respuesta.Genre != null)
                 {
