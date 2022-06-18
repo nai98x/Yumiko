@@ -90,7 +90,7 @@
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetCharactersAsync(ctx, settings);
-                    await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
+                    await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Animes:
                     embebido = new DiscordEmbedBuilder
@@ -100,7 +100,7 @@
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, true);
-                    await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
+                    await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Mangas:
                     embebido = new DiscordEmbedBuilder
@@ -110,7 +110,7 @@
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.MANGA, settings, false, false, false, false);
-                    await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
+                    await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
 
                     break;
                 case Gamemode.Studios:
@@ -121,7 +121,7 @@
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, true, false, false);
-                    await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
+                    await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Protagonists:
                     embebido = new DiscordEmbedBuilder
@@ -131,7 +131,7 @@
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, true, false, false, false);
-                    await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
+                    await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Genres:
                     await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -148,7 +148,7 @@
                         }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.genre, $"{settings.Genre}");
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embebido));
                         list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, true, true);
-                        await GameServices.JugarQuizAsync(ctx, timeoutGames, topggToken, list, settings);
+                        await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     }
                     else
                     {

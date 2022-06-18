@@ -76,7 +76,7 @@
             await Common.ChequearVotoTopGGAsync(ctx, topggToken);
         }
 
-        public static async Task JugarQuizAsync(InteractionContext ctx, double timeoutGames, string topggToken, dynamic lista, GameSettings settings)
+        public static async Task PlayTriviaAsync(InteractionContext ctx, double timeoutGames, string topggToken, dynamic lista, GameSettings settings)
         {
             DiscordEmbedBuilder? embedAux = null;
             if (settings.Rondas > lista.Count)
