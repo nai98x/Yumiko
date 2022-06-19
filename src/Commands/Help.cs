@@ -58,9 +58,12 @@
                 Color = Constants.YumikoColor,
             };
 
+            var permissions = Permissions.AccessChannels | Permissions.SendMessages | Permissions.SendMessagesInThreads | Permissions.UseExternalEmojis;
+            string inviteUri = ctx.Client.CurrentApplication.GenerateOAuthUri(redirectUri: null, permissions, OAuthScope.Bot, OAuthScope.ApplicationsCommands);
+
             List<DiscordLinkButtonComponent> components = new()
             {
-                new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.InviteUrl), translations.invite),
+                new(inviteUri, translations.invite),
                 new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.Website), translations.website),
             };
 
@@ -69,7 +72,7 @@
                 components.Add(new(ctx.Client.CurrentApplication.PrivacyPolicyUrl, translations.privacy_policy));
             }
 
-            if (Program.TopggEnabled)
+            if (!Program.Debug && Program.TopggEnabled)
             {
                 components.Add(new($"https://top.gg/bot/{ctx.Client.CurrentApplication.Id}/vote", translations.vote));
             }

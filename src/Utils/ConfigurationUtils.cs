@@ -21,7 +21,6 @@
             return type switch
             {
                 Configurations.Website => config.GetValue<T>("website"),
-                Configurations.InviteUrl => config.GetValue<T>("invite_url"),
                 Configurations.TokenDiscordProduction => config.GetValue<T>("tokens:discord:production"),
                 Configurations.TokenDiscordTesting => config.GetValue<T>("tokens:discord:testing"),
                 Configurations.TokenTopgg => config.GetValue<T>("tokens:topgg"),

@@ -1,6 +1,5 @@
 {
   "website": "BOT_WEBSITE_URL",
-  "invite_url": "DISCORD_BOT_INVITE_URL",
   "tokens": {
     "discord": {
       "prod": "TOKEN_DISCORD_BOT_PROD",

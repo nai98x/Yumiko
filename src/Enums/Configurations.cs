@@ -3,7 +3,6 @@
     public enum Configurations
     {
         Website,
-        InviteUrl,
         TokenDiscordProduction,
         TokenDiscordTesting,
         TokenTopgg,
