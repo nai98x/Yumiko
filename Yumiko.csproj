@@ -73,16 +73,12 @@
     <None Update="res\firebase.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="res\Images\marco-hol.png">
+    <None Update="res\Images\frame-hol.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="res\Images\marco-love.png">
+    <None Update="res\Images\frame-love.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="res\Images\" />
   </ItemGroup>
 
 </Project>
