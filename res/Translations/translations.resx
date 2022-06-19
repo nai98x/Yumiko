@@ -756,6 +756,9 @@
   <data name="user_permission_required_desc" xml:space="preserve">
     <value>You need the `{0}` permission to execute this command</value>
   </data>
+  <data name="user_self_love" xml:space="preserve">
+    <value>{0}'s self love</value>
+  </data>
   <data name="user_won_the_game" xml:space="preserve">
     <value>{0} has won the game</value>
   </data>

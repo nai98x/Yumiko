@@ -1987,6 +1987,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}&apos;s self love.
+        /// </summary>
+        public static string user_self_love {
+            get {
+                return ResourceManager.GetString("user_self_love", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} has won the game.
         /// </summary>
         public static string user_won_the_game {

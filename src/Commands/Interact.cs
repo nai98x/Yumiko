@@ -294,7 +294,7 @@
 
             if ((user2 == null && user1.Id == ctx.Member.Id) || (user2 != null && user1.Id == user2.Id))
             {
-                titulo = $"{Formatter.Bold($"{user1.FullName()}")}'s self-love";
+                titulo = string.Format(translations.user_self_love, user1.FullName());
                 imagenUrl = user1.GetAvatarUrl(ImageFormat.Png, 128);
             }
             else
@@ -310,9 +310,10 @@
                 string avatar1 = user1.GetAvatarUrl(ImageFormat.Png, 512);
                 string avatar2 = user2.GetAvatarUrl(ImageFormat.Png, 512);
 
-                var imagen = await Common.MergeImage(avatar1, avatar2, 1024, 512);
+                var img = await Common.MergeImage(avatar1, avatar2, 1024, 512);
+                var imagen = Common.OverlapImage(img, File.ReadAllBytes(Path.Join(AppDomain.CurrentDomain.BaseDirectory, "res", "Images", "marco-love.png")), 1024, 512);
                 imagenUrl = Formatter.AttachedImageUrl("imageLove.png");
-                builder.AddFile("imageLove.png", imagen);
+                builder.AddFile("imageLove.png", imagen.ToMemoryStream());
             }
 
             if (real)

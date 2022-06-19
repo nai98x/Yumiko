@@ -753,6 +753,9 @@
   <data name="user_permission_required_desc" xml:space="preserve">
     <value>Necesitas el permiso `{0}` para ejecutar este comando</value>
   </data>
+  <data name="user_self_love" xml:space="preserve">
+    <value>Amor propio de {0}</value>
+  </data>
   <data name="user_won_the_game" xml:space="preserve">
     <value>{0} ganó la partida</value>
   </data>
