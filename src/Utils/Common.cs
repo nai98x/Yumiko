@@ -48,12 +48,18 @@
 
         public static int GetNumeroRandom(int min, int max)
         {
+            Random rnd = new();
+
             if (min <= 0 && max <= 0)
             {
                 return 0;
             }
 
-            Random rnd = new();
+            if (min + 1 == max)
+            {
+                return (rnd.Next(100) < 50) ? min : max;
+            }
+
             return rnd.Next(minValue: min, maxValue: max);
         }
 

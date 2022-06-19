@@ -351,6 +351,9 @@
   <data name="higher_or_lower_round_win" xml:space="preserve">
     <value>**{0}** tiene **{1}/10** de puntuación promedio mientras que **{2}** tiene **{3}/10**</value>
   </data>
+  <data name="hint" xml:space="preserve">
+    <value>¡Pista!</value>
+  </data>
   <data name="humidity" xml:space="preserve">
     <value>Humedad</value>
   </data>
@@ -707,9 +710,6 @@
   </data>
   <data name="timed_out_choosing_genre" xml:space="preserve">
     <value>Tiempo agotado eligiendo el genero</value>
-  </data>
-  <data name="tip" xml:space="preserve">
-    <value>¡Pista!</value>
   </data>
   <data name="titles_language" xml:space="preserve">
     <value>Idioma de títulos</value>

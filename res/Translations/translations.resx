@@ -351,6 +351,9 @@
   <data name="higher_or_lower_round_win" xml:space="preserve">
     <value>**{0}** has **{1}/10** avarage score while **{2}** has **{3}/10**</value>
   </data>
+  <data name="hint" xml:space="preserve">
+    <value>Hint!</value>
+  </data>
   <data name="humidity" xml:space="preserve">
     <value>Humidity</value>
   </data>
@@ -707,9 +710,6 @@
   </data>
   <data name="timed_out_choosing_genre" xml:space="preserve">
     <value>Timed out choosing genre</value>
-  </data>
-  <data name="tip" xml:space="preserve">
-    <value>Tip!</value>
   </data>
   <data name="titles_language" xml:space="preserve">
     <value>Titles language</value>

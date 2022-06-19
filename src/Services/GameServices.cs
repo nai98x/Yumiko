@@ -331,7 +331,7 @@
 
                         await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                         {
-                            Title = translations.tip,
+                            Title = translations.hint,
                             Description = $"{Formatter.InlineCode(stringRes)}",
                             Color = Constants.YumikoColor,
                         }));

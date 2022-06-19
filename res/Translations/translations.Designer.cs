@@ -763,6 +763,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hint!.
+        /// </summary>
+        public static string hint {
+            get {
+                return ResourceManager.GetString("hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Humidity.
         /// </summary>
         public static string humidity {
@@ -1830,15 +1839,6 @@ namespace Yumiko {
         public static string timed_out_choosing_genre {
             get {
                 return ResourceManager.GetString("timed_out_choosing_genre", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tip!.
-        /// </summary>
-        public static string tip {
-            get {
-                return ResourceManager.GetString("tip", resourceCulture);
             }
         }
         
