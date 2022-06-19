@@ -487,12 +487,12 @@
             if (stats != null && stats.Count > 0)
             {
                 string desc = string.Empty;
-                foreach(var stat in stats)
+                foreach (var stat in stats)
                 {
                     if (stat.Stats.Count > 0)
                     {
                         desc += $"**{translations.guess_the} {GetGamemodeLocalizatedSingular(stat.Gamemode).ToLower()}:**\n";
-                        foreach(var s in stat.Stats)
+                        foreach (var s in stat.Stats)
                         {
                             desc += $"{translations.difficulty}: {Formatter.Bold(s.Dificultad)} - {translations.guesses}: {Formatter.Bold($"{s.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{s.PartidasTotales}")}\n";
                         }
@@ -528,7 +528,7 @@
                 {
                     desc += $"{Formatter.Bold(stat.Dificultad)} - {translations.guesses}: {Formatter.Bold($"{stat.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{stat.PartidasTotales}")}\n";
                 }
-                
+
                 builder.Title = translations.genres;
                 builder.Description = desc;
                 builder.Color = Constants.YumikoColor;
@@ -558,7 +558,7 @@
                 builder.Description = translations.no_stats_available;
                 builder.Color = DiscordColor.Red;
             }
-            
+
             return builder;
         }
 
@@ -745,7 +745,7 @@
 
                 settings.IterIni = 0;
 
-                if(lastPage < 3)
+                if (lastPage < 3)
                 {
                     settings.IterFin = 1;
                 }
