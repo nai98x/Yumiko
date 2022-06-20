@@ -84,8 +84,9 @@
                 settings.Rondas = lista.Count;
             }
 
-            if (settings.Gamemode == Gamemode.Genres && settings.Genre == null || settings.Gamemode == Gamemode.Studios && settings.Studio == null)
+            if (settings.Gamemode == Gamemode.Genres && settings.Genre == null)
             {
+                await Common.GrabarLogErrorAsync(ctx, "PlayTriviaAsync - Genres with no settings.Genre assigned");
                 return;
             }
 
@@ -100,8 +101,8 @@
                 juegoMostrar = settings.Gamemode switch
                 {
                     Gamemode.Genres => settings.Genre,
-                    Gamemode.Studios => $"{settings.Studio} {translations.from_the_anime}",
-                    _ => settings.Gamemode.GetName(),
+                    Gamemode.Studios => $"{translations.studio} {translations.from_the_anime}",
+                    _ => settings.Gamemode.GetName().Remove(settings.Gamemode.GetName().Length - 1, 1),
                 };
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             }
@@ -190,13 +191,14 @@
                         elegidoNom = elegido.TitleRomaji;
                         break;
                     case Gamemode.Studios:
-                        string estudiosStr = string.Format(translations.the_studios_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";
+                        desc = string.Format(translations.the_studios_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";
                         foreach (var studio in elegido.Estudios)
                         {
-                            estudiosStr += $"- {Formatter.Bold($"[{studio.Nombre}]({studio.SiteUrl})")}\n";
+                            desc += $"- {Formatter.Bold($"[{studio.Nombre}]({studio.SiteUrl})")}\n";
                         }
-
-                        elegidoNom = elegido.TitleRomaji;
+                        
+                        Anime aux = (Anime)elegido;
+                        elegidoNom = aux.Estudios!.First().Nombre;
                         break;
                     case Gamemode.Protagonists:
                         desc = string.Format(translations.the_protagonists_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";

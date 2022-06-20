@@ -17,7 +17,5 @@
         public Difficulty Difficulty { get; set; }
 
         public string? Genre { get; set; }
-
-        public string? Studio { get; set; }
     }
 }
