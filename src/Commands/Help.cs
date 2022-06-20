@@ -63,7 +63,7 @@
 
             List<DiscordLinkButtonComponent> components = new()
             {
-                new(inviteUri, translations.invite),
+                new(inviteUri.Replace(" ", "%20"), translations.invite),
                 new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.Website), translations.website),
             };
 

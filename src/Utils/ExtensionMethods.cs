@@ -50,7 +50,7 @@
 
         public static int UserCount(this DiscordShardedClient client) => client.ShardClients.Values.Sum(x => x.Guilds.Sum(y => y.Value.MemberCount));
 
-        public static MemoryStream ToMemoryStream (this byte[] byteArray)
+        public static MemoryStream ToMemoryStream(this byte[] byteArray)
         {
             return new MemoryStream(byteArray)
             {

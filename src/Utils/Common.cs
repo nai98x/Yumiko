@@ -438,11 +438,11 @@
             // This saves to the memoryStream with encoder
             outputImage.Save(memoryStream, new PngEncoder());
             memoryStream.Position = 0; // The position needs to be reset.
-            
+
             // return byte[]
             return memoryStream.ToArray();
         }
-        
+
         public static byte[] OverlapImage(byte[] image1, byte[] image2, int x, int y)
         {
             using var memoryStream = new MemoryStream();

@@ -196,7 +196,7 @@
                         {
                             desc += $"- {Formatter.Bold($"[{studio.Nombre}]({studio.SiteUrl})")}\n";
                         }
-                        
+
                         Anime aux = (Anime)elegido;
                         elegidoNom = aux.Estudios!.First().Nombre;
                         break;
