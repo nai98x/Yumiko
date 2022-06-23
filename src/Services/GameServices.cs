@@ -375,41 +375,33 @@
             {
                 if ((jugador.RondasTotales / jugador.PartidasTotales) >= 2)
                 {
-                    long x = jugador.UserId;
-                    ulong id = (ulong)x;
-                    try
+                    string mention = $"<@{jugador.UserId}>";
+                    if (lastScore != jugador.PorcentajeAciertos || (lastScore == jugador.PorcentajeAciertos && lastPartidas != jugador.PartidasTotales))
                     {
-                        DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
-                        if (lastScore != jugador.PorcentajeAciertos || (lastScore == jugador.PorcentajeAciertos && lastPartidas != jugador.PartidasTotales))
-                        {
-                            pos++;
-                        }
-
-                        switch (pos)
-                        {
-                            case 1:
-                                emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                                stats += $"{emoji} - {miembro.Mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
-                                break;
-                            case 2:
-                                emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                                stats += $"{emoji} - {miembro.Mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
-                                break;
-                            case 3:
-                                emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                                stats += $"{emoji} - {miembro.Mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
-                                break;
-                            default:
-                                stats += $"{Formatter.Bold($"#{pos}")} - {miembro.Mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
-                                break;
-                        }
-
-                        lastScore = jugador.PorcentajeAciertos;
-                        lastPartidas = jugador.PartidasTotales;
+                        pos++;
                     }
-                    catch (Exception)
+
+                    switch (pos)
                     {
+                        case 1:
+                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
+                            stats += $"{emoji} - {mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
+                            break;
+                        case 2:
+                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
+                            stats += $"{emoji} - {mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
+                            break;
+                        case 3:
+                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
+                            stats += $"{emoji} - {mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
+                            break;
+                        default:
+                            stats += $"{Formatter.Bold($"#{pos}")} - {mention} - {translations.guesses}: {Formatter.Bold($"{jugador.PorcentajeAciertos}%")} - {translations.games}: {Formatter.Bold($"{jugador.PartidasTotales}")}\n";
+                            break;
                     }
+
+                    lastScore = jugador.PorcentajeAciertos;
+                    lastPartidas = jugador.PartidasTotales;
                 }
             }
 
@@ -573,45 +565,37 @@
             DiscordEmoji emoji;
             foreach (var jugador in res)
             {
-                long x = jugador.user_id;
-                ulong id = (ulong)x;
-                try
+                string mention = $"<@{jugador.user_id}>";
+                if (lastScore != jugador.puntuacion)
                 {
-                    DiscordMember miembro = await ctx.Guild.GetMemberAsync(id);
-                    if (lastScore != jugador.puntuacion)
-                    {
-                        pos++;
-                    }
+                    pos++;
+                }
 
-                    if (pos > 10)
-                    {
+                if (pos > 10)
+                {
+                    break;
+                }
+
+                switch (pos)
+                {
+                    case 1:
+                        emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
+                        stats += $"{emoji} - {mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
                         break;
-                    }
-
-                    switch (pos)
-                    {
-                        case 1:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":first_place:");
-                            stats += $"{emoji} - {miembro.Mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
-                            break;
-                        case 2:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
-                            stats += $"{emoji} - {miembro.Mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
-                            break;
-                        case 3:
-                            emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
-                            stats += $"{emoji} - {miembro.Mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
-                            break;
-                        default:
-                            stats += $"{Formatter.Bold($"#{pos}")} - {miembro.Mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
-                            break;
-                    }
-
-                    lastScore = jugador.puntuacion;
+                    case 2:
+                        emoji = DiscordEmoji.FromName(ctx.Client, ":second_place:");
+                        stats += $"{emoji} - {mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
+                        break;
+                    case 3:
+                        emoji = DiscordEmoji.FromName(ctx.Client, ":third_place:");
+                        stats += $"{emoji} - {mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
+                        break;
+                    default:
+                        stats += $"{Formatter.Bold($"#{pos}")} - {mention} - {translations.score}: {Formatter.Bold($"{jugador.puntuacion}")}\n";
+                        break;
                 }
-                catch (Exception)
-                {
-                }
+
+                lastScore = jugador.puntuacion;
             }
 
             return new DiscordEmbedBuilder()
