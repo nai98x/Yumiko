@@ -836,7 +836,8 @@
             }
         }
 
-        [SlashCommand("recommendatrion", "Auto recommendation based on your list")]
+        [SlashCommand("recommendation", "Auto recommendation based on your list")]
+        [NameLocalization (Localization.Spanish, "recomendar")]
         [DescriptionLocalization(Localization.Spanish, "Recomendación automática basada en tu lista")]
         public async Task AutoRecomendation(
             InteractionContext ctx,
