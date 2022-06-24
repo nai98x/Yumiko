@@ -463,7 +463,7 @@
             return null;
         }
 
-        public static async Task<DiscordEmbedBuilder?> GetUserRecommendationsAsync(InteractionContext ctx, MediaType type, int anilistUserId)
+        public static async Task<DiscordEmbedBuilder?> GetUserRecommendationsAsync(InteractionContext ctx, DiscordUser user, MediaType type, int anilistUserId)
         {
             var requestPers = new GraphQLRequest
             {
@@ -613,7 +613,7 @@
 
                     return new DiscordEmbedBuilder
                     {
-                        Title = string.Format(translations.media_recommendations, type.GetName().UppercaseFirst(), ctx.User.FullName()),
+                        Title = string.Format(translations.media_recommendations, type.GetName().UppercaseFirst(), user.FullName()),
                         Description = desc,
                         Color = Constants.YumikoColor
                     };

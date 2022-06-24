@@ -848,7 +848,7 @@
             var userAnilist = await UsuariosAnilist.GetPerfilAsync(user.Id);
             if(userAnilist != null)
             {
-                var recommendationsEmbed = await AnilistServices.GetUserRecommendationsAsync(ctx, type, userAnilist.AnilistId);
+                var recommendationsEmbed = await AnilistServices.GetUserRecommendationsAsync(ctx, user, type, userAnilist.AnilistId);
                 if (recommendationsEmbed != null) 
                 {
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(recommendationsEmbed));
