@@ -85,15 +85,14 @@
         public async Task Delete(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            var context = ctx;
             var interactivity = ctx.Client.GetInteractivity();
 
             string titulo = translations.confirm_delete_stats;
             string opciones = $"**{translations.action_cannont_be_undone}**";
-            bool confirmar = await Common.GetYesNoInteractivityAsync(context, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity, titulo, opciones);
+            bool confirmar = await Common.GetYesNoInteractivityAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), interactivity, titulo, opciones);
             if (confirmar)
             {
-                await GameServices.EliminarEstadisticasAsync(context);
+                await GameServices.EliminarEstadisticasAsync(ctx);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(translations.delete_stats_done));
             }
             else

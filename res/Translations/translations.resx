@@ -441,6 +441,9 @@
   <data name="mean_score" xml:space="preserve">
     <value>Mean score</value>
   </data>
+  <data name="media_recommendations" xml:space="preserve">
+    <value>{0} recommendations for {1}</value>
+  </data>
   <data name="member_avatar" xml:space="preserve">
     <value>{0}'s avatar</value>
   </data>
@@ -527,6 +530,9 @@
   </data>
   <data name="no_logs_found" xml:space="preserve">
     <value>No logs found</value>
+  </data>
+  <data name="no_recommendations_found" xml:space="preserve">
+    <value>No recommendations were found</value>
   </data>
   <data name="no_results_found_image" xml:space="preserve">
     <value>No results found for this image</value>

@@ -134,8 +134,7 @@
         public async Task DeleteAnilist(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            var context = ctx;
-            var confirmar = await Common.GetYesNoInteractivityAsync(context, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), ctx.Client.GetInteractivity(), translations.confirm_delete_profile, translations.action_cannont_be_undone);
+            var confirmar = await Common.GetYesNoInteractivityAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), ctx.Client.GetInteractivity(), translations.confirm_delete_profile, translations.action_cannont_be_undone);
             if (confirmar)
             {
                 var borrado = await UsuariosAnilist.DeleteAnilistAsync(ctx.User.Id);
@@ -171,8 +170,7 @@
         {
             await ctx.DeferAsync();
             user ??= ctx.User;
-            var miembro = await ctx.Guild.GetMemberAsync(user.Id);
-            var userAnilist = await UsuariosAnilist.GetPerfilAsync(miembro.Id);
+            var userAnilist = await UsuariosAnilist.GetPerfilAsync(user.Id);
             if (userAnilist != null)
             {
                 var anilistId = userAnilist.AnilistId;
@@ -385,7 +383,7 @@
                 {
                     Color = DiscordColor.Red,
                     Title = translations.anilist_profile_not_found,
-                    Description = $"{miembro.Mention}, {string.Format(translations.no_anilist_profile_vinculated, miembro.Mention)}.\n\n" +
+                    Description = $"{user.Mention}, {string.Format(translations.no_anilist_profile_vinculated, user.Mention)}.\n\n" +
                                 $"{translations.to_vinculate_anilist_profile}: `/anilist setanilist`",
                 };
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
@@ -835,6 +833,44 @@
                     Color = Constants.YumikoColor
                 };
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
+            }
+        }
+
+        [SlashCommand("recommendatrion", "Auto recommendation based on your list")]
+        [DescriptionLocalization(Localization.Spanish, "Recomendación automática basada en tu lista")]
+        public async Task AutoRecomendation(
+            InteractionContext ctx,
+            [Option("Type", "The type of media")] MediaType type,
+            [Option("User", "The user's recommendation to retrieve")] DiscordUser? user = null)
+        {
+            await ctx.DeferAsync();
+            user ??= ctx.User;
+            var userAnilist = await UsuariosAnilist.GetPerfilAsync(user.Id);
+            if(userAnilist != null)
+            {
+                var recommendationsEmbed = await AnilistServices.GetUserRecommendationsAsync(ctx, type, userAnilist.AnilistId);
+                if (recommendationsEmbed != null) 
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(recommendationsEmbed));
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                    {
+                        Title = translations.error,
+                        Description = translations.unknown_error,
+                        Color = DiscordColor.Red
+                    }));
+                }
+            }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                {
+                    Title = translations.error,
+                    Description = translations.anilist_profile_not_found,
+                    Color = DiscordColor.Red
+                }));
             }
         }
     }

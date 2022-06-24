@@ -125,8 +125,7 @@
             }
             catch (Exception e)
             {
-                var context = ctx;
-                await Common.GrabarLogErrorAsync(context, $"Error in AnilistUtils - GetAnilistMedia, type: {type.GetName()}\nError: {e.Message}");
+                await Common.GrabarLogErrorAsync(ctx, $"Error in AnilistUtils - GetAnilistMedia, type: {type.GetName()}\nError: {e.Message}");
                 return new()
                 {
                     Ok = false,
@@ -296,7 +295,6 @@
 
         public static async Task<DiscordEmbedBuilder?> GetInfoMediaUser(InteractionContext ctx, int anilistId, int mediaId)
         {
-            var context = ctx;
             var requestPers = new GraphQLRequest
             {
                 Query =
@@ -458,7 +456,174 @@
             {
                 if (ex.Message != "The HTTP request failed with status code NotFound")
                 {
-                    await Common.GrabarLogErrorAsync(context, $"Error in GetPersMedia: {ex.Message}\n```{ex.StackTrace}```");
+                    await Common.GrabarLogErrorAsync(ctx, $"Error in GetPersMedia: {ex.Message}\n```{ex.StackTrace}```");
+                }
+            }
+
+            return null;
+        }
+
+        public static async Task<DiscordEmbedBuilder?> GetUserRecommendationsAsync(InteractionContext ctx, MediaType type, int anilistUserId)
+        {
+            var requestPers = new GraphQLRequest
+            {
+                Query =
+                    "query ($id: Int) {" +
+                    "   User(id: $id) {" +
+                    "       options {" +
+                    "           titleLanguage" +
+                    "       }," +
+                    "       statistics {" +
+                    "           anime {" +
+                    "               meanScore," +
+                    "               standardDeviation" +
+                    "           }," +
+                    "           manga {" +
+                    "               meanScore," +
+                    "               standardDeviation" +
+                    "           }" +
+                    "       }" +
+                    "   }" +
+                    "   MediaListCollection(userId: $id, type: " + type.GetName() + ", status_not_in: [PLANNING], forceSingleCompletedList: true) {" +
+                    "       lists {" +
+                    "           entries {" +
+                    "               mediaId," +
+                    "               score(format: POINT_100)," +
+                    "               status" +
+                    "               media {" +
+                    "                   recommendations(sort: RATING_DESC, perPage: 5) {" +
+                    "                       nodes {" +
+                    "                           rating," +
+                    "                           mediaRecommendation {" +
+                    "                               id," +
+                    "                               title {" +
+                    "                                   romaji," +
+                    "                                   english" +
+                    "                               }" +
+                    "                           }" +
+                    "                       }" +
+                    "                   }" +
+                    "               }" +
+                    "           }" +
+                    "       }" +
+                    "   }" +
+                    "}",
+                Variables = new
+                {
+                    id = anilistUserId
+                }
+            };
+            try
+            {
+                var data = await GraphQlClient.SendQueryAsync<dynamic>(requestPers);
+                if (data.Data != null)
+                {
+                    List<AnimeRecommendation> recommendations = new();
+                    dynamic userData = data.Data.User;
+                    string titleLanguage = userData.options.titleLanguage;
+                    decimal meanScore;
+                    decimal standardDeviation;
+                    switch (type)
+                    {
+                        case MediaType.ANIME:
+                            meanScore = userData.statistics.anime.meanScore;
+                            standardDeviation = userData.statistics.anime.standardDeviation;
+                            break;
+                        case MediaType.MANGA:
+                            meanScore = userData.statistics.manga.meanScore;
+                            standardDeviation = userData.statistics.manga.standardDeviation;
+                            break;
+                        default:
+                            throw new ArgumentException("Programming error");
+                    }
+
+                    dynamic mediaListsData = data.Data.MediaListCollection.lists;
+
+                    List<int> mediaListIds = new();
+                    foreach (var list in mediaListsData)
+                    {
+                        foreach (var entry in list.entries)
+                        {
+                            int id = entry.mediaId;
+                            mediaListIds.Add(id);
+                        }
+                    }
+
+                    foreach (var list in mediaListsData)
+                    {
+                        foreach (var entry in list.entries)
+                        {
+                            decimal mediaScore = entry.score;
+                            if (mediaScore > 0) // Filter entries without score
+                            {
+                                decimal adjustedScore = (mediaScore - meanScore) / standardDeviation;
+                                foreach (var node in entry.media.recommendations.nodes)
+                                {
+                                    if (node.mediaRecommendation != null && node.mediaRecommendation.id != null) // Filter entries without recommendations
+                                    {
+                                        int nodeId = node.mediaRecommendation.id;
+                                        string nodeTitle;
+                                        if (titleLanguage == "ENGLISH" && node.mediaRecommendation.title.english != null)
+                                        {
+                                            nodeTitle = node.mediaRecommendation.title.english;
+                                        }
+                                        else
+                                        {
+                                            nodeTitle = node.mediaRecommendation.title.romaji;
+                                        }
+                                        
+                                        int nodeRating = node.rating;
+                                        if (!mediaListIds.Contains(nodeId) && nodeRating > 0) // Filter entries alredy on list and without rating
+                                        {
+                                            if (!recommendations.Where(x => x.Id == nodeId).Any())
+                                            {
+                                                recommendations.Add(new()
+                                                {
+                                                    Id = nodeId,
+                                                    Title = nodeTitle
+                                                });
+                                            }
+
+                                            var rec = recommendations.First(x => x.Id == nodeId);
+                                            rec.Score += adjustedScore * (2 - 1 / nodeRating);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    var sorted = recommendations.OrderByDescending(x => x.Score).Take(25).Where(y => y.Score >= 3).ToList();
+
+                    if (sorted.Count == 0)
+                    {
+                        return new DiscordEmbedBuilder
+                        {
+                            Title = translations.error,
+                            Description = translations.no_recommendations_found,
+                            Color = DiscordColor.Red
+                        };
+                    }
+
+                    string desc = string.Empty;
+                    foreach (var item in sorted)
+                    {
+                        desc += $"**{item.Score:##.##}** - [{item.Title}](https://anilist.co/{type.GetName().ToLower()}/{item.Id}/)\n";
+                    }
+
+                    return new DiscordEmbedBuilder
+                    {
+                        Title = string.Format(translations.media_recommendations, type.GetName().UppercaseFirst(), ctx.User.FullName()),
+                        Description = desc,
+                        Color = Constants.YumikoColor
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message != "The HTTP request failed with status code NotFound")
+                {
+                    await Common.GrabarLogErrorAsync(ctx, $"Error in GetUserRecommendationsAsync: {ex.Message}\n```{ex.StackTrace}```");
                 }
             }
 

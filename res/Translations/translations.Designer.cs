@@ -1033,6 +1033,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} recommendations for {1}.
+        /// </summary>
+        public static string media_recommendations {
+            get {
+                return ResourceManager.GetString("media_recommendations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}&apos;s avatar.
         /// </summary>
         public static string member_avatar {
@@ -1254,6 +1263,15 @@ namespace Yumiko {
         public static string no_logs_found {
             get {
                 return ResourceManager.GetString("no_logs_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No recommendations were found.
+        /// </summary>
+        public static string no_recommendations_found {
+            get {
+                return ResourceManager.GetString("no_recommendations_found", resourceCulture);
             }
         }
         
