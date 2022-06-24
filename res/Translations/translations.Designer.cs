@@ -313,6 +313,24 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No command were used.
+        /// </summary>
+        public static string commands_not_used {
+            get {
+                return ResourceManager.GetString("commands_not_used", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commands used.
+        /// </summary>
+        public static string commands_used {
+            get {
+                return ResourceManager.GetString("commands_used", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm that you want to delete your profile.
         /// </summary>
         public static string confirm_delete_profile {
@@ -1033,11 +1051,20 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} recommendations for {1}.
+        ///   Looks up a localized string similar to {0} recommendations.
         /// </summary>
         public static string media_recommendations {
             get {
                 return ResourceManager.GetString("media_recommendations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Explanation: The higher the number, the more likely you are to like it. Recommendations are calculated based on your watched {0}s and the scores you have assigned to them..
+        /// </summary>
+        public static string media_recommendations_explanation {
+            get {
+                return ResourceManager.GetString("media_recommendations_explanation", resourceCulture);
             }
         }
         
@@ -1267,7 +1294,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No recommendations were found.
+        ///   Looks up a localized string similar to No recommendations were found.\nThis is probably because you have few entries in your list or do not have a score assigned to them..
         /// </summary>
         public static string no_recommendations_found {
             get {
@@ -2019,6 +2046,15 @@ namespace Yumiko {
         public static string user_won_the_game {
             get {
                 return ResourceManager.GetString("user_won_the_game", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uses.
+        /// </summary>
+        public static string uses {
+            get {
+                return ResourceManager.GetString("uses", resourceCulture);
             }
         }
         

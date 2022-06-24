@@ -234,7 +234,7 @@
                 quizRound.Matches = SetupMatchesTrivia(settings.Gamemode, elegido);
                 quizRound.Matches = quizRound.Matches.Select(x => x.ToLower()).ToList();
                 singleton.UpdateCurrentRoundTrivia(ctx.Guild.Id, ctx.Channel.Id, quizRound);
-                desc = Common.NormalizarDescription(desc);
+                desc = desc.NormalizeDescription();
 
                 for (int cont = 0; cont <= timeoutGames * 10; cont++)
                 {
@@ -412,10 +412,15 @@
         {
             string game = gamemode.ToSpanish();
 
-            string facil = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, game, "Fácil"));
-            string media = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, game, "Media"));
-            string dificil = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, game, "Dificil"));
-            string extremo = Common.NormalizarField(await GetEstadisticasDificultadAsync(ctx, game, "Extremo"));
+            string facil = await GetEstadisticasDificultadAsync(ctx, game, "Fácil");
+            string media = await GetEstadisticasDificultadAsync(ctx, game, "Media");
+            string dificil = await GetEstadisticasDificultadAsync(ctx, game, "Dificil");
+            string extremo = await GetEstadisticasDificultadAsync(ctx, game, "Extremo");
+
+            facil = facil.NormalizeField();
+            media = media.NormalizeField();
+            dificil = dificil.NormalizeField();
+            extremo = extremo.NormalizeField();
 
             string juegoMostrar;
             if (ctx.Interaction.Locale!.StartsWith("es"))
@@ -1355,7 +1360,7 @@
                 }
 
                 iter++;
-                options.Add(new DiscordSelectComponentOption(Common.NormalizarBoton(nomGenero), $"{iter}"));
+                options.Add(new DiscordSelectComponentOption(nomGenero.NormalizeButton(), $"{iter}"));
             }
 
             var dropdown = new DiscordSelectComponent(customId, translations.select_a_genre, options);

@@ -201,6 +201,12 @@
   <data name="color" xml:space="preserve">
     <value>Color</value>
   </data>
+  <data name="commands_not_used" xml:space="preserve">
+    <value>No se ha utilizado ningún comando</value>
+  </data>
+  <data name="commands_used" xml:space="preserve">
+    <value>Comandos usados</value>
+  </data>
   <data name="confirm_delete_profile" xml:space="preserve">
     <value>Confirma que quieres eliminar tu perfil</value>
   </data>
@@ -442,7 +448,10 @@
     <value>Puntuación media</value>
   </data>
   <data name="media_recommendations" xml:space="preserve">
-    <value>Recomendaciones de {0} para {1}</value>
+    <value>Recomendaciones de {0}</value>
+  </data>
+  <data name="media_recommendations_explanation" xml:space="preserve">
+    <value>Explicación: Mientras mas alto sea el número es más probable que te guste. Las recomendaciones son calculadas en base a tus {0}s vistos y las puntuaciones que les has asignado.</value>
   </data>
   <data name="member_avatar" xml:space="preserve">
     <value>Avatar de {0}</value>
@@ -532,7 +541,7 @@
     <value>No se han encontrado logs</value>
   </data>
   <data name="no_recommendations_found" xml:space="preserve">
-    <value>No se encontró ninguna recomendación</value>
+    <value>No se encontró ninguna recomendación.\nProbablemente sucede esto porque tienes pocos registros en tu lista o no les tengas una puntuación asignada.</value>
   </data>
   <data name="no_results_found_image" xml:space="preserve">
     <value>No se encontraron resultados para esta imagen</value>
@@ -764,6 +773,9 @@
   </data>
   <data name="user_won_the_game" xml:space="preserve">
     <value>{0} ganó la partida</value>
+  </data>
+  <data name="uses" xml:space="preserve">
+    <value>Usos</value>
   </data>
   <data name="use_command_in_nsfw_channel" xml:space="preserve">
     <value>por favor usa este comando en un canal con restricción de edad</value>

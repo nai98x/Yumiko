@@ -10,9 +10,11 @@
         private Singleton()
         {
             CurrentTrivias = new();
+            CommandsUsed = new();
         }
 
         public List<Quiz> CurrentTrivias { get; set; }
+        public List<CommandUse> CommandsUsed { get; set; }
 
         public static Singleton GetInstance()
         {
@@ -51,6 +53,28 @@
             if (trivia != null)
             {
                 trivia.CurrentRound = updatedRound;
+            }
+        }
+
+        public List<CommandUse> GetUsedCommands()
+        {
+            return CommandsUsed;
+        }
+
+        public void UpdateCommandUsed(string commandName)
+        {
+            CommandUse? commandUsed = CommandsUsed.Find(x => x.CommandName == commandName);
+            if(commandUsed != null)
+            {
+                commandUsed.Uses++;
+            }
+            else
+            {
+                CommandsUsed.Add(new()
+                {
+                    CommandName = commandName,
+                    Uses = 1
+                });
             }
         }
     }

@@ -201,6 +201,12 @@
   <data name="color" xml:space="preserve">
     <value>Color</value>
   </data>
+  <data name="commands_not_used" xml:space="preserve">
+    <value>No command were used</value>
+  </data>
+  <data name="commands_used" xml:space="preserve">
+    <value>Commands used</value>
+  </data>
   <data name="confirm_delete_profile" xml:space="preserve">
     <value>Confirm that you want to delete your profile</value>
   </data>
@@ -442,7 +448,10 @@
     <value>Mean score</value>
   </data>
   <data name="media_recommendations" xml:space="preserve">
-    <value>{0} recommendations for {1}</value>
+    <value>{0} recommendations</value>
+  </data>
+  <data name="media_recommendations_explanation" xml:space="preserve">
+    <value>Explanation: The higher the number, the more likely you are to like it. Recommendations are calculated based on your watched {0}s and the scores you have assigned to them.</value>
   </data>
   <data name="member_avatar" xml:space="preserve">
     <value>{0}'s avatar</value>
@@ -532,7 +541,7 @@
     <value>No logs found</value>
   </data>
   <data name="no_recommendations_found" xml:space="preserve">
-    <value>No recommendations were found</value>
+    <value>No recommendations were found.\nThis is probably because you have few entries in your list or do not have a score assigned to them.</value>
   </data>
   <data name="no_results_found_image" xml:space="preserve">
     <value>No results found for this image</value>
@@ -767,6 +776,9 @@
   </data>
   <data name="user_won_the_game" xml:space="preserve">
     <value>{0} has won the game</value>
+  </data>
+  <data name="uses" xml:space="preserve">
+    <value>Uses</value>
   </data>
   <data name="use_command_in_nsfw_channel" xml:space="preserve">
     <value>please use this command in a age-restricted channel</value>

@@ -245,8 +245,8 @@
 
         private static Task SlashCommands_SlashCommandExecuted(SlashCommandsExtension sender, SlashCommandExecutedEventArgs e)
         {
-            string args = LogUtils.GetSlashCommandArgs(e);
-            sender.Client.Logger.LogInformation("Slash command executed: {args}", args);
+            sender.Client.Logger.LogInformation("Slash command executed: {args}", LogUtils.GetSlashCommandArgs(e, true));
+            Singleton.GetInstance().UpdateCommandUsed(LogUtils.GetSlashCommandArgs(e, false));
             return Task.CompletedTask;
         }
 

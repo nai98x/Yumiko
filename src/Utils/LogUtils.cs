@@ -5,13 +5,13 @@ namespace Yumiko.Utils
 {
     public static class LogUtils
     {
-        public static string GetSlashCommandArgs(SlashCommandExecutedEventArgs e)
+        public static string GetSlashCommandArgs(SlashCommandExecutedEventArgs e, bool parameters)
         {
             string options = string.Empty;
             var args = e.Context.Interaction.Data.Options;
             if (args != null)
             {
-                options = GetCommandArgs(args, false);
+                options = GetCommandArgs(args, false, parameters);
             }
 
             return $"/{e.Context.CommandName} {options}";
@@ -30,7 +30,7 @@ namespace Yumiko.Utils
             var args = e.Context.Interaction.Data.Options;
             if (args != null)
             {
-                options = GetCommandArgs(args, true);
+                options = GetCommandArgs(args, true, true);
             }
 
             builder.AddField("Command", $"/{e.Context.CommandName} {options}", false);
@@ -38,7 +38,7 @@ namespace Yumiko.Utils
             return builder;
         }
 
-        private static string GetCommandArgs(IEnumerable<DiscordInteractionDataOption> args, bool format)
+        private static string GetCommandArgs(IEnumerable<DiscordInteractionDataOption> args, bool format, bool parameters)
         {
             string options = string.Empty;
 
@@ -49,26 +49,32 @@ namespace Yumiko.Utils
                     options += $"{arg.Name} ";
                     foreach (var arg2 in arg.Options)
                     {
-                        if (format)
+                        if (parameters && arg2.Type is not ApplicationCommandOptionType.SubCommand && arg2.Type is not ApplicationCommandOptionType.SubCommandGroup)
                         {
-                            options += $"{Formatter.InlineCode($"{arg2.Name}: {arg2.Value}")} ";
-                        }
-                        else
-                        {
-                            options += $"[{arg2.Name}: {arg2.Value}] ";
+                            if (format)
+                            {
+                                options += $"{Formatter.InlineCode($"{arg2.Name}: {arg2.Value}")} ";
+                            }
+                            else
+                            {
+                                options += $"[{arg2.Name}: {arg2.Value}] ";
+                            }
                         }
                     }
                 }
                 else
                 {
-                    if (format)
+                    if (parameters && arg.Type is not ApplicationCommandOptionType.SubCommand && arg.Type is not ApplicationCommandOptionType.SubCommandGroup)
                     {
-                        options += $"{Formatter.InlineCode($"{arg.Name}: {arg.Value}")} ";
-                    }
-                    else
-                    {
-                        options += $"[{arg.Name}: {arg.Value}] ";
-                    }
+                        if (format)
+                        {
+                            options += $"{Formatter.InlineCode($"{arg.Name}: {arg.Value}")} ";
+                        }
+                        else
+                        {
+                            options += $"[{arg.Name}: {arg.Value}] ";
+                        }
+                    } 
                 }
             }
 

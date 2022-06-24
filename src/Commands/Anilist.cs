@@ -423,16 +423,16 @@
                         Description = media.Descripcion
                     };
 
-                    if (!string.IsNullOrEmpty(media.Episodios)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} {translations.episodes}", Common.NormalizarField(media.Episodios), true);
-                    if (!string.IsNullOrEmpty(media.Formato)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} {translations.format}", Common.NormalizarField(media.Formato), true);
-                    if (!string.IsNullOrEmpty(media.Estado)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} {translations.status}", Common.NormalizarField(media.Estado.ToLower().ToUpperFirst()), true);
-                    if (!string.IsNullOrEmpty(media.Score)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} {translations.score}", Common.NormalizarField(media.Score), false);
-                    if (!string.IsNullOrEmpty(media.Fechas)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} {translations.start_date}", Common.NormalizarField(media.Fechas), false);
-                    if (!string.IsNullOrEmpty(media.Generos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} {translations.genres}", Common.NormalizarField(media.Generos), false);
-                    if (!string.IsNullOrEmpty(media.Tags)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} {translations.genres}", Common.NormalizarField(media.Tags), false);
-                    if (!string.IsNullOrEmpty(titulos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} {translations.synonyms}", Common.NormalizarField(titulos), false);
-                    if (!string.IsNullOrEmpty(media.Estudios)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} {translations.studios}", Common.NormalizarField(media.Estudios), false);
-                    if (!string.IsNullOrEmpty(media.LinksExternos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} {translations.external_links}", Common.NormalizarField(media.LinksExternos), false);
+                    if (!string.IsNullOrEmpty(media.Episodios)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} {translations.episodes}", media.Episodios.NormalizeField(), true);
+                    if (!string.IsNullOrEmpty(media.Formato)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} {translations.format}", media.Formato.NormalizeField(), true);
+                    if (!string.IsNullOrEmpty(media.Estado)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} {translations.status}", media.Estado.ToLower().ToUpperFirst().NormalizeField(), true);
+                    if (!string.IsNullOrEmpty(media.Score)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} {translations.score}", media.Score.NormalizeField(), false);
+                    if (!string.IsNullOrEmpty(media.Fechas)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} {translations.start_date}", media.Fechas.NormalizeField(), false);
+                    if (!string.IsNullOrEmpty(media.Generos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} {translations.genres}", media.Generos.NormalizeField(), false);
+                    if (!string.IsNullOrEmpty(media.Tags)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} {translations.genres}", media.Tags.NormalizeField(), false);
+                    if (!string.IsNullOrEmpty(titulos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} {translations.synonyms}", titulos.NormalizeField(), false);
+                    if (!string.IsNullOrEmpty(media.Estudios)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} {translations.studios}", media.Estudios.NormalizeField(), false);
+                    if (!string.IsNullOrEmpty(media.LinksExternos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} {translations.external_links}", media.LinksExternos.NormalizeField(), false);
 
                     DiscordWebhookBuilder whbuilder = new();
                     whbuilder.AddEmbed(builder);
@@ -493,14 +493,14 @@
                         Description = media.Descripcion,
                     };
 
-                    if (!string.IsNullOrEmpty(media.Chapters)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} {translations.chapters}", Common.NormalizarField(media.Chapters), true);
-                    if (!string.IsNullOrEmpty(media.Formato)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} {translations.format}", Common.NormalizarField(media.Formato), true);
-                    if (!string.IsNullOrEmpty(media.Estado)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} {translations.status}", Common.NormalizarField(media.Estado.ToLower().ToUpperFirst()), true);
-                    if (!string.IsNullOrEmpty(media.Score)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} {translations.score}", Common.NormalizarField(media.Score), true);
-                    if (!string.IsNullOrEmpty(media.Fechas)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} {translations.publication_date}", Common.NormalizarField(media.Fechas), false);
-                    if (!string.IsNullOrEmpty(media.Generos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} {translations.genres}", Common.NormalizarField(media.Generos), false);
-                    if (!string.IsNullOrEmpty(media.Tags)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} {translations.tags}", Common.NormalizarField(media.Tags), false);
-                    if (!string.IsNullOrEmpty(titulos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} {translations.synonyms}", Common.NormalizarField(titulos), false);
+                    if (!string.IsNullOrEmpty(media.Chapters)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} {translations.chapters}", media.Chapters.NormalizeField(), true);
+                    if (!string.IsNullOrEmpty(media.Formato)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} {translations.format}", media.Formato.NormalizeField(), true);
+                    if (!string.IsNullOrEmpty(media.Estado)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} {translations.status}", media.Estado.ToLower().ToUpperFirst().NormalizeField(), true);
+                    if (!string.IsNullOrEmpty(media.Score)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} {translations.score}", media.Score.NormalizeField(), true);
+                    if (!string.IsNullOrEmpty(media.Fechas)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} {translations.publication_date}", media.Fechas.NormalizeField(), false);
+                    if (!string.IsNullOrEmpty(media.Generos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} {translations.genres}", media.Generos.NormalizeField(), false);
+                    if (!string.IsNullOrEmpty(media.Tags)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} {translations.tags}", media.Tags.NormalizeField(), false);
+                    if (!string.IsNullOrEmpty(titulos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} {translations.synonyms}", titulos.NormalizeField(), false);
 
                     DiscordWebhookBuilder whbuilder = new();
                     whbuilder.AddEmbed(builder);
@@ -619,7 +619,7 @@
                     {
                         var datos = data.Data.Page.characters[elegido - 1];
                         string descripcion = datos.description;
-                        descripcion = Common.NormalizarDescription(Common.LimpiarTexto(descripcion));
+                        descripcion = Common.LimpiarTexto(descripcion).NormalizeDescription();
                         if (descripcion == string.Empty)
                         {
                             descripcion = translations.without_description;
@@ -653,12 +653,12 @@
                         };
                         if (animes != null && animes.Length > 0)
                         {
-                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes", Common.NormalizarField(animes), false);
+                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes", animes.NormalizeField(), false);
                         }
 
                         if (mangas != null && mangas.Length > 0)
                         {
-                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas", Common.NormalizarField(mangas), false);
+                            builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas", mangas.NormalizeField(), false);
                         }
 
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
@@ -837,7 +837,7 @@
         }
 
         [SlashCommand("recommendation", "Auto recommendation based on your list")]
-        [NameLocalization (Localization.Spanish, "recomendar")]
+        [NameLocalization(Localization.Spanish, "recomendar")]
         [DescriptionLocalization(Localization.Spanish, "Recomendación automática basada en tu lista")]
         public async Task AutoRecomendation(
             InteractionContext ctx,
@@ -847,10 +847,10 @@
             await ctx.DeferAsync();
             user ??= ctx.User;
             var userAnilist = await UsuariosAnilist.GetPerfilAsync(user.Id);
-            if(userAnilist != null)
+            if (userAnilist != null)
             {
                 var recommendationsEmbed = await AnilistServices.GetUserRecommendationsAsync(ctx, user, type, userAnilist.AnilistId);
-                if (recommendationsEmbed != null) 
+                if (recommendationsEmbed != null)
                 {
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(recommendationsEmbed));
                 }

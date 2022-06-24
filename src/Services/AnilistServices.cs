@@ -190,7 +190,7 @@
                 media.Id = int.Parse(idStr);
                 media.IsAdult = bool.Parse(isadult);
                 media.Descripcion = datos.description;
-                media.Descripcion = Common.NormalizarDescription(Common.LimpiarTexto(media.Descripcion));
+                media.Descripcion = Common.LimpiarTexto(media.Descripcion).NormalizeDescription();
                 if (media.Descripcion == string.Empty)
                 {
                     media.Descripcion = translations.without_description;
@@ -367,7 +367,7 @@
                     var builderPers = new DiscordEmbedBuilder
                     {
                         Title = $"{translations.stats}: {nameAl}",
-                        Description = Common.NormalizarDescription($"**{translations.notes}**\n" + notas),
+                        Description = $"**{translations.notes}**\n {notas}".NormalizeDescription(),
                         Color = Constants.YumikoColor,
                     }.WithThumbnail(avatarAl);
 
@@ -470,6 +470,11 @@
                 Query =
                     "query ($id: Int) {" +
                     "   User(id: $id) {" +
+                    "       name," +
+                    "       avatar {" +
+                    "           medium" +
+                    "       }," +
+                    "       siteUrl," +
                     "       options {" +
                     "           titleLanguage" +
                     "       }," +
@@ -520,6 +525,9 @@
                 {
                     List<AnimeRecommendation> recommendations = new();
                     dynamic userData = data.Data.User;
+                    string userName = userData.name;
+                    string userAvatar = userData.avatar.medium;
+                    string userUrl = userData.siteUrl;
                     string titleLanguage = userData.options.titleLanguage;
                     decimal meanScore;
                     decimal standardDeviation;
@@ -571,7 +579,7 @@
                                         {
                                             nodeTitle = node.mediaRecommendation.title.romaji;
                                         }
-                                        
+
                                         int nodeRating = node.rating;
                                         if (!mediaListIds.Contains(nodeId) && nodeRating > 0) // Filter entries alredy on list and without rating
                                         {
@@ -593,7 +601,7 @@
                         }
                     }
 
-                    var sorted = recommendations.OrderByDescending(x => x.Score).Take(25).Where(y => y.Score >= 3).ToList();
+                    var sorted = recommendations.OrderByDescending(x => x.Score).Where(y => y.Score >= 3).ToList();
 
                     if (sorted.Count == 0)
                     {
@@ -601,7 +609,17 @@
                         {
                             Title = translations.error,
                             Description = translations.no_recommendations_found,
-                            Color = DiscordColor.Red
+                            Color = DiscordColor.Red, 
+                            Author = new()
+                            {
+                                IconUrl = userAvatar,
+                                Name = userName,
+                                Url = userUrl
+                            },
+                            Thumbnail = new()
+                            {
+                                Url = user.AvatarUrl
+                            }
                         };
                     }
 
@@ -613,9 +631,24 @@
 
                     return new DiscordEmbedBuilder
                     {
-                        Title = string.Format(translations.media_recommendations, type.GetName().UppercaseFirst(), user.FullName()),
-                        Description = desc,
-                        Color = Constants.YumikoColor
+                        Title = string.Format(translations.media_recommendations, type.GetName().UppercaseFirst()),
+                        Description = desc.NormalizeDescriptionNewLine(),
+                        Color = Constants.YumikoColor,
+                        Footer = new()
+                        {
+                            Text = string.Format(translations.media_recommendations_explanation, type.GetName().ToLower()),
+                            IconUrl = Constants.AnilistAvatarUrl
+                        },
+                        Author = new()
+                        {
+                            IconUrl = userAvatar,
+                            Name = userName,
+                            Url = userUrl
+                        },
+                        Thumbnail = new()
+                        {
+                            Url = user.AvatarUrl
+                        }
                     };
                 }
             }

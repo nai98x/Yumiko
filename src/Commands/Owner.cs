@@ -158,6 +158,31 @@
             }
         }
 
+        [SlashCommand("commands", "Shows the commands used since startup")]
+        [NameLocalization(Localization.Spanish, "comandos")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra los comandos usados desde que se inicializó el bot")]
+        public async Task CommandsUsed(InteractionContext ctx)
+        {
+            await ctx.DeferAsync();
+            string desc = string.Empty;
+            Singleton.GetInstance().GetUsedCommands().OrderByDescending(x => x.Uses).ToList().ForEach(command =>
+            {
+                desc += $"{Formatter.Bold(command.CommandName)} - {translations.uses}: {command.Uses}\n";
+            });
+
+            if (string.IsNullOrEmpty(desc))
+            {
+                desc = translations.commands_not_used;
+            }
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+            {
+                Title = translations.commands_used,
+                Description = desc.NormalizeDescription(),
+                Color = Constants.YumikoColor
+            }));
+        }
+
         [SlashCommand("logs", "Shows the lastest log file")]
         [DescriptionLocalization(Localization.Spanish, "Muestra el último archivo de log")]
         public async Task Logs(InteractionContext ctx)

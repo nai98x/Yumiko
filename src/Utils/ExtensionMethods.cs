@@ -57,5 +57,64 @@
                 Position = 0,
             };
         }
+
+        public static string NormalizeField(this string s)
+        {
+            if (s.Length > 1024)
+            {
+                string aux = s.Remove(1024);
+                int index = aux.LastIndexOf('[');
+                if (index != -1)
+                {
+                    return aux.Remove(aux.LastIndexOf('[')) + "...";
+                }
+                else
+                {
+                    return aux.Remove(aux.Length - 4) + " ...";
+                }
+            }
+
+            return s;
+        }
+
+        public static string NormalizeButton(this string s)
+        {
+            if (s.Length > 80)
+            {
+                return s.Remove(76) + " ...";
+            }
+
+            return s;
+        }
+
+        public static string NormalizeDescription(this string s)
+        {
+            if (s.Length > 4096)
+            {
+                string aux = s.Remove(4096);
+                int index = aux.LastIndexOf('[');
+                if (index != -1)
+                {
+                    return aux.Remove(aux.LastIndexOf('[')) + "...";
+                }
+                else
+                {
+                    return aux.Remove(aux.Length - 4) + " ...";
+                }
+            }
+
+            return s;
+        }
+
+        public static string NormalizeDescriptionNewLine(this string s)
+        {
+            if (s.Length > 4096)
+            {
+                string aux = s.Remove(4096);
+                return aux.Remove(aux.LastIndexOf("\n"));
+            }
+
+            return s;
+        }
     }
 }

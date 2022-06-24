@@ -54,7 +54,7 @@
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"{translations.about} {ctx.Client.CurrentUser.Username}",
-                Description = Common.NormalizarDescription(description),
+                Description = description.NormalizeDescription(),
                 Color = Constants.YumikoColor,
             };
 

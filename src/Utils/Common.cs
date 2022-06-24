@@ -63,54 +63,6 @@
             return rnd.Next(minValue: min, maxValue: max);
         }
 
-        public static string NormalizarField(string s)
-        {
-            if (s.Length > 1024)
-            {
-                string aux = s.Remove(1024);
-                int index = aux.LastIndexOf('[');
-                if (index != -1)
-                {
-                    return aux.Remove(aux.LastIndexOf('[')) + "...";
-                }
-                else
-                {
-                    return aux.Remove(aux.Length - 4) + " ...";
-                }
-            }
-
-            return s;
-        }
-
-        public static string NormalizarBoton(string s)
-        {
-            if (s.Length > 80)
-            {
-                return s.Remove(76) + " ...";
-            }
-
-            return s;
-        }
-
-        public static string NormalizarDescription(string s)
-        {
-            if (s.Length > 4096)
-            {
-                string aux = s.Remove(4096);
-                int index = aux.LastIndexOf('[');
-                if (index != -1)
-                {
-                    return aux.Remove(aux.LastIndexOf('[')) + "...";
-                }
-                else
-                {
-                    return aux.Remove(aux.Length - 4) + " ...";
-                }
-            }
-
-            return s;
-        }
-
         public static DiscordEmoji? ToEmoji(string text)
         {
             text = text.Trim();
@@ -214,7 +166,7 @@
                 if (i < 25 && opc.Title != null)
                 {
                     i++;
-                    options.Add(new DiscordSelectComponentOption(NormalizarBoton(opc.Title), $"{i}", opc.Description));
+                    options.Add(new DiscordSelectComponentOption(opc.Title.NormalizeButton(), $"{i}", opc.Description));
                 }
             });
 

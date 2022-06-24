@@ -237,8 +237,8 @@
                 var elegido1 = lista[random1];
                 var elegido2 = lista[random2];
 
-                DiscordButtonComponent button1 = new(ButtonStyle.Primary, $"{elegido1.Id}", $"{Common.NormalizarBoton(elegido1.TitleRomaji)}");
-                DiscordButtonComponent button2 = new(ButtonStyle.Primary, $"{elegido2.Id}", $"{Common.NormalizarBoton(elegido2.TitleRomaji)}");
+                DiscordButtonComponent button1 = new(ButtonStyle.Primary, $"{elegido1.Id}", $"{elegido1.TitleRomaji.NormalizeButton()}");
+                DiscordButtonComponent button2 = new(ButtonStyle.Primary, $"{elegido2.Id}", $"{elegido2.TitleRomaji.NormalizeButton()}");
                 DiscordButtonComponent buttonc = new(ButtonStyle.Danger, $"hol-cancel", translations.finish_game);
 
                 var msgBuilder = new DiscordFollowupMessageBuilder().AddComponents(button1, button2, buttonc);
