@@ -21,6 +21,7 @@
       "errors": "TESTING_ERRORS_CHANNEL_ID"
     }
   },
+  "anilist_api_client_id": "ANILIST_API_CLIENT_ID",
   "topgg_enabled": "true_OR_false",
   "timeouts": {
     "general": "TIMEOUT_IN_SECONDS",

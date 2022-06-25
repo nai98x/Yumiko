@@ -32,6 +32,7 @@
                 Configurations.LogginProductionErrors => config.GetValue<T>("loggin:production:errors"),
                 Configurations.LogginTestingGuilds => config.GetValue<T>("loggin:testing:guilds"),
                 Configurations.LogginTestingErrors => config.GetValue<T>("loggin:testing:errors"),
+                Configurations.AnilistApiClientId => config.GetValue<T>("anilist_api_client_id"),
                 Configurations.TopggEnabled => config.GetValue<T>("topgg_enabled"),
                 Configurations.TimeoutGeneral => config.GetValue<T>("timeouts:general"),
                 Configurations.TimeoutGames => config.GetValue<T>("timeouts:games"),

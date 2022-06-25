@@ -74,7 +74,7 @@ namespace Yumiko.Utils
                         {
                             options += $"[{arg.Name}: {arg.Value}] ";
                         }
-                    } 
+                    }
                 }
             }
 

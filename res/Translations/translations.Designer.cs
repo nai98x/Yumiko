@@ -124,6 +124,51 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to **Instructions**.
+        /// </summary>
+        public static string anilist_setprofile_instructions {
+            get {
+                return ResourceManager.GetString("anilist_setprofile_instructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1- Click on the **Authorize** button.
+        /// </summary>
+        public static string anilist_setprofile_instructions_1 {
+            get {
+                return ResourceManager.GetString("anilist_setprofile_instructions_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2- Once the web page opens, click on the **Authorize** green button and then copy the text that will appear to copy.
+        /// </summary>
+        public static string anilist_setprofile_instructions_2 {
+            get {
+                return ResourceManager.GetString("anilist_setprofile_instructions_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3- Close the web page and click on the **Paste code here** button.
+        /// </summary>
+        public static string anilist_setprofile_instructions_3 {
+            get {
+                return ResourceManager.GetString("anilist_setprofile_instructions_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4- Paste the code in the modal and submit it.
+        /// </summary>
+        public static string anilist_setprofile_instructions_4 {
+            get {
+                return ResourceManager.GetString("anilist_setprofile_instructions_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Animated.
         /// </summary>
         public static string animated {
@@ -183,6 +228,15 @@ namespace Yumiko {
         public static string answer {
             get {
                 return ResourceManager.GetString("answer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorize.
+        /// </summary>
+        public static string authorize {
+            get {
+                return ResourceManager.GetString("authorize", resourceCulture);
             }
         }
         
@@ -300,6 +354,15 @@ namespace Yumiko {
         public static string choose_an_option {
             get {
                 return ResourceManager.GetString("choose_an_option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code.
+        /// </summary>
+        public static string code {
+            get {
+                return ResourceManager.GetString("code", resourceCulture);
             }
         }
         
@@ -1384,6 +1447,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Paste code here.
+        /// </summary>
+        public static string paste_code_here {
+            get {
+                return ResourceManager.GetString("paste_code_here", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Permission required.
         /// </summary>
         public static string permission_required {
@@ -1663,11 +1735,29 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set AniList profile.
+        /// </summary>
+        public static string set_anilist_profile {
+            get {
+                return ResourceManager.GetString("set_anilist_profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string settings {
             get {
                 return ResourceManager.GetString("settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setup your AniList profile.
+        /// </summary>
+        public static string setup_anilist_profile {
+            get {
+                return ResourceManager.GetString("setup_anilist_profile", resourceCulture);
             }
         }
         

@@ -6,6 +6,7 @@
     using GraphQL.Client.Serializer.Newtonsoft;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using RestSharp;
     using System;
     using System.Collections.Generic;
@@ -29,102 +30,164 @@
         [SlashCommand("setprofile", "Sets your AniList profile")]
         [NameLocalization(Localization.Spanish, "asignarperfil")]
         [DescriptionLocalization(Localization.Spanish, "Asigna tu perfil de AniList")]
-        public async Task SetAnilist(InteractionContext ctx, [Option("Profile", "Nickname or URL of your AniList profile (must be public)")] string perfil)
+        public async Task SetAnilist(InteractionContext ctx)
         {
-            await ctx.DeferAsync();
-            var porUrl = Uri.TryCreate(perfil, UriKind.Absolute, out var uriResult)
-                         && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-            if (porUrl)
-            {
-                var match = perfil.Contains("https://anilist.co/user/");
-                if (match)
-                {
-                    var inputUrl = perfil.Trim();
-                    var userName = inputUrl;
-                    if (inputUrl.EndsWith("/"))
-                    {
-                        userName = inputUrl.Remove(inputUrl.Length - 1);
-                    }
+            string anilistApplicationId = ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.AnilistApiClientId);
 
-                    var index = userName.LastIndexOf('/');
-                    perfil = userName[(index + 1)..];
-                }
-                else
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
+                .AsEphemeral(true)
+                .AddEmbed(new DiscordEmbedBuilder
                 {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
-                    {
-                        Title = translations.error,
-                        Description = $"{string.Format(translations.must_enter_anilist_profile_url, ctx.User.Mention)}!\n{translations.example}: https://anilist.co/user/Josh/",
-                        Color = DiscordColor.Red,
-                    }));
-                    return;
-                }
-            }
+                    Title = translations.setup_anilist_profile,
+                    Description =
+                        $"{translations.anilist_setprofile_instructions}:\n\n" +
+                        $"{translations.anilist_setprofile_instructions_1}\n" +
+                        $"{translations.anilist_setprofile_instructions_2}\n" +
+                        $"{translations.anilist_setprofile_instructions_3}\n" +
+                        $"{translations.anilist_setprofile_instructions_4}",
+                    Color = Constants.YumikoColor
+                })
+                .AddComponents(
+                    new DiscordLinkButtonComponent($"https://anilist.co/api/v2/oauth/authorize?client_id={anilistApplicationId}&response_type=token", translations.authorize),
+                    new DiscordButtonComponent(ButtonStyle.Primary, $"modal-anilistprofileset-{ctx.User.Id}", translations.paste_code_here)
+                )
+            );
 
-            var request = new GraphQLRequest
+            DiscordMessage message = await ctx.GetOriginalResponseAsync();
+            var interactivity = ctx.Client.GetInteractivity();
+            var interactivityBtnResult = await interactivity.WaitForButtonAsync(message, TimeSpan.FromMinutes(5));
+
+            if (!interactivityBtnResult.TimedOut)
             {
-                Query =
-                "query($nombre : String){" +
-                "   User(search: $nombre){" +
-                "       siteUrl," +
-                "       id," +
-                "       name" +
-                "   }" +
-                "}",
-                Variables = new
+                var btnInteraction = interactivityBtnResult.Result.Interaction;
+                string modalId = $"modal-{btnInteraction.Id}";
+
+                var modal = new DiscordInteractionResponseBuilder()
+                    .WithCustomId(modalId)
+                    .WithTitle(translations.set_anilist_profile)
+                    .AddComponents(new TextInputComponent(label: translations.code, placeholder: translations.paste_code_here, customId: "AniListToken"));
+
+                await btnInteraction.CreateResponseAsync(InteractionResponseType.Modal, modal);
+
+                var interactivityModalResult = await interactivity.WaitForModalAsync(modalId, TimeSpan.FromMinutes(5));
+
+                if (!interactivityModalResult.TimedOut)
                 {
-                    nombre = perfil,
-                },
-            };
-            try
-            {
-                GraphQLHttpClient graphQlClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
-                var data = await graphQlClient.SendQueryAsync<dynamic>(request);
-                if (data.Data != null)
-                {
-                    string siteurl = data.Data.User.siteUrl;
-                    string name = data.Data.User.name;
-                    string idString = data.Data.User.id;
-                    var idAnilist = int.Parse(idString);
-                    var confirmar = await Common.GetYesNoInteractivityAsync(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), ctx.Client.GetInteractivity(), translations.confirm_save_profile, $"**{translations.your_anilist_profile_is}:**\n\n   **Nickname:** {name}\n   **Url:** {siteurl}");
-                    if (confirmar)
+                    var modalInteraction = interactivityModalResult.Result.Interaction;
+                    string ALToken = interactivityModalResult.Result.Values.First().Value;
+
+                    await modalInteraction.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                    GraphQLHttpClient graphQlCli = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
+                    graphQlCli.HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ALToken}");
+
+                    var request = new GraphQLRequest
                     {
-                        await UsuariosAnilist.SetAnilistAsync(idAnilist, ctx.Member.Id);
-                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed: new DiscordEmbedBuilder
-                        {
-                            Color = DiscordColor.Green,
-                            Title = translations.new_profile_saved,
-                            Description = string.Format(translations.new_profile_saved_mention, ctx.User.Mention),
-                        }));
-                    }
-                    else
+                        Query =
+                            "query {" +
+                            "   Viewer {" +
+                            "       id," +
+                            "       name," +
+                            "       siteUrl," +
+                            "       avatar {" +
+                            "           medium" +
+                            "       }," +
+                            "       bannerImage" +
+                            "   }" +
+                            "}"
+                    };
+                    try
                     {
-                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed: new DiscordEmbedBuilder
+                        var data = await graphQlCli.SendQueryAsync<dynamic>(request);
+                        if (data != null)
                         {
-                            Color = DiscordColor.Red,
-                            Title = translations.action_cancelled,
-                            Description = string.Format(translations.new_profile_cancelled_mention, ctx.User.Mention),
-                        }));
-                    }
-                }
-                else
-                {
-                    if (data.Errors != null)
-                    {
-                        foreach (var x in data.Errors)
-                        {
-                            var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.error}: {x.Message}"));
+                            if (data.Data != null)
+                            {
+                                int id = data.Data.Viewer.id;
+                                string name = data.Data.Viewer.name;
+                                string siteUrl = data.Data.Viewer.siteUrl;
+                                string avatar = data.Data.Viewer.avatar.medium;
+                                string banner = data.Data.Viewer.bannerImage;
+
+                                var newProfileEmbed = new DiscordEmbedBuilder
+                                {
+                                    Color = DiscordColor.Green,
+                                    Title = translations.new_profile_saved,
+                                    Description = string.Format(translations.new_profile_saved_mention, ctx.User.Mention),
+                                    Thumbnail = new()
+                                    {
+                                        Url = avatar
+                                    },
+                                    Author = new()
+                                    {
+                                        Url = siteUrl,
+                                        Name = name,
+                                        IconUrl = ctx.User.AvatarUrl
+                                    }
+                                };
+
+                                if (!string.IsNullOrEmpty(banner))
+                                {
+                                    newProfileEmbed.WithImageUrl(banner);
+                                }
+
+                                await UsuariosAnilist.SetAnilistAsync(id, ctx.Member.Id);
+                                await modalInteraction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder().AsEphemeral(false).AddEmbed(embed: newProfileEmbed));
+                                return;
+                            }
                         }
+
+                        await modalInteraction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder().AsEphemeral(true).AddEmbed(new DiscordEmbedBuilder
+                        {
+                            Title = translations.error,
+                            Description = translations.unknown_error,
+                            Color = DiscordColor.Red
+                        }));
+                    }
+                    catch (GraphQLHttpRequestException ex)
+                    {
+                        if (ex.Content != null)
+                        {
+                            dynamic data = JObject.Parse(ex.Content);
+                            if (data.errors != null)
+                            {
+                                foreach (var error in data.errors)
+                                {
+                                    await modalInteraction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder().AsEphemeral(true).AddEmbed(new DiscordEmbedBuilder
+                                    {
+                                        Title = translations.error,
+                                        Description = error.message,
+                                        Color = DiscordColor.Red
+                                    }));
+                                }
+                                return;
+                            }
+                        }
+
+                        await modalInteraction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder().AsEphemeral(true).AddEmbed(new DiscordEmbedBuilder
+                        {
+                            Title = translations.error,
+                            Description = translations.unknown_error,
+                            Color = DiscordColor.Red
+                        }));
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                _ = ex.Message switch
+                else
                 {
-                    "The HTTP request failed with status code NotFound" => await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{translations.anilist_profile_not_found}: `{perfil}`")),
-                    _ => await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{translations.unknown_error}: {ex.Message}")),
-                };
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
+                    {
+                        Title = translations.response_timed_out,
+                        Color = DiscordColor.Red
+                    }));
+                }
+            }
+            else
+            {
+                await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
+                {
+                    Title = translations.response_timed_out,
+                    Color = DiscordColor.Red
+                }));
             }
         }
 
@@ -836,9 +899,9 @@
             }
         }
 
-        [SlashCommand("recommendation", "Auto recommendation based on your list")]
-        [NameLocalization(Localization.Spanish, "recomendar")]
-        [DescriptionLocalization(Localization.Spanish, "Recomendación automática basada en tu lista")]
+        [SlashCommand("recommendations", "Auto recommendations based on your list")]
+        [NameLocalization(Localization.Spanish, "recomendaciones")]
+        [DescriptionLocalization(Localization.Spanish, "Recomendaciones automáticas basada en tu lista")]
         public async Task AutoRecomendation(
             InteractionContext ctx,
             [Option("Type", "The type of media")] MediaType type,

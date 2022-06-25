@@ -14,6 +14,7 @@
         LogginProductionErrors,
         LogginTestingGuilds,
         LogginTestingErrors,
+        AnilistApiClientId,
         TopggEnabled,
         TimeoutGeneral,
         TimeoutGames

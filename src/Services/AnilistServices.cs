@@ -609,7 +609,7 @@
                         {
                             Title = translations.error,
                             Description = translations.no_recommendations_found,
-                            Color = DiscordColor.Red, 
+                            Color = DiscordColor.Red,
                             Author = new()
                             {
                                 IconUrl = userAvatar,

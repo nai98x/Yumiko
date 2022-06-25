@@ -64,7 +64,7 @@
         public void UpdateCommandUsed(string commandName)
         {
             CommandUse? commandUsed = CommandsUsed.Find(x => x.CommandName == commandName);
-            if(commandUsed != null)
+            if (commandUsed != null)
             {
                 commandUsed.Uses++;
             }

@@ -138,6 +138,21 @@
   <data name="anilist_profile_not_found" xml:space="preserve">
     <value>Anilist profile not found</value>
   </data>
+  <data name="anilist_setprofile_instructions" xml:space="preserve">
+    <value>**Instructions**</value>
+  </data>
+  <data name="anilist_setprofile_instructions_1" xml:space="preserve">
+    <value>1- Click on the **Authorize** button</value>
+  </data>
+  <data name="anilist_setprofile_instructions_2" xml:space="preserve">
+    <value>2- Once the web page opens, click on the **Authorize** green button and then copy the text that will appear to copy</value>
+  </data>
+  <data name="anilist_setprofile_instructions_3" xml:space="preserve">
+    <value>3- Close the web page and click on the **Paste code here** button</value>
+  </data>
+  <data name="anilist_setprofile_instructions_4" xml:space="preserve">
+    <value>4- Paste the code in the modal and submit it</value>
+  </data>
   <data name="animated" xml:space="preserve">
     <value>Animated</value>
   </data>
@@ -158,6 +173,9 @@
   </data>
   <data name="answer" xml:space="preserve">
     <value>Answer</value>
+  </data>
+  <data name="authorize" xml:space="preserve">
+    <value>Authorize</value>
   </data>
   <data name="badges" xml:space="preserve">
     <value>Badges</value>
@@ -197,6 +215,9 @@
   </data>
   <data name="choose_an_option" xml:space="preserve">
     <value>Choose an option</value>
+  </data>
+  <data name="code" xml:space="preserve">
+    <value>Code</value>
   </data>
   <data name="color" xml:space="preserve">
     <value>Color</value>
@@ -558,6 +579,9 @@
   <data name="options" xml:space="preserve">
     <value>Options</value>
   </data>
+  <data name="paste_code_here" xml:space="preserve">
+    <value>Paste code here</value>
+  </data>
   <data name="permission_required" xml:space="preserve">
     <value>Permission required</value>
   </data>
@@ -653,6 +677,12 @@
   </data>
   <data name="settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="setup_anilist_profile" xml:space="preserve">
+    <value>Setup your AniList profile</value>
+  </data>
+  <data name="set_anilist_profile" xml:space="preserve">
+    <value>Set AniList profile</value>
   </data>
   <data name="shutting_down" xml:space="preserve">
     <value>Shutting down</value>

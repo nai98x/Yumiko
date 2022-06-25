@@ -138,6 +138,21 @@
   <data name="anilist_profile_not_found" xml:space="preserve">
     <value>Perfil de Anilist no encontrado</value>
   </data>
+  <data name="anilist_setprofile_instructions" xml:space="preserve">
+    <value>**Instrucciones**</value>
+  </data>
+  <data name="anilist_setprofile_instructions_1" xml:space="preserve">
+    <value>1- Haz click en el botón llamado **Autorizar**</value>
+  </data>
+  <data name="anilist_setprofile_instructions_2" xml:space="preserve">
+    <value>2- Una vez se abra la página web, haz click en el botón verde **Authorize** y luego copia el texto que te aparecerá para copiar</value>
+  </data>
+  <data name="anilist_setprofile_instructions_3" xml:space="preserve">
+    <value>3- Cierra la página web y haz click en el botón llamado **Pegar código aquí**</value>
+  </data>
+  <data name="anilist_setprofile_instructions_4" xml:space="preserve">
+    <value>4- Pega el código en el formulario y envíalo</value>
+  </data>
   <data name="animated" xml:space="preserve">
     <value>Animado</value>
   </data>
@@ -158,6 +173,9 @@
   </data>
   <data name="answer" xml:space="preserve">
     <value>Respuesta</value>
+  </data>
+  <data name="authorize" xml:space="preserve">
+    <value>Autorizar</value>
   </data>
   <data name="badges" xml:space="preserve">
     <value>Insignias</value>
@@ -197,6 +215,9 @@
   </data>
   <data name="choose_an_option" xml:space="preserve">
     <value>Elige una opción</value>
+  </data>
+  <data name="code" xml:space="preserve">
+    <value>Código</value>
   </data>
   <data name="color" xml:space="preserve">
     <value>Color</value>
@@ -558,6 +579,9 @@
   <data name="options" xml:space="preserve">
     <value>Options</value>
   </data>
+  <data name="paste_code_here" xml:space="preserve">
+    <value>Pegar código aquí</value>
+  </data>
   <data name="permission_required" xml:space="preserve">
     <value>Permiso requerido</value>
   </data>
@@ -653,6 +677,12 @@
   </data>
   <data name="settings" xml:space="preserve">
     <value>Configuración</value>
+  </data>
+  <data name="setup_anilist_profile" xml:space="preserve">
+    <value>Configura tu perfil de AniList</value>
+  </data>
+  <data name="set_anilist_profile" xml:space="preserve">
+    <value>Vincular AniList</value>
   </data>
   <data name="shutting_down" xml:space="preserve">
     <value>Apagando</value>
