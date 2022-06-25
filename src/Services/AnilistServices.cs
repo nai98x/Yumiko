@@ -593,7 +593,7 @@
                                             }
 
                                             var rec = recommendations.First(x => x.Id == nodeId);
-                                            rec.Score += adjustedScore * (2 - 1 / nodeRating);
+                                            rec.Score += adjustedScore * (2 - (1 / nodeRating));
                                         }
                                     }
                                 }
