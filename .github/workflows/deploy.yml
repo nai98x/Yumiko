@@ -13,7 +13,7 @@ jobs:
       - name: Run SSH command
         uses: garygrossgarten/github-action-ssh@release
         with:
-            command: cd ~/bots/Yumiko && git reset --hard && git pull && chmod +x deploy && (./deploy >& yumiko-log.txt &disown);
+            command: cd ~/Yumiko && git reset --hard && git pull && chmod +x deploy && (./deploy >& yumiko-log.txt &disown);
             host: ${{ secrets.HOST }}
             username: ${{ secrets.USERNAME }}
             privateKey: ${{ secrets.PRIVATE_KEY}}
