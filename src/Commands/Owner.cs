@@ -1,5 +1,8 @@
 ﻿namespace Yumiko.Commands
 {
+    using GraphQL;
+    using GraphQL.Client.Http;
+    using GraphQL.Client.Serializer.Newtonsoft;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -156,6 +159,40 @@
             {
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(string.Format(translations.error_retrieving_guild_with_id, idStr)));
             }
+        }
+
+        [SlashCommand("ratelimits", "Shows the ratelimits")]
+        [DescriptionLocalization(Localization.Spanish, "Muestra los ratelimits")]
+        public async Task Ratelimits(InteractionContext ctx)
+        {
+            await ctx.DeferAsync();
+
+            GraphQLHttpClient graphQlClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
+            var request = new GraphQLRequest
+            {
+                Query =
+                    "query {" +
+                    "   Media (id: 1) {" +
+                    "       id" +
+                    "   }" +
+                    "}"
+            };
+            var data = await graphQlClient.SendQueryAsync<dynamic>(request);
+
+            var response = data.AsGraphQLHttpResponse();
+            var rateLimitLimit = response.ResponseHeaders.GetValues("X-RateLimit-Limit").First();
+            var rateLimitRemaining = response.ResponseHeaders.GetValues("X-RateLimit-Remaining").First();
+
+            string desc = $"{Formatter.Bold("AniList:")}\n" +
+                $"Limit: {rateLimitLimit}\n" +
+                $"Remaining: {rateLimitRemaining}";
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+            {
+                Title = "Ratelimits",
+                Description = desc.NormalizeDescription(),
+                Color = Constants.YumikoColor
+            }));
         }
 
         [SlashCommand("commands", "Shows the commands used since startup")]
