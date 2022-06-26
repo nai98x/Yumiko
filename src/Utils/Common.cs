@@ -46,7 +46,7 @@
             throw new NullReferenceException("Something go wrong with firease.json");
         }
 
-        public static int GetNumeroRandom(int min, int max)
+        public static int GetRandomNumber(int min, int max)
         {
             Random rnd = new();
 

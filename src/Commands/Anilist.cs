@@ -882,7 +882,7 @@
         public async Task Pj(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            var pag = Common.GetNumeroRandom(1, 10000);
+            var pag = Common.GetRandomNumber(1, 10000);
             var personaje = await Common.GetRandomCharacterAsync(ctx, pag);
             if (personaje != null)
             {

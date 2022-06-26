@@ -171,7 +171,7 @@
             switch (gamemode)
             {
                 case HangmanGamemode.Characters:
-                    pag = Common.GetNumeroRandom(1, 10000);
+                    pag = Common.GetRandomNumber(1, 10000);
                     Character? personaje = await Common.GetRandomCharacterAsync(ctx, pag);
                     if (personaje != null)
                     {
@@ -180,7 +180,7 @@
 
                     break;
                 case HangmanGamemode.Animes:
-                    pag = Common.GetNumeroRandom(1, 10000);
+                    pag = Common.GetRandomNumber(1, 10000);
                     Anime? anime = await Common.GetRandomMediaAsync(ctx, pag, MediaType.ANIME);
                     if (anime != null)
                     {
@@ -204,7 +204,7 @@
 
             var interactivity = ctx.Client.GetInteractivity();
 
-            int valorBase = Common.GetNumeroRandom(1, 36); // Del 1-200 hasta 1800-2000
+            int valorBase = Common.GetRandomNumber(1, 36); // Del 1-200 hasta 1800-2000
             var settings = new GameSettings
             {
                 IterIni = valorBase,
@@ -226,11 +226,11 @@
             int puntuacion = 0;
             while (jugar && lista.Count >= 2)
             {
-                int random1 = Common.GetNumeroRandom(0, lista.Count - 1);
+                int random1 = Common.GetRandomNumber(0, lista.Count - 1);
                 int random2;
                 do
                 {
-                    random2 = Common.GetNumeroRandom(0, lista.Count - 1);
+                    random2 = Common.GetRandomNumber(0, lista.Count - 1);
                 }
                 while (random1 == random2);
 

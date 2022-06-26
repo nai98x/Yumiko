@@ -133,7 +133,7 @@
             {
                 quizRound = new();
                 lastRonda = ronda;
-                int random = Common.GetNumeroRandom(0, lista.Count - 1);
+                int random = Common.GetRandomNumber(0, lista.Count - 1);
                 var guid = Guid.NewGuid();
                 dynamic elegido = lista[random];
                 lista.Remove(lista[random]);
@@ -742,7 +742,7 @@
                 }
                 else
                 {
-                    settings.IterFin = Common.GetNumeroRandom(1, 9);
+                    settings.IterFin = Common.GetRandomNumber(1, 9);
                     if (lastPage < settings.IterFin)
                     {
                         settings.IterFin = lastPage;
@@ -752,10 +752,10 @@
 
             if (settings.IterIni != settings.IterFin)
             {
-                random1 = Common.GetNumeroRandom(settings.IterIni, settings.IterFin);
+                random1 = Common.GetRandomNumber(settings.IterIni, settings.IterFin);
                 do
                 {
-                    random2 = Common.GetNumeroRandom(settings.IterIni, settings.IterFin);
+                    random2 = Common.GetRandomNumber(settings.IterIni, settings.IterFin);
                 }
                 while (random1 == random2);
             }
@@ -963,11 +963,11 @@
                         "   }" +
                         "}";
 
-            int random1 = Common.GetNumeroRandom(settings.IterIni, settings.IterFin);
+            int random1 = Common.GetRandomNumber(settings.IterIni, settings.IterFin);
             int random2;
             do
             {
-                random2 = Common.GetNumeroRandom(settings.IterIni, settings.IterFin);
+                random2 = Common.GetRandomNumber(settings.IterIni, settings.IterFin);
             }
             while (random1 == random2);
             bool firstloop = true, secondloop = true;

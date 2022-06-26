@@ -59,7 +59,7 @@
         public async Task Choose(InteractionContext ctx, [Option("Question", "The question you want to ask")] string pregunta, [Option("Options", "Comma Separated Options")] string opc)
         {
             List<string> opciones = opc.Split(',').ToList();
-            int random = Common.GetNumeroRandom(0, opciones.Count - 1);
+            int random = Common.GetRandomNumber(0, opciones.Count - 1);
             string options = Formatter.Bold($"{translations.options}:");
             foreach (string msj in opciones)
             {
@@ -224,7 +224,7 @@
             }
             else
             {
-                waifuLevel = Common.GetNumeroRandom(0, 100);
+                waifuLevel = Common.GetRandomNumber(0, 100);
             }
 
             var builder = waifuLevel switch
@@ -333,7 +333,7 @@
             }
             else
             {
-                porcentajeAmor = Common.GetNumeroRandom(0, 100);
+                porcentajeAmor = Common.GetRandomNumber(0, 100);
             }
 
             string descripcion = $"{Formatter.Bold($"{porcentajeAmor}%")} [";
