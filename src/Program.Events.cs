@@ -10,13 +10,13 @@
             {
                 await DiscordShardedClient.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.ListeningTo, Name = "/help" }, UserStatus.Online);
             });
-            sender.Logger.LogInformation("DiscordClient ready to fire events");
+            sender.Logger.LogInformation("DiscordShardedClient ready to fire events");
             return Task.CompletedTask;
         }
 
         private static Task Client_Resumed(DiscordClient sender, ReadyEventArgs e)
         {
-            sender.Logger.LogInformation("DiscordClient resumed");
+            sender.Logger.LogInformation("DiscordShardedClient resumed");
             return Task.CompletedTask;
         }
 
