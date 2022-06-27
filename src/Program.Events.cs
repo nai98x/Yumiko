@@ -29,10 +29,10 @@
 
                 if (client != null)
                 {
-                    var logGuild = await client.GetGuildAsync(logGuildId);
+                    var logGuild = client.Guilds[logGuildId];;
 
-                    LogChannelGuilds = logGuild.GetChannel(Debug ? ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginTestingGuilds) : ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginProductionGuilds));
-                    LogChannelErrors = logGuild.GetChannel(Debug ? ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginTestingErrors) : ConfigurationUtils.GetConfiguration<ulong>(Configuration, Configurations.LogginProductionErrors));
+                    LogChannelGuilds = logGuild.Channels[ConfigurationUtils.GetConfiguration<ulong>(Configuration, Debug ? Configurations.LogginTestingGuilds : Configurations.LogginProductionGuilds)];
+                    LogChannelErrors = logGuild.Channels[ConfigurationUtils.GetConfiguration<ulong>(Configuration, Debug ? Configurations.LogginTestingErrors : Configurations.LogginProductionErrors)];
 
                     sender.Logger.LogInformation("Log guild and channels initialized", DateTime.Now);
                 }
