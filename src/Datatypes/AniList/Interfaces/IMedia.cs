@@ -3,7 +3,7 @@
 #pragma warning disable IDE1006 // Naming Styles
     public interface IMedia
     {
-        int? id { get; }
+        int id { get; }
         MediaTitle title { get; }
         List <string> synonyms { get; }
         string description { get; }
@@ -22,7 +22,7 @@
         List<Tag> tags { get; }
         NodesStudios studios { get; }
         List<ExternalLink> externalLinks { get; }
-        bool? isAdult { get; }
+        bool isAdult { get; }
     }
 #pragma warning restore IDE1006 // Naming Styles
 }

@@ -1411,6 +1411,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No yet released.
+        /// </summary>
+        public static string not_yet_released {
+            get {
+                return ResourceManager.GetString("not_yet_released", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notes.
         /// </summary>
         public static string notes {

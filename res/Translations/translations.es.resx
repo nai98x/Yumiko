@@ -537,6 +537,9 @@
   <data name="not_found" xml:space="preserve">
     <value>{0} no encontrado</value>
   </data>
+  <data name="not_yet_released" xml:space="preserve">
+    <value>No estrenado</value>
+  </data>
   <data name="no_active_game" xml:space="preserve">
     <value>No hay ninguna partida activa en este canal</value>
   </data>

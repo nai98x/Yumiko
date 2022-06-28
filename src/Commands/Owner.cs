@@ -28,8 +28,8 @@
         public async Task Test(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            var wea = await MediaQuery.GetMedia(ctx, "One Piece", MediaType.ANIME);
-            //await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(String.Format(strings.test, ctx.User.Username)));
+            var wea = await MediaQuery.GetMedia(ctx, 120, "One Piece", MediaType.ANIME);
+            int i = 0;
         }
 
         [SlashCommand("guild", "Information about a guild")]

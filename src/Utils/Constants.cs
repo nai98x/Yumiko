@@ -6,6 +6,8 @@
 
         public const string AnilistAPIUrl = @"https://graphql.anilist.co";
 
+        public const int AnilistPerPage = 25;
+
         public static DiscordColor YumikoColor { get; private set; } = DiscordColor.Blurple;
 
         public static DiscordEmbedBuilder NsfwWarning { get; private set; } = new DiscordEmbedBuilder

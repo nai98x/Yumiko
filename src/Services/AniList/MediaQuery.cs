@@ -4,7 +4,6 @@
     using GraphQL;
     using GraphQL.Client.Http;
     using GraphQL.Client.Serializer.Newtonsoft;
-    using Microsoft.Extensions.Logging;
     using System;
     using System.Net;
     using System.Threading.Tasks;
@@ -16,7 +15,7 @@
         //public static async Task<DiscordEmbedBuilder?> GetInfoMediaUser(InteractionContext ctx, int anilistId, int mediaId)
         //public static async Task<DiscordEmbedBuilder?> GetUserRecommendationsAsync(InteractionContext ctx, DiscordUser user, MediaType type, int anilistUserId)
 
-        public static async Task<IMedia?> GetMedia(InteractionContext ctx, string mediaSearch, MediaType mediaType)
+        public static async Task<Media?> GetMedia(InteractionContext ctx, double timeout, string mediaSearch, MediaType mediaType)
         {
             try
             {
@@ -26,11 +25,14 @@
                     Variables = new
                     {
                         search = mediaSearch,
-                        type = Enum.GetName(typeof(MediaType), mediaType)
+                        type = Enum.GetName(typeof(MediaType), mediaType),
+                        perPage = Constants.AnilistPerPage
                     }
                 };
-                var response = await GraphQlClient.SendQueryAsync<MediaResponse>(request);
-                return response.Data.Media; // TODO: Pages instead of single result
+                var response = await GraphQlClient.SendQueryAsync<MediaPageResponse>(request);
+                var results = response.Data.Page.Media;
+
+                return await ChooseMediaAsync(ctx, timeout, results);
             }
             catch (GraphQLHttpRequestException ex)
             {
@@ -45,9 +47,30 @@
             }
         }
 
+        private static async Task<Media?> ChooseMediaAsync(InteractionContext ctx, double timeout, List<Media> list)
+        {
+            List<AnimeShort> opc = new();
+            foreach (var item in list)
+            {
+                string seasonYear = translations.not_yet_released;
+                if (item.seasonYear != null) seasonYear = item.seasonYear.ToString()!;
+
+                opc.Add(new AnimeShort
+                {
+                    Title = item.title.romaji,
+                    Description = $"{item.format} - {seasonYear}"
+                });
+            }
+
+            var elegido = await Common.GetElegidoAsync(ctx, timeout, opc);
+            if (elegido > 0) return list[elegido - 1];
+            else return null;
+        }
+
         public const string searchQuery = @"
-                query ($search: String, $type: MediaType){
-                    Media(search: $search, type: $type) {
+            query ($search: String, $type: MediaType, $perPage: Int){
+                Page(perPage: $perPage) {
+                    media(search: $search, type: $type) {
                         id
                         title {
                             romaji
@@ -97,6 +120,7 @@
                         isAdult
                     }
                 }
+            }
         ";
     }
 }
