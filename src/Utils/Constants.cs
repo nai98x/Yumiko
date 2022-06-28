@@ -4,6 +4,8 @@
     {
         public const string AnilistAvatarUrl = @"https://anilist.co/img/icons/android-chrome-512x512.png";
 
+        public const string AnilistAPIUrl = @"https://graphql.anilist.co";
+
         public static DiscordColor YumikoColor { get; private set; } = DiscordColor.Blurple;
 
         public static DiscordEmbedBuilder NsfwWarning { get; private set; } = new DiscordEmbedBuilder

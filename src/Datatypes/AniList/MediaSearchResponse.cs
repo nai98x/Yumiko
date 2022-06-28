@@ -8,6 +8,6 @@ namespace Yumiko.Datatypes
 {
     public class MediaSearchResponse
     {
-        public Media Media { get; set; }
+        public IMedia Media { get; set; }
     }
 }
