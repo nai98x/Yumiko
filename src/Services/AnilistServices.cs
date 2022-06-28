@@ -11,7 +11,7 @@
     {
         private static readonly GraphQLHttpClient GraphQlClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        public static async Task<Media> GetAniListMedia(InteractionContext ctx, double timeoutGeneral, string busqueda, MediaType type)
+        public static async Task<MediaOld> GetAniListMedia(InteractionContext ctx, double timeoutGeneral, string busqueda, MediaType type)
         {
             string query = "query($busqueda : String){" +
             "   Page(perPage:5){" +
@@ -58,7 +58,7 @@
             "               site," +
             "               url" +
             "           }," +
-            "           isAdult" +
+            "            " +
             "       }" +
             "   }" +
             "}";
@@ -177,14 +177,14 @@
             }
         }
 
-        public static Media? DecodeMedia(dynamic datos)
+        public static MediaOld? DecodeMedia(dynamic datos)
         {
             if (datos != null)
             {
                 string idStr = datos.id;
                 string isadult = datos.isAdult;
 
-                Media media = new();
+                MediaOld media = new();
 
                 media.Ok = true;
                 media.Id = int.Parse(idStr);

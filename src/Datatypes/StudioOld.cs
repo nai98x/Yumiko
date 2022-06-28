@@ -1,6 +1,6 @@
 ﻿namespace Yumiko.Datatypes
 {
-    public class Studio
+    public class StudioOld
     {
         public string Nombre { get; set; } = null!;
 

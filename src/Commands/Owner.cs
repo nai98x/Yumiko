@@ -28,6 +28,7 @@
         public async Task Test(InteractionContext ctx)
         {
             await ctx.DeferAsync();
+            var wea = await MediaQuery.GetMedia(ctx, "One Piece", MediaType.ANIME);
             //await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(String.Format(strings.test, ctx.User.Username)));
         }
 

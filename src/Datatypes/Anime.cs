@@ -26,7 +26,7 @@
 
         public int Popularidad { get; set; }
 
-        public List<Studio>? Estudios { get; set; }
+        public List<StudioOld>? Estudios { get; set; }
 
         public List<Character>? Personajes { get; set; }
 

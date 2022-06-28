@@ -18,7 +18,7 @@
 
         public List<Anime>? Animes { get; set; }
 
-        public List<Media>? Mangas { get; set; }
+        public List<MediaOld>? Mangas { get; set; }
 
         public int? Favoritos { get; set; }
 

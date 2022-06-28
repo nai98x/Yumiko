@@ -827,7 +827,7 @@
 
                             Favoritos = x.favourites,
                             AvarageScore = score,
-                            Estudios = new List<Studio>(),
+                            Estudios = new List<StudioOld>(),
                             Sinonimos = new List<string>(),
                             Personajes = new List<Character>(),
                             MediaRelacionada = new List<Anime>(),
@@ -860,7 +860,7 @@
                             {
                                 if (estudio.isAnimationStudio == "true")
                                 {
-                                    anim.Estudios.Add(new Studio()
+                                    anim.Estudios.Add(new StudioOld()
                                     {
                                         Nombre = estudio.name,
                                         SiteUrl = estudio.siteUrl,

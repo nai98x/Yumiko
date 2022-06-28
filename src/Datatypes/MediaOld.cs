@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public class Media
+    public class MediaOld
     {
         public int Id { get; set; }
 
