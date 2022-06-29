@@ -2,9 +2,9 @@
 
 namespace Yumiko.Datatypes
 {
-    public class NodesStudios
+    public class NodesStaff
     {
         [JsonProperty("nodes")]
-        public List<Studio>? Nodes { get; set; }
+        public List<ProfileStaffNode>? Nodes { get; set; }
     }
 }

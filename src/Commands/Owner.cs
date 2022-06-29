@@ -28,8 +28,8 @@
         public async Task Test(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            var value = await CharacterQuery.GetCharacter(ctx, 120, "Sasuke");
-            int i = 0;
+            var value = await ProfileQuery.GetProfile(ctx, 739018);
+            await ctx.DeleteResponseAsync();
         }
 
         [SlashCommand("guild", "Information about a guild")]

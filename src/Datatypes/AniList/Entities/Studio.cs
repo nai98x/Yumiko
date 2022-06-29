@@ -5,12 +5,12 @@ namespace Yumiko.Datatypes
     public class Studio
     {
         [JsonProperty("name")]
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [JsonProperty("siteUrl")]
-        public string? SiteUrl { get; set; }
+        public string SiteUrl { get; set; } = null!;
 
-        [JsonProperty("IsAnimationStudio")]
-        public bool? isAnimationStudio { get; set; }
+        [JsonProperty("isAnimationStudio")]
+        public bool? IsAnimationStudio { get; set; }
     }
 }
