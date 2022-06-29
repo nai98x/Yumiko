@@ -8,14 +8,14 @@
     using System.Net;
     using System.Threading.Tasks;
 
-    public static class MediaQuery
+    public static class CharacterQuery
     {
         private static readonly GraphQLHttpClient GraphQlClient = new(Constants.AnilistAPIUrl, new NewtonsoftJsonSerializer());
 
         //public static async Task<DiscordEmbedBuilder?> GetInfoMediaUser(InteractionContext ctx, int anilistId, int mediaId)
         //public static async Task<DiscordEmbedBuilder?> GetUserRecommendationsAsync(InteractionContext ctx, DiscordUser user, MediaType type, int anilistUserId)
 
-        public static async Task<Media?> GetMedia(InteractionContext ctx, double timeout, string mediaSearch, MediaType mediaType)
+        public static async Task<Character?> GetCharacter(InteractionContext ctx, double timeout, string characterSearch)
         {
             try
             {
@@ -24,15 +24,14 @@
                     Query = searchQuery,
                     Variables = new
                     {
-                        search = mediaSearch,
-                        type = Enum.GetName(typeof(MediaType), mediaType),
+                        search = characterSearch,
                         perPage = Constants.AnilistPerPage
                     }
                 };
-                var response = await GraphQlClient.SendQueryAsync<MediaPageResponse>(request);
-                var results = response.Data.Page.Media;
+                var response = await GraphQlClient.SendQueryAsync<CharacterPageResponse>(request);
+                var results = response.Data.Page.Characters;
 
-                return await ChooseMediaAsync(ctx, timeout, results);
+                return await ChooseCharacterAsync(ctx, timeout, results);
             }
             catch (GraphQLHttpRequestException ex)
             {
@@ -47,18 +46,25 @@
             }
         }
 
-        private static async Task<Media?> ChooseMediaAsync(InteractionContext ctx, double timeout, List<Media> list)
+        private static async Task<Character?> ChooseCharacterAsync(InteractionContext ctx, double timeout, List<Character> list)
         {
             List<TitleDescription> opc = new();
             foreach (var item in list)
             {
-                string seasonYear = translations.not_yet_released;
-                if (item.SeasonYear != null) seasonYear = item.SeasonYear.ToString()!;
+                string desc;
+                if (item.Animes.Nodes.Count > 0)
+                {
+                    desc = item.Animes.Nodes[0].Title.Romaji;
+                }
+                else
+                {
+                    desc = "(Without animes)";
+                }
 
                 opc.Add(new TitleDescription
                 {
-                    Title = item.Title.Romaji,
-                    Description = $"{item.Format} - {seasonYear}"
+                    Title = item.Name.Full,
+                    Description = desc
                 });
             }
 
@@ -68,56 +74,40 @@
         }
 
         public const string searchQuery = @"
-            query ($search: String, $type: MediaType, $perPage: Int){
+            query ($search: String, $perPage: Int){
                 Page(perPage: $perPage) {
-                    media(search: $search, type: $type) {
+                    characters(search: $search) {
                         id
-                        title {
-                            romaji
-                            english
-                            native
+                        name {
+                            full
                         }
-                        synonyms
-                        description
-                        siteUrl
-                        coverImage {
+                        image {
                             large
-                            medium
                         }
-                        format
-                        volumes
-                        chapters
-                        episodes
-                        status
-                        meanScore
-                        genres
-                        seasonYear
-                        startDate {
-                            year
-                            month
-                            day
-                        }
-                        endDate {
-                            year
-                            month
-                            day
-                        }
-                        tags {
-                            name
-                            isMediaSpoiler
-                        }
-                        studios {
+                        siteUrl
+                        description(asHtml: false)
+                        animes: media(type: ANIME) {
                             nodes {
-                                name
+                                id
+                                title {
+                                    romaji
+                                    english
+                                    native
+                                }
                                 siteUrl
-                                isAnimationStudio
                             }
                         }
-                        externalLinks {
-                            site,
-                            url
+                        manga: media(type: MANGA) {
+                            nodes {
+                                id
+                                title {
+                                    romaji
+                                    english
+                                    native
+                                }
+                                siteUrl
+                            }
                         }
-                        isAdult
                     }
                 }
             }

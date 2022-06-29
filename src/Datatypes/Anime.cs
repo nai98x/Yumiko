@@ -28,7 +28,7 @@
 
         public List<StudioOld>? Estudios { get; set; }
 
-        public List<Character>? Personajes { get; set; }
+        public List<CharacterOld>? Personajes { get; set; }
 
         public string? Relacion { get; set; }
 

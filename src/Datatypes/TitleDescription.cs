@@ -1,6 +1,6 @@
 ﻿namespace Yumiko.Datatypes
 {
-    public class AnimeShort
+    public class TitleDescription
     {
         public string? Title { get; set; }
 

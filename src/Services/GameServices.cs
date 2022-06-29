@@ -829,7 +829,7 @@
                             AvarageScore = score,
                             Estudios = new List<StudioOld>(),
                             Sinonimos = new List<string>(),
-                            Personajes = new List<Character>(),
+                            Personajes = new List<CharacterOld>(),
                             MediaRelacionada = new List<Anime>(),
                         };
                         foreach (var syn in x.synonyms)
@@ -843,7 +843,7 @@
                         {
                             foreach (var character in x.characters.nodes)
                             {
-                                anim.Personajes.Add(new Character()
+                                anim.Personajes.Add(new CharacterOld()
                                 {
                                     NameFull = character.name.full,
                                     NameFirst = character.name.first,
@@ -921,9 +921,9 @@
             return animeList;
         }
 
-        public static async Task<List<Character>> GetCharactersAsync(InteractionContext ctx, GameSettings settings)
+        public static async Task<List<CharacterOld>> GetCharactersAsync(InteractionContext ctx, GameSettings settings)
         {
-            var characterList = new List<Character>();
+            var characterList = new List<CharacterOld>();
             DiscordMessage mensaje = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
             {
                 Title = $"{translations.retrieving} {translations.characters}",
@@ -1009,7 +1009,7 @@
                             siteUrlMedia = m.siteUrl;
                         }
 
-                        Character c = new()
+                        CharacterOld c = new()
                         {
                             Image = x.image.large,
                             NameFirst = x.name.first,
@@ -1625,7 +1625,7 @@
             switch (gamemode)
             {
                 case Gamemode.Characters:
-                    Character elegidoP = elegido;
+                    CharacterOld elegidoP = elegido;
 
                     if (elegidoP.NameFull != null)
                     {
@@ -1746,7 +1746,7 @@
 
                     if (elegidoPr.Personajes != null && elegidoPr.Personajes.Count > 0)
                     {
-                        foreach (Character pj in elegidoPr.Personajes)
+                        foreach (CharacterOld pj in elegidoPr.Personajes)
                         {
                             if (pj.NameFull != null)
                             {

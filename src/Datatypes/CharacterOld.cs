@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public class Character
+    public class CharacterOld
     {
         public string? NameFirst { get; set; }
 

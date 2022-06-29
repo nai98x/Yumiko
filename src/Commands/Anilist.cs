@@ -641,7 +641,7 @@
                 if (data != null && data.Data != null)
                 {
                     var cont = 0;
-                    List<AnimeShort> opc = new();
+                    List<TitleDescription> opc = new();
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
                     foreach (var animeP in data.Data.Page.characters)
                     {
@@ -669,7 +669,7 @@
                             }
                         }
 
-                        opc.Add(new AnimeShort
+                        opc.Add(new TitleDescription
                         {
                             Title = opcName,
                             Description = opcDesc,

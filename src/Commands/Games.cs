@@ -172,7 +172,7 @@
             {
                 case HangmanGamemode.Characters:
                     pag = Common.GetRandomNumber(1, 10000);
-                    Character? personaje = await Common.GetRandomCharacterAsync(ctx, pag);
+                    CharacterOld? personaje = await Common.GetRandomCharacterAsync(ctx, pag);
                     if (personaje != null)
                     {
                         await GameServices.JugarAhorcadoAsync(ctx, personaje, gamemode);

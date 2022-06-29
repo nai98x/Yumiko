@@ -28,7 +28,7 @@
         public async Task Test(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            var wea = await MediaQuery.GetMedia(ctx, 120, "One Piece", MediaType.ANIME);
+            var value = await CharacterQuery.GetCharacter(ctx, 120, "Sasuke");
             int i = 0;
         }
 

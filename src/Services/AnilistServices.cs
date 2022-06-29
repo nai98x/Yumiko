@@ -80,7 +80,7 @@
                     if (data.Data.Page.media != null && data.Data.Page.media.Count > 0)
                     {
                         int cont = 0;
-                        List<AnimeShort> opc = new();
+                        List<TitleDescription> opc = new();
                         foreach (var animeP in data.Data.Page.media)
                         {
                             cont++;
@@ -93,7 +93,7 @@
                                 desc += $" ({opcYear})";
                             }
 
-                            opc.Add(new AnimeShort
+                            opc.Add(new TitleDescription
                             {
                                 Title = opcTitle,
                                 Description = $"{desc}",

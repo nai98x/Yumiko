@@ -148,7 +148,7 @@
             await DblApi.UpdateStats(guildCount: totalGuilds, shardCount: totalShards);
         }
 
-        public static async Task<int> GetElegidoAsync(InteractionContext ctx, double timeoutGeneral, List<AnimeShort> opciones)
+        public static async Task<int> GetElegidoAsync(InteractionContext ctx, double timeoutGeneral, List<TitleDescription> opciones)
         {
             int cantidadOpciones = opciones.Count;
             if (cantidadOpciones == 1)
@@ -217,7 +217,7 @@
             }
         }
 
-        public static async Task<Character?> GetRandomCharacterAsync(InteractionContext ctx, int pag)
+        public static async Task<CharacterOld?> GetRandomCharacterAsync(InteractionContext ctx, int pag)
         {
             string titleMedia = string.Empty, siteUrlMedia = string.Empty;
             string query = "query($pagina: Int){" +
@@ -265,7 +265,7 @@
                         siteUrlMedia = m.siteUrl;
                     }
 
-                    return new Character()
+                    return new CharacterOld()
                     {
                         NameFull = name,
                         Image = imageUrl,
