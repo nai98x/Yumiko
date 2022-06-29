@@ -129,6 +129,9 @@
   <data name="action_cannont_be_undone" xml:space="preserve">
     <value>Esta acción no se puede deshacer</value>
   </data>
+  <data name="adult_content" xml:space="preserve">
+    <value>Contenido para adultos</value>
+  </data>
   <data name="airing_since" xml:space="preserve">
     <value>En emisión desde {0}</value>
   </data>

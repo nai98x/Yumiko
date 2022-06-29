@@ -18,6 +18,8 @@
 
         public static string UppercaseFirst(this string s) => s.Transform(To.LowerCase, To.TitleCase);
 
+        public static string ToYesNo(this bool condition) => condition ? translations.yes : translations.no;
+
         public static string ToSpanish(this Difficulty difficulty)
         {
             return difficulty switch

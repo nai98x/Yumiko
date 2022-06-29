@@ -5,7 +5,7 @@ namespace Yumiko.Datatypes
     public class ProfileCharacterNode
     {
         [JsonProperty("name")]
-        public CharacterName Name { get; set; } = null!;
+        public AniListName Name { get; set; } = null!;
 
         [JsonProperty("siteUrl")]
         public Uri SiteUrl { get; set; } = null!;

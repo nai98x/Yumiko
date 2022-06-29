@@ -97,6 +97,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adult content.
+        /// </summary>
+        public static string adult_content {
+            get {
+                return ResourceManager.GetString("adult_content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airing since {0}.
         /// </summary>
         public static string airing_since {

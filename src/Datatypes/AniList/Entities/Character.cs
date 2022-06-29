@@ -8,7 +8,7 @@ namespace Yumiko.Datatypes
         public long Id { get; set; }
 
         [JsonProperty("name")]
-        public CharacterName Name { get; set; }
+        public AniListName Name { get; set; }
 
         [JsonProperty("image")]
         public Image Image { get; set; }

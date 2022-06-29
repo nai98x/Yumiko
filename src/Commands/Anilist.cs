@@ -233,224 +233,30 @@
         {
             await ctx.DeferAsync();
             user ??= ctx.User;
-            var userAnilist = await UsuariosAnilist.GetPerfilAsync(user.Id);
-            if (userAnilist != null)
+
+            var userAnilistDb = await UsuariosAnilist.GetPerfilAsync(user.Id);
+            if (userAnilistDb != null)
             {
-                var anilistId = userAnilist.AnilistId;
-                var request = new GraphQLRequest
+                var anilistUser = await ProfileQuery.GetProfile(ctx, userAnilistDb.AnilistId);
+                if (anilistUser != null)
                 {
-                    Query =
-                "query ($codigo: Int) {" +
-                "   User(id: $codigo) {" +
-                "       id," +
-                "       name," +
-                "       siteUrl," +
-                "       avatar{" +
-                "           medium" +
-                "       }" +
-                "       bannerImage," +
-                "       options{" +
-                "           titleLanguage," +
-                "           displayAdultContent," +
-                "           profileColor" +
-                "       }" +
-                "       statistics{" +
-                "           anime{" +
-                "               count," +
-                "               episodesWatched," +
-                "               meanScore" +
-                "           }," +
-                "           manga{" +
-                "               count," +
-                "               chaptersRead," +
-                "               meanScore" +
-                "           }" +
-                "       }," +
-                "       favourites{" +
-                "           anime(perPage:3){" +
-                "               nodes{" +
-                "                   title{" +
-                "                       romaji," +
-                "                       english" +
-                "                   }," +
-                "                   siteUrl" +
-                "               }" +
-                "           }," +
-                "           manga(perPage:3){" +
-                "               nodes{" +
-                "                   title{" +
-                "                       romaji," +
-                "                       english" +
-                "                   }," +
-                "                   siteUrl" +
-                "               }" +
-                "           }," +
-                "           characters(perPage:3){" +
-                "               nodes{" +
-                "                   name{" +
-                "                       full" +
-                "                   }," +
-                "                   siteUrl" +
-                "               }" +
-                "           }," +
-                "           staff(perPage:3){" +
-                "               nodes{" +
-                "                   name{" +
-                "                       full" +
-                "                   }," +
-                "                   siteUrl" +
-                "               }" +
-                "           }," +
-                "           studios(perPage:3){" +
-                "               nodes{" +
-                "                   name," +
-                "                   siteUrl" +
-                "               }" +
-                "           }" +
-                "       }" +
-                "   }" +
-                "}",
-                    Variables = new
-                    {
-                        codigo = anilistId,
-                    },
-                };
-                try
-                {
-                    var data = await graphQlClient.SendQueryAsync<dynamic>(request);
-                    if (data.Data != null)
-                    {
-                        string nsfw1 = data.Data.User.options.displayAdultContent;
-                        string nsfw;
-                        if (nsfw1 == "True")
-                        {
-                            nsfw = translations.yes;
-                        }
-                        else
-                        {
-                            nsfw = translations.no;
-                        }
+                    DiscordEmbedBuilder builder = AnilistUtils.GetProfileEmbed(ctx, anilistUser);
+                    DiscordLinkButtonComponent profile = new($"{anilistUser.SiteUrl}", translations.profile, false, new DiscordComponentEmoji("👤"));
+                    DiscordLinkButtonComponent animeList = new($"{anilistUser.SiteUrl}/animelist", translations.anime_list, false, new DiscordComponentEmoji("📺"));
+                    DiscordLinkButtonComponent mangaList = new($"{anilistUser.SiteUrl}/mangalist", translations.manga_list, false, new DiscordComponentEmoji("📖"));
 
-                        string titulosStr = data.Data.User.options.titleLanguage;
-                        string colorStr = data.Data.User.options.profileColor;
-                        var animeStats = $"{translations.total}: `{data.Data.User.statistics.anime.count}`\n{translations.episodes}: `{data.Data.User.statistics.anime.episodesWatched}`\n{translations.mean_score}: `{data.Data.User.statistics.anime.meanScore}/100`";
-                        var mangaStats = $"{translations.total}: `{data.Data.User.statistics.manga.count}`\n{translations.chapters}: `{data.Data.User.statistics.manga.chaptersRead}`\n{translations.mean_score}: `{data.Data.User.statistics.manga.meanScore}/100`";
-                        var options = $"{translations.titles_language}: `{titulosStr.UppercaseFirst()}`\nNSFW: `{nsfw}`\n{translations.color}: `{colorStr.UppercaseFirst()}`";
-                        var favoriteAnime = string.Empty;
-                        foreach (var anime in data.Data.User.favourites.anime.nodes)
-                        {
-                            string tituloRomaji = anime.title.romaji;
-                            string tituloEnglish = anime.title.english;
-                            if (titulosStr == "ENGLISH" && !string.IsNullOrEmpty(tituloEnglish))
-                            {
-                                favoriteAnime += $"- [{tituloEnglish}]({anime.siteUrl})\n";
-                            }
-                            else
-                            {
-                                favoriteAnime += $"- [{tituloRomaji}]({anime.siteUrl})\n";
-                            }
-                        }
-
-                        var favoriteManga = string.Empty;
-                        foreach (var manga in data.Data.User.favourites.manga.nodes)
-                        {
-                            string tituloRomaji = manga.title.romaji;
-                            string tituloEnglish = manga.title.english;
-                            if (titulosStr == "ENGLISH" && !string.IsNullOrEmpty(tituloEnglish))
-                            {
-                                favoriteManga += $"- [{tituloEnglish}]({manga.siteUrl})\n";
-                            }
-                            else
-                            {
-                                favoriteManga += $"- [{tituloRomaji}]({manga.siteUrl})\n";
-                            }
-                        }
-
-                        var favoriteCharacters = string.Empty;
-                        foreach (var character in data.Data.User.favourites.characters.nodes)
-                        {
-                            favoriteCharacters += $"- [{character.name.full}]({character.siteUrl})\n";
-                        }
-
-                        var favoriteStaff = string.Empty;
-                        foreach (var staff in data.Data.User.favourites.staff.nodes)
-                        {
-                            favoriteStaff += $"- [{staff.name.full}]({staff.siteUrl})\n";
-                        }
-
-                        var favoriteStudios = string.Empty;
-                        foreach (var studio in data.Data.User.favourites.studios.nodes)
-                        {
-                            favoriteStudios += $"- [{studio.name}]({studio.siteUrl})\n";
-                        }
-
-                        string nombre = data.Data.User.name;
-                        string avatar = data.Data.User.avatar.medium;
-                        string siteurl = data.Data.User.siteUrl;
-                        var builder = new DiscordEmbedBuilder
-                        {
-                            Title = nombre,
-                            Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
-                            {
-                                Url = avatar,
-                            },
-                            Color = Constants.YumikoColor,
-                            ImageUrl = data.Data.User.bannerImage,
-                        };
-
-                        builder.AddField(translations.anime_stats, animeStats, true);
-                        builder.AddField(translations.manga_stats, mangaStats, true);
-                        builder.AddField(translations.settings, options, true);
-                        if (!string.IsNullOrEmpty(favoriteAnime)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} {translations.favorite_animes}", favoriteAnime, true);
-                        if (!string.IsNullOrEmpty(favoriteManga)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} {translations.favorite_mangas}", favoriteManga, true);
-                        if (!string.IsNullOrEmpty(favoriteCharacters)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":bust_in_silhouette:")} {translations.favorite_characters}", favoriteCharacters, true);
-                        if (!string.IsNullOrEmpty(favoriteStaff)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":man_artist:")} {translations.favorite_staff}", favoriteStaff, true);
-                        if (!string.IsNullOrEmpty(favoriteStudios)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} {translations.favorite_studios}", favoriteStudios, true);
-
-                        DiscordLinkButtonComponent perfil = new($"{siteurl}", translations.profile, false, new DiscordComponentEmoji("👤"));
-                        DiscordLinkButtonComponent animeList = new($"{siteurl}/animelist", translations.anime_list, false, new DiscordComponentEmoji("📺"));
-                        DiscordLinkButtonComponent mangaList = new($"{siteurl}/mangalist", translations.manga_list, false, new DiscordComponentEmoji("📖"));
-                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder).AddComponents(perfil, animeList, mangaList));
-                    }
-                    else
-                    {
-                        if (data.Errors != null)
-                        {
-                            foreach (var x in data.Errors)
-                            {
-                                var msg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.error}: {x.Message}"));
-                                await Task.Delay(10000);
-                                await ctx.DeleteFollowupAsync(msg.Id);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    var mensaje = ex.Message switch
-                    {
-                        "The HTTP request failed with status code NotFound" => $"{translations.anilist_profile_not_found}, {user.Mention}",
-                        _ => $"{translations.unknown_error}, {translations.message}: [{ex.Message}"
-                    };
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
-                    {
-                        Title = translations.error,
-                        Description = mensaje,
-                        Color = DiscordColor.Red,
-                    }));
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder).AddComponents(profile, animeList, mangaList));
+                    return;
                 }
             }
-            else
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
             {
-                var builder = new DiscordEmbedBuilder
-                {
-                    Color = DiscordColor.Red,
-                    Title = translations.anilist_profile_not_found,
-                    Description = $"{user.Mention}, {string.Format(translations.no_anilist_profile_vinculated, user.Mention)}.\n\n" +
+                Color = DiscordColor.Red,
+                Title = translations.anilist_profile_not_found,
+                Description = $"{string.Format(translations.no_anilist_profile_vinculated, user.Mention)}.\n\n" +
                                 $"{translations.to_vinculate_anilist_profile}: `/anilist setanilist`",
-                };
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
-            }
+            }));
         }
 
         [SlashCommand("anime", "Searchs for an anime")]

@@ -2,7 +2,7 @@
 
 namespace Yumiko.Datatypes
 {
-    public class CharacterName
+    public class AniListName
     {
         [JsonProperty("full")]
         public string Full { get; set; }

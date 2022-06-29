@@ -14,7 +14,7 @@ namespace Yumiko.Datatypes
         public Uri SiteUrl { get; set; } = null!;
 
         [JsonProperty("avatar")]
-        public ProfileAvatar? Avatar { get; set; }
+        public ProfileAvatar Avatar { get; set; } = null!;
 
         [JsonProperty("bannerImage")]
         public Uri? BannerImage { get; set; }

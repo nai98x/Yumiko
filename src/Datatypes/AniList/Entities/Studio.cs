@@ -8,7 +8,7 @@ namespace Yumiko.Datatypes
         public string Name { get; set; } = null!;
 
         [JsonProperty("siteUrl")]
-        public string SiteUrl { get; set; } = null!;
+        public Uri SiteUrl { get; set; } = null!;
 
         [JsonProperty("isAnimationStudio")]
         public bool? IsAnimationStudio { get; set; }
