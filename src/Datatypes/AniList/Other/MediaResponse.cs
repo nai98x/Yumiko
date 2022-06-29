@@ -2,6 +2,6 @@
 {
     public class MediaResponse
     {
-        public List<Media> Media { get; set; }
+        public List<Media>? Media { get; set; }
     }
 }

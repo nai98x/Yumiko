@@ -28,7 +28,7 @@
         public async Task Test(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            var value = await ProfileQuery.GetProfile(ctx, 739018);
+            var value = await MediaUserQuery.GetMediaFromUser(ctx, 1, 1);
             await ctx.DeleteResponseAsync();
         }
 

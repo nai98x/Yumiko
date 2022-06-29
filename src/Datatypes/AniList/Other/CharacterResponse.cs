@@ -2,6 +2,6 @@
 {
     public class CharacterResponse
     {
-        public List<Character> Characters { get; set; }
+        public List<Character>? Characters { get; set; }
     }
 }
