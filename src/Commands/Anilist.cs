@@ -124,7 +124,7 @@
                 var borrado = await UsuariosAnilist.DeleteAnilistAsync(ctx.User.Id);
                 if (borrado)
                 {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
                         Title = translations.success,
                         Description = translations.anilist_profile_deleted_successfully,
@@ -133,7 +133,7 @@
                 }
                 else
                 {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
                         Title = translations.error,
                         Description = translations.anilist_profile_not_found,
