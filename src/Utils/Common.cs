@@ -419,5 +419,22 @@
                 .OrderByDescending(f => (f == null ? DateTime.MinValue : f.LastWriteTime))
                 .FirstOrDefault();
         }
+
+        public static DiscordEmbedBuilder NsfwWarning { get; private set; } = new DiscordEmbedBuilder
+        {
+            Title = translations.nsfw_required,
+            Description = translations.use_command_in_nsfw_channel,
+            Color = DiscordColor.Red,
+        };
+
+        public static DiscordEmbedBuilder ResourceNotFound(string resource)
+        {
+            return new DiscordEmbedBuilder
+            {
+                Title = string.Format(translations.not_found, resource),
+                Description = translations.resource_not_found,
+                Color = DiscordColor.Red,
+            };
+        }
     }
 }

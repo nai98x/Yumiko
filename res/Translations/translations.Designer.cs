@@ -1492,6 +1492,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NSFW Required.
+        /// </summary>
+        public static string nsfw_required {
+            get {
+                return ResourceManager.GetString("nsfw_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to of.
         /// </summary>
         public static string of {
@@ -1695,6 +1704,15 @@ namespace Yumiko {
         public static string related {
             get {
                 return ResourceManager.GetString("related", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The resource you were looking for was not found.
+        /// </summary>
+        public static string resource_not_found {
+            get {
+                return ResourceManager.GetString("resource_not_found", resourceCulture);
             }
         }
         
@@ -2149,7 +2167,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to please use this command in a age-restricted channel.
+        ///   Looks up a localized string similar to Please use this command in a age-restricted channel.
         /// </summary>
         public static string use_command_in_nsfw_channel {
             get {

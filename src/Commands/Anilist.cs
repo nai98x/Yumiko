@@ -194,7 +194,7 @@
 
                 if (media.IsAdult && !ctx.Channel.IsNSFW)
                 {
-                    await ctx.EditResponseAsync(builder.AddEmbed(Constants.NsfwWarning));
+                    await ctx.EditResponseAsync(builder.AddEmbed(Common.NsfwWarning));
                     return;
                 }
 
@@ -211,6 +211,10 @@
                 }
 
                 await ctx.EditResponseAsync(builder);
+            }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(Common.ResourceNotFound("Anime")));
             }
         }
 
@@ -228,7 +232,7 @@
 
                 if (media.IsAdult && !ctx.Channel.IsNSFW)
                 {
-                    await ctx.EditResponseAsync(builder.AddEmbed(Constants.NsfwWarning));
+                    await ctx.EditResponseAsync(builder.AddEmbed(Common.NsfwWarning));
                     return;
                 }
 
@@ -246,6 +250,10 @@
 
                 await ctx.EditResponseAsync(builder);
             }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(Common.ResourceNotFound("Manga")));
+            }
         }
 
         [SlashCommand("character", "Searchs for a Character")]
@@ -261,6 +269,10 @@
                 var embed = AnilistUtils.GetCharacterEmbed(ctx, character);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
             }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(Common.ResourceNotFound("Character")));
+            }
         }
 
         [SlashCommand("staff", "Searchs for a staff")]
@@ -274,6 +286,10 @@
             {
                 var embed = AnilistUtils.GetStaffEmbed(ctx, staff);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+            }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(Common.ResourceNotFound("Staff")));
             }
         }
 

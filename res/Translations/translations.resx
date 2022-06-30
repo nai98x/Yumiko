@@ -594,6 +594,9 @@
   <data name="no_stats_available" xml:space="preserve">
     <value>You have not played any game yet</value>
   </data>
+  <data name="nsfw_required" xml:space="preserve">
+    <value>NSFW Required</value>
+  </data>
   <data name="of" xml:space="preserve">
     <value>of</value>
   </data>
@@ -662,6 +665,9 @@
   </data>
   <data name="related" xml:space="preserve">
     <value>Related</value>
+  </data>
+  <data name="resource_not_found" xml:space="preserve">
+    <value>The resource you were looking for was not found</value>
   </data>
   <data name="response_timed_out" xml:space="preserve">
     <value>Response timed out</value>
@@ -838,7 +844,7 @@
     <value>Uses</value>
   </data>
   <data name="use_command_in_nsfw_channel" xml:space="preserve">
-    <value>please use this command in a age-restricted channel</value>
+    <value>Please use this command in a age-restricted channel</value>
   </data>
   <data name="victory" xml:space="preserve">
     <value>Victory!</value>
