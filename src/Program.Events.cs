@@ -29,7 +29,7 @@
 
                 if (client != null)
                 {
-                    var logGuild = client.Guilds[logGuildId];;
+                    var logGuild = client.Guilds[logGuildId];
 
                     LogChannelGuilds = logGuild.Channels[ConfigurationUtils.GetConfiguration<ulong>(Configuration, Debug ? Configurations.LogginTestingGuilds : Configurations.LogginProductionGuilds)];
                     LogChannelErrors = logGuild.Channels[ConfigurationUtils.GetConfiguration<ulong>(Configuration, Debug ? Configurations.LogginTestingErrors : Configurations.LogginProductionErrors)];

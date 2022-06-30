@@ -1,7 +1,6 @@
 ﻿namespace Yumiko.Commands
 {
     using GraphQL;
-    using GraphQL.Client.Abstractions.Utilities;
     using GraphQL.Client.Http;
     using GraphQL.Client.Serializer.Newtonsoft;
     using Microsoft.Extensions.Configuration;
@@ -9,7 +8,6 @@
     using Newtonsoft.Json.Linq;
     using RestSharp;
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Net;
     using System.Threading.Tasks;
@@ -276,14 +274,14 @@
                     await ctx.EditResponseAsync(builder.AddEmbed(Constants.NsfwWarning));
                     return;
                 }
-                
+
                 builder.AddEmbed(AnilistUtils.GetMediaEmbed(ctx, media, MediaType.ANIME));
 
                 var userAnilistProfile = await UsuariosAnilist.GetPerfilAsync(usuario.Id);
                 if (userAnilistProfile != null)
                 {
                     var statsUser = await MediaUserQuery.GetMediaFromUser(ctx, userAnilistProfile.AnilistId, media.Id);
-                    if(statsUser != null)
+                    if (statsUser != null)
                     {
                         builder.AddEmbed(AnilistUtils.GetMediaUserStats(statsUser));
                     }
@@ -427,7 +425,7 @@
                         {
                             HttpStatusCode.BadRequest => "Invalid image url",
                             HttpStatusCode.PaymentRequired => "Search quota depleted / Concurrency limit exceeded",
-                            HttpStatusCode.Forbidden => "	Invalid API key",
+                            HttpStatusCode.Forbidden => "Invalid API key",
                             HttpStatusCode.MethodNotAllowed => "Method Not Allowed",
                             HttpStatusCode.InternalServerError => "Internal Server Error",
                             HttpStatusCode.ServiceUnavailable => "Search queue is full / Database is not responding",

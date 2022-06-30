@@ -6,7 +6,7 @@
         {
             var embed = new DiscordEmbedBuilder();
 
-            string animeStats = 
+            string animeStats =
                 $"{translations.total}: `{profile.Statistics.Anime.Count}`\n" +
                 $"{translations.episodes}: `{profile.Statistics.Anime.EpisodesWatched}`\n" +
                 $"{translations.mean_score}: `{profile.Statistics.Anime.MeanScore}`";
@@ -14,7 +14,7 @@
                 $"{translations.total}: `{profile.Statistics.Manga.Count}`\n" +
                 $"{translations.chapters}: `{profile.Statistics.Manga.ChaptersRead}`\n" +
                 $"{translations.mean_score}: `{profile.Statistics.Manga.MeanScore}`";
-            string options = 
+            string options =
                 $"{translations.titles_language}: `{profile.Options.TitleLanguage.UppercaseFirst()}`\n" +
                 $"{translations.adult_content}: {profile.Options.DisplayAdultContent.ToYesNo()}\n" +
                 $"{translations.color}: {profile.Options.ProfileColor}";
@@ -22,7 +22,7 @@
             string favoriteAnime = string.Empty;
             profile.Favourites.Anime.Nodes?.ForEach(anime =>
             {
-                if(profile.Options.TitleLanguage == "ENGLISH" && !string.IsNullOrEmpty(anime.Title.English))
+                if (profile.Options.TitleLanguage == "ENGLISH" && !string.IsNullOrEmpty(anime.Title.English))
                 {
                     favoriteAnime += $"{Formatter.MaskedUrl(anime.Title.English, anime.SiteUrl)}\n";
                 }
