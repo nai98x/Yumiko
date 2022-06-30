@@ -182,6 +182,23 @@
             return embed;
         }
 
+        public static DiscordEmbedBuilder GetLoggedProfileEmbed(InteractionContext ctx, Profile profile)
+        {
+            var embed = new DiscordEmbedBuilder();
+
+            embed.WithColor(DiscordColor.Green);
+            embed.WithTitle(translations.new_profile_saved);
+            embed.WithDescription(string.Format(translations.new_profile_saved_mention, ctx.User.Mention));
+            embed.WithThumbnail(profile.Avatar.Medium);
+            embed.WithAuthor(profile.Name, profile.SiteUrl.AbsoluteUri, ctx.User.AvatarUrl);
+            if (!string.IsNullOrEmpty(profile.BannerImage?.AbsoluteUri))
+            {
+                embed.WithImageUrl(profile.BannerImage.AbsoluteUri);
+            }
+
+            return embed;
+        }
+
         private static string FormatScore(decimal score, ScoreFormat format)
         {
             switch (format)
