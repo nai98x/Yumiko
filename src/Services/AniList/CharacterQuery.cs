@@ -28,7 +28,7 @@
                 var response = await GraphQlClient.SendQueryAsync<CharacterPageResponse>(request);
                 var results = response.Data.Page.Characters;
 
-                return await ChooseCharacterAsync(ctx, timeout, results);
+                return await ChooseCharacterAsync(ctx, timeout, results!);
             }
             catch (GraphQLHttpRequestException ex)
             {
@@ -49,13 +49,20 @@
             foreach (var item in list)
             {
                 string desc;
-                if (item.Animes.Nodes.Count > 0)
+                if (item.Animes.Nodes?.Count > 0)
                 {
                     desc = item.Animes.Nodes[0].Title.Romaji;
                 }
                 else
                 {
-                    desc = "(Without animes)";
+                    if (item.Mangas.Nodes?.Count > 0)
+                    {
+                        desc = item.Mangas.Nodes[0].Title.Romaji;
+                    }
+                    else
+                    {
+                        desc = "(Without animes and mangas)";
+                    }
                 }
 
                 opc.Add(new TitleDescription
@@ -94,7 +101,7 @@
                                 siteUrl
                             }
                         }
-                        manga: media(type: MANGA) {
+                        mangas: media(type: MANGA) {
                             nodes {
                                 id
                                 title {

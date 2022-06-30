@@ -8,21 +8,21 @@ namespace Yumiko.Datatypes
         public long Id { get; set; }
 
         [JsonProperty("name")]
-        public AniListName Name { get; set; }
+        public AniListName Name { get; set; } = null!;
 
         [JsonProperty("image")]
-        public Image Image { get; set; }
+        public CharacterImage Image { get; set; } = null!;
 
         [JsonProperty("siteUrl")]
-        public Uri SiteUrl { get; set; }
+        public Uri SiteUrl { get; set; } = null!;
 
         [JsonProperty("description")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [JsonProperty("animes")]
-        public CharacterMediaNodes Animes { get; set; }
+        public CharacterMediaNodes Animes { get; set; } = null!;
 
         [JsonProperty("mangas")]
-        public CharacterMediaNodes Mangas { get; set; }
+        public CharacterMediaNodes Mangas { get; set; } = null!;
     }
 }

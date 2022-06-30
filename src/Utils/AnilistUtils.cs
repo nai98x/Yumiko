@@ -141,6 +141,25 @@
             return embed;
         }
 
+        public static DiscordEmbedBuilder GetCharacterEmbed(InteractionContext ctx, Character character)
+        {
+            var embed = new DiscordEmbedBuilder();
+
+            string animes = (character.Animes.Nodes != null && character.Animes.Nodes.Count > 0) ? string.Join("\n", character.Animes.Nodes.Select(anime => Formatter.MaskedUrl(anime.Title.Romaji, anime.SiteUrl))) : string.Empty;
+            string mangas = (character.Mangas.Nodes != null && character.Mangas.Nodes.Count > 0) ? string.Join("\n", character.Mangas.Nodes.Select(manga => Formatter.MaskedUrl(manga.Title.Romaji, manga.SiteUrl))) : string.Empty;
+
+            embed.WithTitle(character.Name.Full);
+            embed.WithUrl(character.SiteUrl);
+            embed.WithThumbnail(character.Image.Large);
+            embed.WithColor(Constants.YumikoColor);
+            if (!string.IsNullOrEmpty(character.Description)) embed.WithDescription(Common.LimpiarTexto(character.Description).NormalizeDescription());
+
+            if (!string.IsNullOrEmpty(animes)) embed.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} Animes", animes.NormalizeField(), false);
+            if (!string.IsNullOrEmpty(mangas)) embed.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} Mangas", mangas.NormalizeField(), false);
+
+            return embed;
+        }
+
         private static string FormatScore(decimal score, ScoreFormat format)
         {
             switch (format)
