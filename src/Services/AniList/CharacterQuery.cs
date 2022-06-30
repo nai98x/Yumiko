@@ -70,7 +70,7 @@
             else return null;
         }
 
-        public const string searchQuery = @"
+        private const string searchQuery = @"
             query ($search: String, $perPage: Int){
                 Page(perPage: $perPage) {
                     characters(search: $search) {

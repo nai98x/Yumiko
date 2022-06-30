@@ -8,7 +8,7 @@ namespace Yumiko.Datatypes
         public int? Year { get; set; }
 
         [JsonProperty("month")]
-        public int? Nonth { get; set; }
+        public int? Month { get; set; }
 
         [JsonProperty("day")]
         public int? Day { get; set; }

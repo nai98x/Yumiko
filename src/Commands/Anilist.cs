@@ -265,67 +265,31 @@
         {
             await ctx.DeferAsync();
             usuario ??= ctx.User;
-            var media = await AnilistServices.GetAniListMedia(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), anime, MediaType.ANIME);
-            if (media.Ok == true)
+
+            var media = await MediaQuery.GetMedia(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), anime, MediaType.ANIME);
+            if (media != null)
             {
-                string titulos;
-                if (media.Titulos != null)
+                var builder = new DiscordWebhookBuilder();
+
+                if (media.IsAdult && !ctx.Channel.IsNSFW)
                 {
-                    titulos = string.Join(", ", media.Titulos);
+                    await ctx.EditResponseAsync(builder.AddEmbed(Constants.NsfwWarning));
+                    return;
                 }
-                else
+                
+                builder.AddEmbed(AnilistUtils.GetMediaEmbed(ctx, media, MediaType.ANIME));
+
+                var userAnilistProfile = await UsuariosAnilist.GetPerfilAsync(usuario.Id);
+                if (userAnilistProfile != null)
                 {
-                    titulos = translations.without_titles;
-                }
-
-                if ((!media.IsAdult) || (media.IsAdult && ctx.Channel.IsNSFW))
-                {
-                    var builder = new DiscordEmbedBuilder
+                    var statsUser = await MediaUserQuery.GetMediaFromUser(ctx, userAnilistProfile.AnilistId, media.Id);
+                    if(statsUser != null)
                     {
-                        Title = media.TituloRomaji,
-                        Url = media.UrlAnilist,
-                        Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
-                        {
-                            Url = media.CoverImage,
-                        },
-                        Color = Constants.YumikoColor,
-                        Description = media.Descripcion
-                    };
-
-                    if (!string.IsNullOrEmpty(media.Episodios)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} {translations.episodes}", media.Episodios.NormalizeField(), true);
-                    if (!string.IsNullOrEmpty(media.Formato)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} {translations.format}", media.Formato.NormalizeField(), true);
-                    if (!string.IsNullOrEmpty(media.Estado)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} {translations.status}", media.Estado.ToLower().ToUpperFirst().NormalizeField(), true);
-                    if (!string.IsNullOrEmpty(media.Score)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} {translations.score}", media.Score.NormalizeField(), false);
-                    if (!string.IsNullOrEmpty(media.Fechas)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} {translations.start_date}", media.Fechas.NormalizeField(), false);
-                    if (!string.IsNullOrEmpty(media.Generos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} {translations.genres}", media.Generos.NormalizeField(), false);
-                    if (!string.IsNullOrEmpty(media.Tags)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} {translations.genres}", media.Tags.NormalizeField(), false);
-                    if (!string.IsNullOrEmpty(titulos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} {translations.synonyms}", titulos.NormalizeField(), false);
-                    if (!string.IsNullOrEmpty(media.Estudios)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} {translations.studios}", media.Estudios.NormalizeField(), false);
-                    if (!string.IsNullOrEmpty(media.LinksExternos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":link:")} {translations.external_links}", media.LinksExternos.NormalizeField(), false);
-
-                    DiscordWebhookBuilder whbuilder = new();
-                    whbuilder.AddEmbed(builder);
-
-                    var usuarioB = await UsuariosAnilist.GetPerfilAsync(usuario.Id);
-                    if (usuarioB != null)
-                    {
-                        var embedN = await AnilistServices.GetInfoMediaUser(ctx, usuarioB.AnilistId, media.Id);
-                        if (embedN != null)
-                        {
-                            whbuilder.AddEmbed(embedN);
-                        }
+                        builder.AddEmbed(AnilistUtils.GetMediaUserStats(statsUser));
                     }
+                }
 
-                    await ctx.EditResponseAsync(whbuilder);
-                }
-                else
-                {
-                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(Constants.NsfwWarning));
-                }
-            }
-            else
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(media.MsgError));
+                await ctx.EditResponseAsync(builder);
             }
         }
 
@@ -335,65 +299,31 @@
         {
             await ctx.DeferAsync();
             usuario ??= ctx.User;
-            var media = await AnilistServices.GetAniListMedia(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), manga, MediaType.MANGA);
-            if (media.Ok == true)
+
+            var media = await MediaQuery.GetMedia(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), manga, MediaType.MANGA);
+            if (media != null)
             {
-                string titulos;
-                if (media.Titulos != null)
+                var builder = new DiscordWebhookBuilder();
+
+                if (media.IsAdult && !ctx.Channel.IsNSFW)
                 {
-                    titulos = string.Join(", ", media.Titulos);
-                }
-                else
-                {
-                    titulos = translations.without_titles;
+                    await ctx.EditResponseAsync(builder.AddEmbed(Constants.NsfwWarning));
+                    return;
                 }
 
-                if ((!media.IsAdult) || (media.IsAdult && ctx.Channel.IsNSFW))
+                builder.AddEmbed(AnilistUtils.GetMediaEmbed(ctx, media, MediaType.ANIME));
+
+                var userAnilistProfile = await UsuariosAnilist.GetPerfilAsync(usuario.Id);
+                if (userAnilistProfile != null)
                 {
-                    var builder = new DiscordEmbedBuilder
+                    var statsUser = await MediaUserQuery.GetMediaFromUser(ctx, userAnilistProfile.AnilistId, media.Id);
+                    if (statsUser != null)
                     {
-                        Title = media.TituloRomaji,
-                        Url = media.UrlAnilist,
-                        Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
-                        {
-                            Url = media.CoverImage,
-                        },
-                        Color = Constants.YumikoColor,
-                        Description = media.Descripcion,
-                    };
-
-                    if (!string.IsNullOrEmpty(media.Chapters)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} {translations.chapters}", media.Chapters.NormalizeField(), true);
-                    if (!string.IsNullOrEmpty(media.Formato)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":dividers:")} {translations.format}", media.Formato.NormalizeField(), true);
-                    if (!string.IsNullOrEmpty(media.Estado)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":hourglass_flowing_sand:")} {translations.status}", media.Estado.ToLower().ToUpperFirst().NormalizeField(), true);
-                    if (!string.IsNullOrEmpty(media.Score)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":star:")} {translations.score}", media.Score.NormalizeField(), true);
-                    if (!string.IsNullOrEmpty(media.Fechas)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":calendar_spiral:")} {translations.publication_date}", media.Fechas.NormalizeField(), false);
-                    if (!string.IsNullOrEmpty(media.Generos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":scroll:")} {translations.genres}", media.Generos.NormalizeField(), false);
-                    if (!string.IsNullOrEmpty(media.Tags)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":notepad_spiral:")} {translations.tags}", media.Tags.NormalizeField(), false);
-                    if (!string.IsNullOrEmpty(titulos)) builder.AddField($"{DiscordEmoji.FromName(ctx.Client, ":pencil:")} {translations.synonyms}", titulos.NormalizeField(), false);
-
-                    DiscordWebhookBuilder whbuilder = new();
-                    whbuilder.AddEmbed(builder);
-
-                    var usuarioB = await UsuariosAnilist.GetPerfilAsync(usuario.Id);
-                    if (usuarioB != null)
-                    {
-                        var embedN = await AnilistServices.GetInfoMediaUser(ctx, usuarioB.AnilistId, media.Id);
-                        if (embedN != null)
-                        {
-                            whbuilder.AddEmbed(embedN);
-                        }
+                        builder.AddEmbed(AnilistUtils.GetMediaUserStats(statsUser));
                     }
+                }
 
-                    await ctx.EditResponseAsync(whbuilder);
-                }
-                else
-                {
-                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(Constants.NsfwWarning));
-                }
-            }
-            else
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(media.MsgError));
+                await ctx.EditResponseAsync(builder);
             }
         }
 

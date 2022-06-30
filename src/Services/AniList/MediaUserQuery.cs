@@ -43,7 +43,7 @@
             }
         }
 
-        public const string searchQuery = @"
+        private const string searchQuery = @"
             query ($userId: Int, $mediaId: Int){
                 MediaList(userId: $userId, mediaId: $mediaId) {
                     status
@@ -70,6 +70,7 @@
                         avatar {
                             medium
                         }
+                        siteUrl
                         mediaListOptions {
                             scoreFormat
                         }

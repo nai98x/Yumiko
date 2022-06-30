@@ -42,7 +42,7 @@
             }
         }
 
-        public const string searchQuery = @"
+        private const string searchQuery = @"
             query ($code: Int){
                 User(id: $code) {
                     id

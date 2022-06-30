@@ -5,9 +5,9 @@ namespace Yumiko.Datatypes
     public class Tag
     {
         [JsonProperty("name")]
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [JsonProperty("isMediaSpoiler")]
-        public bool? IsMediaSpoiler { get; set; }
+        public bool IsMediaSpoiler { get; set; }
     }
 }

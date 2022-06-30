@@ -315,6 +315,9 @@
   <data name="format" xml:space="preserve">
     <value>Formato</value>
   </data>
+  <data name="from" xml:space="preserve">
+    <value>Desde</value>
+  </data>
   <data name="from_the_anime" xml:space="preserve">
     <value>del anime</value>
   </data>
@@ -764,6 +767,9 @@
   </data>
   <data name="titles_language" xml:space="preserve">
     <value>Idioma de títulos</value>
+  </data>
+  <data name="to" xml:space="preserve">
+    <value>Hasta</value>
   </data>
   <data name="total" xml:space="preserve">
     <value>Total</value>

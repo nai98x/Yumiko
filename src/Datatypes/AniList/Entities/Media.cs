@@ -20,7 +20,10 @@ namespace Yumiko.Datatypes
         public Uri SiteUrl { get; set; } = null!;
 
         [JsonProperty("coverImage")]
-        public MediaCoverImage? CoverImage { get; set; }
+        public MediaCoverImage CoverImage { get; set; } = null!;
+
+        [JsonProperty("bannerImage")]
+        public string? BannerImage { get; set; }
 
         [JsonProperty("format")]
         public MediaFormat? Format { get; set; }

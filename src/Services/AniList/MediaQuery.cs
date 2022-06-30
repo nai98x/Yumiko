@@ -29,7 +29,7 @@
                 var response = await GraphQlClient.SendQueryAsync<MediaPageResponse>(request);
                 var results = response.Data.Page.Media;
 
-                return await ChooseMediaAsync(ctx, timeout, results);
+                return await ChooseMediaAsync(ctx, timeout, results!);
             }
             catch (GraphQLHttpRequestException ex)
             {
@@ -51,6 +51,7 @@
             {
                 string seasonYear = translations.not_yet_released;
                 if (item.SeasonYear != null) seasonYear = item.SeasonYear.ToString()!;
+                else if (item.StartDate.Year != null) seasonYear = $"{item.StartDate.Year}";
 
                 opc.Add(new TitleDescription
                 {
@@ -64,7 +65,7 @@
             else return null;
         }
 
-        public const string searchQuery = @"
+        private const string searchQuery = @"
             query ($search: String, $type: MediaType, $perPage: Int){
                 Page(perPage: $perPage) {
                     media(search: $search, type: $type) {
@@ -81,6 +82,7 @@
                             large
                             medium
                         }
+                        bannerImage
                         format
                         volumes
                         chapters

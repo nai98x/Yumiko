@@ -10,6 +10,9 @@ namespace Yumiko.Datatypes
         [JsonProperty("avatar")]
         public ProfileAvatar Avatar { get; set; } = null!;
 
+        [JsonProperty("siteUrl")]
+        public string SiteUrl { get; set; } = null!;
+
         [JsonProperty("mediaListOptions")]
         public MediaListOptions MediaListOptions { get; set; } = null!;
     }
