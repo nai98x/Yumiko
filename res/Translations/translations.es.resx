@@ -132,6 +132,9 @@
   <data name="adult_content" xml:space="preserve">
     <value>Contenido para adultos</value>
   </data>
+  <data name="age" xml:space="preserve">
+    <value>Edad</value>
+  </data>
   <data name="airing_since" xml:space="preserve">
     <value>En emisión desde {0}</value>
   </data>
@@ -243,6 +246,12 @@
   <data name="creation_date" xml:space="preserve">
     <value>Fecha de creación</value>
   </data>
+  <data name="date_of_birth" xml:space="preserve">
+    <value>Fecha de nacimiento</value>
+  </data>
+  <data name="date_of_death" xml:space="preserve">
+    <value>Fecha de defunción</value>
+  </data>
   <data name="defeat" xml:space="preserve">
     <value>¡Derrota!</value>
   </data>
@@ -326,6 +335,9 @@
   </data>
   <data name="game_cancelled" xml:space="preserve">
     <value>Partida cancelada</value>
+  </data>
+  <data name="gender" xml:space="preserve">
+    <value>Género</value>
   </data>
   <data name="genre" xml:space="preserve">
     <value>Genero</value>
@@ -416,6 +428,9 @@
   </data>
   <data name="join_date" xml:space="preserve">
     <value>Fecha en la que entró al servidor</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>Idioma</value>
   </data>
   <data name="lastest_log_file" xml:space="preserve">
     <value>Archivo de log más reciente</value>

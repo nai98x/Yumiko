@@ -251,7 +251,7 @@
         [SlashCommand("character", "Searchs for a Character")]
         [NameLocalization(Localization.Spanish, "personaje")]
         [DescriptionLocalization(Localization.Spanish, "Busca un personaje")]
-        public async Task Character(InteractionContext ctx, [Option("Character", "character to search")] string search)
+        public async Task Character(InteractionContext ctx, [Option("Character", "Character to search")] string search)
         {
             await ctx.DeferAsync();
 
@@ -263,7 +263,20 @@
             }
         }
 
-        // Staff, algun dia
+        [SlashCommand("staff", "Searchs for a staff")]
+        [DescriptionLocalization(Localization.Spanish, "Busca a un staff")]
+        public async Task Staff(InteractionContext ctx, [Option("Staff", "Staff to search")] string search)
+        {
+            await ctx.DeferAsync();
+
+            var staff = await StaffQuery.GetStaff(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), search);
+            if (staff != null)
+            {
+                var embed = AnilistUtils.GetStaffEmbed(ctx, staff);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+            }
+        }
+
         [SlashCommand("sauce", "Searchs for the anime of an image")]
         [DescriptionLocalization(Localization.Spanish, "Busca el anime de una imágen")]
         public async Task Sauce(InteractionContext ctx, [Option("Image", "Image link")] string url)

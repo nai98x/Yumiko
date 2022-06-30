@@ -199,6 +199,24 @@
             return embed;
         }
 
+        public static DiscordEmbedBuilder GetStaffEmbed(InteractionContext ctx, Staff staff)
+        {
+            var embed = new DiscordEmbedBuilder();
+
+            embed.WithColor(Constants.YumikoColor);
+            embed.WithTitle(staff.Name.Full);
+            if (staff.Description != null) embed.WithDescription(Common.LimpiarTexto(staff.Description).NormalizeDescription());
+            embed.WithThumbnail(staff.Image.Large);
+
+            if (staff.Language != null) embed.AddField(translations.language, staff.Language, false);
+            if (staff.Age != null) embed.AddField(translations.age, $"{staff.Age}", false);
+            if (staff.Gender != null) embed.AddField(translations.gender, staff.Gender, false);
+            if (staff.DateOfBirth.Day != null) embed.AddField(translations.date_of_birth, $"{staff.DateOfBirth.Day}/{staff.DateOfBirth.Month}/{staff.DateOfBirth.Year}", true);
+            if (staff.DateOfDeath.Day != null) embed.AddField(translations.date_of_death, $"{staff.DateOfDeath.Day}/{staff.DateOfDeath.Month}/{staff.DateOfDeath.Year}", true);
+
+            return embed;
+        }
+
         private static string FormatScore(decimal score, ScoreFormat format)
         {
             switch (format)

@@ -106,6 +106,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Age.
+        /// </summary>
+        public static string age {
+            get {
+                return ResourceManager.GetString("age", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airing since {0}.
         /// </summary>
         public static string airing_since {
@@ -439,6 +448,24 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Date of birth.
+        /// </summary>
+        public static string date_of_birth {
+            get {
+                return ResourceManager.GetString("date_of_birth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date of death.
+        /// </summary>
+        public static string date_of_death {
+            get {
+                return ResourceManager.GetString("date_of_death", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Defeat!.
         /// </summary>
         public static string defeat {
@@ -687,6 +714,15 @@ namespace Yumiko {
         public static string games {
             get {
                 return ResourceManager.GetString("games", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gender.
+        /// </summary>
+        public static string gender {
+            get {
+                return ResourceManager.GetString("gender", resourceCulture);
             }
         }
         
@@ -957,6 +993,15 @@ namespace Yumiko {
         public static string joined_date {
             get {
                 return ResourceManager.GetString("joined_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string language {
+            get {
+                return ResourceManager.GetString("language", resourceCulture);
             }
         }
         
