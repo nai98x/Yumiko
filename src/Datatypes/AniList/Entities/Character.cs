@@ -13,6 +13,9 @@ namespace Yumiko.Datatypes
         [JsonProperty("image")]
         public CharacterImage Image { get; set; } = null!;
 
+        [JsonProperty("favourites")]
+        public int Favorites { get; set; }
+
         [JsonProperty("siteUrl")]
         public Uri SiteUrl { get; set; } = null!;
 

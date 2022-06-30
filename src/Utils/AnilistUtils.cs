@@ -160,6 +160,28 @@
             return embed;
         }
 
+        public static DiscordEmbedBuilder GetRandomCharacterEmbed(InteractionContext ctx, Character character, int page)
+        {
+            var embed = new DiscordEmbedBuilder();
+
+            embed.WithTitle(character.Name.Full);
+            embed.WithUrl(character.SiteUrl);
+            embed.WithImageUrl(character.Image.Large);
+            embed.WithColor(Constants.YumikoColor);
+            embed.WithFooter($"{character.Favorites} {DiscordEmoji.FromName(ctx.Client, ":heart:")} (nº {page} {translations.in_popularity_rank})", Constants.AnilistAvatarUrl);
+
+            if (character.Animes?.Nodes?.Count > 0)
+            {
+                embed.WithDescription($"{MediaType.ANIME.GetName().UppercaseFirst()}: {Formatter.MaskedUrl(character.Animes.Nodes[0].Title.Romaji, character.Animes.Nodes[0].SiteUrl)}\n");
+            }
+            else if (character.Mangas?.Nodes?.Count > 0)
+            {
+                embed.WithDescription($"{MediaType.MANGA.GetName().UppercaseFirst()}: {Formatter.MaskedUrl(character.Mangas.Nodes[0].Title.Romaji, character.Mangas.Nodes[0].SiteUrl)}\n");
+            }
+
+            return embed;
+        }
+
         private static string FormatScore(decimal score, ScoreFormat format)
         {
             switch (format)

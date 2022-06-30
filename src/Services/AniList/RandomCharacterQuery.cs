@@ -8,11 +8,11 @@
     using System.Net;
     using System.Threading.Tasks;
 
-    public static class CharacterQuery
+    public static class RandomCharacterQuery
     {
         private static readonly GraphQLHttpClient GraphQlClient = new(Constants.AnilistAPIUrl, new NewtonsoftJsonSerializer());
 
-        public static async Task<Character?> GetCharacter(InteractionContext ctx, double timeout, string characterSearch)
+        public static async Task<Character?> GetCharacter(InteractionContext ctx, int page)
         {
             try
             {
@@ -21,14 +21,13 @@
                     Query = searchQuery,
                     Variables = new
                     {
-                        search = characterSearch,
-                        perPage = Constants.AnilistPerPage
+                        page
                     }
                 };
                 var response = await GraphQlClient.SendQueryAsync<CharacterPageResponse>(request);
                 var results = response.Data.Page.Characters;
 
-                return await ChooseCharacterAsync(ctx, timeout, results!);
+                return results![0];
             }
             catch (GraphQLHttpRequestException ex)
             {
@@ -43,44 +42,10 @@
             }
         }
 
-        private static async Task<Character?> ChooseCharacterAsync(InteractionContext ctx, double timeout, List<Character> list)
-        {
-            List<TitleDescription> opc = new();
-            foreach (var item in list)
-            {
-                string desc;
-                if (item.Animes.Nodes?.Count > 0)
-                {
-                    desc = item.Animes.Nodes[0].Title.Romaji;
-                }
-                else
-                {
-                    if (item.Mangas.Nodes?.Count > 0)
-                    {
-                        desc = item.Mangas.Nodes[0].Title.Romaji;
-                    }
-                    else
-                    {
-                        desc = "(Without animes and mangas)";
-                    }
-                }
-
-                opc.Add(new TitleDescription
-                {
-                    Title = item.Name.Full,
-                    Description = desc
-                });
-            }
-
-            var elegido = await Common.GetElegidoAsync(ctx, timeout, opc);
-            if (elegido > 0) return list[elegido - 1];
-            else return null;
-        }
-
         private const string searchQuery = @"
-            query ($search: String, $perPage: Int){
-                Page(perPage: $perPage) {
-                    characters(search: $search) {
+            query ($page: Int){
+                Page(perPage: 1, page: $page) {
+                    characters(sort: FAVOURITES_DESC) {
                         id
                         name {
                             full

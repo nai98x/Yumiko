@@ -460,20 +460,12 @@
         public async Task Pj(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            var pag = Common.GetRandomNumber(1, 10000);
-            var personaje = await Common.GetRandomCharacterAsync(ctx, pag);
-            if (personaje != null)
+            var page = Common.GetRandomNumber(1, 10000);
+            var character = await RandomCharacterQuery.GetCharacter(ctx, page);
+            if (character != null)
             {
-                var corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
-                var builder = new DiscordEmbedBuilder
-                {
-                    Title = personaje.NameFull,
-                    Url = personaje.SiteUrl,
-                    ImageUrl = personaje.Image,
-                    Description = $"[{personaje.AnimePrincipal?.TitleRomaji}]({personaje.AnimePrincipal?.SiteUrl})\n{personaje.Favoritos} {corazon} (nº {pag} {translations.in_popularity_rank})",
-                    Color = Constants.YumikoColor
-                };
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder));
+                var embed = AnilistUtils.GetRandomCharacterEmbed(ctx, character, page);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
             }
         }
 
