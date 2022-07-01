@@ -327,9 +327,9 @@
                                     {
                                         encontro = true;
                                         int id = resultado.anilist;
-                                        var media = await AnilistServices.GetAniListMediaTitleAndNsfwFromId(ctx, id, MediaType.ANIME);
-                                        string mediaTitle = media.Item1;
-                                        bool nsfw = media.Item2;
+                                        Media? media = await MediaQuery.GetMedia(ctx, id, MediaType.ANIME);
+                                        string mediaTitle = media!.Title.Romaji;
+                                        bool nsfw = media!.IsAdult;
                                         int from = resultado.from;
                                         string videoLink = resultado.video;
                                         if (!ctx.Channel.IsNSFW && nsfw)
