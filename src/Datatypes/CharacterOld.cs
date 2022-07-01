@@ -16,10 +16,6 @@
 
         public string? SiteUrl { get; set; }
 
-        public List<Anime>? Animes { get; set; }
-
-        public List<MediaOld>? Mangas { get; set; }
-
         public int? Favoritos { get; set; }
 
         public Anime? AnimePrincipal { get; set; }

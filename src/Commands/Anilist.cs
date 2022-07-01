@@ -206,7 +206,7 @@
                     var statsUser = await MediaUserQuery.GetMediaFromUser(ctx, userAnilistProfile.AnilistId, media.Id);
                     if (statsUser != null)
                     {
-                        builder.AddEmbed(AnilistUtils.GetMediaUserStats(statsUser));
+                        builder.AddEmbed(AnilistUtils.GetMediaUserStatsEmbed(statsUser));
                     }
                 }
 
@@ -244,7 +244,7 @@
                     var statsUser = await MediaUserQuery.GetMediaFromUser(ctx, userAnilistProfile.AnilistId, media.Id);
                     if (statsUser != null)
                     {
-                        builder.AddEmbed(AnilistUtils.GetMediaUserStats(statsUser));
+                        builder.AddEmbed(AnilistUtils.GetMediaUserStatsEmbed(statsUser));
                     }
                 }
 
@@ -284,7 +284,7 @@
             var staff = await StaffQuery.GetStaff(ctx, ConfigurationUtils.GetConfiguration<double>(Configuration, Configurations.TimeoutGeneral), search);
             if (staff != null)
             {
-                var embed = AnilistUtils.GetStaffEmbed(ctx, staff);
+                var embed = AnilistUtils.GetStaffEmbed(staff);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
             }
             else
@@ -434,10 +434,11 @@
             var userAnilist = await UsuariosAnilist.GetPerfilAsync(user.Id);
             if (userAnilist != null)
             {
-                var recommendationsEmbed = await AnilistServices.GetUserRecommendationsAsync(ctx, user, type, userAnilist.AnilistId);
-                if (recommendationsEmbed != null)
+                var recommendations = await RecommendatiosnQuery.GetRecommendations(ctx, userAnilist.AnilistId, type);
+                if (recommendations.Item1 != null && recommendations.Item2 != null)
                 {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(recommendationsEmbed));
+                    var embed = AnilistUtils.GetMediaRecommendationsEmbed(user, recommendations.Item1, recommendations.Item2, type);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                 }
                 else
                 {

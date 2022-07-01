@@ -12,5 +12,8 @@ namespace Yumiko.Datatypes
 
         [JsonProperty("meanScore")]
         public decimal MeanScore { get; set; }
+
+        [JsonProperty("standardDeviation")]
+        public decimal StandardDeviation { get; set; }
     }
 }

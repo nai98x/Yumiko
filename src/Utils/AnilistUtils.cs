@@ -116,7 +116,7 @@
             return embed;
         }
 
-        public static DiscordEmbedBuilder GetMediaUserStats(MediaUser mediaUser)
+        public static DiscordEmbedBuilder GetMediaUserStatsEmbed(MediaUser mediaUser)
         {
             var embed = new DiscordEmbedBuilder();
 
@@ -199,7 +199,7 @@
             return embed;
         }
 
-        public static DiscordEmbedBuilder GetStaffEmbed(InteractionContext ctx, Staff staff)
+        public static DiscordEmbedBuilder GetStaffEmbed(Staff staff)
         {
             var embed = new DiscordEmbedBuilder();
 
@@ -215,6 +215,89 @@
             if (staff.DateOfDeath.Day != null) embed.AddField(translations.date_of_death, $"{staff.DateOfDeath.Day}/{staff.DateOfDeath.Month}/{staff.DateOfDeath.Year}", true);
 
             return embed;
+        }
+
+        public static DiscordEmbedBuilder GetMediaRecommendationsEmbed(DiscordUser user, Profile profile, MediaListCollection collection, MediaType type)
+        {
+            var embed = new DiscordEmbedBuilder();
+            var recommendations = GetRecommendationsFromUser(profile, collection, type);
+
+            if (recommendations.Count == 0)
+            {
+                embed.WithTitle(translations.error);
+                embed.WithDescription(translations.no_recommendations_found);
+                embed.WithColor(DiscordColor.Red);
+                embed.WithAuthor(profile.Name, profile.SiteUrl.AbsoluteUri, profile.Avatar.Medium.AbsoluteUri);
+                embed.WithThumbnail(user.AvatarUrl);
+            }
+            else
+            {
+                string desc = string.Join("\n", recommendations.Select(rec => $"{Formatter.Bold($"{rec.Score:##.##}")} - {Formatter.MaskedUrl(rec.Title, new Uri($"https://anilist.co/{type.GetName().ToLower()}/{rec.Id}"))}"));
+
+                embed.WithTitle(string.Format(translations.media_recommendations, type.GetName().UppercaseFirst()));
+                embed.WithDescription(desc.NormalizeDescriptionNewLine());
+                embed.WithColor(Constants.YumikoColor);
+                embed.WithFooter(string.Format(translations.media_recommendations_explanation, type.GetName().ToLower()), Constants.AnilistAvatarUrl);
+                embed.WithAuthor(profile.Name, profile.SiteUrl.AbsoluteUri, profile.Avatar.Medium.AbsoluteUri);
+                embed.WithThumbnail(user.AvatarUrl);
+            }
+
+            return embed;
+        }
+
+        private static List<AnimeRecommendation> GetRecommendationsFromUser(Profile profile, MediaListCollection collection, MediaType type)
+        {
+            List<AnimeRecommendation> recommendations = new();
+
+            decimal meanScore = type == MediaType.ANIME ? profile.Statistics.Anime.MeanScore : profile.Statistics.Manga.MeanScore;
+            decimal standardDeviation = type == MediaType.ANIME ? profile.Statistics.Anime.StandardDeviation : profile.Statistics.Manga.StandardDeviation;
+
+            List<int> mediaListIds = new();
+            collection.Lists.ForEach(list =>
+            {
+                list.Entries.ForEach(entry =>
+                {
+                    mediaListIds.Add(entry.MediaId);
+                });
+            });
+
+            collection.Lists.ForEach(list =>
+            {
+                list.Entries.ForEach(entry =>
+                {
+                    if (entry.Score != null && entry.Score > 0) // Filter entries without score
+                    {
+                        decimal adjustedScore = ((decimal)entry.Score - meanScore) / standardDeviation;
+                        entry.Media.Recommendations.Nodes.ForEach(node =>
+                        {
+                            if (node.MediaRecommendation != null) // Filter entries without recommendations
+                            {
+                                int nodeId = node.MediaRecommendation.Id;
+                                string nodeTitle = 
+                                    (profile.Options.TitleLanguage == "ENGLISH" && node.MediaRecommendation.Title.English != null) ?
+                                    node.MediaRecommendation.Title.English : node.MediaRecommendation.Title.Romaji;
+                                int nodeRating = node.Rating;
+
+                                if (!mediaListIds.Contains(nodeId) && nodeRating > 0) // Filter entries alredy on list and without rating
+                                {
+                                    if (!recommendations.Where(x => x.Id == nodeId).Any())
+                                    {
+                                        recommendations.Add(new()
+                                        {
+                                            Id = nodeId,
+                                            Title = nodeTitle
+                                        });
+                                    }
+
+                                    recommendations.First(x => x.Id == nodeId).Score += adjustedScore * (2 - (1 / nodeRating));
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
+            return recommendations.OrderByDescending(x => x.Score).Where(y => y.Score >= 3).ToList();
         }
 
         private static string FormatScore(decimal score, ScoreFormat format)
