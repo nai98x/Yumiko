@@ -4,8 +4,11 @@
   Discord Bot written on top of DSharpPlus
   <br><br>
   <a href="https://www.codefactor.io/repository/github/nai98x/yumiko" target="_blank"><img src="https://www.codefactor.io/repository/github/nai98x/yumiko/badge?s=92181f030fc6101fb54afa74167809713aa4d060" alt="Codefactor"></a>
-  <a href="https://github.com/nai98x/yumiko/actions/workflows/deploy.yml" target="_blank"><img src="https://github.com/nai98x/yumiko/actions/workflows/deploy.yml/badge.svg?branch=master" alt="CI"></a>
-  <img alt="Bot status" src="https://img.shields.io/website?down_color=red&down_message=offline&label=Bot%20Status&up_color=green&up_message=Online&url=https%3A%2F%2Fyumikobot.carrd.co%2F">
+  <a href="https://github.com/nai98x/yumiko/actions/workflows/deploy.yml" target="_blank"><img src="https://github.com/nai98x/yumiko/actions/workflows/deploy.yml/badge.svg?branch=master" alt="CI/CD"></a>
+  <a><img src="https://img.shields.io/github/languages/code-size/nai98x/Yumiko?style=?style=plastic&color=blueviolet" alt="Code size"></a>
+  <a><img src="https://img.shields.io/tokei/lines/github/nai98x/Yumiko?style=?style=plastic&color=blueviolet&label=lines%20of%20code" alt="Lines of code"></a>
+  <br>
+  <img alt="Bot status" src="https://img.shields.io/website?down_color=red&down_message=offline&label=Bot%20Status&up_color=green&up_message=Online&url=https%3A%2F%2Fyumiko.uwu.ai%2F">
   <a href="https://top.gg/bot/295182825521545218" target="_blank"><img src="https://top.gg/api/widget/servers/295182825521545218.svg?noavatar=true" alt="Top.gg"></a>
   <a href="https://top.gg/bot/295182825521545218/vote" target="_blank"><img src="https://top.gg/api/widget/upvotes/295182825521545218.svg?noavatar=true" alt="Top.gg"></a>
   <br><br>
