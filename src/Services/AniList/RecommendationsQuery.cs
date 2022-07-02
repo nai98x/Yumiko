@@ -12,7 +12,7 @@
     {
         private static readonly GraphQLHttpClient GraphQlClient = new(Constants.AnilistAPIUrl, new NewtonsoftJsonSerializer());
 
-        public static async Task<(Profile?, MediaListCollection?)> GetRecommendations(InteractionContext ctx, int userId, MediaType mediaType)
+        public static async Task<(User?, MediaListCollection?)> GetRecommendations(InteractionContext ctx, int userId, MediaType mediaType)
         {
             try
             {

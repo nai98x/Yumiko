@@ -2,6 +2,6 @@
 {
     public class MediaPageResponse
     {
-        public MediaResponse Page { get; set; }
+        public MediaResponse? Page { get; set; }
     }
 }

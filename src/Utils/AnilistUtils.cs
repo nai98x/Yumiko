@@ -2,7 +2,7 @@
 {
     public static class AnilistUtils
     {
-        public static DiscordEmbedBuilder GetProfileEmbed(InteractionContext ctx, Profile profile)
+        public static DiscordEmbedBuilder GetProfileEmbed(InteractionContext ctx, User profile)
         {
             var embed = new DiscordEmbedBuilder();
 
@@ -116,7 +116,7 @@
             return embed;
         }
 
-        public static DiscordEmbedBuilder GetMediaUserStatsEmbed(MediaUser mediaUser)
+        public static DiscordEmbedBuilder GetMediaUserStatsEmbed(MediaUserStatistics mediaUser)
         {
             var embed = new DiscordEmbedBuilder();
 
@@ -182,7 +182,7 @@
             return embed;
         }
 
-        public static DiscordEmbedBuilder GetLoggedProfileEmbed(InteractionContext ctx, Profile profile)
+        public static DiscordEmbedBuilder GetLoggedProfileEmbed(InteractionContext ctx, User profile)
         {
             var embed = new DiscordEmbedBuilder();
 
@@ -217,7 +217,7 @@
             return embed;
         }
 
-        public static DiscordEmbedBuilder GetMediaRecommendationsEmbed(DiscordUser user, Profile profile, MediaListCollection collection, MediaType type)
+        public static DiscordEmbedBuilder GetMediaRecommendationsEmbed(DiscordUser user, User profile, MediaListCollection collection, MediaType type)
         {
             var embed = new DiscordEmbedBuilder();
             var recommendations = GetRecommendationsFromUser(profile, collection, type);
@@ -245,7 +245,7 @@
             return embed;
         }
 
-        private static List<AnimeRecommendation> GetRecommendationsFromUser(Profile profile, MediaListCollection collection, MediaType type)
+        private static List<AnimeRecommendation> GetRecommendationsFromUser(User profile, MediaListCollection collection, MediaType type)
         {
             List<AnimeRecommendation> recommendations = new();
 
@@ -253,22 +253,22 @@
             decimal standardDeviation = type == MediaType.ANIME ? profile.Statistics.Anime.StandardDeviation : profile.Statistics.Manga.StandardDeviation;
 
             List<int> mediaListIds = new();
-            collection.Lists.ForEach(list =>
+            collection.Lists?.ForEach(list =>
             {
-                list.Entries.ForEach(entry =>
+                list.Entries?.ForEach(entry =>
                 {
                     mediaListIds.Add(entry.MediaId);
                 });
             });
 
-            collection.Lists.ForEach(list =>
+            collection.Lists?.ForEach(list =>
             {
-                list.Entries.ForEach(entry =>
+                list.Entries?.ForEach(entry =>
                 {
                     if (entry.Score != null && entry.Score > 0) // Filter entries without score
                     {
                         decimal adjustedScore = ((decimal)entry.Score - meanScore) / standardDeviation;
-                        entry.Media.Recommendations.Nodes.ForEach(node =>
+                        entry.Media.Recommendations?.Nodes?.ForEach(node =>
                         {
                             if (node.MediaRecommendation != null) // Filter entries without recommendations
                             {

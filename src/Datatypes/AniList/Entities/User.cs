@@ -2,7 +2,7 @@
 
 namespace Yumiko.Datatypes
 {
-    public class Profile
+    public class User
     {
         [JsonProperty("id")]
         public int Id { get; set; }
@@ -27,5 +27,8 @@ namespace Yumiko.Datatypes
 
         [JsonProperty("favourites")]
         public ProfileFavourites Favourites { get; set; } = null!;
+
+        [JsonProperty("mediaListOptions")]
+        public MediaListOptions MediaListOptions { get; set; } = null!;
     }
 }

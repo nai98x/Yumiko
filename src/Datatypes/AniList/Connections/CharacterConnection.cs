@@ -2,9 +2,9 @@
 
 namespace Yumiko.Datatypes
 {
-    public class NodesStudios
+    public class CharacterConnection
     {
         [JsonProperty("nodes")]
-        public List<Studio>? Nodes { get; set; }
+        public List<ProfileCharacterNode>? Nodes { get; set; }
     }
 }

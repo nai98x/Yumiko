@@ -59,7 +59,7 @@ namespace Yumiko.Datatypes
         public List<Tag>? Tags { get; set; }
 
         [JsonProperty("studios")]
-        public NodesStudios? Studios { get; set; }
+        public StudioConnection? Studios { get; set; }
 
         [JsonProperty("externalLinks")]
         public List<ExternalLink>? ExternalLinks { get; set; }

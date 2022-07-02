@@ -12,7 +12,7 @@
     {
         private static readonly GraphQLHttpClient GraphQlClient = new(Constants.AnilistAPIUrl, new NewtonsoftJsonSerializer());
 
-        public static async Task<Profile?> GetProfile(InteractionContext ctx, string token)
+        public static async Task<User?> GetProfile(InteractionContext ctx, string token)
         {
             try
             {

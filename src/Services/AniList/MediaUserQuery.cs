@@ -12,7 +12,7 @@
     {
         private static readonly GraphQLHttpClient GraphQlClient = new(Constants.AnilistAPIUrl, new NewtonsoftJsonSerializer());
 
-        public static async Task<MediaUser?> GetMediaFromUser(InteractionContext ctx, int userId, int mediaId)
+        public static async Task<MediaUserStatistics?> GetMediaFromUser(InteractionContext ctx, int userId, int mediaId)
         {
             try
             {

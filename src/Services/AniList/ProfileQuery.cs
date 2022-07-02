@@ -12,7 +12,7 @@
     {
         private static readonly GraphQLHttpClient GraphQlClient = new(Constants.AnilistAPIUrl, new NewtonsoftJsonSerializer());
 
-        public static async Task<Profile?> GetProfile(InteractionContext ctx, int userId)
+        public static async Task<User?> GetProfile(InteractionContext ctx, int userId)
         {
             try
             {
@@ -72,6 +72,7 @@
                     favourites {
                         anime(perPage: 3) {
                             nodes {
+                                id
                                 title {
                                     romaji
                                     english
@@ -82,6 +83,7 @@
                         }
                         manga(perPage: 3) {
                             nodes {
+                                id
                                 title {
                                     romaji
                                     english

@@ -2,9 +2,9 @@
 
 namespace Yumiko.Datatypes
 {
-    public class Recommendations
+    public class CharacterMediaConnection
     {
         [JsonProperty("nodes")]
-        public List<RecommendationNode> Nodes { get; set; }
+        public List<MediaNode>? Nodes { get; set; }
     }
 }

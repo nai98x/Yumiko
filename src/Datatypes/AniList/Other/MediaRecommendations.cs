@@ -5,6 +5,6 @@ namespace Yumiko.Datatypes
     public class MediaRecommendations
     {
         [JsonProperty("recommendations")]
-        public Recommendations Recommendations { get; set; }
+        public RecommendationsConnection? Recommendations { get; set; }
     }
 }

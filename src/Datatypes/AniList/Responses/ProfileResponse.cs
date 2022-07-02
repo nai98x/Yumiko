@@ -5,6 +5,6 @@ namespace Yumiko.Datatypes
     public class ProfileResponse
     {
         [JsonProperty("User")]
-        public Profile? User { get; set; }
+        public User? User { get; set; }
     }
 }

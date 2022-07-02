@@ -5,6 +5,6 @@ namespace Yumiko.Datatypes
     public class ViewerResponse
     {
         [JsonProperty("Viewer")]
-        public Profile? Viewer { get; set; }
+        public User? Viewer { get; set; }
     }
 }

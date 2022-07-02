@@ -26,7 +26,7 @@
                     }
                 };
                 var response = await GraphQlClient.SendQueryAsync<CharacterPageResponse>(request);
-                var results = response.Data.Page.Characters;
+                var results = response.Data.Page?.Characters;
 
                 return await ChooseCharacterAsync(ctx, timeout, results!);
             }

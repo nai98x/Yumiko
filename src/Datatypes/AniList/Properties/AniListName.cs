@@ -5,6 +5,6 @@ namespace Yumiko.Datatypes
     public class AniListName
     {
         [JsonProperty("full")]
-        public string Full { get; set; }
+        public string Full { get; set; } = null!;
     }
 }

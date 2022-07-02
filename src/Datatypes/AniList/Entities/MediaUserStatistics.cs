@@ -2,7 +2,7 @@
 
 namespace Yumiko.Datatypes
 {
-    public class MediaUser
+    public class MediaUserStatistics
     {
         [JsonProperty("status")]
         public MediaListStatus Status { get; set; }
@@ -29,6 +29,6 @@ namespace Yumiko.Datatypes
         public MediaEpisodes Media { get; set; } = null!;
 
         [JsonProperty("user")]
-        public UserMediaMini User { get; set; } = null!;
+        public User User { get; set; } = null!;
     }
 }

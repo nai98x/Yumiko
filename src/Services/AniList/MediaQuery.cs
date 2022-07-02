@@ -27,7 +27,7 @@
                     }
                 };
                 var response = await GraphQlClient.SendQueryAsync<MediaPageResponse>(request);
-                var results = response.Data.Page.Media;
+                var results = response.Data.Page?.Media;
 
                 return await ChooseMediaAsync(ctx, timeout, results!);
             }
@@ -59,7 +59,7 @@
                     }
                 };
                 var response = await GraphQlClient.SendQueryAsync<MediaPageResponse>(request);
-                return response!.Data.Page.Media![0];
+                return response!.Data.Page?.Media![0];
             }
             catch (GraphQLHttpRequestException ex)
             {

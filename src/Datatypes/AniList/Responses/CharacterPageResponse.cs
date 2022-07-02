@@ -2,6 +2,6 @@
 {
     public class CharacterPageResponse
     {
-        public CharacterResponse Page { get; set; }
+        public CharacterResponse? Page { get; set; }
     }
 }

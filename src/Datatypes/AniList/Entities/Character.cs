@@ -23,9 +23,9 @@ namespace Yumiko.Datatypes
         public string? Description { get; set; }
 
         [JsonProperty("animes")]
-        public CharacterMediaNodes Animes { get; set; } = null!;
+        public CharacterMediaConnection Animes { get; set; } = null!;
 
         [JsonProperty("mangas")]
-        public CharacterMediaNodes Mangas { get; set; } = null!;
+        public CharacterMediaConnection Mangas { get; set; } = null!;
     }
 }

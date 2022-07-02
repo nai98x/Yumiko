@@ -2,7 +2,7 @@
 
 namespace Yumiko.Datatypes
 {
-    public class CharacterMediaNode
+    public class MediaNode
     {
         [JsonProperty("id")]
         public int Id { get; set; }
