@@ -223,6 +223,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Anonymous.
+        /// </summary>
+        public static string anonymous {
+            get {
+                return ResourceManager.GetString("anonymous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Another trivia is already running in this channel.
         /// </summary>
         public static string another_trivia_playing {
@@ -2158,6 +2167,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time to vote.
+        /// </summary>
+        public static string time_to_vote {
+            get {
+                return ResourceManager.GetString("time_to_vote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Timed out choosing genre.
         /// </summary>
         public static string timed_out_choosing_genre {
@@ -2410,7 +2428,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Votes.
+        ///   Looks up a localized string similar to Vote(s).
         /// </summary>
         public static string votes {
             get {

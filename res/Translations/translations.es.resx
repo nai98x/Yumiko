@@ -171,6 +171,9 @@
   <data name="anime_stats" xml:space="preserve">
     <value>Estadísticas de anime</value>
   </data>
+  <data name="anonymous" xml:space="preserve">
+    <value>Anónimo</value>
+  </data>
   <data name="another_trivia_playing" xml:space="preserve">
     <value>Otra trivia se está jugando en este canal</value>
   </data>
@@ -819,6 +822,9 @@
   <data name="timed_out_choosing_genre" xml:space="preserve">
     <value>Tiempo agotado eligiendo el genero</value>
   </data>
+  <data name="time_to_vote" xml:space="preserve">
+    <value>Tiempo para votar</value>
+  </data>
   <data name="title" xml:space="preserve">
     <value>Título</value>
   </data>
@@ -892,7 +898,7 @@
     <value>Voto realizado</value>
   </data>
   <data name="votes" xml:space="preserve">
-    <value>Votos</value>
+    <value>Voto(s)</value>
   </data>
   <data name="vote_me_on_topgg" xml:space="preserve">
     <value>¡Vótame en Top.gg!</value>

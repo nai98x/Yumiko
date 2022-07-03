@@ -136,7 +136,11 @@
                             .AddEmbed(new DiscordEmbedBuilder
                             {
                                 Title = $"{translations.poll}: {title}",
-                                Description = translations.poll_description,
+                                Description = 
+                                    $"{Formatter.Bold(translations.settings)}:\n" +
+                                    $"{translations.anonymous}: {anonymous.ToYesNo()}\n" +
+                                    $"{translations.time_to_vote}: {timeout} {translations.minute.ToLower()}(s)\n" +
+                                    $"\n{Formatter.Bold(translations.poll_description)}",
                                 Color = Constants.YumikoColor,
                                 Footer = new()
                                 {

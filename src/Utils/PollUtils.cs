@@ -12,13 +12,13 @@
                 var options = poll.Options.OrderByDescending(x => x.VotesCount).ToList();
                 if (anonymous)
                 {
-                    votes = string.Join("\n", options.Select(option => $"{Formatter.Bold(option.Name)}: {option.VotesCount} {translations.vote.ToLower()}(s)"));
+                    votes = string.Join("\n", options.Select(option => $"{Formatter.Bold(option.Name)}: {option.VotesCount} {translations.votes.ToLower()}"));
                 }
                 else
                 {
                     options.ForEach(option =>
                     {
-                        votes += $"{Formatter.Bold(option.Name)}: {option.VotesCount} {translations.vote.ToLower()}(s)";
+                        votes += $"{Formatter.Bold(option.Name)}: {option.VotesCount} {translations.votes.ToLower()}";
                         if (option.VotesCount > 0)
                         {
                             votes += $"\n{string.Join("\n", option.Voters.Select(member => $"<@{member}>"))}";
