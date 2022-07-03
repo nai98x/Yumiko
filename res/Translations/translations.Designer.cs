@@ -439,6 +439,24 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Created by {0}.
+        /// </summary>
+        public static string created_by {
+            get {
+                return ResourceManager.GetString("created_by", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating poll.
+        /// </summary>
+        public static string creating_poll {
+            get {
+                return ResourceManager.GetString("creating_poll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creation date.
         /// </summary>
         public static string creation_date {
@@ -579,6 +597,24 @@ namespace Yumiko {
         public static string error {
             get {
                 return ResourceManager.GetString("error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can only make up to 25 options.
+        /// </summary>
+        public static string error_max_options_limit {
+            get {
+                return ResourceManager.GetString("error_max_options_limit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have to make more than 1 option. Example: option 1, option 2, option 3.
+        /// </summary>
+        public static string error_more_than_one_option {
+            get {
+                return ResourceManager.GetString("error_more_than_one_option", resourceCulture);
             }
         }
         
@@ -1213,6 +1249,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Members.
+        /// </summary>
+        public static string members {
+            get {
+                return ResourceManager.GetString("members", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Memory usage.
         /// </summary>
         public static string memory_usage {
@@ -1420,6 +1465,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No one has voted.
+        /// </summary>
+        public static string no_one_has_voted {
+            get {
+                return ResourceManager.GetString("no_one_has_voted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No recommendations were found.\nThis is probably because you have few entries in your list or do not have a score assigned to them..
         /// </summary>
         public static string no_recommendations_found {
@@ -1569,6 +1623,51 @@ namespace Yumiko {
         public static string please_wait {
             get {
                 return ResourceManager.GetString("please_wait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Poll.
+        /// </summary>
+        public static string poll {
+            get {
+                return ResourceManager.GetString("poll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select an option to vote.
+        /// </summary>
+        public static string poll_description {
+            get {
+                return ResourceManager.GetString("poll_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Poll finished.
+        /// </summary>
+        public static string poll_finished {
+            get {
+                return ResourceManager.GetString("poll_finished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options separated by commas. Example: option 1, option 2, option 3.
+        /// </summary>
+        public static string poll_options_placeholder {
+            get {
+                return ResourceManager.GetString("poll_options_placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title of the poll.
+        /// </summary>
+        public static string poll_title_placeholder {
+            get {
+                return ResourceManager.GetString("poll_title_placeholder", resourceCulture);
             }
         }
         
@@ -2068,6 +2167,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string title {
+            get {
+                return ResourceManager.GetString("title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Titles language.
         /// </summary>
         public static string titles_language {
@@ -2293,6 +2401,24 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vote made.
+        /// </summary>
+        public static string voted {
+            get {
+                return ResourceManager.GetString("voted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Votes.
+        /// </summary>
+        public static string votes {
+            get {
+                return ResourceManager.GetString("votes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to I am completely in love with you, when do we get married?.
         /// </summary>
         public static string waifu_level_100 {
@@ -2487,6 +2613,15 @@ namespace Yumiko {
         public static string you_have_cancelled_the_game {
             get {
                 return ResourceManager.GetString("you_have_cancelled_the_game", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You voted: `{0}`.
+        /// </summary>
+        public static string you_voted_to {
+            get {
+                return ResourceManager.GetString("you_voted_to", resourceCulture);
             }
         }
         

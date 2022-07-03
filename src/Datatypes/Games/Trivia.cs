@@ -1,6 +1,6 @@
 ﻿namespace Yumiko.Datatypes
 {
-    public class Quiz
+    public class Trivia
     {
         public string? Title { get; set; }
 

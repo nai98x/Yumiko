@@ -75,6 +75,110 @@
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
+        [SlashCommand("poll", "Do a poll in the guild")]
+        [NameLocalization(Localization.Spanish, "encuesta")]
+        [DescriptionLocalization(Localization.Spanish, "Hace una encuesta en el servidor")]
+        [SlashRequireGuild]
+        public async Task Poll(
+            InteractionContext ctx,
+            [Option("Limit", "Limit to end the poll (in minutes)")][Minimum(1)][Maximum(10)] long timeout,
+            [Option("Anonymous", "If you want the poll to be anonymous")] bool anonymous)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            string pollId = $"{ctx.Interaction.Id}";
+            var modal = new DiscordInteractionResponseBuilder()
+                            .WithCustomId($"poll-{pollId}")
+                            .WithTitle($"{translations.poll}")
+                            .AddComponents(new TextInputComponent(label: translations.title, customId: "poll_title", placeholder: translations.poll_title_placeholder, style: TextInputStyle.Short, max_length: 200))
+                            .AddComponents(new TextInputComponent(label: translations.options, customId: "poll_options", placeholder: translations.poll_options_placeholder, style: TextInputStyle.Paragraph));
+            await ctx.CreateResponseAsync(InteractionResponseType.Modal, modal);
+            var interactivityResult = await interactivity.WaitForModalAsync($"poll-{pollId}", TimeSpan.FromMinutes(5));
+
+            if (!interactivityResult.TimedOut)
+            {
+                DiscordInteraction interaction = interactivityResult.Result.Interaction;
+                await interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
+                {
+                    Title = translations.success,
+                    Description = translations.creating_poll,
+                    Color = DiscordColor.Green
+                }).AsEphemeral(true));
+
+                string title = interactivityResult.Result.Values["poll_title"];
+                List<string> pollOptions = interactivityResult.Result.Values["poll_options"].Trim().Split(',').Distinct().ToList();
+                if (pollOptions.Count > 1)
+                {
+                    if (pollOptions.Count <= 25)
+                    {
+                        var options = new List<DiscordSelectComponentOption>();
+                        pollOptions.ForEach(option =>
+                        {
+                            string normalized = option.NormalizeSelectMenuOption().Trim();
+                            options.Add(new DiscordSelectComponentOption(normalized, normalized));
+                        });
+                        var optionsModel = new List<PollOption>();
+                        pollOptions.ForEach(option =>
+                        {
+                            string normalized = option.NormalizeSelectMenuOption().Trim();
+                            optionsModel.Add(new PollOption()
+                            {
+                                Name = normalized
+                            });
+                        });
+
+                        Singleton.GetInstance().AddPoll(new()
+                        {
+                            Id = pollId,
+                            Options = optionsModel
+                        });
+
+                        await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
+                            .AddEmbed(new DiscordEmbedBuilder
+                            {
+                                Title = $"{translations.poll}: {title}",
+                                Description = translations.poll_description,
+                                Color = Constants.YumikoColor,
+                                Footer = new()
+                                {
+                                    IconUrl = ctx.User.AvatarUrl,
+                                    Text = string.Format(translations.created_by, ctx.User.FullName())
+                                }
+                            })
+                            .AddComponents(new DiscordSelectComponent($"poll-select-{pollId}", placeholder: translations.select_an_option, options))
+                        );
+
+                        await Task.Delay((int)timeout * 60000);
+
+                        Poll? poll = Singleton.GetInstance().GetCurrentPoll(pollId);
+                        if (poll != null)
+                        {
+                            var embed = PollUtils.GetResultsEmbed(poll, anonymous);
+                            await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embed));
+                            Singleton.GetInstance().RemoveCurrentPoll(pollId);
+                        }
+                    }
+                    else
+                    {
+                        await interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                        {
+                            Title = translations.error,
+                            Description = translations.error_max_options_limit,
+                            Color = DiscordColor.Red
+                        }));
+                    }
+                }
+                else
+                {
+                    await interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                    {
+                        Title = translations.error,
+                        Description = translations.error_more_than_one_option,
+                        Color = DiscordColor.Red
+                    }));
+                }
+            }
+        }
+
         [SlashCommand("emote", "Shows information about an emote")]
         [DescriptionLocalization(Localization.Spanish, "Muestra información sobre un emote")]
         public async Task Emote(InteractionContext ctx, [Option("Emote", "The emote")] string emoji)

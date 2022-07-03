@@ -243,6 +243,12 @@
   <data name="confirm_save_profile" xml:space="preserve">
     <value>Confirm that you want to save this profile</value>
   </data>
+  <data name="created_by" xml:space="preserve">
+    <value>Created by {0}</value>
+  </data>
+  <data name="creating_poll" xml:space="preserve">
+    <value>Creating poll</value>
+  </data>
   <data name="creation_date" xml:space="preserve">
     <value>Creation date</value>
   </data>
@@ -290,6 +296,12 @@
   </data>
   <data name="error" xml:space="preserve">
     <value>Error</value>
+  </data>
+  <data name="error_max_options_limit" xml:space="preserve">
+    <value>You can only make up to 25 options</value>
+  </data>
+  <data name="error_more_than_one_option" xml:space="preserve">
+    <value>You have to make more than 1 option. Example: option 1, option 2, option 3</value>
   </data>
   <data name="error_retrieving_guild_with_id" xml:space="preserve">
     <value>There was an error retrieving the guild with the Id: `{0}`</value>
@@ -495,6 +507,9 @@
   <data name="media_recommendations_explanation" xml:space="preserve">
     <value>Explanation: The higher the number, the more likely you are to like it. Recommendations are calculated based on your watched {0}s and the scores you have assigned to them.</value>
   </data>
+  <data name="members" xml:space="preserve">
+    <value>Members</value>
+  </data>
   <data name="member_avatar" xml:space="preserve">
     <value>{0}'s avatar</value>
   </data>
@@ -585,6 +600,9 @@
   <data name="no_logs_found" xml:space="preserve">
     <value>No logs found</value>
   </data>
+  <data name="no_one_has_voted" xml:space="preserve">
+    <value>No one has voted</value>
+  </data>
   <data name="no_recommendations_found" xml:space="preserve">
     <value>No recommendations were found.\nThis is probably because you have few entries in your list or do not have a score assigned to them.</value>
   </data>
@@ -620,6 +638,21 @@
   </data>
   <data name="please_wait" xml:space="preserve">
     <value>Please wait while everything is prepared</value>
+  </data>
+  <data name="poll" xml:space="preserve">
+    <value>Poll</value>
+  </data>
+  <data name="poll_description" xml:space="preserve">
+    <value>Select an option to vote</value>
+  </data>
+  <data name="poll_finished" xml:space="preserve">
+    <value>Poll finished</value>
+  </data>
+  <data name="poll_options_placeholder" xml:space="preserve">
+    <value>Options separated by commas. Example: option 1, option 2, option 3</value>
+  </data>
+  <data name="poll_title_placeholder" xml:space="preserve">
+    <value>Title of the poll</value>
   </data>
   <data name="pressure" xml:space="preserve">
     <value>Pressure</value>
@@ -786,6 +819,9 @@
   <data name="timed_out_choosing_genre" xml:space="preserve">
     <value>Timed out choosing genre</value>
   </data>
+  <data name="title" xml:space="preserve">
+    <value>Title</value>
+  </data>
   <data name="titles_language" xml:space="preserve">
     <value>Titles language</value>
   </data>
@@ -854,6 +890,12 @@
   </data>
   <data name="vote" xml:space="preserve">
     <value>Vote</value>
+  </data>
+  <data name="voted" xml:space="preserve">
+    <value>Vote made</value>
+  </data>
+  <data name="votes" xml:space="preserve">
+    <value>Votes</value>
   </data>
   <data name="vote_me_on_topgg" xml:space="preserve">
     <value>Vote me in Top.gg!</value>
@@ -932,5 +974,8 @@
   </data>
   <data name="you_have_cancelled_the_game" xml:space="preserve">
     <value>You have cancelled the game!</value>
+  </data>
+  <data name="you_voted_to" xml:space="preserve">
+    <value>You voted: `{0}`</value>
   </data>
 </root>

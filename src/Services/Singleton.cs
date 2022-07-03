@@ -10,11 +10,13 @@
         private Singleton()
         {
             CurrentTrivias = new();
+            CurrentPolls = new();
             CommandsUsed = new();
         }
 
-        public List<Quiz> CurrentTrivias { get; set; }
-        public List<CommandUse> CommandsUsed { get; set; }
+        private List<Trivia> CurrentTrivias { get; set; }
+        private List<Poll> CurrentPolls { get; set; }
+        private List<CommandUse> CommandsUsed { get; set; }
 
         public static Singleton GetInstance()
         {
@@ -32,15 +34,20 @@
             return instance;
         }
 
-        public Quiz? GetCurrentTrivia(ulong guildId, ulong channelId)
+        public void AddTrivia(Trivia trivia)
         {
-            Quiz? trivia = CurrentTrivias.Find(x => x.GuildId == guildId && x.ChannelId == channelId);
+            CurrentTrivias.Add(trivia);
+        }
+
+        public Trivia? GetCurrentTrivia(ulong guildId, ulong channelId)
+        {
+            Trivia? trivia = CurrentTrivias.Find(x => x.GuildId == guildId && x.ChannelId == channelId);
             return trivia;
         }
 
         public void RemoveCurrentTrivia(ulong guildId, ulong channelId)
         {
-            Quiz? trivia = CurrentTrivias.Find(x => x.GuildId == guildId && x.ChannelId == channelId);
+            Trivia? trivia = CurrentTrivias.Find(x => x.GuildId == guildId && x.ChannelId == channelId);
             if (trivia != null)
             {
                 CurrentTrivias.Remove(trivia);
@@ -49,10 +56,30 @@
 
         public void UpdateCurrentRoundTrivia(ulong guildId, ulong channelId, QuizRound updatedRound)
         {
-            Quiz? trivia = CurrentTrivias.Find(x => x.GuildId == guildId && x.ChannelId == channelId);
+            Trivia? trivia = CurrentTrivias.Find(x => x.GuildId == guildId && x.ChannelId == channelId);
             if (trivia != null)
             {
                 trivia.CurrentRound = updatedRound;
+            }
+        }
+
+        public void AddPoll(Poll poll)
+        {
+            CurrentPolls.Add(poll);
+        }
+
+        public Poll? GetCurrentPoll(string id)
+        {
+            Poll? poll = CurrentPolls.Find(x => x.Id == id);
+            return poll;
+        }
+
+        public void RemoveCurrentPoll(string id)
+        {
+            Poll? poll = CurrentPolls.Find(x => x.Id == id);
+            if (poll != null)
+            {
+                CurrentPolls.Remove(poll);
             }
         }
 

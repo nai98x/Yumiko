@@ -112,14 +112,14 @@
             QuizRound quizRound;
 
             var singleton = Singleton.GetInstance();
-            Quiz? match = singleton.GetCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
+            Trivia? match = singleton.GetCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
             if (match != null)
             {
                 return;
             }
             else
             {
-                singleton.CurrentTrivias.Add(new Quiz
+                singleton.AddTrivia(new Trivia
                 {
                     GuildId = ctx.Guild.Id,
                     ChannelId = ctx.Channel.Id,

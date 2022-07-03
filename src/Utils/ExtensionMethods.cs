@@ -89,6 +89,16 @@
             return s;
         }
 
+        public static string NormalizeSelectMenuOption(this string s)
+        {
+            if (s.Length > 100)
+            {
+                return s.Remove(96) + " ...";
+            }
+
+            return s;
+        }
+
         public static string NormalizeDescription(this string s)
         {
             if (s.Length > 4096)
