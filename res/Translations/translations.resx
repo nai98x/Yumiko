@@ -123,9 +123,6 @@
   <data name="access_denied" xml:space="preserve">
     <value>Access denied</value>
   </data>
-  <data name="action_cancelled" xml:space="preserve">
-    <value>Action cancelled</value>
-  </data>
   <data name="action_cannont_be_undone" xml:space="preserve">
     <value>This action cannot be undone</value>
   </data>
@@ -134,9 +131,6 @@
   </data>
   <data name="age" xml:space="preserve">
     <value>Age</value>
-  </data>
-  <data name="airing_since" xml:space="preserve">
-    <value>Airing since {0}</value>
   </data>
   <data name="anilist_profile_deleted_successfully" xml:space="preserve">
     <value>Anilist profile deleted successfully</value>
@@ -171,8 +165,8 @@
   <data name="anime_stats" xml:space="preserve">
     <value>Anime stats</value>
   </data>
-  <data name="anonymous" xml:space="preserve">
-    <value>Anonymous</value>
+  <data name="anonymous_poll" xml:space="preserve">
+    <value>Anonymous vote</value>
   </data>
   <data name="another_trivia_playing" xml:space="preserve">
     <value>Another trivia is already running in this channel</value>
@@ -219,9 +213,6 @@
   <data name="characters" xml:space="preserve">
     <value>characters</value>
   </data>
-  <data name="character_not_found" xml:space="preserve">
-    <value>Character not found</value>
-  </data>
   <data name="choose_an_option" xml:space="preserve">
     <value>Choose an option</value>
   </data>
@@ -242,12 +233,6 @@
   </data>
   <data name="confirm_delete_stats" xml:space="preserve">
     <value>Confirm if you really want to delete your stats</value>
-  </data>
-  <data name="confirm_save_profile" xml:space="preserve">
-    <value>Confirm that you want to save this profile</value>
-  </data>
-  <data name="created_by" xml:space="preserve">
-    <value>Created by {0}</value>
   </data>
   <data name="creating_poll" xml:space="preserve">
     <value>Creating poll</value>
@@ -308,9 +293,6 @@
   </data>
   <data name="error_retrieving_guild_with_id" xml:space="preserve">
     <value>There was an error retrieving the guild with the Id: `{0}`</value>
-  </data>
-  <data name="example" xml:space="preserve">
-    <value>Example</value>
   </data>
   <data name="external_links" xml:space="preserve">
     <value>External &amp; Streaming links</value>
@@ -441,9 +423,6 @@
   <data name="joined_date" xml:space="preserve">
     <value>Joined date</value>
   </data>
-  <data name="join_date" xml:space="preserve">
-    <value>Join date</value>
-  </data>
   <data name="language" xml:space="preserve">
     <value>Language</value>
   </data>
@@ -510,9 +489,6 @@
   <data name="media_recommendations_explanation" xml:space="preserve">
     <value>Explanation: The higher the number, the more likely you are to like it. Recommendations are calculated based on your watched {0}s and the scores you have assigned to them.</value>
   </data>
-  <data name="members" xml:space="preserve">
-    <value>Members</value>
-  </data>
   <data name="member_avatar" xml:space="preserve">
     <value>{0}'s avatar</value>
   </data>
@@ -522,32 +498,20 @@
   <data name="memory_usage" xml:space="preserve">
     <value>Memory usage</value>
   </data>
-  <data name="message" xml:space="preserve">
-    <value>message</value>
-  </data>
   <data name="message_will_not_be_triggered" xml:space="preserve">
     <value>This message will not be triggered if the user has voted in the past 12 hours</value>
   </data>
   <data name="minute" xml:space="preserve">
     <value>Minute</value>
   </data>
-  <data name="min_max" xml:space="preserve">
-    <value>Min/Max</value>
-  </data>
   <data name="miss_user_games" xml:space="preserve">
     <value>{0}, wrong choice!</value>
-  </data>
-  <data name="must_enter_anilist_profile_url" xml:space="preserve">
-    <value>{0}, you must enter the URL of your Anilist profile</value>
   </data>
   <data name="my_love_to_user_is" xml:space="preserve">
     <value>My love to **{0}** is **{1}%**</value>
   </data>
   <data name="name" xml:space="preserve">
     <value>Name</value>
-  </data>
-  <data name="new_profile_cancelled_mention" xml:space="preserve">
-    <value>{0}, you decided to not save your Anilist profile</value>
   </data>
   <data name="new_profile_saved" xml:space="preserve">
     <value>New profile saved successfully</value>
@@ -581,9 +545,6 @@
   </data>
   <data name="no_active_game" xml:space="preserve">
     <value>There is no active game in this channel</value>
-  </data>
-  <data name="no_air_date" xml:space="preserve">
-    <value>No air date available</value>
   </data>
   <data name="no_anilist_profile_vinculated" xml:space="preserve">
     <value>{0}, you don't have any Anilist profile vinculated </value>
@@ -677,9 +638,6 @@
   </data>
   <data name="protagonist" xml:space="preserve">
     <value>Protagonist</value>
-  </data>
-  <data name="publication_date" xml:space="preserve">
-    <value>Publication date</value>
   </data>
   <data name="question" xml:space="preserve">
     <value>Question</value>
@@ -945,9 +903,6 @@
   <data name="winner" xml:space="preserve">
     <value>Winner</value>
   </data>
-  <data name="without_animes_or_mangas" xml:space="preserve">
-    <value>(Without animes or mangas)</value>
-  </data>
   <data name="without_description" xml:space="preserve">
     <value>(Without description)</value>
   </data>
@@ -968,9 +923,6 @@
   </data>
   <data name="yes_or_no" xml:space="preserve">
     <value>YES OR NO?</value>
-  </data>
-  <data name="your_anilist_profile_is" xml:space="preserve">
-    <value>Your Anilist profile is</value>
   </data>
   <data name="your_attempt" xml:space="preserve">
     <value>Your attempt</value>

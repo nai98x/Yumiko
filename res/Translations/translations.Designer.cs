@@ -79,15 +79,6 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Action cancelled.
-        /// </summary>
-        public static string action_cancelled {
-            get {
-                return ResourceManager.GetString("action_cancelled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This action cannot be undone.
         /// </summary>
         public static string action_cannont_be_undone {
@@ -111,15 +102,6 @@ namespace Yumiko {
         public static string age {
             get {
                 return ResourceManager.GetString("age", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Airing since {0}.
-        /// </summary>
-        public static string airing_since {
-            get {
-                return ResourceManager.GetString("airing_since", resourceCulture);
             }
         }
         
@@ -223,11 +205,11 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Anonymous.
+        ///   Looks up a localized string similar to Anonymous vote.
         /// </summary>
-        public static string anonymous {
+        public static string anonymous_poll {
             get {
-                return ResourceManager.GetString("anonymous", resourceCulture);
+                return ResourceManager.GetString("anonymous_poll", resourceCulture);
             }
         }
         
@@ -358,15 +340,6 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Character not found.
-        /// </summary>
-        public static string character_not_found {
-            get {
-                return ResourceManager.GetString("character_not_found", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to characters.
         /// </summary>
         public static string characters {
@@ -435,24 +408,6 @@ namespace Yumiko {
         public static string confirm_delete_stats {
             get {
                 return ResourceManager.GetString("confirm_delete_stats", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Confirm that you want to save this profile.
-        /// </summary>
-        public static string confirm_save_profile {
-            get {
-                return ResourceManager.GetString("confirm_save_profile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Created by {0}.
-        /// </summary>
-        public static string created_by {
-            get {
-                return ResourceManager.GetString("created_by", resourceCulture);
             }
         }
         
@@ -633,15 +588,6 @@ namespace Yumiko {
         public static string error_retrieving_guild_with_id {
             get {
                 return ResourceManager.GetString("error_retrieving_guild_with_id", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Example.
-        /// </summary>
-        public static string example {
-            get {
-                return ResourceManager.GetString("example", resourceCulture);
             }
         }
         
@@ -1024,15 +970,6 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Join date.
-        /// </summary>
-        public static string join_date {
-            get {
-                return ResourceManager.GetString("join_date", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Joined date.
         /// </summary>
         public static string joined_date {
@@ -1258,15 +1195,6 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Members.
-        /// </summary>
-        public static string members {
-            get {
-                return ResourceManager.GetString("members", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Memory usage.
         /// </summary>
         public static string memory_usage {
@@ -1276,29 +1204,11 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to message.
-        /// </summary>
-        public static string message {
-            get {
-                return ResourceManager.GetString("message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This message will not be triggered if the user has voted in the past 12 hours.
         /// </summary>
         public static string message_will_not_be_triggered {
             get {
                 return ResourceManager.GetString("message_will_not_be_triggered", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Min/Max.
-        /// </summary>
-        public static string min_max {
-            get {
-                return ResourceManager.GetString("min_max", resourceCulture);
             }
         }
         
@@ -1321,15 +1231,6 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}, you must enter the URL of your Anilist profile.
-        /// </summary>
-        public static string must_enter_anilist_profile_url {
-            get {
-                return ResourceManager.GetString("must_enter_anilist_profile_url", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to My love to **{0}** is **{1}%**.
         /// </summary>
         public static string my_love_to_user_is {
@@ -1344,15 +1245,6 @@ namespace Yumiko {
         public static string name {
             get {
                 return ResourceManager.GetString("name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0}, you decided to not save your Anilist profile.
-        /// </summary>
-        public static string new_profile_cancelled_mention {
-            get {
-                return ResourceManager.GetString("new_profile_cancelled_mention", resourceCulture);
             }
         }
         
@@ -1407,15 +1299,6 @@ namespace Yumiko {
         public static string no_active_game {
             get {
                 return ResourceManager.GetString("no_active_game", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No air date available.
-        /// </summary>
-        public static string no_air_date {
-            get {
-                return ResourceManager.GetString("no_air_date", resourceCulture);
             }
         }
         
@@ -1740,15 +1623,6 @@ namespace Yumiko {
         public static string protagonist {
             get {
                 return ResourceManager.GetString("protagonist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Publication date.
-        /// </summary>
-        public static string publication_date {
-            get {
-                return ResourceManager.GetString("publication_date", resourceCulture);
             }
         }
         
@@ -2545,15 +2419,6 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (Without animes or mangas).
-        /// </summary>
-        public static string without_animes_or_mangas {
-            get {
-                return ResourceManager.GetString("without_animes_or_mangas", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to (Without description).
         /// </summary>
         public static string without_description {
@@ -2640,15 +2505,6 @@ namespace Yumiko {
         public static string you_voted_to {
             get {
                 return ResourceManager.GetString("you_voted_to", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your Anilist profile is.
-        /// </summary>
-        public static string your_anilist_profile_is {
-            get {
-                return ResourceManager.GetString("your_anilist_profile_is", resourceCulture);
             }
         }
         

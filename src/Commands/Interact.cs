@@ -111,15 +111,11 @@
                     if (pollOptions.Count <= 25)
                     {
                         var options = new List<DiscordSelectComponentOption>();
-                        pollOptions.ForEach(option =>
-                        {
-                            string normalized = option.NormalizeSelectMenuOption().Trim();
-                            options.Add(new DiscordSelectComponentOption(normalized, normalized));
-                        });
                         var optionsModel = new List<PollOption>();
                         pollOptions.ForEach(option =>
                         {
                             string normalized = option.NormalizeSelectMenuOption().Trim();
+                            options.Add(new DiscordSelectComponentOption(normalized, normalized));
                             optionsModel.Add(new PollOption()
                             {
                                 Name = normalized
@@ -137,16 +133,10 @@
                             {
                                 Title = $"{translations.poll}: {title}",
                                 Description = 
-                                    $"{Formatter.Bold(translations.settings)}:\n" +
-                                    $"{translations.anonymous}: {anonymous.ToYesNo()}\n" +
-                                    $"{translations.time_to_vote}: {timeout} {translations.minute.ToLower()}(s)\n" +
+                                    $"{Formatter.Bold(translations.anonymous_poll)}: {anonymous.ToYesNo()}\n" +
+                                    $"{Formatter.Bold(translations.time_to_vote)}: {timeout} {translations.minute.ToLower()}(s)\n" +
                                     $"\n{Formatter.Bold(translations.poll_description)}",
-                                Color = Constants.YumikoColor,
-                                Footer = new()
-                                {
-                                    IconUrl = ctx.User.AvatarUrl,
-                                    Text = string.Format(translations.created_by, ctx.User.FullName())
-                                }
+                                Color = Constants.YumikoColor
                             })
                             .AddComponents(new DiscordSelectComponent($"poll-select-{pollId}", placeholder: translations.select_an_option, options))
                         );
