@@ -78,58 +78,58 @@
             string topggToken = ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg);
 
             var interactivity = ctx.Client.GetInteractivity();
-            DiscordEmbed embebido;
+            DiscordEmbed embed;
             dynamic list;
             switch (gamemode)
             {
                 case Gamemode.Characters:
-                    embebido = new DiscordEmbedBuilder
+                    embed = new DiscordEmbedBuilder
                     {
                         Title = translations.guess_the_character,
                         Color = Constants.YumikoColor,
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
                     list = await GameServices.GetCharactersAsync(ctx, settings);
                     await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Animes:
-                    embebido = new DiscordEmbedBuilder
+                    embed = new DiscordEmbedBuilder
                     {
                         Title = translations.guess_the_anime,
                         Color = Constants.YumikoColor,
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, true);
                     await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Mangas:
-                    embebido = new DiscordEmbedBuilder
+                    embed = new DiscordEmbedBuilder
                     {
                         Title = translations.guess_the_manga,
                         Color = Constants.YumikoColor,
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.MANGA, settings, false, false, false, false);
                     await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
 
                     break;
                 case Gamemode.Studios:
-                    embebido = new DiscordEmbedBuilder
+                    embed = new DiscordEmbedBuilder
                     {
                         Title = translations.guess_the_studio,
                         Color = Constants.YumikoColor,
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, true, false, false);
                     await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Protagonists:
-                    embebido = new DiscordEmbedBuilder
+                    embed = new DiscordEmbedBuilder
                     {
                         Title = translations.guess_the_protagonist,
                         Color = Constants.YumikoColor,
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embebido));
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
                     list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, true, false, false, false);
                     await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
@@ -141,12 +141,12 @@
                     {
                         settings.Genre = settingsGenero.Genre;
                         settings.Difficulty = settingsGenero.Difficulty;
-                        embebido = new DiscordEmbedBuilder
+                        embed = new DiscordEmbedBuilder
                         {
                             Title = translations.guess_the_genre,
                             Color = Constants.YumikoColor,
                         }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.genre, $"{settings.Genre}");
-                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embebido));
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                         list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, true, true);
                         await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     }
