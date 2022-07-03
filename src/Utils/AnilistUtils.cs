@@ -66,7 +66,7 @@
             embed.WithTitle(profile.Name);
             embed.WithThumbnail(profile.Avatar.Medium);
             embed.WithColor(Constants.YumikoColor);
-            embed.WithImageUrl(profile.BannerImage);
+            if (profile.BannerImage != null) embed.WithImageUrl(profile.BannerImage);
 
             embed.AddField(translations.anime_stats, animeStats, true);
             embed.AddField(translations.manga_stats, mangaStats, true);
