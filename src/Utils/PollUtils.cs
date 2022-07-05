@@ -27,13 +27,13 @@
                     });
                 }
 
-                embed.WithTitle(translations.poll_finished);
-                embed.WithDescription(votes);
+                embed.WithTitle($"{translations.poll_finished}: {poll.Title}");
+                embed.WithDescription(votes.NormalizeDescription());
                 embed.WithColor(Constants.YumikoColor);
             }
             else
             {
-                embed.WithTitle(translations.poll_finished);
+                embed.WithTitle($"{translations.poll_finished}: {poll.Title}");
                 embed.WithDescription(translations.no_one_has_voted);
                 embed.WithColor(DiscordColor.Red);
             }

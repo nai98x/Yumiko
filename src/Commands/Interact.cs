@@ -125,14 +125,15 @@
                         Singleton.GetInstance().AddPoll(new()
                         {
                             Id = pollId,
+                            Title = title,
                             Options = optionsModel
                         });
 
-                        await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
+                        var pollMsg = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
                             .AddEmbed(new DiscordEmbedBuilder
                             {
                                 Title = $"{translations.poll}: {title}",
-                                Description = 
+                                Description =
                                     $"{Formatter.Bold(translations.anonymous_poll)}: {anonymous.ToYesNo()}\n" +
                                     $"{Formatter.Bold(translations.time_to_vote)}: {timeout} {translations.minute.ToLower()}(s)\n" +
                                     $"\n{Formatter.Bold(translations.poll_description)}",
@@ -148,6 +149,7 @@
                         {
                             var embed = PollUtils.GetResultsEmbed(poll, anonymous);
                             await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embed));
+                            await ctx.DeleteFollowupAsync(pollMsg.Id);
                             Singleton.GetInstance().RemoveCurrentPoll(pollId);
                         }
                     }
