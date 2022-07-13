@@ -99,7 +99,7 @@
             embed.WithThumbnail(media.CoverImage.Large);
             embed.WithColor(Constants.YumikoColor);
             if (media.BannerImage != null) embed.WithImageUrl(media.BannerImage);
-            if (!string.IsNullOrEmpty(media.Description)) embed.WithDescription(Common.LimpiarTexto(media.Description));
+            if (!string.IsNullOrEmpty(media.Description)) embed.WithDescription(Common.LimpiarTexto(media.Description).NormalizeDescription());
 
             if (type == MediaType.ANIME && media.Episodes != null) embed.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} {translations.episodes}", $"{media.Episodes}", true);
             if (type == MediaType.MANGA && media.Chapters != null) embed.AddField($"{DiscordEmoji.FromName(ctx.Client, ":1234:")} {translations.chapters}", $"{media.Chapters}", true);
