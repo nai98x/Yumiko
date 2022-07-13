@@ -126,7 +126,7 @@
             if (mediaUser.Media.Chapters != null) episodes += $"/{mediaUser.Media.Chapters}";
 
             embed.WithTitle($"{translations.stats}: {mediaUser.User.Name}");
-            embed.WithDescription($"{Formatter.Bold(translations.notes)}\n{notes}");
+            embed.WithDescription($"{Formatter.Bold(translations.notes)}\n{notes}".NormalizeDescription());
             embed.WithColor(Constants.YumikoColor);
             embed.WithThumbnail(mediaUser.User.Avatar.Medium);
             embed.WithUrl(mediaUser.User.SiteUrl);
