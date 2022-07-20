@@ -85,7 +85,8 @@ namespace Yumiko
                 LoggerFactory = ServiceProvider.GetRequiredService<ILoggerFactory>(),
                 ReconnectIndefinitely = true,
                 MessageCacheSize = 0,
-                AlwaysCacheMembers = false
+                AlwaysCacheMembers = false,
+                LogUnknownEvents = false
             });
 
             await DiscordShardedClient.UseInteractivityAsync(new InteractivityConfiguration()
