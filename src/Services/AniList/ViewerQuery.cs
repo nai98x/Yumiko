@@ -10,12 +10,11 @@
 
     public static class ViewerQuery
     {
-        private static readonly GraphQLHttpClient GraphQlClient = new(Constants.AnilistAPIUrl, new NewtonsoftJsonSerializer());
-
         public static async Task<User?> GetProfile(InteractionContext ctx, string token)
         {
             try
             {
+                GraphQLHttpClient GraphQlClient = new(Constants.AnilistAPIUrl, new NewtonsoftJsonSerializer());
                 if (GraphQlClient.HttpClient.DefaultRequestHeaders.Contains("Authorization"))
                 {
                     GraphQlClient.HttpClient.DefaultRequestHeaders.Remove("Authorization");
