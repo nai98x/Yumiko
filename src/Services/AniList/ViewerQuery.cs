@@ -16,6 +16,11 @@
         {
             try
             {
+                if (GraphQlClient.HttpClient.DefaultRequestHeaders.Contains("Authorization"))
+                {
+                    GraphQlClient.HttpClient.DefaultRequestHeaders.Remove("Authorization");
+                }
+
                 GraphQlClient.HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
                 var request = new GraphQLRequest
