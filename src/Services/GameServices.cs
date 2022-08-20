@@ -137,7 +137,6 @@
                 var guid = Guid.NewGuid();
                 dynamic elegido = lista[random];
                 lista.Remove(lista[random]);
-                DiscordEmoji corazon = DiscordEmoji.FromName(ctx.Client, ":heart:");
                 DiscordEmbedBuilder embedAcertar;
                 embedAcertar = new DiscordEmbedBuilder
                 {
@@ -147,7 +146,7 @@
                     ImageUrl = elegido.Image,
                     Footer = new()
                     {
-                        Text = $"{elegido.Favoritos} {corazon}",
+                        Text = translations.type_guess_command,
                     },
                 };
 
@@ -158,9 +157,7 @@
                 }
 
                 builder.AddEmbed(embedAcertar);
-                builder.AddComponents(
-                    new DiscordButtonComponent(ButtonStyle.Primary, $"quiz-modal-{guid}", translations.guess),
-                    new DiscordButtonComponent(ButtonStyle.Danger, $"quiz-cancel-{guid}", translations.finish_game));
+                builder.AddComponents(new DiscordButtonComponent(ButtonStyle.Danger, $"quiz-cancel-{guid}", translations.finish_game));
 
                 var msgAcertar = await ctx.FollowUpAsync(builder);
                 string desc = string.Empty;

@@ -807,6 +807,9 @@
   <data name="to_vinculate_anilist_profile" xml:space="preserve">
     <value>Para vincular tu perfil, debes usar el siguiente comando</value>
   </data>
+  <data name="type_guess_command" xml:space="preserve">
+    <value>Escribe /adivinar para hacer tu intento</value>
+  </data>
   <data name="unknown_error" xml:space="preserve">
     <value>Error desconocido</value>
   </data>

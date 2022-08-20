@@ -2140,6 +2140,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type /guess to make a guess.
+        /// </summary>
+        public static string type_guess_command {
+            get {
+                return ResourceManager.GetString("type_guess_command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown error.
         /// </summary>
         public static string unknown_error {

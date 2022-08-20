@@ -137,10 +137,6 @@
             {
                 _ = PollService.HandleInteraction(e);
             }
-            else if (e.Id.StartsWith("quiz-modal-"))
-            {
-                _ = TriviaService.HandleTriviaInteraction(e);
-            }
             else if (e.Id.StartsWith("quiz-cancel-"))
             {
                 _ = TriviaService.HandleTriviaCancelledInteraction(e);
@@ -158,13 +154,6 @@
 
         private static Task Client_ModalSubmitted(DiscordClient sender, ModalSubmitEventArgs e)
         {
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(e.Interaction.Locale!);
-
-            if (e.Interaction.Data.CustomId.StartsWith("quiz-modal-"))
-            {
-                _ = TriviaService.HandleTriviaValueSubmittedInteraction(e);
-            }
-
             return Task.CompletedTask;
         }
 

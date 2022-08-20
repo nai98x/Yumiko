@@ -810,6 +810,9 @@
   <data name="type_a_letter" xml:space="preserve">
     <value>Type a letter!</value>
   </data>
+  <data name="type_guess_command" xml:space="preserve">
+    <value>Type /guess to make a guess</value>
+  </data>
   <data name="unknown_error" xml:space="preserve">
     <value>Unknown error</value>
   </data>
