@@ -79,7 +79,7 @@
             await Common.ChequearVotoTopGGAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg));
         }
 
-        [SlashCommand("delete", "Deletes user statistics on the guild")]
+        [SlashCommand("delete", "Deletes user statistics on the server")]
         [NameLocalization(Localization.Spanish, "eliminar")]
         [DescriptionLocalization(Localization.Spanish, "Elimina tus estadísticas del servidor")]
         public async Task Delete(InteractionContext ctx)

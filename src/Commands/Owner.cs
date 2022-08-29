@@ -32,10 +32,10 @@
             await ctx.DeleteResponseAsync();
         }
 
-        [SlashCommand("guild", "Information about a guild")]
+        [SlashCommand("guild", "Information about a server")]
         [NameLocalization(Localization.Spanish, "servidor")]
         [DescriptionLocalization(Localization.Spanish, "Información sobre un servidor")]
-        public async Task Guild(InteractionContext ctx, [Option("guild_id", "Guild Id to see details")] string id)
+        public async Task Guild(InteractionContext ctx, [Option("guild_id", "Server Id to see details")] string id)
         {
             await ctx.DeferAsync();
 
@@ -78,7 +78,7 @@
             }
         }
 
-        [SlashCommand("guilds", "See Yumiko's guilds")]
+        [SlashCommand("guilds", "See Yumiko's servers")]
         [NameLocalization(Localization.Spanish, "servidores")]
         [DescriptionLocalization(Localization.Spanish, "Muestra los servidores de Yumiko")]
         public async Task Servers(InteractionContext ctx)
@@ -136,10 +136,10 @@
             await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, pages, token: new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token);
         }
 
-        [SlashCommand("deleteguild", "Yumiko leaves a guild")]
+        [SlashCommand("deleteguild", "Yumiko leaves a server")]
         [NameLocalization(Localization.Spanish, "eliminarservidor")]
         [DescriptionLocalization(Localization.Spanish, "Yumiko deja un servidor")]
-        public async Task EliminarServer(InteractionContext ctx, [Option("Id", "Guild Id to exit")] string idStr)
+        public async Task EliminarServer(InteractionContext ctx, [Option("Id", "Server Id to leave")] string idStr)
         {
             try
             {

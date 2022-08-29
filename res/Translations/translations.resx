@@ -187,10 +187,10 @@
     <value>{0} is an anime trivia bot, with other games and funcionalities</value>
   </data>
   <data name="bot_guilds" xml:space="preserve">
-    <value>{0}'s guilds</value>
+    <value>{0}'s servers</value>
   </data>
   <data name="bot_left_guild" xml:space="preserve">
-    <value>I have left the `{0}` guild ({1})</value>
+    <value>I have left the `{0}` server ({1})</value>
   </data>
   <data name="bot_permission_required" xml:space="preserve">
     <value>Bot permission required</value>
@@ -253,7 +253,7 @@
     <value>You have chosen not to delete their statistics</value>
   </data>
   <data name="delete_stats_done" xml:space="preserve">
-    <value>You have deleted all your statistics on this guild</value>
+    <value>You have deleted all your statistics on this server</value>
   </data>
   <data name="did_not_press_button_to_write" xml:space="preserve">
     <value>You did not press the button to write!</value>
@@ -292,7 +292,7 @@
     <value>You have to make more than 1 option. Example: option 1, option 2, option 3</value>
   </data>
   <data name="error_retrieving_guild_with_id" xml:space="preserve">
-    <value>There was an error retrieving the guild with the Id: `{0}`</value>
+    <value>There was an error retrieving the server with the Id: `{0}`</value>
   </data>
   <data name="external_links" xml:space="preserve">
     <value>External &amp; Streaming links</value>
@@ -373,13 +373,13 @@
     <value>{0} has guessed it!</value>
   </data>
   <data name="guild_required" xml:space="preserve">
-    <value>Guild required</value>
+    <value>Server required</value>
   </data>
   <data name="guild_required_desc" xml:space="preserve">
-    <value>You can only execute this command in a guild</value>
+    <value>You can only execute this command in a server</value>
   </data>
   <data name="guild_with_id_not_found" xml:space="preserve">
-    <value>Guild with id `{0}` not found</value>
+    <value>Server with id `{0}` was not found</value>
   </data>
   <data name="hangman" xml:space="preserve">
     <value>Hangman</value>
@@ -796,7 +796,7 @@
     <value>Total</value>
   </data>
   <data name="total_guilds" xml:space="preserve">
-    <value>Total guilds</value>
+    <value>Total servers</value>
   </data>
   <data name="total_shards" xml:space="preserve">
     <value>Total shards</value>

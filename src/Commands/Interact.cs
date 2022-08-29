@@ -75,7 +75,7 @@
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [SlashCommand("poll", "Do a poll in the guild")]
+        [SlashCommand("poll", "Do a poll in the server")]
         [NameLocalization(Localization.Spanish, "encuesta")]
         [DescriptionLocalization(Localization.Spanish, "Hace una encuesta en el servidor")]
         [SlashRequireGuild]
@@ -222,7 +222,7 @@
         public async Task Avatar(
             InteractionContext ctx,
             [Option("User", "The user's avatar to retrieve")] DiscordUser? usuario = null,
-            [Option("Guild", "Get guild avatar (nitro users only)")] bool serverAvatar = false,
+            [Option("Server", "Get server avatar (for nitro users)")] bool serverAvatar = false,
             [Option("Secret", "If you want to see only you the command")] bool secreto = true)
         {
             usuario ??= ctx.User;
