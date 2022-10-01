@@ -161,7 +161,7 @@
                 var anilistUser = await ProfileQuery.GetProfile(ctx, userAnilistDb.AnilistId);
                 if (anilistUser != null)
                 {
-                    DiscordEmbedBuilder builder = AnilistUtils.GetProfileEmbed(ctx, anilistUser);
+                    DiscordEmbedBuilder builder = AnilistUtils.GetProfileEmbed(ctx.Client, anilistUser);
                     DiscordLinkButtonComponent profile = new($"{anilistUser.SiteUrl}", translations.profile, false, new DiscordComponentEmoji("👤"));
                     DiscordLinkButtonComponent animeList = new($"{anilistUser.SiteUrl}/animelist", translations.anime_list, false, new DiscordComponentEmoji("📺"));
                     DiscordLinkButtonComponent mangaList = new($"{anilistUser.SiteUrl}/mangalist", translations.manga_list, false, new DiscordComponentEmoji("📖"));
@@ -176,6 +176,37 @@
                 Color = DiscordColor.Red,
                 Title = translations.anilist_profile_not_found,
                 Description = $"{string.Format(translations.no_anilist_profile_vinculated, user.Mention)}.\n\n" +
+                                $"{translations.to_vinculate_anilist_profile}: `/anilist setanilist`",
+            }));
+        }
+
+        [ContextMenu(ApplicationCommandType.UserContextMenu, "AniList Profile")]
+        [NameLocalization(Localization.Spanish, "Perfil de AniList")]
+        public async Task UserProfile(ContextMenuContext ctx)
+        {
+            await ctx.DeferAsync(true);
+
+            var userAnilistDb = await UsuariosAnilist.GetPerfilAsync(ctx.TargetUser.Id);
+            if (userAnilistDb != null)
+            {
+                var anilistUser = await ProfileQuery.GetProfile(ctx, userAnilistDb.AnilistId);
+                if (anilistUser != null)
+                {
+                    DiscordEmbedBuilder builder = AnilistUtils.GetProfileEmbed(ctx.Client, anilistUser);
+                    DiscordLinkButtonComponent profile = new($"{anilistUser.SiteUrl}", translations.profile, false, new DiscordComponentEmoji("👤"));
+                    DiscordLinkButtonComponent animeList = new($"{anilistUser.SiteUrl}/animelist", translations.anime_list, false, new DiscordComponentEmoji("📺"));
+                    DiscordLinkButtonComponent mangaList = new($"{anilistUser.SiteUrl}/mangalist", translations.manga_list, false, new DiscordComponentEmoji("📖"));
+
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(builder).AddComponents(profile, animeList, mangaList));
+                    return;
+                }
+            }
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+            {
+                Color = DiscordColor.Red,
+                Title = translations.anilist_profile_not_found,
+                Description = $"{string.Format(translations.no_anilist_profile_vinculated, ctx.User.Mention)}.\n\n" +
                                 $"{translations.to_vinculate_anilist_profile}: `/anilist setanilist`",
             }));
         }
@@ -384,7 +415,7 @@
                             HttpStatusCode.GatewayTimeout => "Server is overloaded",
                             _ => "Unknown error",
                         };
-                        await Common.GrabarLogErrorAsync(ctx, "Error retriving image from trace.moe with `sauce` command.\nError: " + msg);
+                        await Common.GrabarLogErrorAsync(ctx.Guild, ctx.Channel, "Error retriving image from trace.moe with `sauce` command.\nError: " + msg);
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(translations.unknown_error_tracemoe));
                         return;
                     }
@@ -434,10 +465,80 @@
             var userAnilist = await UsuariosAnilist.GetPerfilAsync(user.Id);
             if (userAnilist != null)
             {
-                var recommendations = await RecommendatiosnQuery.GetRecommendations(ctx, userAnilist.AnilistId, type);
+                var recommendations = await RecommendatiosnQuery.GetRecommendations(ctx.Guild, ctx.Channel, userAnilist.AnilistId, type);
                 if (recommendations.Item1 != null && recommendations.Item2 != null)
                 {
                     var embed = AnilistUtils.GetMediaRecommendationsEmbed(user, recommendations.Item1, recommendations.Item2, type);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                    {
+                        Title = translations.error,
+                        Description = translations.unknown_error,
+                        Color = DiscordColor.Red
+                    }));
+                }
+            }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                {
+                    Title = translations.error,
+                    Description = translations.anilist_profile_not_found,
+                    Color = DiscordColor.Red
+                }));
+            }
+        }
+
+        [ContextMenu(ApplicationCommandType.UserContextMenu, "Anime Recommendations")]
+        [NameLocalization(Localization.Spanish, "Recomendaciones de anime")]
+        public async Task AnimeUserRecomendation(ContextMenuContext ctx)
+        {
+            await ctx.DeferAsync(ctx.User.Id == ctx.TargetUser.Id);
+            var userAnilist = await UsuariosAnilist.GetPerfilAsync(ctx.TargetUser.Id);
+            if (userAnilist != null)
+            {
+                var recommendations = await RecommendatiosnQuery.GetRecommendations(ctx.Guild, ctx.Channel, userAnilist.AnilistId, MediaType.ANIME);
+                if (recommendations.Item1 != null && recommendations.Item2 != null)
+                {
+                    var embed = AnilistUtils.GetMediaRecommendationsEmbed(ctx.TargetUser, recommendations.Item1, recommendations.Item2, MediaType.ANIME);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                    {
+                        Title = translations.error,
+                        Description = translations.unknown_error,
+                        Color = DiscordColor.Red
+                    }));
+                }
+            }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                {
+                    Title = translations.error,
+                    Description = translations.anilist_profile_not_found,
+                    Color = DiscordColor.Red
+                }));
+            }
+        }
+
+        [ContextMenu(ApplicationCommandType.UserContextMenu, "Manga Recommendations")]
+        [NameLocalization(Localization.Spanish, "Recomendaciones de manga")]
+        public async Task MangaUserRecomendation(ContextMenuContext ctx)
+        {
+            await ctx.DeferAsync(ctx.User.Id == ctx.TargetUser.Id);
+            var userAnilist = await UsuariosAnilist.GetPerfilAsync(ctx.TargetUser.Id);
+            if (userAnilist != null)
+            {
+                var recommendations = await RecommendatiosnQuery.GetRecommendations(ctx.Guild, ctx.Channel, userAnilist.AnilistId, MediaType.MANGA);
+                if (recommendations.Item1 != null && recommendations.Item2 != null)
+                {
+                    var embed = AnilistUtils.GetMediaRecommendationsEmbed(ctx.TargetUser, recommendations.Item1, recommendations.Item2, MediaType.MANGA);
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                 }
                 else

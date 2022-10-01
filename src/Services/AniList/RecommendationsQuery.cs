@@ -12,7 +12,7 @@
     {
         private static readonly GraphQLHttpClient GraphQlClient = new(Constants.AnilistAPIUrl, new NewtonsoftJsonSerializer());
 
-        public static async Task<(User?, MediaListCollection?)> GetRecommendations(InteractionContext ctx, int userId, MediaType mediaType)
+        public static async Task<(User?, MediaListCollection?)> GetRecommendations(DiscordGuild guild, DiscordChannel channel, int userId, MediaType mediaType)
         {
             try
             {
@@ -34,12 +34,12 @@
             catch (GraphQLHttpRequestException ex)
             {
                 if (ex.StatusCode == HttpStatusCode.NotFound) return (null, null);
-                await Common.GrabarLogErrorAsync(ctx, $"Unknown error: {ex.StatusCode}: {ex.Message}\n{Formatter.BlockCode(ex.StackTrace)}");
+                await Common.GrabarLogErrorAsync(guild, channel, $"Unknown error: {ex.StatusCode}: {ex.Message}\n{Formatter.BlockCode(ex.StackTrace)}");
                 return (null, null);
             }
             catch (Exception e)
             {
-                await Common.GrabarLogErrorAsync(ctx, $"Unknown error: {e.Message}\n{Formatter.BlockCode(e.StackTrace)}");
+                await Common.GrabarLogErrorAsync(guild, channel, $"Unknown error: {e.Message}\n{Formatter.BlockCode(e.StackTrace)}");
                 return (null, null);
             }
         }

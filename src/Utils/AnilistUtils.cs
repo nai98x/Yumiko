@@ -2,7 +2,7 @@
 {
     public static class AnilistUtils
     {
-        public static DiscordEmbedBuilder GetProfileEmbed(InteractionContext ctx, User profile)
+        public static DiscordEmbedBuilder GetProfileEmbed(DiscordClient client, User profile)
         {
             var embed = new DiscordEmbedBuilder();
 
@@ -72,11 +72,11 @@
             embed.AddField(translations.manga_stats, mangaStats, true);
             embed.AddField(translations.settings, options, true);
 
-            if (!string.IsNullOrEmpty(favoriteAnime)) embed.AddField($"{DiscordEmoji.FromName(ctx.Client, ":tv:")} {translations.favorite_animes}", favoriteAnime, true);
-            if (!string.IsNullOrEmpty(favoriteManga)) embed.AddField($"{DiscordEmoji.FromName(ctx.Client, ":book:")} {translations.favorite_mangas}", favoriteManga, true);
-            if (!string.IsNullOrEmpty(favoriteCharacters)) embed.AddField($"{DiscordEmoji.FromName(ctx.Client, ":bust_in_silhouette:")} {translations.favorite_characters}", favoriteCharacters, true);
-            if (!string.IsNullOrEmpty(favoriteStaff)) embed.AddField($"{DiscordEmoji.FromName(ctx.Client, ":man_artist:")} {translations.favorite_staff}", favoriteStaff, true);
-            if (!string.IsNullOrEmpty(favoriteStudios)) embed.AddField($"{DiscordEmoji.FromName(ctx.Client, ":minidisc:")} {translations.favorite_studios}", favoriteStudios, true);
+            if (!string.IsNullOrEmpty(favoriteAnime)) embed.AddField($"{DiscordEmoji.FromName(client, ":tv:")} {translations.favorite_animes}", favoriteAnime, true);
+            if (!string.IsNullOrEmpty(favoriteManga)) embed.AddField($"{DiscordEmoji.FromName(client, ":book:")} {translations.favorite_mangas}", favoriteManga, true);
+            if (!string.IsNullOrEmpty(favoriteCharacters)) embed.AddField($"{DiscordEmoji.FromName(client, ":bust_in_silhouette:")} {translations.favorite_characters}", favoriteCharacters, true);
+            if (!string.IsNullOrEmpty(favoriteStaff)) embed.AddField($"{DiscordEmoji.FromName(client, ":man_artist:")} {translations.favorite_staff}", favoriteStaff, true);
+            if (!string.IsNullOrEmpty(favoriteStudios)) embed.AddField($"{DiscordEmoji.FromName(client, ":minidisc:")} {translations.favorite_studios}", favoriteStudios, true);
 
             return embed;
         }

@@ -123,6 +123,8 @@ namespace Yumiko
 
                 slashShardExtension.SlashCommandExecuted += SlashCommands_SlashCommandExecuted;
                 slashShardExtension.SlashCommandErrored += SlashCommands_SlashCommandErrored;
+                slashShardExtension.ContextMenuExecuted += SlashCommands_ContextMenuExecuted;
+                slashShardExtension.ContextMenuErrored += SlashCommands_ContextMenuErrored;
 
                 if (Debug && keyValuePair.Key == logGuildShard)
                 {

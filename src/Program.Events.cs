@@ -240,5 +240,20 @@
             });
             return Task.CompletedTask;
         }
+        private static Task SlashCommands_ContextMenuExecuted(SlashCommandsExtension sender, ContextMenuExecutedEventArgs e)
+        {
+            sender.Client.Logger.LogInformation("Context menu executed: {args}", LogUtils.GetContextMenu(e));
+            Singleton.GetInstance().UpdateCommandUsed(LogUtils.GetContextMenu(e));
+            return Task.CompletedTask;
+        }
+
+        private static Task SlashCommands_ContextMenuErrored(SlashCommandsExtension sender, ContextMenuErrorEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                await LogChannelErrors.SendMessageAsync(LogUtils.LogContextMenuError(e));
+            });
+            return Task.CompletedTask;
+        }
     }
 }

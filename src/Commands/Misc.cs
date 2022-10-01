@@ -155,7 +155,7 @@
                 Description = $"{translations.random_cat_error} :c",
                 Color = DiscordColor.Red,
             }));
-            await Common.GrabarLogErrorAsync(ctx, $"Unknown error in `/cat`\n\n`{response.StatusCode}: {response.StatusDescription}`");
+            await Common.GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"Unknown error in `/cat`\n\n`{response.StatusCode}: {response.StatusDescription}`");
         }
 
         [SlashCommand("dog", "Random dog")]
@@ -193,7 +193,7 @@
                 Description = $"{translations.random_dog_error} :c",
                 Color = DiscordColor.Red,
             }));
-            await Common.GrabarLogErrorAsync(ctx, $"Unknown error in `/dog`\n\n`{response.StatusCode}: {response.StatusDescription}`");
+            await Common.GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"Unknown error in `/dog`\n\n`{response.StatusCode}: {response.StatusDescription}`");
         }
     }
 }

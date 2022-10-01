@@ -32,12 +32,12 @@
             catch (GraphQLHttpRequestException ex)
             {
                 if (ex.StatusCode == HttpStatusCode.NotFound) return null;
-                await Common.GrabarLogErrorAsync(ctx, $"Unknown error: {ex.StatusCode}: {ex.Message}\n{Formatter.BlockCode(ex.StackTrace)}");
+                await Common.GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"Unknown error: {ex.StatusCode}: {ex.Message}\n{Formatter.BlockCode(ex.StackTrace)}");
                 return null;
             }
             catch (Exception e)
             {
-                await Common.GrabarLogErrorAsync(ctx, $"Unknown error: {e.Message}\n{Formatter.BlockCode(e.StackTrace)}");
+                await Common.GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"Unknown error: {e.Message}\n{Formatter.BlockCode(e.StackTrace)}");
                 return null;
             }
         }

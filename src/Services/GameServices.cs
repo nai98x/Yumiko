@@ -86,7 +86,7 @@
 
             if (settings.Gamemode == Gamemode.Genres && settings.Genre == null)
             {
-                await Common.GrabarLogErrorAsync(ctx, "PlayTriviaAsync - Genres with no settings.Genre assigned");
+                await Common.GrabarLogErrorAsync(ctx.Guild, ctx.Channel, "PlayTriviaAsync - Genres with no settings.Genre assigned");
                 return;
             }
 
@@ -908,7 +908,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await Common.GrabarLogErrorAsync(ctx, $"{ex.Message}");
+                    await Common.GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"{ex.Message}");
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}: {ex.Message}"));
                     return animeList;
                 }
@@ -1025,7 +1025,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await Common.GrabarLogErrorAsync(ctx, $"Unknown error in GetCharacters: {ex.Message}");
+                    await Common.GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"Unknown error in GetCharacters: {ex.Message}");
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}: {ex.Message}"));
                     return characterList;
                 }
@@ -1337,7 +1337,7 @@
             }
             catch (Exception ex)
             {
-                await Common.GrabarLogErrorAsync(ctx, $"{ex.Message}");
+                await Common.GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"{ex.Message}");
                 return new()
                 {
                     Ok = false,

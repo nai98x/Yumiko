@@ -281,7 +281,7 @@
             }
             catch (Exception ex)
             {
-                await GrabarLogErrorAsync(ctx, $"Unknown error in GetRandomCharacter");
+                await GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"Unknown error in GetRandomCharacter");
                 _ = ex.Message switch
                 {
                     _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}: {ex.Message}")),
@@ -339,7 +339,7 @@
             }
             catch (Exception ex)
             {
-                await GrabarLogErrorAsync(ctx, $"Unknown error in GetRandomMedia");
+                await GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"Unknown error in GetRandomMedia");
                 _ = ex.Message switch
                 {
                     _ => await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}: {ex.Message}")),
@@ -350,21 +350,21 @@
             return null;
         }
 
-        public static async Task GrabarLogErrorAsync(InteractionContext ctx, string descripcion)
+        public static async Task GrabarLogErrorAsync(DiscordGuild guild, DiscordChannel channel, string description)
         {
             await Program.LogChannelErrors.SendMessageAsync(new DiscordEmbedBuilder
             {
                 Title = "Unknown error",
-                Description = descripcion,
+                Description = description,
                 Color = DiscordColor.Red,
                 Author = new()
                 {
-                    IconUrl = ctx.Guild.IconUrl,
-                    Name = ctx.Guild.Name,
+                    IconUrl = guild.IconUrl,
+                    Name = guild.Name,
                 },
-            }.AddField("Guild Id", $"{ctx.Guild.Id}", true)
-            .AddField("Channel Id", $"{ctx.Channel.Id}", true)
-            .AddField("Channel", $"#{ctx.Channel.Name}", false));
+            }.AddField("Guild Id", $"{guild.Id}", true)
+            .AddField("Channel Id", $"{channel.Id}", true)
+            .AddField("Channel", $"#{channel.Name}", false));
         }
 
         public static async Task<byte[]> MergeImage(string link1, string link2, int x, int y)
