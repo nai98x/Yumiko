@@ -268,7 +268,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}&apos;s guilds.
+        ///   Looks up a localized string similar to {0}&apos;s servers.
         /// </summary>
         public static string bot_guilds {
             get {
@@ -277,7 +277,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I have left the `{0}` guild ({1}).
+        ///   Looks up a localized string similar to I have left the `{0}` server ({1}).
         /// </summary>
         public static string bot_left_guild {
             get {
@@ -466,7 +466,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have deleted all your statistics on this guild.
+        ///   Looks up a localized string similar to You have deleted all your statistics on this server.
         /// </summary>
         public static string delete_stats_done {
             get {
@@ -583,7 +583,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There was an error retrieving the guild with the Id: `{0}`.
+        ///   Looks up a localized string similar to There was an error retrieving the server with the Id: `{0}`.
         /// </summary>
         public static string error_retrieving_guild_with_id {
             get {
@@ -826,7 +826,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Guild required.
+        ///   Looks up a localized string similar to Server required.
         /// </summary>
         public static string guild_required {
             get {
@@ -835,7 +835,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can only execute this command in a guild.
+        ///   Looks up a localized string similar to You can only execute this command in a server.
         /// </summary>
         public static string guild_required_desc {
             get {
@@ -844,7 +844,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Guild with id `{0}` not found.
+        ///   Looks up a localized string similar to Server with id `{0}` was not found.
         /// </summary>
         public static string guild_with_id_not_found {
             get {
@@ -2104,7 +2104,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total guilds.
+        ///   Looks up a localized string similar to Total servers.
         /// </summary>
         public static string total_guilds {
             get {
@@ -2280,6 +2280,15 @@ namespace Yumiko {
         public static string vote {
             get {
                 return ResourceManager.GetString("vote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vote count.
+        /// </summary>
+        public static string vote_count {
+            get {
+                return ResourceManager.GetString("vote_count", resourceCulture);
             }
         }
         

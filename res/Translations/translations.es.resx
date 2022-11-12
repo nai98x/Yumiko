@@ -861,6 +861,9 @@
   <data name="votes" xml:space="preserve">
     <value>Voto(s)</value>
   </data>
+  <data name="vote_count" xml:space="preserve">
+    <value>Cantidad de votos</value>
+  </data>
   <data name="vote_me_on_topgg" xml:space="preserve">
     <value>¡Vótame en Top.gg!</value>
   </data>

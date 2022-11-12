@@ -139,6 +139,19 @@
             }
         }
 
+        public static async Task<int> CheckTopGGVotesCount(InteractionContext ctx, string topggToken)
+        {
+            if (Program.TopggEnabled && !Program.Debug)
+            {
+                AuthDiscordBotListApi DblApi = new(ctx.Client.CurrentApplication.Id, topggToken);
+                var voters = await DblApi.GetVotersAsync();
+
+                return voters.Count;
+            }
+
+            throw new NotSupportedException("Could not retreieve vote count. Reason: Top.GG has not been enabled properly");
+        }
+
         public static async Task UpdateStatsTopGGAsync(ulong applicationId, string topggToken)
         {
             AuthDiscordBotListApi DblApi = new(applicationId, topggToken);
