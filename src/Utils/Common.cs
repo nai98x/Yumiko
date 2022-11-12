@@ -23,6 +23,10 @@
     {
         private static readonly GraphQLHttpClient GraphQlClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
+        /// <summary>
+        /// Gets the Firestore client retrieved from the firebase.json file.
+        /// </summary>
+        /// <returns>The <see cref="FirestoreClient"/> client.</returns>
         public static FirestoreDb GetFirestoreClient()
         {
             string path = Path.Join(AppDomain.CurrentDomain.BaseDirectory, "res", "firebase.json");
@@ -46,6 +50,12 @@
             throw new NullReferenceException("Something go wrong with firease.json");
         }
 
+        /// <summary>
+        /// Gets a random number between a minimum and a maximum.
+        /// </summary>
+        /// <param name="min">Minimum number.</param>
+        /// <param name="max">Maximum number.</param>
+        /// <returns>A random number generated.</returns>
         public static int GetRandomNumber(int min, int max)
         {
             Random rnd = new();
@@ -63,6 +73,11 @@
             return rnd.Next(minValue: min, maxValue: max);
         }
 
+        /// <summary>
+        /// Converts a string to a <see cref="DiscordEmoji"/> object.
+        /// </summary>
+        /// <param name="text">String representation of a <see cref="DiscordEmoji"/>.</param>
+        /// <returns>A <see cref="DiscordEmoji"/> object.</returns>
         public static DiscordEmoji? ToEmoji(string text)
         {
             text = text.Trim();
@@ -77,6 +92,11 @@
             return JsonConvert.DeserializeObject<DiscordEmoji>(json);
         }
 
+        /// <summary>
+        /// Remove non alphanumeric characters from a <see cref="string"/>.
+        /// </summary>
+        /// <param name="str">Interaction Context.</param>
+        /// <returns>The <see cref="string"/> without non-aplhanumeric characters</returns>
         public static string QuitarCaracteresEspeciales(string str)
         {
             if (!string.IsNullOrEmpty(str))
@@ -87,6 +107,11 @@
             return string.Empty;
         }
 
+        /// <summary>
+        /// Removes HTML from AniList queries.
+        /// </summary>
+        /// <param name="texto">A <see cref="string"/> from AniList.</param>
+        /// <returns><see cref="string"/> without HTML tags.</returns>
         public static string LimpiarTexto(string texto)
         {
             if (texto != null)
@@ -115,6 +140,12 @@
             return texto;
         }
 
+        /// <summary>
+        /// Checks if the current user has alredy voted in Top.GG.
+        /// If not, a <see cref="DiscordMessage"/> will be sent.
+        /// </summary>
+        /// <param name="ctx">Interaction Context.</param>
+        /// <param name="topggToken">Token used for Top.GG API.</param>
         public static async Task ChequearVotoTopGGAsync(InteractionContext ctx, string topggToken)
         {
             if (Program.TopggEnabled && !Program.Debug)
@@ -139,7 +170,13 @@
             }
         }
 
-        public static async Task<int> CheckTopGGVotesCount(InteractionContext ctx, string topggToken)
+        /// <summary>
+        /// Checks monthly votes in Top.GG for the bot, if enabled.
+        /// </summary>
+        /// <param name="ctx">Interaction Context.</param>
+        /// <param name="topggToken">Token used for Top.GG API.</param>
+        /// <returns>Monthly Top.GG vote count.</returns>
+        public static async Task<int> CheckTopGGVotesCountAsync(InteractionContext ctx, string topggToken)
         {
             if (Program.TopggEnabled && !Program.Debug)
             {
@@ -152,6 +189,11 @@
             throw new NotSupportedException("Could not retreieve vote count. Reason: Top.GG has not been enabled properly");
         }
 
+        /// <summary>
+        /// Updates the guild and shard count for Top.GG.
+        /// </summary>
+        /// <param name="applicationId">Application ID from Discord.</param>
+        /// <param name="topggToken">Token used for Top.GG API.</param>
         public static async Task UpdateStatsTopGGAsync(ulong applicationId, string topggToken)
         {
             AuthDiscordBotListApi DblApi = new(applicationId, topggToken);
@@ -161,6 +203,13 @@
             await DblApi.UpdateStats(guildCount: totalGuilds, shardCount: totalShards);
         }
 
+        /// <summary>
+        /// A user chooses an option from a list using a <see cref="DiscordSelectComponent"/>. Up to 25 options.
+        /// </summary>
+        /// <param name="ctx">Interaction Context.</param>
+        /// <param name="timeoutGeneral">Time that the user have to choose an option.</param>
+        /// <param name="opciones">List of options to choose.</param>
+        /// <returns>Index of the array for the choosen option.</returns>
         public static async Task<int> GetElegidoAsync(InteractionContext ctx, double timeoutGeneral, List<TitleDescription> opciones)
         {
             int cantidadOpciones = opciones.Count;
@@ -204,6 +253,15 @@
             return -1;
         }
 
+        /// <summary>
+        /// A user chooses yes or no using buttons.
+        /// </summary>
+        /// <param name="ctx">Interaction Context.</param>
+        /// <param name="timeoutGeneral">Time that the user have to choose an option.</param>
+        /// <param name="interactivity">The interactivity extension.</param>
+        /// <param name="title">Title of the embed.</param>
+        /// <param name="description">Description of the embed.</param>
+        /// <returns>True if the user has answered yes, false if no or timeout.</returns>
         public static async Task<bool> GetYesNoInteractivityAsync(InteractionContext ctx, double timeoutGeneral, InteractivityExtension interactivity, string title, string description)
         {
             DiscordButtonComponent yesButton = new(ButtonStyle.Success, "true", translations.yes);
@@ -230,6 +288,12 @@
             }
         }
 
+        /// <summary>
+        /// Gets a random character from AniList.
+        /// </summary>
+        /// <param name="ctx">Interaction Context.</param>
+        /// <param name="pag">AniList page of characters query, ordered by popularity.</param>
+        /// <returns>A <see cref="CharacterOld"/> object.</returns>
         public static async Task<CharacterOld?> GetRandomCharacterAsync(InteractionContext ctx, int pag)
         {
             string titleMedia = string.Empty, siteUrlMedia = string.Empty;
@@ -305,6 +369,13 @@
             return null;
         }
 
+        /// <summary>
+        /// Gets a random media from AniList.
+        /// </summary>
+        /// <param name="ctx">Interaction Context.</param>
+        /// <param name="pag">AniList page of media query, ordered by popularity.</param>
+        /// <param name="type">Anime or Manga.</param>
+        /// <returns>A <see cref="Anime"/> object.</returns>
         public static async Task<Anime?> GetRandomMediaAsync(InteractionContext ctx, int pag, MediaType type)
         {
             string query = "query($pagina: Int){" +
@@ -363,6 +434,12 @@
             return null;
         }
 
+        /// <summary>
+        /// Logs an unknown error to the <see cref="DiscordChannel"/> designed to logs.
+        /// </summary>
+        /// <param name="guild">Guild where the error ocurred.</param>
+        /// <param name="channel">Channel where the error ocurred.</param>
+        /// <param name="description">Description of the error. Typically contains the Stack Trace.</param>
         public static async Task GrabarLogErrorAsync(DiscordGuild guild, DiscordChannel channel, string description)
         {
             await Program.LogChannelErrors.SendMessageAsync(new DiscordEmbedBuilder
@@ -380,7 +457,15 @@
             .AddField("Channel", $"#{channel.Name}", false));
         }
 
-        public static async Task<byte[]> MergeImage(string link1, string link2, int x, int y)
+        /// <summary>
+        /// Merges two images from links.
+        /// </summary>
+        /// <param name="link1">Link for the first image.</param>
+        /// <param name="link2">Link for the second image.</param>
+        /// <param name="x">Width of the merged image.</param>
+        /// <param name="y">Height of the merged image.</param>
+        /// <returns>The merged image.</returns>
+        public static async Task<byte[]> MergeImageAsync(string link1, string link2, int x, int y)
         {
             var client = new HttpClient();
             var bytes1 = await client.GetByteArrayAsync(link1);
@@ -408,6 +493,14 @@
             return memoryStream.ToArray();
         }
 
+        /// <summary>
+        /// Overlaps two images into one.
+        /// </summary>
+        /// <param name="image1">The first image.</param>
+        /// <param name="image2">The second image.</param>
+        /// <param name="x">Width of the merged image.</param>
+        /// <param name="y">Height of the merged image.</param>
+        /// <returns>The overlapped image.</returns>
         public static byte[] OverlapImage(byte[] image1, byte[] image2, int x, int y)
         {
             using var memoryStream = new MemoryStream();
@@ -425,6 +518,11 @@
             return memoryStream.ToArray();
         }
 
+        /// <summary>
+        /// Gets the newest created file in a Directory.
+        /// </summary>
+        /// <param name="directory">The directory to search.</param>
+        /// <returns>The newest file.</returns>
         public static FileInfo? GetNewestFile(DirectoryInfo directory)
         {
             return directory.GetFiles()
@@ -433,6 +531,9 @@
                 .FirstOrDefault();
         }
 
+        /// <summary>
+        /// Makes an NSFW warning <see cref="DiscordEmbed"/>.
+        /// </summary>
         public static DiscordEmbedBuilder NsfwWarning { get; private set; } = new DiscordEmbedBuilder
         {
             Title = translations.nsfw_required,
@@ -440,6 +541,9 @@
             Color = DiscordColor.Red,
         };
 
+        /// <summary>
+        /// Makes an resource not found <see cref="DiscordEmbed"/>.
+        /// </summary>
         public static DiscordEmbedBuilder ResourceNotFound(string resource)
         {
             return new DiscordEmbedBuilder

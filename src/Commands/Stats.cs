@@ -129,7 +129,7 @@
 
             if (Program.TopggEnabled && !Program.Debug)
             {
-                embed.AddField(translations.vote_count, $"{await Common.CheckTopGGVotesCount(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg))}", true);
+                embed.AddField(translations.vote_count, $"{await Common.CheckTopGGVotesCountAsync(ctx, ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenTopgg))}", true);
             }
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));

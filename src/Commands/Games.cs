@@ -294,7 +294,7 @@
 
                 if (elegido1.Image != null && elegido2.Image != null)
                 {
-                    var img = await Common.MergeImage(elegido1.Image, elegido2.Image, 500, 375);
+                    var img = await Common.MergeImageAsync(elegido1.Image, elegido2.Image, 500, 375);
                     var imagen = Common.OverlapImage(img, File.ReadAllBytes(Path.Join(AppDomain.CurrentDomain.BaseDirectory, "res", "Images", "frame-hol.png")), 500, 375);
                     msgBuilder.AddFile("image.png", imagen.ToMemoryStream());
                 }

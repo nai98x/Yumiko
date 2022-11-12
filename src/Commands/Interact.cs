@@ -410,7 +410,7 @@
                 string avatar1 = user1.GetAvatarUrl(ImageFormat.Png, 512);
                 string avatar2 = user2.GetAvatarUrl(ImageFormat.Png, 512);
 
-                var img = await Common.MergeImage(avatar1, avatar2, 1024, 512);
+                var img = await Common.MergeImageAsync(avatar1, avatar2, 1024, 512);
                 var imagen = Common.OverlapImage(img, File.ReadAllBytes(Path.Join(AppDomain.CurrentDomain.BaseDirectory, "res", "Images", "frame-love.png")), 1024, 512);
                 imagenUrl = Formatter.AttachedImageUrl("imageLove.png");
                 builder.AddFile("imageLove.png", imagen.ToMemoryStream());
