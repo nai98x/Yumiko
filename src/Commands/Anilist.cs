@@ -11,6 +11,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Net;
     using System.Threading.Tasks;
+    using System.Web;
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not with D#+ Command classes")]
     [SlashCommandGroup("anilist", "Anilist queries")]
@@ -559,6 +560,31 @@
                     Description = translations.anilist_profile_not_found,
                     Color = DiscordColor.Red
                 }));
+            }
+        }
+
+        [SlashCommand("anitheme", "Searchs for anime openings and endings")]
+        public async Task AnimeOpening(InteractionContext ctx, [Option("Anime", "Anime that you want to search openings and endings")] string anime)
+        {
+            await ctx.DeferAsync();
+
+            string animeSearch = HttpUtility.UrlEncode(anime);
+
+            var video = await SearchQuery.Search(ctx, 30, animeSearch);
+
+            if (video != null)
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(
+                    $"{translations.link_for} {Formatter.Bold(video.Filename)}:\n\n" +
+                    $"{video.Link}\n"
+                    ));
+            }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder()
+                    .WithColor(DiscordColor.Red)
+                    .WithTitle(translations.resource_not_found)
+                    ));
             }
         }
     }

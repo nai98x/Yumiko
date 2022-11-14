@@ -1033,6 +1033,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Link for.
+        /// </summary>
+        public static string link_for {
+            get {
+                return ResourceManager.GetString("link_for", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location `{0}, {1}` not found.
         /// </summary>
         public static string location_not_found {

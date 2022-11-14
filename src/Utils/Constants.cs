@@ -6,6 +6,8 @@
 
         public const string AnilistAPIUrl = @"https://graphql.anilist.co";
 
+        public const string AniThemesAPIUrl = @"https://api.animethemes.moe";
+
         public const int AnilistPerPage = 25;
 
         public static DiscordColor YumikoColor { get; private set; } = DiscordColor.Blurple;

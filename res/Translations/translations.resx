@@ -441,6 +441,9 @@
   <data name="link" xml:space="preserve">
     <value>Link</value>
   </data>
+  <data name="link_for" xml:space="preserve">
+    <value>Link for</value>
+  </data>
   <data name="location_not_found" xml:space="preserve">
     <value>Location `{0}, {1}` not found</value>
   </data>
