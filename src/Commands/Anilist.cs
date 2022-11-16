@@ -564,6 +564,7 @@
         }
 
         [SlashCommand("anitheme", "Searchs for anime openings and endings")]
+        [DescriptionLocalization(Localization.Spanish, "Busca por openings y endings de anime")]
         public async Task AnimeOpening(InteractionContext ctx, [Option("Anime", "Anime that you want to search openings and endings")] string anime)
         {
             await ctx.DeferAsync();
