@@ -343,5 +343,6 @@ healthchecksdb
 /.vs
 
 # Configuracion general
+appsettings.json
+appsettings.development.json
 firebase.json
-config.json
