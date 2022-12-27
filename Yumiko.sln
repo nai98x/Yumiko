@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yumiko.Bot", "src\Yumiko.Bot\Yumiko.Bot.csproj", "{3A90D48D-8B9A-43AF-9BB5-540C8A87DCB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yumiko.Shared", "src\Yumiko.Shared\Yumiko.Shared.csproj", "{EE2F9773-75AB-443D-AF6D-A5FC98FB0E54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{3A90D48D-8B9A-43AF-9BB5-540C8A87DCB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A90D48D-8B9A-43AF-9BB5-540C8A87DCB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A90D48D-8B9A-43AF-9BB5-540C8A87DCB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE2F9773-75AB-443D-AF6D-A5FC98FB0E54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE2F9773-75AB-443D-AF6D-A5FC98FB0E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE2F9773-75AB-443D-AF6D-A5FC98FB0E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE2F9773-75AB-443D-AF6D-A5FC98FB0E54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

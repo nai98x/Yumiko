@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Yumiko {
+namespace Yumiko.Shared.Resources.Translations {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Yumiko {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Yumiko.res.Translations.translations", typeof(translations).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Yumiko.Shared.Resources.Translations.translations", typeof(translations).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
