@@ -1,5 +1,6 @@
 ﻿namespace Yumiko.Commands
 {
+    using OpenAI;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -489,6 +490,39 @@
             });
 
             await ctx.EditResponseAsync(builder);
+        }
+
+        [SlashCommand("talk", "Talk with Yumiko")]
+        [NameLocalization(Localization.Spanish, "hablar")]
+        [DescriptionLocalization(Localization.Spanish, "Habla con Yumiko")]
+        public async Task TalkAsync(InteractionContext ctx, [Option("Text", "What do you want to say")] string text)
+        {
+            await ctx.DeferAsync();
+
+            OpenAIAuthentication auth = new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenOpenAI));
+            OpenAIClient api = new(auth, Engine.Davinci);
+
+            var result = await api.CompletionEndpoint.CreateCompletionAsync(
+                engine: Engine.Davinci,
+                prompt: text,
+                temperature: 0.9,
+                max_tokens: 150,
+                top_p: 1,
+                frequencyPenalty: 0,
+                presencePenalty: 0.6,
+                stopSequences: new[] {"Human:", "AI:"}
+            );
+
+            var completation = result.Completions.FirstOrDefault();
+
+            if ( completation != null && completation.Text != null)
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder()
+                    .WithTitle(translations.talk_with_yumiko)
+                    .WithColor(Constants.YumikoColor)
+                    .WithDescription($"{ctx.User.Mention}: {text}\n\n{ctx.Client.CurrentApplication.Name}: {completation.Text}")
+                ));
+            }
         }
     }
 }

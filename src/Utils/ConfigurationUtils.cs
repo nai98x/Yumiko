@@ -26,6 +26,7 @@
                 Configurations.TokenTopgg => config.GetValue<T>("tokens:topgg"),
                 Configurations.TokenOpenWeatherMap => config.GetValue<T>("tokens:openweathermap"),
                 Configurations.TokenTheCatApi => config.GetValue<T>("tokens:thecatapi"),
+                Configurations.TokenOpenAI => config.GetValue<T>("tokens:openai"),
                 Configurations.TokenTheDogApi => config.GetValue<T>("tokens:thedogapi"),
                 Configurations.LogginGuildId => config.GetValue<T>("loggin:guild_id"),
                 Configurations.LogginProductionGuilds => config.GetValue<T>("loggin:production:guilds"),
