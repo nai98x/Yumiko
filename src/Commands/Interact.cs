@@ -504,13 +504,13 @@
 
             var result = await api.CompletionEndpoint.CreateCompletionAsync(
                 engine: Engine.Davinci,
-                prompt: text,
+                prompt: $"Humano: {text} IA:",
                 temperature: 0.9,
                 max_tokens: 150,
                 top_p: 1,
                 frequencyPenalty: 0,
                 presencePenalty: 0.6,
-                stopSequences: new[] {"Human:", "AI:"}
+                stopSequences: new[] {"Humano:", "IA:"}
             );
 
             var completation = result.Completions.FirstOrDefault();
@@ -520,7 +520,7 @@
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder()
                     .WithTitle(translations.talk_with_yumiko)
                     .WithColor(Constants.YumikoColor)
-                    .WithDescription($"{ctx.User.Mention}: {text}\n\n{ctx.Client.CurrentApplication.Name}: {completation.Text}")
+                    .WithDescription($"{ctx.User.Mention}: {text}\n\n{ctx.Client.CurrentUser.Mention}: {completation.Text}")
                 ));
             }
         }
