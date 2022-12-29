@@ -747,6 +747,9 @@
   <data name="tags" xml:space="preserve">
     <value>Etiquetas</value>
   </data>
+  <data name="talk_with_yumiko" xml:space="preserve">
+    <value>Habla con Yumiko</value>
+  </data>
   <data name="temperature" xml:space="preserve">
     <value>Temperatura</value>
   </data>

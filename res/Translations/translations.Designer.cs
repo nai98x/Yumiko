@@ -1951,6 +1951,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Talk with Yumiko.
+        /// </summary>
+        public static string talk_with_yumiko {
+            get {
+                return ResourceManager.GetString("talk_with_yumiko", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Temperature.
         /// </summary>
         public static string temperature {

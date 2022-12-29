@@ -1,6 +1,5 @@
 ﻿namespace Yumiko.Commands
 {
-    using Microsoft.Extensions.Logging;
     using OpenAI;
     using System;
     using System.Collections.Generic;
@@ -519,7 +518,7 @@
             if ( completation != null && completation.Text != null)
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder()
-                    .WithTitle("Habla con Yumiko!")
+                    .WithTitle(translations.talk_with_yumiko)
                     .WithColor(Constants.YumikoColor)
                     .WithDescription($"{ctx.User.Mention}: {text}\n\n{ctx.Client.CurrentApplication.Name}: {completation.Text}")
                 ));
