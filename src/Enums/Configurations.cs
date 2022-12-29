@@ -9,6 +9,7 @@
         TokenOpenWeatherMap,
         TokenTheCatApi,
         TokenTheDogApi,
+        TokenOpenAI,
         LogginGuildId,
         LogginProductionGuilds,
         LogginProductionErrors,

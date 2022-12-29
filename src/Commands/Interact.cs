@@ -1,5 +1,6 @@
 ﻿namespace Yumiko.Commands
 {
+    using OpenAI;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -489,6 +490,22 @@
             });
 
             await ctx.EditResponseAsync(builder);
+        }
+
+        [SlashCommand("talk", "Talk with Yumiko")]
+        [NameLocalization(Localization.Spanish, "hablar")]
+        [DescriptionLocalization(Localization.Spanish, "Habla con Yumiko")]
+        public async Task TalkAsync(InteractionContext ctx, [Option("Text", "What do you want to say")] string text)
+        {
+            await ctx.DeferAsync();
+
+            OpenAIAuthentication auth = new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenOpenAI));
+            OpenAIClient api = new(auth, Engine.Davinci);
+
+            var result = await api.CompletionEndpoint.CreateCompletionAsync("One Two Three One Two", temperature: 0.1, engine: Engine.Davinci);
+            Console.WriteLine(result);
+
+            int i = 0;
         }
     }
 }
