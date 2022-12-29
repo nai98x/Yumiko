@@ -1,5 +1,6 @@
 ﻿namespace Yumiko.Commands
 {
+    using Microsoft.Extensions.Logging;
     using OpenAI;
     using System;
     using System.Collections.Generic;
@@ -502,10 +503,27 @@
             OpenAIAuthentication auth = new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenOpenAI));
             OpenAIClient api = new(auth, Engine.Davinci);
 
-            var result = await api.CompletionEndpoint.CreateCompletionAsync("One Two Three One Two", temperature: 0.1, engine: Engine.Davinci);
-            Console.WriteLine(result);
+            var result = await api.CompletionEndpoint.CreateCompletionAsync(
+                engine: Engine.Davinci,
+                prompt: text,
+                temperature: 0.9,
+                max_tokens: 150,
+                top_p: 1,
+                frequencyPenalty: 0,
+                presencePenalty: 0.6,
+                stopSequences: new[] {"Human:", "AI:"}
+            );
 
-            int i = 0;
+            var completation = result.Completions.FirstOrDefault();
+
+            if ( completation != null && completation.Text != null)
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder()
+                    .WithTitle("Habla con Yumiko!")
+                    .WithColor(Constants.YumikoColor)
+                    .WithDescription($"{ctx.User.Mention}: {text}\n\n{ctx.Client.CurrentApplication.Name}: {completation.Text}")
+                ));
+            }
         }
     }
 }
