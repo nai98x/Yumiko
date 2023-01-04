@@ -182,7 +182,9 @@
         {
             await ctx.DeferAsync();
 
-            DiscordEmoji? emote = Common.ToEmoji(emoji);
+            bool isStringEmote = DiscordEmoji.TryFromName(ctx.Client, $":{emoji}:", out DiscordEmoji? emote);
+
+            if (!isStringEmote) emote = Common.ToEmoji(emoji);
 
             if (emote != null)
             {
@@ -202,7 +204,7 @@
                 }
                 else
                 {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(emoji));
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(emote));
                 }
             }
             else
@@ -492,9 +494,9 @@
             await ctx.EditResponseAsync(builder);
         }
 
-        [SlashCommand("talk", "Talk with Yumiko")]
-        [NameLocalization(Localization.Spanish, "hablar")]
-        [DescriptionLocalization(Localization.Spanish, "Habla con Yumiko")]
+        //[SlashCommand("talk", "Talk with Yumiko")]
+        //[NameLocalization(Localization.Spanish, "hablar")]
+        //[DescriptionLocalization(Localization.Spanish, "Habla con Yumiko")]
         public async Task TalkAsync(InteractionContext ctx, [Option("Text", "What do you want to say")] string text)
         {
             await ctx.DeferAsync();
