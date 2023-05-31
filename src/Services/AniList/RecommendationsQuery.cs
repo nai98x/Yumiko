@@ -1,6 +1,5 @@
 ﻿namespace Yumiko.Services
 {
-    using DSharpPlus.SlashCommands;
     using GraphQL;
     using GraphQL.Client.Http;
     using GraphQL.Client.Serializer.Newtonsoft;

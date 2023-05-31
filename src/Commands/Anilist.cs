@@ -1,11 +1,9 @@
 ﻿namespace Yumiko.Commands
 {
-    using GraphQL;
     using GraphQL.Client.Http;
     using GraphQL.Client.Serializer.Newtonsoft;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using RestSharp;
     using System;
     using System.Diagnostics.CodeAnalysis;

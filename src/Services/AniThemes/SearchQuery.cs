@@ -4,7 +4,6 @@
     using Newtonsoft.Json;
     using RestSharp;
     using System;
-    using System.Net;
     using System.Threading.Tasks;
 
     public static class SearchQuery
@@ -21,12 +20,12 @@
                 if (response.IsSuccessful && response.Content != null)
                 {
                     var data = JsonConvert.DeserializeObject<SearchResponse>(response.Content);
-                    if (data == null || data.Search == null || data.Search.Videos == null || data.Search.Videos.Count == 0) 
+                    if (data == null || data.Search == null || data.Search.Videos == null || data.Search.Videos.Count == 0)
                         return null;
                     var videos = data.Search.Videos.Take(25).ToList();
 
                     return await ChooseSongAsync(ctx, timeout, videos);
-                    
+
                 }
 
                 return null;

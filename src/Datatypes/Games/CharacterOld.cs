@@ -1,7 +1,5 @@
 ﻿namespace Yumiko.Datatypes
 {
-    using System.Collections.Generic;
-
     public class CharacterOld
     {
         public string? NameFirst { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace Yumiko.Utils
 {
-    public static class PollUtils 
+    public static class PollUtils
     {
         public static DiscordEmbedBuilder GetResultsEmbed(Poll poll, bool anonymous)
         {

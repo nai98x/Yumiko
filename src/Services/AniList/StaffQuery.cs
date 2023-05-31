@@ -28,7 +28,7 @@
                 var response = await GraphQlClient.SendQueryAsync<StaffPageResponse>(request);
                 var results = response.Data.Page!.Staffs!;
 
-                if(results.Count == 0) return null;
+                if (results.Count == 0) return null;
                 return await ChooseStaffAsync(ctx, timeout, results!);
             }
             catch (GraphQLHttpRequestException ex)

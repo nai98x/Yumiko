@@ -273,7 +273,7 @@
                             if (node.MediaRecommendation != null) // Filter entries without recommendations
                             {
                                 int nodeId = node.MediaRecommendation.Id;
-                                string nodeTitle = 
+                                string nodeTitle =
                                     (profile.Options.TitleLanguage == "ENGLISH" && node.MediaRecommendation.Title.English != null) ?
                                     node.MediaRecommendation.Title.English : node.MediaRecommendation.Title.Romaji;
                                 int nodeRating = node.Rating;

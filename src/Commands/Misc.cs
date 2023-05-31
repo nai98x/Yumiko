@@ -139,12 +139,15 @@
                 if (data != null)
                 {
                     string urlImagen = data[0].url;
+                    var httpClient = new HttpClient();
+                    var bytes1 = await httpClient.GetByteArrayAsync(urlImagen);
+
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
                         Title = $"{translations.random_cat} (๑✪ᆺ✪๑)",
-                        ImageUrl = urlImagen,
+                        ImageUrl = "attachment://image.png",
                         Color = Constants.YumikoColor,
-                    }));
+                    }).AddFile("image.png", bytes1.ToMemoryStream()));
                     return;
                 }
             }
@@ -177,12 +180,15 @@
                 if (data != null)
                 {
                     string urlImagen = data[0].url;
+                    var httpClient = new HttpClient();
+                    var bytes1 = await httpClient.GetByteArrayAsync(urlImagen);
+
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
                         Title = $"{translations.random_dog} (❍ᴥ❍ʋ)",
-                        ImageUrl = urlImagen,
+                        ImageUrl = "attachment://image.png",
                         Color = Constants.YumikoColor,
-                    }));
+                    }).AddFile("image.png", bytes1.ToMemoryStream()));
                     return;
                 }
             }
