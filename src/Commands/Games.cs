@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
@@ -244,6 +245,7 @@
         [DescriptionLocalization(Localization.Spanish, "Juega al juego de Higher or Lower")]
         public async Task HighrOrLower(InteractionContext ctx, [Option("Gamemode", "Higher or Lower gamemode")] GamemodeHoL gamemode)
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
             {
                 Title = "Higher or Lower",
@@ -252,24 +254,9 @@
             }));
 
             var interactivity = ctx.Client.GetInteractivity();
-
-            int valorBase = Common.GetRandomNumber(1, 36); // Del 1-200 hasta 1800-2000
-            var settings = new GameSettings
-            {
-                IterIni = valorBase,
-                IterFin = valorBase + 4, // 200 animes seleccionados
-            };
             DiscordEmbed? embedAux = null;
-
-            var listaAux = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, false);
             List<Anime> lista = new();
-            foreach (var item in listaAux)
-            {
-                if (item.AvarageScore > -1)
-                {
-                    lista.Add(item);
-                }
-            }
+            lista = await AnilistUtils.GetRandomMediaListHoL(ctx, lista, gamemode, MediaType.ANIME, 1, 36);
 
             bool jugar = true;
             int puntuacion = 0;
@@ -398,16 +385,15 @@
                 lista.Remove(elegido2);
 
                 // Vuelvo a rellenar la lista si se queda sin items
-                if (lista.Count < 2)
+                if (lista.Count < 2 || stopwatch.Elapsed.TotalMinutes >= 14 /* 15 minutes is the limit for a single interaction */)
                 {
-                    listaAux = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, false);
-                    foreach (var item in listaAux)
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
-                        if (item.AvarageScore > -1)
-                        {
-                            lista.Add(item);
-                        }
-                    }
+                        Title = translations.victory,
+                        Color = DiscordColor.Green,
+                    }));
+                    stopwatch.Stop();
+                    jugar = false;
                 }
             }
 

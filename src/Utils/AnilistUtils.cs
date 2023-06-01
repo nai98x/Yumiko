@@ -245,6 +245,42 @@
             return embed;
         }
 
+        public static async Task<List<Anime>> GetRandomMediaListHoL(InteractionContext ctx, List<Anime> listaOriginal, GamemodeHoL gamemode, MediaType mediaType, int min, int max)
+        {
+            List<Anime> lista = new();
+            List<int> valoresBase = new();
+            int valorBase = 0;
+
+            do
+            {
+                valorBase = Common.GetRandomNumber(min, max);
+                valoresBase.Add(valorBase);
+
+                var settings = new GameSettings
+                {
+                    IterIni = valorBase,
+                    IterFin = valorBase + 1,
+                };
+
+                var listaAux = await GameServices.GetMediaAsync(ctx, mediaType, settings, false, false, false, false);
+                foreach (var item in listaAux)
+                {
+                    if ((gamemode == GamemodeHoL.Score && item.AvarageScore > -1) || (gamemode == GamemodeHoL.Popularity && item.Favoritos >= 0))
+                    {
+                        lista.Add(item);
+                    }
+
+                    if (lista.Count >= 500)
+                    {
+                        return lista;
+                    }
+                }
+            } 
+            while (valoresBase.Exists(x => x == valorBase));
+
+            return lista;
+        }
+
         private static List<AnimeRecommendation> GetRecommendationsFromUser(User profile, MediaListCollection collection, MediaType type)
         {
             List<AnimeRecommendation> recommendations = new();
