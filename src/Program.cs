@@ -37,11 +37,16 @@ namespace Yumiko
         public static DiscordChannel LogChannelErrors { get; private set; } = null!;
         public static Stopwatch Stopwatch { get; private set; } = null!;
 
+        private static System.Timers.Timer cacheTimer = new System.Timers.Timer(24 * 60 * 60 * 1000);
+
         public static async Task Main(string[] args)
         {
             IServiceCollection services = new ServiceCollection();
             DebugMode();
             Console.Title = "Yumiko";
+
+            cacheTimer.Elapsed += UpdateCacheAsync;
+            cacheTimer.Enabled = true;
 
             ConfigurationBuilder configurationBuilder = new();
             configurationBuilder.Sources.Clear();
@@ -184,6 +189,15 @@ namespace Yumiko
 #else
             Debug = false;
 #endif
+        }
+
+        private static void UpdateCacheAsync(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                await Singleton.GetInstance().UpdateCachedMediaAsync();
+                Log.Logger.Information("Media cache from AniList updated", DateTime.Now);
+            });
         }
     }
 }

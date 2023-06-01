@@ -255,8 +255,7 @@
 
             var interactivity = ctx.Client.GetInteractivity();
             DiscordEmbed? embedAux = null;
-            List<Anime> lista = new();
-            lista = await AnilistUtils.GetRandomMediaListHoL(ctx, lista, gamemode, MediaType.ANIME, 1, 36);
+            List<Anime> lista = Singleton.GetInstance().GetCachedMedia();
 
             bool jugar = true;
             int puntuacion = 0;

@@ -926,6 +926,139 @@
             return animeList;
         }
 
+        public static async Task<List<Anime>> GetMediaForCacheAsync(MediaType type, GameSettings settings)
+        {
+            List<Anime> animeList = new();
+
+            string mediaFiltros = $"type: {type.GetName()}, sort: FAVOURITES_DESC, isAdult:false, format_not_in:[MUSIC]"; ;
+
+            string query = "query($pagina : Int){" +
+                    "   Page(page: $pagina){" +
+                   $"       media({mediaFiltros}){{" +
+                    "           id," +
+                    "           siteUrl," +
+                    "           type," +
+                    "           favourites," +
+                    "           title{" +
+                    "               romaji," +
+                    "               english" +
+                    "           }," +
+                    "           averageScore," +
+                    "           synonyms," +
+                    "           coverImage{" +
+                    "               large" +
+                    "           }," +
+                    "           characters(role: MAIN){" +
+                    "               nodes{" +
+                    "                   name{" +
+                    "                       first," +
+                    "                       last," +
+                    "                       full" +
+                    "                   }," +
+                    "                   siteUrl," +
+                    "                   favourites," +
+                    "               }" +
+                    "           }," +
+                    "           studios{" +
+                    "               nodes{" +
+                    "                   name," +
+                    "                   siteUrl," +
+                    "                   favourites," +
+                    "                   isAnimationStudio" +
+                    "               }" +
+                    "           }," +
+                    "           relations{" +
+                    "               edges{" +
+                    "                   relationType," +
+                    "                   node{" +
+                    "                       id," +
+                    "                       type," +
+                    "                       siteUrl," +
+                    "                       title{" +
+                    "                           romaji," +
+                    "                           english" +
+                    "                       }," +
+                    "                       synonyms" +
+                    "                   }" +
+                    "               }" +
+                    "           }" +
+                    "       }," +
+                    "       pageInfo{" +
+                    "           hasNextPage," +
+                    "           lastPage" +
+                    "       }" +
+                    "   }" +
+                    "}";
+
+            string hasNextValue;
+            int iter = settings.IterIni;
+
+            do
+            {
+                var request = new GraphQLRequest
+                {
+                    Query = query,
+                    Variables = new
+                    {
+                        pagina = iter,
+                    },
+                };
+                try
+                {
+                    var data = await GraphQlClient.SendQueryAsync<dynamic>(request);
+                    iter++;
+                    hasNextValue = data.Data.Page.pageInfo.hasNextPage;
+                    foreach (var x in data.Data.Page.media)
+                    {
+                        string titleEnglish = x.title.english;
+                        string titleRomaji = x.title.romaji;
+                        string id = x.id;
+                        string scoreStr = x.averageScore;
+                        bool tieneScore = int.TryParse(scoreStr, out int score);
+                        if (!tieneScore)
+                        {
+                            score = -1;
+                        }
+
+                        Anime anim = new()
+                        {
+                            Id = int.Parse(id),
+                            Image = x.coverImage.large,
+                            TitleEnglish = titleEnglish,
+                            TitleRomaji = titleRomaji,
+                            TitleEnglishFormatted = Common.QuitarCaracteresEspeciales(titleEnglish),
+                            TitleRomajiFormatted = Common.QuitarCaracteresEspeciales(titleRomaji),
+                            SiteUrl = x.siteUrl,
+                            Tipo = x.type,
+
+                            Favoritos = x.favourites,
+                            AvarageScore = score,
+                            Estudios = new List<StudioOld>(),
+                            Sinonimos = new List<string>(),
+                            Personajes = new List<CharacterOld>(),
+                            MediaRelacionada = new List<Anime>(),
+                        };
+                        foreach (var syn in x.synonyms)
+                        {
+                            string value = syn.Value;
+                            string bien = Common.QuitarCaracteresEspeciales(value);
+                            anim.Sinonimos.Add(bien);
+                        }
+
+                        animeList.Add(anim);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // log?
+                    return animeList;
+                }
+            }
+            while (hasNextValue.ToLower() == "true" && iter <= settings.IterFin);
+
+            return animeList;
+        }
+
         public static async Task<List<CharacterOld>> GetCharactersAsync(InteractionContext ctx, GameSettings settings)
         {
             var characterList = new List<CharacterOld>();

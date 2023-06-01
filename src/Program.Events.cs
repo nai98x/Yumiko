@@ -35,6 +35,9 @@
                     LogChannelErrors = logGuild.Channels[ConfigurationUtils.GetConfiguration<ulong>(Configuration, Debug ? Configurations.LogginTestingErrors : Configurations.LogginProductionErrors)];
 
                     sender.Logger.LogInformation("Log guild and channels initialized", DateTime.Now);
+
+                    await Singleton.GetInstance().UpdateCachedMediaAsync();
+                    sender.Logger.LogInformation("Media cache from AniList initialized", DateTime.Now);
                 }
                 else
                 {

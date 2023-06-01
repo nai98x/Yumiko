@@ -1,6 +1,8 @@
 ﻿namespace Yumiko.Services
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Yumiko.Datatypes;
 
     public class Singleton
     {
@@ -17,6 +19,7 @@
         private List<Trivia> CurrentTrivias { get; set; }
         private List<Poll> CurrentPolls { get; set; }
         private List<CommandUse> CommandsUsed { get; set; }
+        private List<Anime> MediaList { get; set; } = new();
 
         public static Singleton GetInstance()
         {
@@ -103,6 +106,24 @@
                     Uses = 1
                 });
             }
+        }
+
+        public List<Anime> GetCachedMedia()
+        {
+            return MediaList;
+        }
+
+        public async Task UpdateCachedMediaAsync()
+        {
+            MediaList.Clear();
+
+            var settings = new GameSettings
+            {
+                IterIni = 1,
+                IterFin = 36,
+            };
+
+            MediaList = await GameServices.GetMediaForCacheAsync(MediaType.ANIME, settings);
         }
     }
 }
