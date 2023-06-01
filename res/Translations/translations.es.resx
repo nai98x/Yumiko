@@ -387,11 +387,20 @@
   <data name="higher_or_lower_desc" xml:space="preserve">
     <value>¡Elige el anime con mejor puntuación para ganar!</value>
   </data>
+  <data name="higher_or_lower_desc_popularity" xml:space="preserve">
+    <value>¡Elige el anime con mayor popularidad para ganar!</value>
+  </data>
   <data name="higher_or_lower_round_defeat" xml:space="preserve">
     <value>**{0}** tiene menor puntuación promedio **({1}/10)** que **{2} ({3}/10)**</value>
   </data>
+  <data name="higher_or_lower_round_defeat_popularity" xml:space="preserve">
+    <value>**{0}** tiene menos favoritos **({1} ♥)** que **{2} ({3} ♥)**</value>
+  </data>
   <data name="higher_or_lower_round_win" xml:space="preserve">
     <value>**{0}** tiene **{1}/10** de puntuación promedio mientras que **{2}** tiene **{3}/10**</value>
+  </data>
+  <data name="higher_or_lower_round_win_popularity" xml:space="preserve">
+    <value>**{0}** tiene **{1} ♥** favoritos mientras que **{2}** tiene **{3} ♥**</value>
   </data>
   <data name="hint" xml:space="preserve">
     <value>¡Pista!</value>
@@ -905,6 +914,9 @@
   </data>
   <data name="which_one_has_better_score" xml:space="preserve">
     <value>¿Cuál tiene mayor puntuación?</value>
+  </data>
+  <data name="which_one_is_more_popular" xml:space="preserve">
+    <value>¿Cuál es más popular?</value>
   </data>
   <data name="wind_speed" xml:space="preserve">
     <value>Velocidad del viento</value>

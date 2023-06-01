@@ -387,11 +387,20 @@
   <data name="higher_or_lower_desc" xml:space="preserve">
     <value>Choose the anime with the best score to win!</value>
   </data>
+  <data name="higher_or_lower_desc_popularity" xml:space="preserve">
+    <value>Choose the more popular anime to win!</value>
+  </data>
   <data name="higher_or_lower_round_defeat" xml:space="preserve">
     <value>**{0}** has lower avarage score **({1}/10)** than **{2} ({3}/10)**</value>
   </data>
+  <data name="higher_or_lower_round_defeat_popularity" xml:space="preserve">
+    <value />
+  </data>
   <data name="higher_or_lower_round_win" xml:space="preserve">
     <value>**{0}** has **{1}/10** avarage score while **{2}** has **{3}/10**</value>
+  </data>
+  <data name="higher_or_lower_round_win_popularity" xml:space="preserve">
+    <value />
   </data>
   <data name="hint" xml:space="preserve">
     <value>Hint!</value>
@@ -908,6 +917,9 @@
   </data>
   <data name="which_one_has_better_score" xml:space="preserve">
     <value>Which one has the best score?</value>
+  </data>
+  <data name="which_one_is_more_popular" xml:space="preserve">
+    <value>Which one is more popular?</value>
   </data>
   <data name="wind_speed" xml:space="preserve">
     <value>Wind speed</value>

@@ -242,12 +242,12 @@
 
         [SlashCommand("higherorlower", "Plays a Higher or Lower game")]
         [DescriptionLocalization(Localization.Spanish, "Juega al juego de Higher or Lower")]
-        public async Task HighrOrLower(InteractionContext ctx)
+        public async Task HighrOrLower(InteractionContext ctx, [Option("Gamemode", "Higher or Lower gamemode")] GamemodeHoL gamemode)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
             {
                 Title = "Higher or Lower",
-                Description = translations.higher_or_lower_desc,
+                Description = gamemode == GamemodeHoL.Score ? translations.higher_or_lower_desc : translations.higher_or_lower_desc_popularity,
                 Color = Constants.YumikoColor,
             }));
 
@@ -306,7 +306,7 @@
 
                 msgBuilder.AddEmbed(new DiscordEmbedBuilder
                 {
-                    Title = translations.which_one_has_better_score,
+                    Title = gamemode == GamemodeHoL.Score ? translations.which_one_has_better_score : translations.which_one_is_more_popular,
                     Color = Constants.YumikoColor,
                     ImageUrl = "attachment://image.png",
                 });
@@ -347,13 +347,15 @@
                         puntajeOtro = (double)otro.AvarageScore / 10;
                         var tiempo = msgElegirInter.Result.Interaction.CreationTimestamp - msgElegir.CreationTimestamp;
 
-                        if (seleccionado.AvarageScore >= otro.AvarageScore)
+                        if ((gamemode == GamemodeHoL.Score && seleccionado.AvarageScore >= otro.AvarageScore) || (gamemode == GamemodeHoL.Popularity && seleccionado.Favoritos >= otro.Favoritos))
                         {
                             puntuacion++;
                             embedAux = new DiscordEmbedBuilder
                             {
                                 Title = string.Format(translations.guess_user, ctx.Member.DisplayName),
-                                Description = $"{string.Format(translations.higher_or_lower_round_win, seleccionado.TitleRomaji, puntajeSel, otro.TitleRomaji, puntajeOtro)}\n\n{translations.score}: **{puntuacion}**",
+                                Description = gamemode == GamemodeHoL.Score ?    
+                                    $"{string.Format(translations.higher_or_lower_round_win, seleccionado.TitleRomaji, puntajeSel, otro.TitleRomaji, puntajeOtro)}\n\n{translations.score}: **{puntuacion}**" :
+                                    $"{string.Format(translations.higher_or_lower_round_win_popularity, seleccionado.TitleRomaji, seleccionado.Favoritos, otro.TitleRomaji, otro.Favoritos)}\n\n{translations.score}: **{puntuacion}**",
                                 Color = DiscordColor.Green,
                                 Footer = new()
                                 {
@@ -367,7 +369,9 @@
                             await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                             {
                                 Title = string.Format(translations.miss_user_games, ctx.Member.DisplayName),
-                                Description = $"**{translations.defeat}**\n\n{string.Format(translations.higher_or_lower_round_defeat, seleccionado.TitleRomaji, puntajeSel, otro.TitleRomaji, puntajeOtro)}\n\n{translations.score}: **{puntuacion}**",
+                                Description = gamemode == GamemodeHoL.Score ?
+                                    $"**{translations.defeat}**\n\n{string.Format(translations.higher_or_lower_round_defeat, seleccionado.TitleRomaji, puntajeSel, otro.TitleRomaji, puntajeOtro)}\n\n{translations.score}: **{puntuacion}**" :
+                                    $"**{translations.defeat}**\n\n{string.Format(translations.higher_or_lower_round_defeat_popularity, seleccionado.TitleRomaji, seleccionado.Favoritos, otro.TitleRomaji, otro.Favoritos)}\n\n{translations.score}: **{puntuacion}**",
                                 Color = DiscordColor.Red,
                                 Footer = new()
                                 {
