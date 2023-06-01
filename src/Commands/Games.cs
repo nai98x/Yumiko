@@ -100,7 +100,7 @@
                         Color = Constants.YumikoColor,
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-                    list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, true);
+                    list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, false, true, true);
                     await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Mangas:
@@ -110,7 +110,7 @@
                         Color = Constants.YumikoColor,
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-                    list = await GameServices.GetMediaAsync(ctx, MediaType.MANGA, settings, false, false, false, false);
+                    list = await GameServices.GetMediaAsync(ctx, MediaType.MANGA, settings, false, false, false, false, true);
                     await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
 
                     break;
@@ -121,7 +121,7 @@
                         Color = Constants.YumikoColor,
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-                    list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, true, false, false);
+                    list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, true, false, false, true);
                     await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Protagonists:
@@ -131,7 +131,7 @@
                         Color = Constants.YumikoColor,
                     }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.difficulty, $"{settings.Difficulty}");
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-                    list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, true, false, false, false);
+                    list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, true, false, false, false, true);
                     await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     break;
                 case Gamemode.Genres:
@@ -148,7 +148,7 @@
                             Color = Constants.YumikoColor,
                         }.AddField(translations.rounds, $"{settings.Rondas}").AddField(translations.genre, $"{settings.Genre}");
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
-                        list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, true, true);
+                        list = await GameServices.GetMediaAsync(ctx, MediaType.ANIME, settings, false, false, true, true, true);
                         await GameServices.PlayTriviaAsync(ctx, timeoutGames, topggToken, list, settings);
                     }
                     else

@@ -618,20 +618,25 @@
             await LeaderboardHoL.EliminarEstadisticasAsync(ctx);
         }
 
-        public static async Task<List<Anime>> GetMediaAsync(InteractionContext ctx, MediaType type, GameSettings settings, bool personajes, bool estudios, bool genero, bool mediaRelacionada)
+        public static async Task<List<Anime>> GetMediaAsync(InteractionContext ctx, MediaType type, GameSettings settings, bool personajes, bool estudios, bool genero, bool mediaRelacionada, bool makeDiscordMessages)
         {
             List<Anime> animeList = new();
-            DiscordMessage mensaje = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
+            DiscordMessage mensaje = await ctx.GetOriginalResponseAsync();
+            if (makeDiscordMessages)
             {
-                Title = $"{translations.retrieving} {type.GetName().ToLower()}s",
-                Description = translations.please_wait,
-                Color = Constants.YumikoColor,
-                Footer = new()
+                mensaje  = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
-                    IconUrl = Constants.AnilistAvatarUrl,
-                    Text = $"{translations.retrieved_from} AniList",
-                },
-            }));
+                    Title = $"{translations.retrieving} {type.GetName().ToLower()}s",
+                    Description = translations.please_wait,
+                    Color = Constants.YumikoColor,
+                    Footer = new()
+                    {
+                        IconUrl = Constants.AnilistAvatarUrl,
+                        Text = $"{translations.retrieved_from} AniList",
+                    },
+                }));
+            }
+            
             string mediaFiltros;
             if (genero)
             {
@@ -914,7 +919,10 @@
                 }
             }
             while (hasNextValue.ToLower() == "true" && (firstloop || secondloop));
-            await ctx.DeleteFollowupAsync(mensaje.Id);
+            if (makeDiscordMessages)
+            {
+                await ctx.DeleteFollowupAsync(mensaje.Id);
+            }
             return animeList;
         }
 

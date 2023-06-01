@@ -262,7 +262,7 @@
                     IterFin = valorBase + 1,
                 };
 
-                var listaAux = await GameServices.GetMediaAsync(ctx, mediaType, settings, false, false, false, false);
+                var listaAux = await GameServices.GetMediaAsync(ctx, mediaType, settings, false, false, false, false, false);
                 foreach (var item in listaAux)
                 {
                     if ((gamemode == GamemodeHoL.Score && item.AvarageScore > -1) || (gamemode == GamemodeHoL.Popularity && item.Favoritos >= 0))
