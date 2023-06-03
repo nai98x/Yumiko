@@ -930,7 +930,7 @@
         {
             List<Anime> animeList = new();
 
-            string mediaFiltros = $"type: {type.GetName()}, sort: FAVOURITES_DESC, isAdult:false, format_not_in:[MUSIC]"; ;
+            string mediaFiltros = $"type: {type.GetName()}, sort: FAVOURITES_DESC, isAdult:false, format_not_in:[MUSIC], status_not_in: [NOT_YET_RELEASED]"; ;
 
             string query = "query($pagina : Int){" +
                     "   Page(page: $pagina){" +
