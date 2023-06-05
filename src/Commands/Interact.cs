@@ -64,7 +64,7 @@
             string options = Formatter.Bold($"{translations.options}:");
             foreach (string msj in opciones)
             {
-                options += "\n   - " + msj;
+                options += "\n- " + msj;
             }
 
             var embed = new DiscordEmbedBuilder

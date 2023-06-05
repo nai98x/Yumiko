@@ -598,7 +598,7 @@
     <value>Solo el dueño del bot puede ejecutar este comando</value>
   </data>
   <data name="options" xml:space="preserve">
-    <value>Options</value>
+    <value>Opciones</value>
   </data>
   <data name="paste_code_here" xml:space="preserve">
     <value>Pegar código aquí</value>
