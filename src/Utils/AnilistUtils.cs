@@ -288,6 +288,11 @@
             decimal meanScore = type == MediaType.ANIME ? profile.Statistics.Anime.MeanScore : profile.Statistics.Manga.MeanScore;
             decimal standardDeviation = type == MediaType.ANIME ? profile.Statistics.Anime.StandardDeviation : profile.Statistics.Manga.StandardDeviation;
 
+            if (standardDeviation == 0)
+            {
+                return recommendations;
+            }
+
             List<int> mediaListIds = new();
             collection.Lists?.ForEach(list =>
             {
