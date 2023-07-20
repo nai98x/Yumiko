@@ -580,7 +580,7 @@
     <value>Nadie ha votado</value>
   </data>
   <data name="no_recommendations_found" xml:space="preserve">
-    <value>No se encontró ninguna recomendación.\nProbablemente sucede esto porque tienes pocos registros en tu lista o no les tengas una puntuación asignada.</value>
+    <value>No se encontró ninguna recomendación. Probablemente sucede esto porque tienes pocos registros en tu lista o no les tengas una puntuación asignada.</value>
   </data>
   <data name="no_results_found_image" xml:space="preserve">
     <value>No se encontraron resultados para esta imagen</value>

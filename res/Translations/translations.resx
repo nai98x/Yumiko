@@ -580,7 +580,7 @@
     <value>No one has voted</value>
   </data>
   <data name="no_recommendations_found" xml:space="preserve">
-    <value>No recommendations were found.\nThis is probably because you have few entries in your list or do not have a score assigned to them.</value>
+    <value>No recommendations were found. This is probably because you have few entries in your list or do not have a score assigned to them.</value>
   </data>
   <data name="no_results_found_image" xml:space="preserve">
     <value>No results found for this image</value>

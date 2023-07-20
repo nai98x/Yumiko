@@ -1402,7 +1402,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a No recommendations were found.\nThis is probably because you have few entries in your list or do not have a score assigned to them..
+        ///   Busca una cadena traducida similar a No recommendations were found. This is probably because you have few entries in your list or do not have a score assigned to them..
         /// </summary>
         public static string no_recommendations_found {
             get {
