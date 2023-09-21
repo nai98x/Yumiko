@@ -627,7 +627,7 @@
                             {
                                 Embed = new DiscordEmbedBuilder
                                 {
-                                    Title = string.Format(translations.user_anime_list, ctx.User.Username, Enum.GetName(typeof(MediaUserStatus), status)),
+                                    Title = string.Format(translations.user_anime_list, user.Username, Enum.GetName(typeof(MediaUserStatus), status)),
                                     Description = stringPage,
                                     Color = Constants.YumikoColor,
                                     Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
@@ -667,7 +667,7 @@
                         {
                             Embed = new DiscordEmbedBuilder
                             {
-                                Title = string.Format(translations.user_anime_list, ctx.User.Username, Enum.GetName(typeof(MediaUserStatus), status)),
+                                Title = string.Format(translations.user_anime_list, user.Username, Enum.GetName(typeof(MediaUserStatus), status)),
                                 Description = stringPage,
                                 Color = Constants.YumikoColor,
                             },
