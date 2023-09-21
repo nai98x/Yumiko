@@ -656,7 +656,15 @@
                                 break;
                         }
 
-                        stringPage += $"- {Formatter.Bold($"#{count}")} {Formatter.MaskedUrl(title, entry.Media.SiteUrl)} ({AnilistUtils.FormatScoreUser(Enum.GetName(typeof(ScoreFormat), anilistUser.MediaListOptions.ScoreFormat)!, $"{entry.Score}")})\n";
+                        if (entry.Score != 0)
+                        {
+                            stringPage += $"- {Formatter.Bold($"#{count}")} {Formatter.MaskedUrl(title, entry.Media.SiteUrl)} ({AnilistUtils.FormatScoreUser(Enum.GetName(typeof(ScoreFormat), anilistUser.MediaListOptions.ScoreFormat)!, $"{entry.Score}")})\n";
+                        }
+                        else
+                        {
+                            stringPage += $"- {Formatter.Bold($"#{count}")} {Formatter.MaskedUrl(title, entry.Media.SiteUrl)}\n";
+                        }
+                        
                         cont++;
                         count++;
                     }
