@@ -78,6 +78,9 @@
                     id
                     name
                     siteUrl
+                    mediaListOptions {
+                        scoreFormat
+                    }
                     avatar {
                         medium
                     }

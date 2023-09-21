@@ -837,6 +837,9 @@
   <data name="uptime" xml:space="preserve">
     <value>Uptime</value>
   </data>
+  <data name="user_anime_list" xml:space="preserve">
+    <value>{0} anime list ({1})</value>
+  </data>
   <data name="user_game_stats" xml:space="preserve">
     <value>{0}'s game statistics</value>
   </data>

@@ -2230,6 +2230,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a {0} anime list ({1}).
+        /// </summary>
+        public static string user_anime_list {
+            get {
+                return ResourceManager.GetString("user_anime_list", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a {0}&apos;s game statistics.
         /// </summary>
         public static string user_game_stats {

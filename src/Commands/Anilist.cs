@@ -10,6 +10,8 @@
     using System.Net;
     using System.Threading.Tasks;
     using System.Web;
+    using Yumiko.Datatypes;
+    using Yumiko.Datatypes.Firebase;
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not with D#+ Command classes")]
     [SlashCommandGroup("anilist", "Anilist queries")]
@@ -585,6 +587,105 @@
                     .WithTitle(translations.resource_not_found)
                     ));
             }
+        }
+
+        [SlashCommand("animelist", "Searchs a user's anime list")]
+        [DescriptionLocalization(Localization.Spanish, "Busca la lista de anime de un usuario")]
+        public async Task AnimeList(InteractionContext ctx, [Option("User", "User to search")] DiscordUser user, [Option("Status", "Status of the animes")] MediaUserStatus status, [Option("Sorting", "Sort the list by something")] MediaUserSort order, [Option("Language", "Language of the titles to be shown")] MediaTitleType mediaTitle)
+        {
+            await ctx.DeferAsync();
+
+            var userAnilistDb = await UsuariosAnilist.GetPerfilAsync(user.Id);
+            if (userAnilistDb != null)
+            {
+                var anilistUser = await ProfileQuery.GetProfile(ctx, userAnilistDb.AnilistId);
+                if (anilistUser != null)
+                {
+                    var mediaList = await AnimeListQuery.GetMediaLists(ctx.Guild, ctx.Channel, userAnilistDb.AnilistId, status, order, mediaTitle);
+
+                    if (mediaList == null || mediaList.Entries == null || mediaList.Entries.Count == 0)
+                    {
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+                        {
+                            Title = translations.error,
+                            Description = translations.error,
+                            Color = DiscordColor.Red
+                        }));
+                    }
+
+                    var interactivity = ctx.Client.GetInteractivity();
+                    List<Page> pages = new();
+                    int cont = 1;
+                    int count = 1;
+                    string stringPage = String.Empty;
+
+                    foreach (var entry in mediaList!.Entries!)
+                    {
+                        if (cont >= 25)
+                        {
+                            pages.Add(new Page()
+                            {
+                                Embed = new DiscordEmbedBuilder
+                                {
+                                    Title = string.Format(translations.user_anime_list, ctx.User.Username, Enum.GetName(typeof(MediaUserStatus), status)),
+                                    Description = stringPage,
+                                    Color = Constants.YumikoColor,
+                                    Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                                    {
+                                        Url = anilistUser.Avatar.Medium.ToString()
+                                    }
+                                },
+                            });
+                            cont = 1;
+                            stringPage = string.Empty;
+                        }
+
+                        var title = string.Empty;
+                        switch (mediaTitle)
+                        {
+                            case MediaTitleType.ENGLISH:
+                                string? titleEnglish = entry.Media.Title.English;
+                                title = !string.IsNullOrEmpty(titleEnglish) ? titleEnglish : entry.Media.Title.Romaji;
+                                break;
+                            case MediaTitleType.NATIVE:
+                                string? titleNative = entry.Media.Title.Native;
+                                title = !string.IsNullOrEmpty(titleNative) ? titleNative : entry.Media.Title.Romaji;
+                                break;
+                            default:
+                                title = entry.Media.Title.Romaji;
+                                break;
+                        }
+
+                        stringPage += $"- {Formatter.Bold($"#{count}")} {Formatter.MaskedUrl(title, entry.Media.SiteUrl)} ({AnilistUtils.FormatScoreUser(Enum.GetName(typeof(ScoreFormat), anilistUser.MediaListOptions.ScoreFormat)!, $"{entry.Score}")})\n";
+                        cont++;
+                        count++;
+                    }
+
+                    if (cont != 1)
+                    {
+                        pages.Add(new Page()
+                        {
+                            Embed = new DiscordEmbedBuilder
+                            {
+                                Title = string.Format(translations.user_anime_list, ctx.User.Username, Enum.GetName(typeof(MediaUserStatus), status)),
+                                Description = stringPage,
+                                Color = Constants.YumikoColor,
+                            },
+                        });
+                    }
+
+                    await interactivity.SendPaginatedResponseAsync(ctx.Interaction, false, ctx.User, pages, asEditResponse: true, token: new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token);
+
+                    return;
+                }
+            }
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+            {
+                Title = translations.error,
+                Description = translations.anilist_profile_not_found,
+                Color = DiscordColor.Red
+            }));
         }
     }
 }

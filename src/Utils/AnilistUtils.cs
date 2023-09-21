@@ -281,6 +281,47 @@
             return lista;
         }
 
+        public static string FormatScoreUser(string scoreFormat, string scorePers)
+        {
+            string scoreF = string.Empty;
+            switch (scoreFormat)
+            {
+                case "POINT_10":
+                case "POINT_10_DECIMAL":
+                    scoreF = $"{scorePers}/10";
+                    break;
+                case "POINT_100":
+                    scoreF = $"{scorePers}/100";
+                    break;
+                case "POINT_5":
+                    int scoreS = int.Parse(scorePers);
+                    for (int i = 0; i < scoreS; i++)
+                    {
+                        scoreF += "★";
+                    }
+
+                    break;
+                case "POINT_3":
+                    int score3 = int.Parse(scorePers);
+                    switch (score3)
+                    {
+                        case 1:
+                            scoreF = "🙁";
+                            break;
+                        case 2:
+                            scoreF = "😐";
+                            break;
+                        case 3:
+                            scoreF = "🙂";
+                            break;
+                    }
+
+                    break;
+            }
+
+            return scoreF;
+        }
+
         private static List<AnimeRecommendation> GetRecommendationsFromUser(User profile, MediaListCollection collection, MediaType type)
         {
             List<AnimeRecommendation> recommendations = new();
