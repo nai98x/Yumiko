@@ -4,7 +4,7 @@ namespace Yumiko.Datatypes
 {
     public class SearchResponse
     {
-        [JsonProperty("search")]
-        public Search Search { get; set; }
+        [JsonProperty("anime")]
+        public List<AnimeAniTheme> Anime { get; set; }
     }
 }

@@ -4,15 +4,17 @@
     using Newtonsoft.Json;
     using RestSharp;
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Yumiko.Datatypes;
 
     public static class SearchQuery
     {
-        public static async Task<Video?> Search(InteractionContext ctx, double timeout, string search)
+        public static async Task<AnithemeData?> Search(InteractionContext ctx, double timeout, string search)
         {
             try
             {
-                var client = new RestClient($"{Constants.AniThemesAPIUrl}/search?q={search}");
+                var client = new RestClient($"{Constants.AniThemesAPIUrl}/anime?q={search}&include=animethemes.animethemeentries.videos");
                 var request = new RestRequest();
 
                 var response = await client.ExecuteAsync(request);
@@ -20,12 +22,21 @@
                 if (response.IsSuccessful && response.Content != null)
                 {
                     var data = JsonConvert.DeserializeObject<SearchResponse>(response.Content);
-                    if (data == null || data.Search == null || data.Search.Videos == null || data.Search.Videos.Count == 0)
-                        return null;
-                    var videos = data.Search.Videos.Take(25).ToList();
+                    if (data == null || data.Anime == null || data.Anime.Count == 0) return null;
 
-                    return await ChooseSongAsync(ctx, timeout, videos);
+                    var anime = await ChooseAnimeAsync(ctx, timeout, data.Anime);
+                    if (anime == null) return null;
 
+                    var theme = await ChooseThemeAsync(ctx, timeout, anime.Animethemes);
+                    if (theme == null) return null;
+
+                    var song = await ChooseSongAsync(ctx, timeout, theme.Animethemeentries);
+                    if (song == null) return null;
+
+                    var video = song.Videos.FirstOrDefault();
+                    if (video == null) return null;
+
+                    return new AnithemeData(anime, theme, song, video);
                 }
 
                 return null;
@@ -37,16 +48,66 @@
             }
         }
 
-        private static async Task<Video?> ChooseSongAsync(InteractionContext ctx, double timeout, List<Video> list)
+        private static async Task<AnimeAniTheme?> ChooseAnimeAsync(InteractionContext ctx, double timeout, List<AnimeAniTheme> list)
         {
-            list.Sort((x, y) => x.Filename.CompareTo(y.Filename));
+            if (list.Count == 1) return list.First();
+
+            list.Sort((x, y) => $"{x.Name} ({x.Season} {x.Year})".CompareTo($"{y.Name} ({y.Season} {y.Year})"));
 
             List<TitleDescription> opc = new();
             foreach (var item in list)
             {
                 opc.Add(new TitleDescription
                 {
-                    Title = item.Filename
+                    Title = $"{item.Name}",
+                    Description = $"{item.Season} {item.Year}"
+                });
+            }
+
+            var elegido = await Common.GetElegidoAsync(ctx, timeout, opc);
+            if (elegido > 0) return list[elegido - 1];
+            else return null;
+        }
+
+        private static async Task<Animetheme?> ChooseThemeAsync(InteractionContext ctx, double timeout, List<Animetheme> list)
+        {
+            if (list.Count == 1) return list.First();
+
+            list.Sort((x, y) => $"{x.Type} {x.Sequence ?? 0}".CompareTo($"{y.Type} {y.Sequence ?? 0}"));
+
+            List<TitleDescription> opc = new();
+            foreach (var item in list)
+            {
+                string title = $"{item.Type}";
+                if (item.Sequence is not null) title += $" {item.Sequence}";
+
+                opc.Add(new TitleDescription
+                {
+                    Title = title
+                });
+            }
+
+            var elegido = await Common.GetElegidoAsync(ctx, timeout, opc);
+            if (elegido > 0) return list[elegido - 1];
+            else return null;
+        }
+
+        private static async Task<AnimeThemeEntry?> ChooseSongAsync(InteractionContext ctx, double timeout, List<AnimeThemeEntry> list)
+        {
+            if (list.Count == 1) return list.First();
+
+            list.Sort((x, y) => $"v{x.Version}".CompareTo($"v{y.Version}"));
+
+            List<TitleDescription> opc = new();
+            foreach (var item in list)
+            {
+                string title = $"v{item.Version}";
+                if (item.Spoiler) title += $" (SPOILER)";
+                if (item.Nsfw) title += $" (NSFW)";
+
+                opc.Add(new TitleDescription
+                {
+                    Title = title
                 });
             }
 

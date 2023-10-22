@@ -11,21 +11,24 @@ namespace Yumiko.Datatypes
         public string Type { get; set; }
 
         [JsonProperty("sequence")]
-        public string Sequence { get; set; }
+        public long? Sequence { get; set; }
 
         [JsonProperty("group")]
-        public string Group { get; set; }
+        public object Group { get; set; }
 
         [JsonProperty("slug")]
         public string Slug { get; set; }
 
         [JsonProperty("created_at")]
-        public string CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         [JsonProperty("updated_at")]
-        public string UpdatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
 
         [JsonProperty("deleted_at")]
-        public string DeletedAt { get; set; }
+        public object DeletedAt { get; set; }
+
+        [JsonProperty("animethemeentries")]
+        public List<AnimeThemeEntry> Animethemeentries { get; set; }
     }
 }

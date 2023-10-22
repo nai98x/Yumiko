@@ -23,12 +23,15 @@ namespace Yumiko.Datatypes
         public string Synopsis { get; set; }
 
         [JsonProperty("created_at")]
-        public string CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         [JsonProperty("updated_at")]
-        public string UpdatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
 
         [JsonProperty("deleted_at")]
-        public string DeletedAt { get; set; }
+        public object DeletedAt { get; set; }
+
+        [JsonProperty("animethemes")]
+        public List<Animetheme> Animethemes { get; set; }
     }
 }
