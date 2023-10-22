@@ -589,7 +589,7 @@
                 description += $"- **{data.anime.Name}** ({data.anime.Season} {data.anime.Year})\n";
                 description += $" - {tipo}\n";
                 if (data.song.Version is not null) description += $" - Version: {data.song.Version}\n";
-                description += $" - {translations.episodes}: {data.song.Episodes}\n";
+                if (data.song.Episodes is not null) description += $" - {translations.episodes}: {data.song.Episodes}\n";
 
                 description += $"\n{data.video.Link}";
 
