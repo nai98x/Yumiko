@@ -23,6 +23,12 @@
             return Task.FromResult(true);
         }
 
+        public override Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("test", "Testing command")]
         [DescriptionLocalization(Localization.Spanish, "Comando de pruebas")]
         public async Task Test(InteractionContext ctx)

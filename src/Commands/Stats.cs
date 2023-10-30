@@ -17,6 +17,12 @@
             return Task.FromResult(true);
         }
 
+        public override Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("user", "Shows the statistics of all games of a user")]
         [NameLocalization(Localization.Spanish, "usuario")]
         [DescriptionLocalization(Localization.Spanish, "Muestra las estadisticas de todos los juegos de un usuario")]

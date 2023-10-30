@@ -499,7 +499,7 @@
     <value>Recomendaciones de {0}</value>
   </data>
   <data name="media_recommendations_explanation" xml:space="preserve">
-    <value>Explicación: Mientras mas alto sea el número es más probable que te guste. Las recomendaciones son calculadas en base a tus {0}s vistos y las puntuaciones que les has asignado.</value>
+    <value>Explicación: Mientras mas alto sea el número es más probable que te guste. Las recomendaciones son calculadas en base a tus {1}s {0} y las puntuaciones que les has asignado.</value>
   </data>
   <data name="member_avatar" xml:space="preserve">
     <value>Avatar de {0}</value>
@@ -665,6 +665,9 @@
   </data>
   <data name="random_dog_error" xml:space="preserve">
     <value>Hubo un error tratando de obtener al perro</value>
+  </data>
+  <data name="read" xml:space="preserve">
+    <value>leidos</value>
   </data>
   <data name="registered" xml:space="preserve">
     <value>Registro en Discord</value>
@@ -902,6 +905,9 @@
   </data>
   <data name="waifu_level_99" xml:space="preserve">
     <value>Soy tu waifu, puedes hacer lo que quieras conmigo</value>
+  </data>
+  <data name="watched" xml:space="preserve">
+    <value>vistos</value>
   </data>
   <data name="weather" xml:space="preserve">
     <value>Clima</value>

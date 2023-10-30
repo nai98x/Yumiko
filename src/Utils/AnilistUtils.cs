@@ -233,11 +233,12 @@
             else
             {
                 string desc = string.Join("\n", recommendations.Select(rec => $"{Formatter.Bold($"{rec.Score:##.##}")} - {Formatter.MaskedUrl(rec.Title, new Uri($"https://anilist.co/{type.GetName().ToLower()}/{rec.Id}"))}"));
+                string watchedRead = type ==  MediaType.ANIME ? translations.watched : translations.read;
 
                 embed.WithTitle(string.Format(translations.media_recommendations, type.GetName().UppercaseFirst()));
                 embed.WithDescription(desc.NormalizeDescriptionNewLine());
                 embed.WithColor(Constants.YumikoColor);
-                embed.WithFooter(string.Format(translations.media_recommendations_explanation, type.GetName().ToLower()), Constants.AnilistAvatarUrl);
+                embed.WithFooter(string.Format(translations.media_recommendations_explanation, watchedRead, type.GetName().ToLower()), Constants.AnilistAvatarUrl);
                 embed.WithAuthor(profile.Name, profile.SiteUrl.AbsoluteUri, profile.Avatar.Medium.AbsoluteUri);
                 embed.WithThumbnail(user.AvatarUrl);
             }

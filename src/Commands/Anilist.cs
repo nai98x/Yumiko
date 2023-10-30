@@ -26,6 +26,12 @@
             return Task.FromResult(true);
         }
 
+        public override Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("setprofile", "Sets your AniList profile")]
         [NameLocalization(Localization.Spanish, "asignarperfil")]
         [DescriptionLocalization(Localization.Spanish, "Asigna tu perfil de AniList")]

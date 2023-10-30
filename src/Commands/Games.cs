@@ -19,6 +19,12 @@
             return Task.FromResult(true);
         }
 
+        public override Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("trivia", "Plays an anime trivia game")]
         [DescriptionLocalization(Localization.Spanish, "Juega una partida de trivia de anime")]
         public async Task Trivia(

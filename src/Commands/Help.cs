@@ -13,6 +13,12 @@
             return Task.FromResult(true);
         }
 
+        public override Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("help", "Help and information about Yumiko")]
         [DescriptionLocalization(Localization.Spanish, "Ayuda e información sobre Yumiko")]
         public async Task HelpAsync(InteractionContext ctx)

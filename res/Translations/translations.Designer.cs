@@ -1204,7 +1204,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Explanation: The higher the number, the more likely you are to like it. Recommendations are calculated based on your watched {0}s and the scores you have assigned to them..
+        ///   Busca una cadena traducida similar a Explanation: The higher the number, the more likely you are to like it. Recommendations are calculated based on your {0} {1}s and the scores you have assigned to them..
         /// </summary>
         public static string media_recommendations_explanation {
             get {
@@ -1704,6 +1704,15 @@ namespace Yumiko {
         public static string random_dog_error {
             get {
                 return ResourceManager.GetString("random_dog_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a read.
+        /// </summary>
+        public static string read {
+            get {
+                return ResourceManager.GetString("read", resourceCulture);
             }
         }
         
@@ -2424,6 +2433,15 @@ namespace Yumiko {
         public static string waifu_level_99 {
             get {
                 return ResourceManager.GetString("waifu_level_99", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a watched.
+        /// </summary>
+        public static string watched {
+            get {
+                return ResourceManager.GetString("watched", resourceCulture);
             }
         }
         

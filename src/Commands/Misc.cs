@@ -18,6 +18,12 @@
             return Task.FromResult(true);
         }
 
+        public override Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+            return Task.FromResult(true);
+        }
+
         [SlashCommand("ping", "Shows Yumiko´s ping")]
         [DescriptionLocalization(Localization.Spanish, "Muestra el ping de Yumiko")]
         public async Task Ping(InteractionContext ctx)

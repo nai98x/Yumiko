@@ -499,7 +499,7 @@
     <value>{0} recommendations</value>
   </data>
   <data name="media_recommendations_explanation" xml:space="preserve">
-    <value>Explanation: The higher the number, the more likely you are to like it. Recommendations are calculated based on your watched {0}s and the scores you have assigned to them.</value>
+    <value>Explanation: The higher the number, the more likely you are to like it. Recommendations are calculated based on your {0} {1}s and the scores you have assigned to them.</value>
   </data>
   <data name="member_avatar" xml:space="preserve">
     <value>{0}'s avatar</value>
@@ -665,6 +665,9 @@
   </data>
   <data name="random_dog_error" xml:space="preserve">
     <value>There was an error trying to retrieve the dog</value>
+  </data>
+  <data name="read" xml:space="preserve">
+    <value>read</value>
   </data>
   <data name="registered" xml:space="preserve">
     <value>Registered</value>
@@ -905,6 +908,9 @@
   </data>
   <data name="waifu_level_99" xml:space="preserve">
     <value>I am your waifu, you can do what you want with me</value>
+  </data>
+  <data name="watched" xml:space="preserve">
+    <value>watched</value>
   </data>
   <data name="weather" xml:space="preserve">
     <value>Weather</value>
