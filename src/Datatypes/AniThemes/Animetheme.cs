@@ -30,5 +30,14 @@ namespace Yumiko.Datatypes
 
         [JsonProperty("animethemeentries")]
         public List<AnimeThemeEntry> Animethemeentries { get; set; }
+
+        public string? GetSequence()
+        {
+            if (Sequence == null) return null;
+
+            string s = Sequence.ToString()!;
+            while (s.Length < 2) s = "0" + s;
+            return s;
+        }
     }
 }

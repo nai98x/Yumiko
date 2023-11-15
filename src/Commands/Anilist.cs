@@ -592,12 +592,12 @@
 
                 if (data.theme.Sequence is not null) tipo += $" {data.theme.Sequence}";
 
-                description += $"- **{data.anime.Name}** ({data.anime.Season} {data.anime.Year})\n";
-                description += $" - {tipo}\n";
-                if (data.song.Version is not null) description += $" - Version: {data.song.Version}\n";
-                if (data.song.Episodes is not null) description += $" - {translations.episodes}: {data.song.Episodes}\n";
+                description += $"## **{data.anime.Name}** ({data.anime.Season} {data.anime.Year})\n";
+                description += $"- {tipo}\n";
+                if (data.song.Version is not null) description += $"- Version: {data.song.Version}\n";
+                if (!string.IsNullOrEmpty(data.song.Episodes)) description += $"- {translations.episodes}: {data.song.Episodes}\n";
 
-                description += $"\n{data.video.Link}";
+                description += $"\n[Link]({data.video.Link})";
 
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(description));
             }

@@ -73,22 +73,31 @@
         {
             if (list.Count == 1) return list.First();
 
-            list.Sort((x, y) => $"{x.Type} {x.Sequence ?? 0}".CompareTo($"{y.Type} {y.Sequence ?? 0}"));
+            list.Sort((x, y) => $"{x.Type} {x.GetSequence() ?? "00"}".CompareTo($"{y.Type} {y.GetSequence() ?? "00"}"));
+
+            var listByType = list.GroupBy(x => x.Type).ToList();
+            listByType.Sort((x, y) => y.Key.CompareTo(x.Key));
+            list = listByType.SelectMany(d => d).ToList();
 
             List<TitleDescription> opc = new();
+            List<Animetheme> list2 = new();
             foreach (var item in list)
             {
-                string title = $"{item.Type}";
-                if (item.Sequence is not null) title += $" {item.Sequence}";
-
-                opc.Add(new TitleDescription
+                if (string.IsNullOrEmpty(item.Slug) || int.TryParse(item.Slug[2..], out _))
                 {
-                    Title = title
-                });
+                    string title = $"{item.Type}";
+                    if (item.Sequence is not null) title += $" {item.GetSequence()}";
+
+                    opc.Add(new TitleDescription
+                    {
+                        Title = title
+                    });
+                    list2.Add(item);
+                }
             }
 
             var elegido = await Common.GetElegidoAsync(ctx, timeout, opc);
-            if (elegido > 0) return list[elegido - 1];
+            if (elegido > 0) return list2[elegido - 1];
             else return null;
         }
 
