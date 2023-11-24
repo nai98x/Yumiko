@@ -11,7 +11,6 @@
     using System.Threading.Tasks;
     using System.Web;
     using Yumiko.Datatypes;
-    using Yumiko.Datatypes.Firebase;
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not with D#+ Command classes")]
     [SlashCommandGroup("anilist", "Anilist queries")]
@@ -685,7 +684,7 @@
                         {
                             stringPage += $"- {Formatter.Bold($"#{count}")} {Formatter.MaskedUrl(title, entry.Media.SiteUrl)}\n";
                         }
-                        
+
                         cont++;
                         count++;
                     }

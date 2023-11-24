@@ -345,7 +345,7 @@
                             embedAux = new DiscordEmbedBuilder
                             {
                                 Title = string.Format(translations.guess_user, ctx.Member.DisplayName),
-                                Description = gamemode == GamemodeHoL.Score ?    
+                                Description = gamemode == GamemodeHoL.Score ?
                                     $"{string.Format(translations.higher_or_lower_round_win, seleccionado.TitleRomaji, puntajeSel, otro.TitleRomaji, puntajeOtro)}\n\n{translations.score}: **{puntuacion}**" :
                                     $"{string.Format(translations.higher_or_lower_round_win_popularity, seleccionado.TitleRomaji, seleccionado.Favoritos, otro.TitleRomaji, otro.Favoritos)}\n\n{translations.score}: **{puntuacion}**",
                                 Color = DiscordColor.Green,

@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Yumiko.Datatypes
+﻿namespace Yumiko.Datatypes
 {
     public class AnithemeData
     {

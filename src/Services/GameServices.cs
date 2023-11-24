@@ -624,7 +624,7 @@
             DiscordMessage mensaje = await ctx.GetOriginalResponseAsync();
             if (makeDiscordMessages)
             {
-                mensaje  = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
+                mensaje = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
                     Title = $"{translations.retrieving} {type.GetName().ToLower()}s",
                     Description = translations.please_wait,
@@ -636,7 +636,7 @@
                     },
                 }));
             }
-            
+
             string mediaFiltros;
             if (genero)
             {

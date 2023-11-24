@@ -4,7 +4,6 @@
     using Newtonsoft.Json;
     using RestSharp;
     using System;
-    using System.Threading;
     using System.Threading.Tasks;
     using Yumiko.Datatypes;
 

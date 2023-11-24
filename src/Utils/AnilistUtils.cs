@@ -233,7 +233,7 @@
             else
             {
                 string desc = string.Join("\n", recommendations.Select(rec => $"{Formatter.Bold($"{rec.Score:##.##}")} - {Formatter.MaskedUrl(rec.Title, new Uri($"https://anilist.co/{type.GetName().ToLower()}/{rec.Id}"))}"));
-                string watchedRead = type ==  MediaType.ANIME ? translations.watched : translations.read;
+                string watchedRead = type == MediaType.ANIME ? translations.watched : translations.read;
 
                 embed.WithTitle(string.Format(translations.media_recommendations, type.GetName().UppercaseFirst()));
                 embed.WithDescription(desc.NormalizeDescriptionNewLine());
@@ -276,7 +276,7 @@
                         return lista;
                     }
                 }
-            } 
+            }
             while (valoresBase.Exists(x => x == valorBase));
 
             return lista;
