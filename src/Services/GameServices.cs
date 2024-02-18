@@ -168,11 +168,7 @@
                     Color = DiscordColor.Gold,
                     Title = $"{translations.guess_the} {juegoMostrar}",
                     Description = $"{translations.round} {ronda} {translations.of} {settings.Rondas}",
-                    ImageUrl = elegido.Image,
-                    Footer = new()
-                    {
-                        Text = translations.type_guess_command,
-                    },
+                    ImageUrl = elegido.Image
                 };
 
                 var builder = new DiscordFollowupMessageBuilder();
