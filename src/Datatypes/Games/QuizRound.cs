@@ -5,7 +5,7 @@
 
     public class QuizRound
     {
-        public List<string> Matches { get; set; } = new List<string>();
+        public string Match { get; set; } = string.Empty;
 
         public double TimeoutCurrent { get; set; } = 0;
 

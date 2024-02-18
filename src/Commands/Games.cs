@@ -166,55 +166,6 @@
             }
         }
 
-        [SlashCommand("guess", "Guess a round in the trivia game")]
-        [NameLocalization(Localization.Spanish, "adivinar")]
-        [DescriptionLocalization(Localization.Spanish, "Adivina una ronda de la trivia actual")]
-        public async Task GuessAsync(
-            InteractionContext ctx,
-            [Option("Guess", "Your guess")] string guess)
-        {
-            var trivia = Singleton.GetInstance().GetCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
-            if (trivia != null)
-            {
-                if (trivia.CurrentRound.Matches.Contains(guess.ToLower()))
-                {
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
-                        .AsEphemeral(true)
-                        .AddEmbed(new DiscordEmbedBuilder
-                        {
-                            Title = translations.you_guessed,
-                            Color = DiscordColor.Green,
-                        }));
-
-                    trivia.CurrentRound.Guessed = true;
-                    trivia.CurrentRound.Guesser = ctx.User;
-                    trivia.CurrentRound.GuessTime = ctx.Interaction.CreationTimestamp;
-                }
-                else
-                {
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
-                        .AsEphemeral(true)
-                        .AddEmbed(new DiscordEmbedBuilder
-                        {
-                            Title = translations.wrong_choice,
-                            Description = $"{translations.your_attempt}: `{guess}`",
-                            Color = DiscordColor.Red,
-                        }));
-                }
-            }
-            else
-            {
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
-                        .AsEphemeral(true)
-                        .AddEmbed(new DiscordEmbedBuilder
-                        {
-                            Title = translations.error,
-                            Description = translations.no_current_trivia,
-                            Color = DiscordColor.Red,
-                        }));
-            }
-        }
-
         [SlashCommand("hangman", "Plays the hangman game")]
         [NameLocalization(Localization.Spanish, "ahorcado")]
         [DescriptionLocalization(Localization.Spanish, "Juega al juego del ahorcado")]

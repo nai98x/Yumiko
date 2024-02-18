@@ -144,6 +144,10 @@
             {
                 _ = TriviaService.HandleTriviaCancelledInteraction(e);
             }
+            else if (e.Id.StartsWith("quiz-round-"))
+            {
+                _ = TriviaService.HandleTriviaRoundInteraction(e);
+            }
             else if (!e.Id.StartsWith("modal-") && !e.Id.StartsWith("quiz-modal-") && !e.Id.StartsWith("quiz-cancel-"))
             {
                 _ = Task.Run(async () =>

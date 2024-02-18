@@ -8,6 +8,8 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using Yumiko.Datatypes;
+    using Yumiko.Utils;
 
     public static class GameServices
     {
@@ -134,8 +136,31 @@
                 quizRound = new();
                 lastRonda = ronda;
                 int random = Common.GetRandomNumber(0, lista.Count - 1);
+
+                int random2, random3, random4, random5;
+                do
+                {
+                    random2 = Common.GetRandomNumber(0, lista.Count - 1);
+                } while (random2 == random);
+                do
+                {
+                    random3 = Common.GetRandomNumber(0, lista.Count - 1);
+                } while (random3 == random || random3 == random2);
+                do
+                {
+                    random4 = Common.GetRandomNumber(0, lista.Count - 1);
+                } while (random4 == random || random4 == random2 || random4 == random3);
+                do
+                {
+                    random5 = Common.GetRandomNumber(0, lista.Count - 1);
+                } while (random5 == random || random5 == random2 || random5 == random3 || random5 == random4);
+
                 var guid = Guid.NewGuid();
                 dynamic elegido = lista[random];
+                dynamic opc2 = lista[random2];
+                dynamic opc3 = lista[random3];
+                dynamic opc4 = lista[random4];
+                dynamic opc5 = lista[random5];
                 lista.Remove(lista[random]);
                 DiscordEmbedBuilder embedAcertar;
                 embedAcertar = new DiscordEmbedBuilder
@@ -156,18 +181,22 @@
                     builder.AddEmbed(embedAux);
                 }
 
-                builder.AddEmbed(embedAcertar);
-                builder.AddComponents(new DiscordButtonComponent(ButtonStyle.Danger, $"quiz-cancel-{guid}", translations.finish_game));
-
-                var msgAcertar = await ctx.FollowUpAsync(builder);
                 string desc = string.Empty;
                 string elegidoNom = string.Empty;
+                string nameOps2 = string.Empty;
+                string nameOps3 = string.Empty;
+                string nameOps4 = string.Empty;
+                string nameOps5 = string.Empty;
 
                 switch (settings.Gamemode)
                 {
                     case Gamemode.Characters:
                         desc = string.Format(translations.the_character_is, Formatter.Bold($"[{elegido.NameFull}]({elegido.SiteUrl})"), $"[{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})");
                         elegidoNom = elegido.NameFull;
+                        nameOps2 = opc2.NameFull;
+                        nameOps3 = opc3.NameFull;
+                        nameOps4 = opc4.NameFull;
+                        nameOps5 = opc5.NameFull;
                         break;
                     case Gamemode.Animes:
                         desc = string.Format(translations.the_anime_is, Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})"));
@@ -177,6 +206,10 @@
                         }
 
                         elegidoNom = elegido.TitleRomaji;
+                        nameOps2 = opc2.TitleRomaji;
+                        nameOps3 = opc3.TitleRomaji;
+                        nameOps4 = opc4.TitleRomaji;
+                        nameOps5 = opc5.TitleRomaji;
                         break;
                     case Gamemode.Mangas:
                         desc = string.Format(translations.the_manga_is, Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})"));
@@ -186,6 +219,10 @@
                         }
 
                         elegidoNom = elegido.TitleRomaji;
+                        nameOps2 = opc2.TitleRomaji;
+                        nameOps3 = opc3.TitleRomaji;
+                        nameOps4 = opc4.TitleRomaji;
+                        nameOps5 = opc5.TitleRomaji;
                         break;
                     case Gamemode.Studios:
                         desc = string.Format(translations.the_studios_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";
@@ -194,8 +231,12 @@
                             desc += $"- {Formatter.Bold($"[{studio.Nombre}]({studio.SiteUrl})")}\n";
                         }
 
-                        Anime aux = (Anime)elegido;
+                        Anime aux = (Anime)elegido, aux2 = (Anime)opc2, aux3 = (Anime)opc3, aux4 = (Anime)opc4, aux5 = (Anime)opc5;
                         elegidoNom = aux.Estudios!.First().Nombre;
+                        nameOps2 = aux2.Estudios!.First().Nombre;
+                        nameOps3 = aux3.Estudios!.First().Nombre;
+                        nameOps4 = aux4.Estudios!.First().Nombre;
+                        nameOps5 = aux5.Estudios!.First().Nombre;
                         break;
                     case Gamemode.Protagonists:
                         desc = string.Format(translations.the_protagonists_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";
@@ -205,6 +246,10 @@
                         }
 
                         elegidoNom = elegido.Personajes[0].NameFull;
+                        nameOps2 = opc2.Personajes[0].NameFull;
+                        nameOps3 = opc3.Personajes[0].NameFull;
+                        nameOps4 = opc4.Personajes[0].NameFull;
+                        nameOps5 = opc5.Personajes[0].NameFull;
                         break;
                     case Gamemode.Genres:
                         desc = string.Format(translations.the_anime_is, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})");
@@ -223,13 +268,33 @@
                         }
 
                         elegidoNom = elegido.TitleRomaji;
+                        nameOps2 = opc2.TitleRomaji;
+                        nameOps3 = opc3.TitleRomaji;
+                        nameOps4 = opc4.TitleRomaji;
+                        nameOps5 = opc5.TitleRomaji;
                         break;
                     default:
                         throw new ArgumentException($"Programming error");
                 }
 
-                quizRound.Matches = SetupMatchesTrivia(settings.Gamemode, elegido);
-                quizRound.Matches = quizRound.Matches.Select(x => x.ToLower()).ToList();
+                quizRound.Match = elegidoNom;
+
+                var listaOpciones = new List<DiscordButtonComponent>() {
+                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{elegidoNom}", elegidoNom.NormalizeDescription()),
+                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps2}", nameOps2.NormalizeDescription()),
+                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps3}", nameOps3.NormalizeDescription()),
+                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps4}", nameOps4.NormalizeDescription()),
+                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps5}", nameOps5.NormalizeDescription())
+                };
+
+                listaOpciones.Shuffle(new Random());
+
+                builder.AddEmbed(embedAcertar);
+                builder.AddComponents(listaOpciones);
+                builder.AddComponents(new DiscordButtonComponent(ButtonStyle.Danger, $"quiz-cancel-{guid}", translations.finish_game));
+
+                var msgAcertar = await ctx.FollowUpAsync(builder);
+
                 singleton.UpdateCurrentRoundTrivia(ctx.Guild.Id, ctx.Channel.Id, quizRound);
                 desc = desc.NormalizeDescription();
 
@@ -296,44 +361,6 @@
                         };
 
                         break;
-                    }
-
-                    if (!rondaActual.Guessed && (cont == (timeoutGames * 10) / 2))
-                    {
-                        // Hora de hacer un tip
-                        var rnd = new Random();
-                        var stringRes = string.Empty;
-                        int cantCaracteres = elegidoNom.Length / 3;
-                        var indexes = Enumerable.Range(0, elegidoNom.Length - 1).ToList();
-                        indexes.Shuffle(rnd);
-                        indexes = indexes.Take(cantCaracteres).ToList();
-
-                        for (int contador = 0; contador < elegidoNom.Length; contador++)
-                        {
-                            char caracterActual = elegidoNom[contador];
-                            if (caracterActual != ' ')
-                            {
-                                if (indexes.Contains(contador))
-                                {
-                                    stringRes += $"{caracterActual} ";
-                                }
-                                else
-                                {
-                                    stringRes += $"_ ";
-                                }
-                            }
-                            else
-                            {
-                                stringRes += $"  ";
-                            }
-                        }
-
-                        await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
-                        {
-                            Title = translations.hint,
-                            Description = $"{Formatter.InlineCode(stringRes)}",
-                            Color = Constants.YumikoColor,
-                        }));
                     }
 
                     await Task.Delay(100);
