@@ -273,10 +273,10 @@
                         throw new ArgumentException($"Programming error");
                 }
 
-                quizRound.Match = elegidoNom;
+                quizRound.Match = elegidoNom.NormalizeButton();
 
                 var listaOpciones = new List<DiscordButtonComponent>() {
-                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{elegidoNom}", elegidoNom.NormalizeDescription()),
+                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{elegidoNom}", elegidoNom.NormalizeButton()),
                     new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps2}", nameOps2.NormalizeDescription()),
                     new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps3}", nameOps3.NormalizeDescription()),
                     new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps4}", nameOps4.NormalizeDescription()),

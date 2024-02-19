@@ -128,5 +128,15 @@
 
             return s;
         }
+
+        public static string NormalizeCustomId(this string s)
+        {
+            if (s.Length > 80)
+            {
+                return s.Remove(76) + " ...";
+            }
+
+            return s;
+        }
     }
 }
