@@ -943,6 +943,8 @@
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}: {ex.Message}"));
                     return animeList;
                 }
+
+                await Task.Delay(Constants.QueryDelay);
             }
             while (hasNextValue.ToLower() == "true" && (firstloop || secondloop));
             if (makeDiscordMessages)
@@ -1079,6 +1081,8 @@
                     // log?
                     return animeList;
                 }
+
+                await Task.Delay(Constants.QueryDelay);
             }
             while (hasNextValue.ToLower() == "true" && iter <= settings.IterFin);
 
@@ -1196,6 +1200,8 @@
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}: {ex.Message}"));
                     return characterList;
                 }
+
+                await Task.Delay(Constants.QueryDelay);
             }
             while (hasNextValue.ToLower() == "true" && (firstloop || secondloop));
             await ctx.DeleteFollowupAsync(mensaje.Id);

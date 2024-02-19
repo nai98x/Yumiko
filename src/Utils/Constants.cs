@@ -10,6 +10,8 @@
 
         public const int AnilistPerPage = 25;
 
+        public const int QueryDelay = 500;
+
         public static DiscordColor YumikoColor { get; private set; } = DiscordColor.Blurple;
     }
 }
