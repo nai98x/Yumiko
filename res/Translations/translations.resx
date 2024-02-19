@@ -766,10 +766,10 @@
     <value>Temperature</value>
   </data>
   <data name="the_anime_is" xml:space="preserve">
-    <value>The anime is:</value>
+    <value>The anime is: {0}</value>
   </data>
   <data name="the_character_is" xml:space="preserve">
-    <value>The character is:</value>
+    <value>The character is: {0} from {1}</value>
   </data>
   <data name="the_manga_is" xml:space="preserve">
     <value>The manga is: {0}</value>

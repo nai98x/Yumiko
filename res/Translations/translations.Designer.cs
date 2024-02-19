@@ -2005,7 +2005,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a The anime is:.
+        ///   Busca una cadena traducida similar a The anime is: {0}.
         /// </summary>
         public static string the_anime_is {
             get {
@@ -2014,7 +2014,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a The character is:.
+        ///   Busca una cadena traducida similar a The character is: {0} from {1}.
         /// </summary>
         public static string the_character_is {
             get {

@@ -1263,8 +1263,8 @@
             string desc1 = string.Empty;
             desc1 = gamemode switch
             {
-                HangmanGamemode.Characters => $"{translations.the_character_is} [{elegido.NameFull}]({elegido.SiteUrl}) {translations.from_the_anime} [{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})",
-                HangmanGamemode.Animes => $"{translations.the_anime_is} [{elegido.TitleRomaji}]({elegido.SiteUrl})",
+                HangmanGamemode.Characters => string.Format(translations.the_character_is, Formatter.Bold($"[{elegido.NameFull}]({elegido.SiteUrl})"), $"[{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})"),
+                HangmanGamemode.Animes => string.Format(translations.the_anime_is, Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})")),
                 _ => throw new ArgumentException("Programming error"),
             };
             do
