@@ -4,8 +4,6 @@
 
     public static class ExtensionMethods
     {
-        public static string FullName(this DiscordUser user) => $"{user.Username}#{user.Discriminator}";
-
         public static void Shuffle<T>(this IList<T> list, Random rnd)
         {
             for (var i = list.Count; i > 0; i--)

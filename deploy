@@ -8,5 +8,5 @@ cd ~/Yumiko;
 dotnet build -c Release --source=https://api.nuget.org/v3/index.json;
 
 # Start the bot
-cd ~/Yumiko/bin/Release/net6.0/;
+cd ~/Yumiko/bin/Release/net7.0/;
 ./Yumiko;

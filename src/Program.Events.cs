@@ -4,19 +4,19 @@
 
     public partial class Program
     {
-        private static Task Client_Ready(DiscordClient sender, ReadyEventArgs e)
+        private static Task Client_Ready(DiscordClient sender, SessionReadyEventArgs e)
         {
             _ = Task.Run(async () =>
             {
                 await DiscordShardedClient.UpdateStatusAsync(new DiscordActivity { ActivityType = ActivityType.ListeningTo, Name = "/help" }, UserStatus.Online);
             });
-            sender.Logger.LogInformation("DiscordShardedClient ready to fire events");
+            sender.Logger.LogInformation("DiscordShardedClient session ready to fire events");
             return Task.CompletedTask;
         }
 
-        private static Task Client_Resumed(DiscordClient sender, ReadyEventArgs e)
+        private static Task Client_Resumed(DiscordClient sender, SessionReadyEventArgs e)
         {
-            sender.Logger.LogInformation("DiscordShardedClient resumed");
+            sender.Logger.LogInformation("DiscordShardedClient session resumed");
             return Task.CompletedTask;
         }
 
@@ -173,7 +173,6 @@
 
         private static Task SlashCommands_SlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
         {
-            e.Handled = true;
             _ = Task.Run(async () =>
             {
                 if (e.Exception is SlashExecutionChecksFailedException ex)

@@ -96,14 +96,13 @@ namespace Yumiko
 
             await DiscordShardedClient.UseInteractivityAsync(new InteractivityConfiguration()
             {
-                AckPaginationButtons = true,
                 ButtonBehavior = ButtonPaginationBehavior.DeleteMessage,
                 PaginationBehaviour = PaginationBehaviour.Ignore,
                 Timeout = TimeSpan.FromSeconds(ConfigurationUtils.GetConfiguration<double>(Configuration, Enums.Configurations.TimeoutGeneral))
             });
 
-            DiscordShardedClient.Ready += Client_Ready;
-            DiscordShardedClient.Resumed += Client_Resumed;
+            DiscordShardedClient.SessionCreated += Client_Ready;
+            DiscordShardedClient.SessionResumed += Client_Resumed;
             DiscordShardedClient.GuildDownloadCompleted += Client_GuildDownloadCompleted;
             DiscordShardedClient.GuildCreated += Client_GuildCreated;
             DiscordShardedClient.GuildDeleted += Client_GuildDeleted;

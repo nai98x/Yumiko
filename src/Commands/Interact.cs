@@ -396,6 +396,7 @@
             int porcentajeAmor;
             string titulo;
             string imagenUrl;
+            DiscordMember member1, member2;
             if (user1 == null)
             {
                 user1 = ctx.Member;
@@ -403,7 +404,8 @@
 
             if ((user2 == null && user1.Id == ctx.Member.Id) || (user2 != null && user1.Id == user2.Id))
             {
-                titulo = string.Format(translations.user_self_love, user1.FullName());
+                member1 = (DiscordMember)user1;
+                titulo = string.Format(translations.user_self_love, member1.DisplayName);
                 imagenUrl = user1.GetAvatarUrl(ImageFormat.Png, 128);
             }
             else
@@ -414,7 +416,10 @@
                     user1 = ctx.Member;
                 }
 
-                titulo = string.Format(translations.love_between, user1.FullName(), user2.FullName());
+                member1 = (DiscordMember)user1;
+                member2 = (DiscordMember)user2;
+
+                titulo = string.Format(translations.love_between, member1.DisplayName, member2.DisplayName);
 
                 string avatar1 = user1.GetAvatarUrl(ImageFormat.Png, 512);
                 string avatar2 = user2.GetAvatarUrl(ImageFormat.Png, 512);
@@ -498,39 +503,6 @@
             });
 
             await ctx.EditResponseAsync(builder);
-        }
-
-        //[SlashCommand("talk", "Talk with Yumiko")]
-        //[NameLocalization(Localization.Spanish, "hablar")]
-        //[DescriptionLocalization(Localization.Spanish, "Habla con Yumiko")]
-        public async Task TalkAsync(InteractionContext ctx, [Option("Text", "What do you want to say")] string text)
-        {
-            await ctx.DeferAsync();
-
-            OpenAIAuthentication auth = new(ConfigurationUtils.GetConfiguration<string>(Configuration, Configurations.TokenOpenAI));
-            OpenAIClient api = new(auth, Engine.Davinci);
-
-            var result = await api.CompletionEndpoint.CreateCompletionAsync(
-                engine: Engine.Davinci,
-                prompt: $"Humano: {text} IA:",
-                temperature: 0.9,
-                max_tokens: 150,
-                top_p: 1,
-                frequencyPenalty: 0,
-                presencePenalty: 0.6,
-                stopSequences: new[] { "Humano:", "IA:" }
-            );
-
-            var completation = result.Completions.FirstOrDefault();
-
-            if (completation != null && completation.Text != null)
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder()
-                    .WithTitle(translations.talk_with_yumiko)
-                    .WithColor(Constants.YumikoColor)
-                    .WithDescription($"{ctx.User.Mention}: {text}\n\n{ctx.Client.CurrentUser.Mention}: {completation.Text}")
-                ));
-            }
         }
     }
 }

@@ -766,10 +766,10 @@
     <value>Temperatura</value>
   </data>
   <data name="the_anime_is" xml:space="preserve">
-    <value>El anime es: {0}</value>
+    <value>El anime es:</value>
   </data>
   <data name="the_character_is" xml:space="preserve">
-    <value>El personaje es: {0} de {1}</value>
+    <value>El personaje es:</value>
   </data>
   <data name="the_manga_is" xml:space="preserve">
     <value>El manga es: {0}</value>
@@ -824,6 +824,9 @@
   </data>
   <data name="to_vinculate_anilist_profile" xml:space="preserve">
     <value>Para vincular tu perfil, debes usar el siguiente comando</value>
+  </data>
+  <data name="type_a_letter" xml:space="preserve">
+    <value>¡Escribe una letra!</value>
   </data>
   <data name="type_guess_command" xml:space="preserve">
     <value>Escribe /adivinar para hacer tu intento</value>

@@ -344,9 +344,11 @@
 
                         var tiempo = rondaActual.GuessTime - msgAcertar.CreationTimestamp;
 
+                        DiscordMember acertadorMember = (DiscordMember)acertador;
+
                         embedAux = new DiscordEmbedBuilder
                         {
-                            Title = string.Format(translations.user_has_guessed, acertador.FullName()),
+                            Title = string.Format(translations.user_has_guessed, acertadorMember.DisplayName),
                             Description = $"{desc}",
                             Color = DiscordColor.Green,
                             Footer = new()
@@ -501,6 +503,7 @@
 
         public static async Task<DiscordEmbedBuilder> GetUserTriviaStats(InteractionContext ctx, DiscordUser user)
         {
+            var member = (DiscordMember)user;
             var builder = new DiscordEmbedBuilder();
             var stats = await LeaderboardQuiz.GetStatsUserAsync(ctx.Guild.Id, user.Id);
             if (stats != null && stats.Count > 0)
@@ -520,14 +523,14 @@
                 }
                 if (!string.IsNullOrEmpty(desc))
                 {
-                    builder.Title = string.Format(translations.user_game_stats, user.FullName());
+                    builder.Title = string.Format(translations.user_game_stats, member.DisplayName);
                     builder.Description = desc;
                     builder.Color = Constants.YumikoColor;
                 }
             }
             else
             {
-                builder.Title = string.Format(translations.user_game_stats, user.FullName());
+                builder.Title = string.Format(translations.user_game_stats, member.DisplayName);
                 builder.Description = translations.no_stats_available;
                 builder.Color = DiscordColor.Red;
             }
@@ -1298,6 +1301,7 @@
                             await modalInteraction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
                             var value = modalResponse.Result.Values["value"];
                             var tiempo = modalInteraction.CreationTimestamp - msgAcertar.CreationTimestamp;
+                            var member = (DiscordMember)modalInteraction.User;
 
                             if (resultBtn.Result.Id.StartsWith("modal-letter-"))
                             {
@@ -1305,7 +1309,7 @@
                                 if (acierto != null)
                                 {
                                     acierto.Acertado = true;
-                                    titRonda = $"{string.Format(translations.user_has_guessed, modalInteraction.User.FullName())}";
+                                    titRonda = $"{string.Format(translations.user_has_guessed, member.DisplayName)}";
                                     colRonda = DiscordColor.Green;
                                     GameUser? usr = participantes.Find(x => x.Usuario.Id == modalInteraction.User.Id);
                                     if (usr != null)
@@ -1325,7 +1329,7 @@
                                 {
                                     errores++;
                                     rondasPerdidas++;
-                                    titRonda = string.Format(translations.user_made_a_mistake, modalInteraction.User.FullName());
+                                    titRonda = string.Format(translations.user_made_a_mistake, member.DisplayName);
                                     colRonda = DiscordColor.Red;
                                     GameUser? usr = participantes.Find(x => x.Usuario.Id == modalInteraction.User.Id);
                                     if (usr == null)
