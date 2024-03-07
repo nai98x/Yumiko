@@ -20,6 +20,7 @@
         private List<Poll> CurrentPolls { get; set; }
         private List<CommandUse> CommandsUsed { get; set; }
         private List<Anime> MediaList { get; set; } = new();
+        private bool BotReady { get; set; } = false;
 
         public static Singleton GetInstance()
         {
@@ -36,6 +37,13 @@
 
             return instance;
         }
+
+        public void SetBotReady()
+        {
+            BotReady = true;
+        }
+
+        public bool IsBotReady() => BotReady;
 
         public void AddTrivia(Trivia trivia)
         {

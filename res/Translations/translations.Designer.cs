@@ -286,6 +286,15 @@ namespace Yumiko {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a The bot is initializing..
+        /// </summary>
+        public static string bot_not_ready {
+            get {
+                return ResourceManager.GetString("bot_not_ready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Bot permission required.
         /// </summary>
         public static string bot_permission_required {
@@ -1312,7 +1321,7 @@ namespace Yumiko {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Congratulations {0}! You have beaten your best score.\n\nYour new record is: **{1}**.
+        ///   Busca una cadena traducida similar a Congratulations {0}! You have beaten your best score..
         /// </summary>
         public static string new_record_desc {
             get {
@@ -2613,6 +2622,15 @@ namespace Yumiko {
         public static string your_attempt {
             get {
                 return ResourceManager.GetString("your_attempt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Your new record is: **{0}**.
+        /// </summary>
+        public static string your_new_record_is {
+            get {
+                return ResourceManager.GetString("your_new_record_is", resourceCulture);
             }
         }
     }

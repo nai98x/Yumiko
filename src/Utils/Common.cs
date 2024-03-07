@@ -553,5 +553,41 @@
                 Color = DiscordColor.Red,
             };
         }
+
+        public static async Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+
+            if (!Singleton.GetInstance().IsBotReady())
+            {
+                await ctx.CreateResponseAsync(new DiscordEmbedBuilder()
+                    .WithTitle(translations.error)
+                    .WithDescription(translations.bot_not_ready)
+                    .WithColor(DiscordColor.Red)
+                );
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
+
+            if (!Singleton.GetInstance().IsBotReady())
+            {
+                await ctx.CreateResponseAsync(new DiscordEmbedBuilder()
+                    .WithTitle(translations.error)
+                    .WithDescription(translations.bot_not_ready)
+                    .WithColor(DiscordColor.Red)
+                );
+
+                return false;
+            }
+
+            return true;
+        }
     }
 }

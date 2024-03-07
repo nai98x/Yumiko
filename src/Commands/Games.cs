@@ -13,10 +13,22 @@
     {
         public IConfigurationRoot Configuration { private get; set; } = null!;
 
-        public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        public override async Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
-            return Task.FromResult(true);
+
+            if (!Singleton.GetInstance().IsBotReady())
+            {
+                await ctx.CreateResponseAsync(new DiscordEmbedBuilder()
+                    .WithTitle(translations.error)
+                    .WithDescription(translations.bot_not_ready)
+                    .WithColor(DiscordColor.Red)
+                );
+
+                return false;
+            }
+
+            return true;
         }
 
         public override Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
@@ -361,7 +373,7 @@
                     await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                     {
                         Title = translations.new_record,
-                        Description = string.Format(translations.new_record_desc, ctx.User.Mention, puntuacion),
+                        Description = $"{string.Format(translations.new_record_desc, ctx.User.Mention)}\n\n{string.Format(translations.your_new_record_is, puntuacion)}",
                         Color = Constants.YumikoColor,
                     }));
                 }

@@ -38,6 +38,9 @@
 
                     await Singleton.GetInstance().UpdateCachedMediaAsync();
                     sender.Logger.LogInformation("Media cache from AniList initialized", DateTime.Now);
+
+                    Singleton.GetInstance().SetBotReady();
+                    sender.Logger.LogInformation("Bot initialized", DateTime.Now);
                 }
                 else
                 {

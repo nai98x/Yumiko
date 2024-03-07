@@ -192,6 +192,9 @@
   <data name="bot_left_guild" xml:space="preserve">
     <value>Me he salido del servidor `{0}` ({1})</value>
   </data>
+  <data name="bot_not_ready" xml:space="preserve">
+    <value>El bot se está inicializando.</value>
+  </data>
   <data name="bot_permission_required" xml:space="preserve">
     <value>Permiso del bot requerido</value>
   </data>
@@ -535,7 +538,7 @@
     <value>Nuevo record</value>
   </data>
   <data name="new_record_desc" xml:space="preserve">
-    <value>¡Felicitaciones {0}! Superaste tu mejor puntuación.\n\nTu nuevo record es: **{1}**</value>
+    <value>¡Felicitaciones {0}! Superaste tu mejor puntuación.</value>
   </data>
   <data name="no" xml:space="preserve">
     <value>No</value>
@@ -962,6 +965,9 @@
   </data>
   <data name="your_attempt" xml:space="preserve">
     <value>Tu intento</value>
+  </data>
+  <data name="your_new_record_is" xml:space="preserve">
+    <value>Tu nuevo record es: **{0}**</value>
   </data>
   <data name="you_guessed" xml:space="preserve">
     <value>¡Le acertaste!</value>

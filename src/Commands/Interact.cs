@@ -12,16 +12,14 @@
     {
         public IConfigurationRoot Configuration { private get; set; } = null!;
 
-        public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        public override async Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
         {
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
-            return Task.FromResult(true);
+            return await Common.BeforeSlashExecutionAsync(ctx);
         }
 
-        public override Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
+        public override async Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
         {
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
-            return Task.FromResult(true);
+            return await Common.BeforeContextMenuExecutionAsync(ctx);
         }
 
         [SlashCommand("Say", "Replicates a text")]
