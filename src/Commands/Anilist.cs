@@ -19,14 +19,14 @@
         public IConfigurationRoot Configuration { private get; set; } = null!;
         private readonly GraphQLHttpClient graphQlClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
-        public override async Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
         {
-            return await Common.BeforeSlashExecutionAsync(ctx);
+            return Common.BeforeSlashExecutionAsync(ctx);
         }
 
-        public override async Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
+        public override Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
         {
-            return await Common.BeforeContextMenuExecutionAsync(ctx);
+            return Common.BeforeContextMenuExecutionAsync(ctx);
         }
 
         [SlashCommand("setprofile", "Sets your AniList profile")]

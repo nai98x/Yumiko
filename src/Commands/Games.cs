@@ -13,28 +13,14 @@
     {
         public IConfigurationRoot Configuration { private get; set; } = null!;
 
-        public override async Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
         {
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
-
-            if (!Singleton.GetInstance().IsBotReady())
-            {
-                await ctx.CreateResponseAsync(new DiscordEmbedBuilder()
-                    .WithTitle(translations.error)
-                    .WithDescription(translations.bot_not_ready)
-                    .WithColor(DiscordColor.Red)
-                );
-
-                return false;
-            }
-
-            return true;
+            return Common.BeforeSlashExecutionAsync(ctx);
         }
 
         public override Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
         {
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
-            return Task.FromResult(true);
+            return Common.BeforeContextMenuExecutionAsync(ctx);
         }
 
         [SlashCommand("trivia", "Plays an anime trivia game")]

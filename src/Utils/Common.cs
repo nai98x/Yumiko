@@ -14,6 +14,7 @@
     using SixLabors.ImageSharp.Processing;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Net.Http;
     using System.Text.RegularExpressions;
@@ -554,40 +555,46 @@
             };
         }
 
-        public static async Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+        public static Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
 
             if (!Singleton.GetInstance().IsBotReady())
             {
-                await ctx.CreateResponseAsync(new DiscordEmbedBuilder()
+                _ = Task.Run(async () =>
+                {
+                    await ctx.CreateResponseAsync(new DiscordEmbedBuilder()
                     .WithTitle(translations.error)
                     .WithDescription(translations.bot_not_ready)
                     .WithColor(DiscordColor.Red)
-                );
+                    );
+                });
 
-                return false;
+                return Task.FromResult(false);
             }
 
-            return true;
+            return Task.FromResult(true);
         }
 
-        public static async Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
+        public static Task<bool> BeforeContextMenuExecutionAsync(ContextMenuContext ctx)
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
 
             if (!Singleton.GetInstance().IsBotReady())
             {
-                await ctx.CreateResponseAsync(new DiscordEmbedBuilder()
+                _ = Task.Run(async () =>
+                {
+                    await ctx.CreateResponseAsync(new DiscordEmbedBuilder()
                     .WithTitle(translations.error)
                     .WithDescription(translations.bot_not_ready)
                     .WithColor(DiscordColor.Red)
-                );
+                    );
+                });
 
-                return false;
+                return Task.FromResult(false);
             }
 
-            return true;
+            return Task.FromResult(true);
         }
     }
 }
