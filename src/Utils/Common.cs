@@ -71,7 +71,7 @@
                 return (rnd.Next(100) < 50) ? min : max;
             }
 
-            return rnd.Next(minValue: min, maxValue: max);
+            return rnd.Next(minValue: min, maxValue: max + 1);
         }
 
         /// <summary>

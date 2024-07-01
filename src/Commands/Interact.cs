@@ -326,7 +326,7 @@
             if (real)
             {
                 Random rnd = new((int)miembro.Id);
-                waifuLevel = rnd.Next(0, 100);
+                waifuLevel = rnd.Next(0, 101);
                 titulo += " (REAL)";
             }
             else
@@ -440,7 +440,7 @@
                     rnd = new((int)(user1.Id + user2.Id));
                 }
 
-                porcentajeAmor = rnd.Next(0, 100);
+                porcentajeAmor = rnd.Next(0, 101);
                 titulo += " (REAL)";
             }
             else
