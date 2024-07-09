@@ -32,7 +32,7 @@
         public async Task Test(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent("Test!"));
+            await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent("Test"));
         }
 
         [SlashCommand("guild", "Information about a server")]
