@@ -32,8 +32,7 @@
         public async Task Test(InteractionContext ctx)
         {
             await ctx.DeferAsync();
-            var value = await MediaUserQuery.GetMediaFromUser(ctx, 1, 1);
-            await ctx.DeleteResponseAsync();
+            await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent("Test!"));
         }
 
         [SlashCommand("guild", "Information about a server")]
