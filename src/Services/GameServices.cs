@@ -1,4 +1,4 @@
-﻿namespace Yumiko.Services
+namespace Yumiko.Services
 {
     using GraphQL;
     using GraphQL.Client.Http;
@@ -131,258 +131,268 @@
                 });
             }
 
-            for (int ronda = 1; ronda <= settings.Rondas; ronda++)
+            try
             {
-                quizRound = new();
-                lastRonda = ronda;
-                int random = Common.GetRandomNumber(0, lista.Count - 1);
-
-                int random2, random3, random4, random5;
-                do
+                for (int ronda = 1; ronda <= settings.Rondas; ronda++)
                 {
-                    random2 = Common.GetRandomNumber(0, lista.Count - 1);
-                } while (random2 == random);
-                do
-                {
-                    random3 = Common.GetRandomNumber(0, lista.Count - 1);
-                } while (random3 == random || random3 == random2);
-                do
-                {
-                    random4 = Common.GetRandomNumber(0, lista.Count - 1);
-                } while (random4 == random || random4 == random2 || random4 == random3);
-                do
-                {
-                    random5 = Common.GetRandomNumber(0, lista.Count - 1);
-                } while (random5 == random || random5 == random2 || random5 == random3 || random5 == random4);
+                    quizRound = new();
+                    lastRonda = ronda;
+                    int random = Common.GetRandomNumber(0, lista.Count - 1);
 
-                var guid = Guid.NewGuid();
-                dynamic elegido = lista[random];
-                dynamic opc2 = lista[random2];
-                dynamic opc3 = lista[random3];
-                dynamic opc4 = lista[random4];
-                dynamic opc5 = lista[random5];
-                lista.Remove(lista[random]);
-                DiscordEmbedBuilder embedAcertar;
-                embedAcertar = new DiscordEmbedBuilder
-                {
-                    Color = DiscordColor.Gold,
-                    Title = $"{translations.guess_the} {juegoMostrar}",
-                    Description = $"{translations.round} {ronda} {translations.of} {settings.Rondas}",
-                    ImageUrl = elegido.Image
-                };
-
-                var builder = new DiscordFollowupMessageBuilder();
-                if (embedAux != null)
-                {
-                    builder.AddEmbed(embedAux);
-                }
-
-                string desc = string.Empty;
-                string elegidoNom = string.Empty;
-                string nameOps2 = string.Empty;
-                string nameOps3 = string.Empty;
-                string nameOps4 = string.Empty;
-                string nameOps5 = string.Empty;
-
-                switch (settings.Gamemode)
-                {
-                    case Gamemode.Characters:
-                        desc = string.Format(translations.the_character_is, Formatter.Bold($"[{elegido.NameFull}]({elegido.SiteUrl})"), $"[{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})");
-                        elegidoNom = elegido.NameFull;
-                        nameOps2 = opc2.NameFull;
-                        nameOps3 = opc3.NameFull;
-                        nameOps4 = opc4.NameFull;
-                        nameOps5 = opc5.NameFull;
-                        break;
-                    case Gamemode.Animes:
-                        desc = string.Format(translations.the_anime_is, Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})"));
-                        if (elegido.TitleEnglish != null)
-                        {
-                            desc += $"\n{translations.in_english}: `{elegido.TitleEnglish}`";
-                        }
-
-                        elegidoNom = elegido.TitleRomaji;
-                        nameOps2 = opc2.TitleRomaji;
-                        nameOps3 = opc3.TitleRomaji;
-                        nameOps4 = opc4.TitleRomaji;
-                        nameOps5 = opc5.TitleRomaji;
-                        break;
-                    case Gamemode.Mangas:
-                        desc = string.Format(translations.the_manga_is, Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})"));
-                        if (elegido.TitleEnglish != null)
-                        {
-                            desc += $"\n{translations.in_english}: `{elegido.TitleEnglish}`";
-                        }
-
-                        elegidoNom = elegido.TitleRomaji;
-                        nameOps2 = opc2.TitleRomaji;
-                        nameOps3 = opc3.TitleRomaji;
-                        nameOps4 = opc4.TitleRomaji;
-                        nameOps5 = opc5.TitleRomaji;
-                        break;
-                    case Gamemode.Studios:
-                        desc = string.Format(translations.the_studios_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";
-                        foreach (var studio in elegido.Estudios)
-                        {
-                            desc += $"- {Formatter.Bold($"[{studio.Nombre}]({studio.SiteUrl})")}\n";
-                        }
-
-                        Anime aux = (Anime)elegido, aux2 = (Anime)opc2, aux3 = (Anime)opc3, aux4 = (Anime)opc4, aux5 = (Anime)opc5;
-                        elegidoNom = aux.Estudios!.First().Nombre;
-                        nameOps2 = aux2.Estudios!.First().Nombre;
-                        nameOps3 = aux3.Estudios!.First().Nombre;
-                        nameOps4 = aux4.Estudios!.First().Nombre;
-                        nameOps5 = aux5.Estudios!.First().Nombre;
-                        break;
-                    case Gamemode.Protagonists:
-                        desc = string.Format(translations.the_protagonists_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";
-                        foreach (var personaje in elegido.Personajes)
-                        {
-                            desc += $"- {Formatter.Bold($"[{personaje.NameFull}]({personaje.SiteUrl})")}\n";
-                        }
-
-                        elegidoNom = elegido.Personajes[0].NameFull;
-                        nameOps2 = opc2.Personajes[0].NameFull;
-                        nameOps3 = opc3.Personajes[0].NameFull;
-                        nameOps4 = opc4.Personajes[0].NameFull;
-                        nameOps5 = opc5.Personajes[0].NameFull;
-                        break;
-                    case Gamemode.Genres:
-                        desc = string.Format(translations.the_anime_is, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})");
-                        if (elegido.TitleEnglish != null)
-                        {
-                            desc += $"\n{translations.in_english}: `{elegido.TitleEnglish}`";
-                        }
-
-                        if (elegido.MediaRelacionada.Count > 0)
-                        {
-                            desc += $"\n\n{translations.related}:\n";
-                            foreach (Anime anim in elegido.MediaRelacionada)
-                            {
-                                desc += $"- {Formatter.Bold($"[{anim.TitleRomaji}]({anim.SiteUrl})")} ({anim.Tipo?.UppercaseFirst()})\n";
-                            }
-                        }
-
-                        elegidoNom = elegido.TitleRomaji;
-                        nameOps2 = opc2.TitleRomaji;
-                        nameOps3 = opc3.TitleRomaji;
-                        nameOps4 = opc4.TitleRomaji;
-                        nameOps5 = opc5.TitleRomaji;
-                        break;
-                    default:
-                        throw new ArgumentException($"Programming error");
-                }
-
-                quizRound.Match = elegidoNom.NormalizeButton();
-
-                var listaOpciones = new List<DiscordButtonComponent>() {
-                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{elegidoNom}", elegidoNom.NormalizeButton()),
-                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps2}", nameOps2.NormalizeDescription()),
-                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps3}", nameOps3.NormalizeDescription()),
-                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps4}", nameOps4.NormalizeDescription()),
-                    new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps5}", nameOps5.NormalizeDescription())
-                };
-
-                listaOpciones.Shuffle(new Random());
-
-                builder.AddEmbed(embedAcertar);
-                builder.AddComponents(listaOpciones);
-                builder.AddComponents(new DiscordButtonComponent(ButtonStyle.Danger, $"quiz-cancel-{guid}", translations.finish_game));
-
-                var msgAcertar = await ctx.FollowUpAsync(builder);
-
-                singleton.UpdateCurrentRoundTrivia(ctx.Guild.Id, ctx.Channel.Id, quizRound);
-                desc = desc.NormalizeDescription();
-
-                for (int cont = 0; cont <= timeoutGames * 10; cont++)
-                {
-                    var partida = singleton.GetCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
-                    if (partida == null)
+                    int random2, random3, random4, random5;
+                    do
                     {
-                        await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
-                        {
-                            Title = translations.error,
-                            Description = translations.no_active_game,
-                            Color = DiscordColor.Red,
-                        }));
-                        return;
+                        random2 = Common.GetRandomNumber(0, lista.Count - 1);
+                    } while (random2 == random);
+                    do
+                    {
+                        random3 = Common.GetRandomNumber(0, lista.Count - 1);
+                    } while (random3 == random || random3 == random2);
+                    do
+                    {
+                        random4 = Common.GetRandomNumber(0, lista.Count - 1);
+                    } while (random4 == random || random4 == random2 || random4 == random3);
+                    do
+                    {
+                        random5 = Common.GetRandomNumber(0, lista.Count - 1);
+                    } while (random5 == random || random5 == random2 || random5 == random3 || random5 == random4);
+
+                    var guid = Guid.NewGuid();
+                    dynamic elegido = lista[random];
+                    dynamic opc2 = lista[random2];
+                    dynamic opc3 = lista[random3];
+                    dynamic opc4 = lista[random4];
+                    dynamic opc5 = lista[random5];
+                    lista.Remove(lista[random]);
+                    DiscordEmbedBuilder embedAcertar;
+                    embedAcertar = new DiscordEmbedBuilder
+                    {
+                        Color = DiscordColor.Gold,
+                        Title = $"{translations.guess_the} {juegoMostrar}",
+                        Description = $"{translations.round} {ronda} {translations.of} {settings.Rondas}",
+                        ImageUrl = elegido.Image
+                    };
+
+                    var builder = new DiscordFollowupMessageBuilder();
+                    if (embedAux != null)
+                    {
+                        builder.AddEmbed(embedAux);
                     }
 
-                    var rondaActual = partida.CurrentRound;
+                    string desc = string.Empty;
+                    string elegidoNom = string.Empty;
+                    string nameOps2 = string.Empty;
+                    string nameOps3 = string.Empty;
+                    string nameOps4 = string.Empty;
+                    string nameOps5 = string.Empty;
 
-                    if (partida.Canceled)
+                    switch (settings.Gamemode)
                     {
-                        var embed = new DiscordEmbedBuilder
+                        case Gamemode.Characters:
+                            desc = string.Format(translations.the_character_is, Formatter.Bold($"[{elegido.NameFull}]({elegido.SiteUrl})"), $"[{elegido.AnimePrincipal.TitleRomaji}]({elegido.AnimePrincipal.SiteUrl})");
+                            elegidoNom = elegido.NameFull;
+                            nameOps2 = opc2.NameFull;
+                            nameOps3 = opc3.NameFull;
+                            nameOps4 = opc4.NameFull;
+                            nameOps5 = opc5.NameFull;
+                            break;
+                        case Gamemode.Animes:
+                            desc = string.Format(translations.the_anime_is, Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})"));
+                            if (elegido.TitleEnglish != null)
+                            {
+                                desc += $"\n{translations.in_english}: `{elegido.TitleEnglish}`";
+                            }
+
+                            elegidoNom = elegido.TitleRomaji;
+                            nameOps2 = opc2.TitleRomaji;
+                            nameOps3 = opc3.TitleRomaji;
+                            nameOps4 = opc4.TitleRomaji;
+                            nameOps5 = opc5.TitleRomaji;
+                            break;
+                        case Gamemode.Mangas:
+                            desc = string.Format(translations.the_manga_is, Formatter.Bold($"[{elegido.TitleRomaji}]({elegido.SiteUrl})"));
+                            if (elegido.TitleEnglish != null)
+                            {
+                                desc += $"\n{translations.in_english}: `{elegido.TitleEnglish}`";
+                            }
+
+                            elegidoNom = elegido.TitleRomaji;
+                            nameOps2 = opc2.TitleRomaji;
+                            nameOps3 = opc3.TitleRomaji;
+                            nameOps4 = opc4.TitleRomaji;
+                            nameOps5 = opc5.TitleRomaji;
+                            break;
+                        case Gamemode.Studios:
+                            desc = string.Format(translations.the_studios_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";
+                            foreach (var studio in elegido.Estudios)
+                            {
+                                desc += $"- {Formatter.Bold($"[{studio.Nombre}]({studio.SiteUrl})")}\n";
+                            }
+
+                            Anime aux = (Anime)elegido, aux2 = (Anime)opc2, aux3 = (Anime)opc3, aux4 = (Anime)opc4, aux5 = (Anime)opc5;
+                            elegidoNom = aux.Estudios!.First().Nombre;
+                            nameOps2 = aux2.Estudios!.First().Nombre;
+                            nameOps3 = aux3.Estudios!.First().Nombre;
+                            nameOps4 = aux4.Estudios!.First().Nombre;
+                            nameOps5 = aux5.Estudios!.First().Nombre;
+                            break;
+                        case Gamemode.Protagonists:
+                            desc = string.Format(translations.the_protagonists_of_are, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})") + "\n";
+                            foreach (var personaje in elegido.Personajes)
+                            {
+                                desc += $"- {Formatter.Bold($"[{personaje.NameFull}]({personaje.SiteUrl})")}\n";
+                            }
+
+                            elegidoNom = elegido.Personajes[0].NameFull;
+                            nameOps2 = opc2.Personajes[0].NameFull;
+                            nameOps3 = opc3.Personajes[0].NameFull;
+                            nameOps4 = opc4.Personajes[0].NameFull;
+                            nameOps5 = opc5.Personajes[0].NameFull;
+                            break;
+                        case Gamemode.Genres:
+                            desc = string.Format(translations.the_anime_is, $"[{elegido.TitleRomaji}]({elegido.SiteUrl})");
+                            if (elegido.TitleEnglish != null)
+                            {
+                                desc += $"\n{translations.in_english}: `{elegido.TitleEnglish}`";
+                            }
+
+                            if (elegido.MediaRelacionada.Count > 0)
+                            {
+                                desc += $"\n\n{translations.related}:\n";
+                                foreach (Anime anim in elegido.MediaRelacionada)
+                                {
+                                    desc += $"- {Formatter.Bold($"[{anim.TitleRomaji}]({anim.SiteUrl})")} ({anim.Tipo?.UppercaseFirst()})\n";
+                                }
+                            }
+
+                            elegidoNom = elegido.TitleRomaji;
+                            nameOps2 = opc2.TitleRomaji;
+                            nameOps3 = opc3.TitleRomaji;
+                            nameOps4 = opc4.TitleRomaji;
+                            nameOps5 = opc5.TitleRomaji;
+                            break;
+                        default:
+                            throw new ArgumentException($"Programming error");
+                    }
+
+                    quizRound.Match = elegidoNom.NormalizeButton();
+
+                    var listaOpciones = new List<DiscordButtonComponent>() {
+                        new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{elegidoNom}", elegidoNom.NormalizeButton()),
+                        new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps2}", nameOps2.NormalizeDescription()),
+                        new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps3}", nameOps3.NormalizeDescription()),
+                        new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps4}", nameOps4.NormalizeDescription()),
+                        new DiscordButtonComponent(ButtonStyle.Secondary, $"quiz-round-{nameOps5}", nameOps5.NormalizeDescription())
+                    };
+
+                    listaOpciones.Shuffle(new Random());
+
+                    builder.AddEmbed(embedAcertar);
+                    builder.AddComponents(listaOpciones);
+                    builder.AddComponents(new DiscordButtonComponent(ButtonStyle.Danger, $"quiz-cancel-{guid}", translations.finish_game));
+
+                    var msgAcertar = await ctx.FollowUpAsync(builder);
+
+                    singleton.UpdateCurrentRoundTrivia(ctx.Guild.Id, ctx.Channel.Id, quizRound);
+                    desc = desc.NormalizeDescription();
+
+                    for (int cont = 0; cont <= timeoutGames * 10; cont++)
+                    {
+                        var partida = singleton.GetCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
+                        if (partida == null)
                         {
-                            Title = translations.game_cancelled,
+                            await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
+                            {
+                                Title = translations.error,
+                                Description = translations.no_active_game,
+                                Color = DiscordColor.Red,
+                            }));
+                            return;
+                        }
+
+                        var rondaActual = partida.CurrentRound;
+
+                        if (partida.Canceled)
+                        {
+                            var embed = new DiscordEmbedBuilder
+                            {
+                                Title = translations.game_cancelled,
+                                Description = desc,
+                                Color = DiscordColor.Red,
+                            };
+
+                            await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embed));
+                            await GetResultadosAsync(ctx, topggToken, participantes, lastRonda, settings);
+                            singleton.RemoveCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
+                            return;
+                        }
+
+                        if (rondaActual.Guessed && rondaActual.Guesser != null)
+                        {
+                            DiscordUser acertador = rondaActual.Guesser;
+                            GameUser? usr = participantes.Find(x => x.Usuario == rondaActual.Guesser);
+                            if (usr != null)
+                            {
+                                usr.Puntaje++;
+                            }
+                            else
+                            {
+                                participantes.Add(new()
+                                {
+                                    Usuario = rondaActual.Guesser,
+                                    Puntaje = 1,
+                                });
+                            }
+
+                            var tiempo = rondaActual.GuessTime - msgAcertar.CreationTimestamp;
+
+                            DiscordMember acertadorMember = (DiscordMember)acertador;
+
+                            embedAux = new DiscordEmbedBuilder
+                            {
+                                Title = string.Format(translations.user_has_guessed, acertadorMember.DisplayName),
+                                Description = $"{desc}",
+                                Color = DiscordColor.Green,
+                                Footer = new()
+                                {
+                                    IconUrl = acertador.AvatarUrl,
+                                    Text = $"{translations.time}: {tiempo.TotalSeconds}s",
+                                },
+                            };
+
+                            break;
+                        }
+
+                        await Task.Delay(100);
+                    }
+
+                    var rondaActualTimedOut = singleton.GetCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id)?.CurrentRound;
+                    if (rondaActualTimedOut != null && !rondaActualTimedOut.Guessed)
+                    {
+                        embedAux = new DiscordEmbedBuilder
+                        {
+                            Title = translations.nobody_has_guessed,
                             Description = desc,
                             Color = DiscordColor.Red,
                         };
-
-                        await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embed));
-                        await GetResultadosAsync(ctx, topggToken, participantes, lastRonda, settings);
-                        singleton.RemoveCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
-                        return;
                     }
-
-                    if (rondaActual.Guessed && rondaActual.Guesser != null)
-                    {
-                        DiscordUser acertador = rondaActual.Guesser;
-                        GameUser? usr = participantes.Find(x => x.Usuario == rondaActual.Guesser);
-                        if (usr != null)
-                        {
-                            usr.Puntaje++;
-                        }
-                        else
-                        {
-                            participantes.Add(new()
-                            {
-                                Usuario = rondaActual.Guesser,
-                                Puntaje = 1,
-                            });
-                        }
-
-                        var tiempo = rondaActual.GuessTime - msgAcertar.CreationTimestamp;
-
-                        DiscordMember acertadorMember = (DiscordMember)acertador;
-
-                        embedAux = new DiscordEmbedBuilder
-                        {
-                            Title = string.Format(translations.user_has_guessed, acertadorMember.DisplayName),
-                            Description = $"{desc}",
-                            Color = DiscordColor.Green,
-                            Footer = new()
-                            {
-                                IconUrl = acertador.AvatarUrl,
-                                Text = $"{translations.time}: {tiempo.TotalSeconds}s",
-                            },
-                        };
-
-                        break;
-                    }
-
-                    await Task.Delay(100);
                 }
 
-                var rondaActualTimedOut = singleton.GetCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id)?.CurrentRound;
-                if (rondaActualTimedOut != null && !rondaActualTimedOut.Guessed)
+                if (embedAux != null)
                 {
-                    embedAux = new DiscordEmbedBuilder
-                    {
-                        Title = translations.nobody_has_guessed,
-                        Description = desc,
-                        Color = DiscordColor.Red,
-                    };
+                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embedAux));
                 }
             }
-
-            if (embedAux != null)
+            catch(Exception ex)
             {
-                await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(embedAux));
+                await Common.GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"{ex.Message}");
+                await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().WithContent($"{translations.unknown_error}"));
             }
-
-            await GetResultadosAsync(ctx, topggToken, participantes, settings.Rondas, settings);
-            singleton.RemoveCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
+            finally
+            {
+                await GetResultadosAsync(ctx, topggToken, participantes, settings.Rondas, settings);
+                singleton.RemoveCurrentTrivia(ctx.Guild.Id, ctx.Channel.Id);
+            }
         }
 
         public static async Task<string> GetEstadisticasDificultadAsync(InteractionContext ctx, string tipoStats, string dificultad)
