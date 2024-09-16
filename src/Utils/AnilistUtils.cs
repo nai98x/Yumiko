@@ -333,7 +333,8 @@ namespace Yumiko.Utils
             decimal meanScore = type == MediaType.ANIME ? profile.Statistics.Anime.MeanScore : profile.Statistics.Manga.MeanScore;
             decimal standardDeviation = type == MediaType.ANIME ? profile.Statistics.Anime.StandardDeviation : profile.Statistics.Manga.StandardDeviation;
 
-            var otherList = await AnimeListQuery.GetMediaLists(guild, channel, profile.Id, MediaUserStatus.COMPLETED, MediaUserSort.MEDIA_POPULARITY_DESC, MediaTitleType.ROMAJI, otherType);
+            var otherListCompleted = await AnimeListQuery.GetMediaLists(guild, channel, profile.Id, MediaUserStatus.COMPLETED, MediaUserSort.MEDIA_POPULARITY_DESC, MediaTitleType.ROMAJI, otherType);
+            var otherListCurrent = await AnimeListQuery.GetMediaLists(guild, channel, profile.Id, MediaUserStatus.CURRENT, MediaUserSort.MEDIA_POPULARITY_DESC, MediaTitleType.ROMAJI, otherType);
 
             if (standardDeviation == 0)
             {
@@ -360,7 +361,7 @@ namespace Yumiko.Utils
                         {
                             if (entry.Score != null && entry.Score > 0) // Filter entries without score
                             {
-                                if (otherList == null || !otherList.Entries.Any(x => x.Media.Id == entry.MediaId)) // Filter entries in another list (anime/manga)
+                                if ((otherListCompleted == null || !otherListCompleted.Entries.Any(x => x.Media.Id == entry.MediaId)) && (otherListCurrent == null || !otherListCurrent.Entries.Any(x => x.Media.Id == entry.MediaId))) // Filter entries in another list (anime/manga)
                                 {
                                     decimal adjustedScore = ((decimal)entry.Score - meanScore) / standardDeviation;
                                     entry.Media.Recommendations?.Nodes?.ForEach(node =>
