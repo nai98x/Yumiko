@@ -1,4 +1,6 @@
-﻿namespace Yumiko.Utils
+﻿using Google.Protobuf.Collections;
+
+namespace Yumiko.Utils
 {
     public static class AnilistUtils
     {
@@ -217,10 +219,10 @@
             return embed;
         }
 
-        public static DiscordEmbedBuilder GetMediaRecommendationsEmbed(DiscordUser user, User profile, MediaListCollection collection, MediaType type)
+        public static async Task<DiscordEmbedBuilder> GetMediaRecommendationsEmbed(DiscordGuild guild, DiscordChannel channel, DiscordUser user, User profile, MediaListCollection collection, MediaType type)
         {
             var embed = new DiscordEmbedBuilder();
-            var recommendations = GetRecommendationsFromUser(profile, collection, type);
+            var recommendations = await GetRecommendationsFromUser(guild, channel, profile, collection, type);
 
             if (recommendations.Count == 0)
             {
@@ -323,12 +325,15 @@
             return scoreF;
         }
 
-        private static List<AnimeRecommendation> GetRecommendationsFromUser(User profile, MediaListCollection collection, MediaType type)
+        private static async Task<List<AnimeRecommendation>> GetRecommendationsFromUser(DiscordGuild guild, DiscordChannel channel, User profile, MediaListCollection collection, MediaType type)
         {
             List<AnimeRecommendation> recommendations = new();
 
+            MediaType otherType = type == MediaType.ANIME ? MediaType.MANGA : MediaType.ANIME;
             decimal meanScore = type == MediaType.ANIME ? profile.Statistics.Anime.MeanScore : profile.Statistics.Manga.MeanScore;
             decimal standardDeviation = type == MediaType.ANIME ? profile.Statistics.Anime.StandardDeviation : profile.Statistics.Manga.StandardDeviation;
+
+            var otherList = await AnimeListQuery.GetMediaLists(guild, channel, profile.Id, MediaUserStatus.COMPLETED, MediaUserSort.MEDIA_POPULARITY_DESC, MediaTitleType.ROMAJI, otherType);
 
             if (standardDeviation == 0)
             {
@@ -336,6 +341,7 @@
             }
 
             List<int> mediaListIds = new();
+
             collection.Lists?.ForEach(list =>
             {
                 list.Entries?.ForEach(entry =>
@@ -344,41 +350,50 @@
                 });
             });
 
-            collection.Lists?.ForEach(list =>
+            if (collection.Lists != null)
             {
-                list.Entries?.ForEach(entry =>
+                foreach(var list in collection.Lists)
                 {
-                    if (entry.Score != null && entry.Score > 0) // Filter entries without score
+                    if (list.Entries != null)
                     {
-                        decimal adjustedScore = ((decimal)entry.Score - meanScore) / standardDeviation;
-                        entry.Media.Recommendations?.Nodes?.ForEach(node =>
+                        foreach (var entry in list.Entries)
                         {
-                            if (node.MediaRecommendation != null) // Filter entries without recommendations
+                            if (entry.Score != null && entry.Score > 0) // Filter entries without score
                             {
-                                int nodeId = node.MediaRecommendation.Id;
-                                string nodeTitle =
-                                    (profile.Options.TitleLanguage == "ENGLISH" && node.MediaRecommendation.Title.English != null) ?
-                                    node.MediaRecommendation.Title.English : node.MediaRecommendation.Title.Romaji;
-                                int nodeRating = node.Rating;
-
-                                if (!mediaListIds.Contains(nodeId) && nodeRating > 0) // Filter entries alredy on list and without rating
+                                if (otherList == null || !otherList.Entries.Any(x => x.Media.Id == entry.MediaId)) // Filter entries in another list (anime/manga)
                                 {
-                                    if (!recommendations.Where(x => x.Id == nodeId).Any())
+                                    decimal adjustedScore = ((decimal)entry.Score - meanScore) / standardDeviation;
+                                    entry.Media.Recommendations?.Nodes?.ForEach(node =>
                                     {
-                                        recommendations.Add(new()
+                                        if (node.MediaRecommendation != null) // Filter entries without recommendations
                                         {
-                                            Id = nodeId,
-                                            Title = nodeTitle
-                                        });
-                                    }
+                                            int nodeId = node.MediaRecommendation.Id;
+                                            string nodeTitle =
+                                                (profile.Options.TitleLanguage == "ENGLISH" && node.MediaRecommendation.Title.English != null) ?
+                                                node.MediaRecommendation.Title.English : node.MediaRecommendation.Title.Romaji;
+                                            int nodeRating = node.Rating;
 
-                                    recommendations.First(x => x.Id == nodeId).Score += adjustedScore * (2 - (1 / nodeRating));
+                                            if (!mediaListIds.Contains(nodeId) && nodeRating > 0) // Filter entries alredy on list and without rating
+                                            {
+                                                if (!recommendations.Where(x => x.Id == nodeId).Any())
+                                                {
+                                                    recommendations.Add(new()
+                                                    {
+                                                        Id = nodeId,
+                                                        Title = nodeTitle
+                                                    });
+                                                }
+
+                                                recommendations.First(x => x.Id == nodeId).Score += adjustedScore * (2 - (1 / nodeRating));
+                                            }
+                                        }
+                                    });
                                 }
                             }
-                        });
+                        }
                     }
-                });
-            });
+                }
+            }
 
             return recommendations.OrderByDescending(x => x.Score).Where(y => y.Score >= 3).ToList();
         }

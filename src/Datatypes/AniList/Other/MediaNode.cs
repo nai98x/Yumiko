@@ -7,6 +7,9 @@ namespace Yumiko.Datatypes
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [JsonProperty("type")]
+        public MediaType Type { get; set; }
+
         [JsonProperty("title")]
         public MediaTitle Title { get; set; } = null!;
 

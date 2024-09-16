@@ -46,6 +46,7 @@
         private const string searchQuery = @"
             query($userId: Int, $type: MediaType) {
                 User(id: $userId) {
+                    id
                     name
                     avatar {
                         medium
@@ -72,6 +73,12 @@
                             score(format: POINT_100)
                             status
                             media {
+                                relations {
+                                    nodes {
+                                        id
+                                        type
+                                    }
+                                }
                                 recommendations(sort: RATING_DESC, perPage: 5) {
                                     nodes {
                                         rating

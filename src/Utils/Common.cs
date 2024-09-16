@@ -559,7 +559,7 @@
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
 
-            if (!Singleton.GetInstance().IsBotReady())
+            if (!Program.Debug && !Singleton.GetInstance().IsBotReady())
             {
                 _ = Task.Run(async () =>
                 {
@@ -580,7 +580,7 @@
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(ctx.Interaction.Locale!);
 
-            if (!Singleton.GetInstance().IsBotReady())
+            if (!Program.Debug && !Singleton.GetInstance().IsBotReady())
             {
                 _ = Task.Run(async () =>
                 {

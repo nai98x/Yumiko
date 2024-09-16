@@ -6,5 +6,8 @@ namespace Yumiko.Datatypes
     {
         [JsonProperty("recommendations")]
         public RecommendationsConnection? Recommendations { get; set; }
+
+        [JsonProperty("relations")]
+        public RelationsConnection? Relations { get; set; }
     }
 }

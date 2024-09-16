@@ -11,12 +11,13 @@
     {
         private static readonly GraphQLHttpClient GraphQlClient = new(Constants.AnilistAPIUrl, new NewtonsoftJsonSerializer());
 
-        public static async Task<MediaUserList?> GetMediaLists(DiscordGuild guild, DiscordChannel channel, int userId, MediaUserStatus status, MediaUserSort order, MediaTitleType titleLanguage)
+        public static async Task<MediaUserList?> GetMediaLists(DiscordGuild guild, DiscordChannel channel, int userId, MediaUserStatus status, MediaUserSort order, MediaTitleType titleLanguage, MediaType type)
         {
             try
             {
                 string sort = Enum.GetName(typeof(MediaUserSort), order)!;
                 string statusStr = Enum.GetName(typeof(MediaUserStatus), status)!;
+                string typeStr = type.GetName();
 
                 if (sort == "MEDIA_TITLE_DESC")
                 {
@@ -36,7 +37,8 @@
                     {
                         userId,
                         status = statusStr,
-                        sort
+                        sort,
+                        type = typeStr
                     }
                 };
                 var response = await GraphQlClient.SendQueryAsync<MediaUserListResponse>(request);
@@ -58,12 +60,13 @@
         }
 
         private const string searchQuery = @"
-            query ($userId: Int, $status: MediaListStatus, $sort: [MediaListSort]) {
-                MediaListCollection(userId: $userId, type: ANIME, status: $status, forceSingleCompletedList: true, sort: $sort) {
+            query ($userId: Int, $type: MediaType, $status: MediaListStatus, $sort: [MediaListSort]) {
+                MediaListCollection(userId: $userId, type: $type, status: $status, forceSingleCompletedList: true, sort: $sort) {
                 lists {
                     name
                     entries {
                     media {
+                        id
                         title {
                         romaji
                         english

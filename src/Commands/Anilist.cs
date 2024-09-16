@@ -472,7 +472,7 @@
                 var recommendations = await RecommendatiosnQuery.GetRecommendations(ctx.Guild, ctx.Channel, userAnilist.AnilistId, type);
                 if (recommendations.Item1 != null && recommendations.Item2 != null)
                 {
-                    var embed = AnilistUtils.GetMediaRecommendationsEmbed(user, recommendations.Item1, recommendations.Item2, type);
+                    var embed = await AnilistUtils.GetMediaRecommendationsEmbed(ctx.Guild, ctx.Channel, user, recommendations.Item1, recommendations.Item2, type);
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                 }
                 else
@@ -507,7 +507,7 @@
                 var recommendations = await RecommendatiosnQuery.GetRecommendations(ctx.Guild, ctx.Channel, userAnilist.AnilistId, MediaType.ANIME);
                 if (recommendations.Item1 != null && recommendations.Item2 != null)
                 {
-                    var embed = AnilistUtils.GetMediaRecommendationsEmbed(ctx.TargetUser, recommendations.Item1, recommendations.Item2, MediaType.ANIME);
+                    var embed = await AnilistUtils.GetMediaRecommendationsEmbed(ctx.Guild, ctx.Channel, ctx.TargetUser, recommendations.Item1, recommendations.Item2, MediaType.ANIME);
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                 }
                 else
@@ -542,7 +542,7 @@
                 var recommendations = await RecommendatiosnQuery.GetRecommendations(ctx.Guild, ctx.Channel, userAnilist.AnilistId, MediaType.MANGA);
                 if (recommendations.Item1 != null && recommendations.Item2 != null)
                 {
-                    var embed = AnilistUtils.GetMediaRecommendationsEmbed(ctx.TargetUser, recommendations.Item1, recommendations.Item2, MediaType.MANGA);
+                    var embed = await AnilistUtils.GetMediaRecommendationsEmbed(ctx.Guild, ctx.Channel, ctx.TargetUser, recommendations.Item1, recommendations.Item2, MediaType.MANGA);
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                 }
                 else
@@ -619,7 +619,7 @@
                 var anilistUser = await ProfileQuery.GetProfile(ctx, userAnilistDb.AnilistId);
                 if (anilistUser != null)
                 {
-                    var mediaList = await AnimeListQuery.GetMediaLists(ctx.Guild, ctx.Channel, userAnilistDb.AnilistId, status, order, mediaTitle);
+                    var mediaList = await AnimeListQuery.GetMediaLists(ctx.Guild, ctx.Channel, userAnilistDb.AnilistId, status, order, mediaTitle, MediaType.ANIME); // TODO: Add manga
 
                     if (mediaList == null || mediaList.Entries == null || mediaList.Entries.Count == 0)
                     {
