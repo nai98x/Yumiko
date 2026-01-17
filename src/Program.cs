@@ -172,7 +172,7 @@ namespace Yumiko
             var firebasePath = Path.Join("res", "firebase.json");
             if (!File.Exists(firebasePath))
             {
-                Log.Fatal($"{firebasePath} was not found!!");
+                Log.Fatal($"{firebasePath} was not found!");
                 return false;
             }
 
