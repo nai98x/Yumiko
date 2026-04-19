@@ -151,22 +151,29 @@
         {
             if (Program.TopggEnabled && !Program.Debug)
             {
-                AuthDiscordBotListApi DblApi = new(ctx.Client.CurrentApplication.Id, topggToken);
-                bool hasVoted = await DblApi.HasVoted(ctx.User.Id);
-
-                if (!hasVoted)
+                try
                 {
-                    string url = $"https://top.gg/bot/{ctx.Client.CurrentUser.Id}/vote";
-                    await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
+                    AuthDiscordBotListApi DblApi = new(ctx.Client.CurrentApplication.Id, topggToken);
+                    bool hasVoted = await DblApi.HasVoted(ctx.User.Id);
+
+                    if (!hasVoted)
                     {
-                        Title = translations.vote_me_on_topgg,
-                        Description = string.Format(translations.vote_me_on_topgg_desc, url),
-                        Color = Constants.YumikoColor,
-                        Footer = new()
+                        string url = $"https://top.gg/bot/{ctx.Client.CurrentUser.Id}/vote";
+                        await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                         {
-                            Text = translations.message_will_not_be_triggered
-                        }
-                    }));
+                            Title = translations.vote_me_on_topgg,
+                            Description = string.Format(translations.vote_me_on_topgg_desc, url),
+                            Color = Constants.YumikoColor,
+                            Footer = new()
+                            {
+                                Text = translations.message_will_not_be_triggered
+                            }
+                        }));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await GrabarLogErrorAsync(ctx.Guild, ctx.Channel, $"Unknown error in ChequearVotoTopGGAsync: {ex.Message}\n{Formatter.BlockCode(ex.StackTrace ?? string.Empty)}");
                 }
             }
         }
