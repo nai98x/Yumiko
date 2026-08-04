@@ -1,0 +1,14 @@
+[Unit]
+Description=Yumiko Discord Bot
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/bots/Yumiko-app
+ExecStart=%h/bots/Yumiko-app/Yumiko.Bot
+Environment=FIREBASE_CREDENTIALS_DIR=%h/bots/secrets
+EnvironmentFile=%h/bots/secrets/yumiko.env
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

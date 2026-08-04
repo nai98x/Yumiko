@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <!-- Solo se mide Application: Yumiko.Model son POCOs sin lógica. -->
+          <Include>[Yumiko.Application]*</Include>
+          <!-- No agregar CompilerGeneratedAttribute acá: excluiría las máquinas de estado de los
+               métodos async, que es donde vive la lógica de los servicios. -->
+          <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
+          <SkipAutoProps>true</SkipAutoProps>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

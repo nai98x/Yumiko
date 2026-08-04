@@ -342,6 +342,11 @@ healthchecksdb
 # Visual studio temp folder
 /.vs
 
-# Configuracion general
-firebase.json
-config.json
+# Logs del bot
+logs/
+
+# Credenciales: los secrets van en User Secrets (local) o variables de entorno (servidor)
+firebase-*.json
+!deploy-setup/firebase-example.json
+*.env
+appsettings.Production.json

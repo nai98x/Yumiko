@@ -1,0 +1,1138 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="about" xml:space="preserve">
+    <value>Sobre</value>
+  </data>
+  <data name="access_denied" xml:space="preserve">
+    <value>Acceso denegado</value>
+  </data>
+  <data name="action_cannont_be_undone" xml:space="preserve">
+    <value>Esta acción no se puede deshacer</value>
+  </data>
+  <data name="adult_content" xml:space="preserve">
+    <value>Contenido para adultos</value>
+  </data>
+  <data name="age" xml:space="preserve">
+    <value>Edad</value>
+  </data>
+  <data name="anilist_profile_deleted_successfully" xml:space="preserve">
+    <value>Perfil de Anilist eliminado correctamente</value>
+  </data>
+  <data name="anilist_profile_not_found" xml:space="preserve">
+    <value>Perfil de Anilist no encontrado</value>
+  </data>
+  <data name="anilist_setprofile_instructions" xml:space="preserve">
+    <value>**Instrucciones**</value>
+  </data>
+  <data name="anilist_setprofile_instructions_1" xml:space="preserve">
+    <value>1- Haz click en el botón llamado **Autorizar**</value>
+  </data>
+  <data name="anilist_setprofile_instructions_2" xml:space="preserve">
+    <value>2- Una vez se abra la página web, haz click en el botón verde **Authorize** y luego copia el texto que te aparecerá para copiar</value>
+  </data>
+  <data name="anilist_setprofile_instructions_3" xml:space="preserve">
+    <value>3- Cierra la página web y haz click en el botón llamado **Pegar código aquí**</value>
+  </data>
+  <data name="anilist_setprofile_instructions_4" xml:space="preserve">
+    <value>4- Pega el código en el formulario y envíalo</value>
+  </data>
+  <data name="animated" xml:space="preserve">
+    <value>Animado</value>
+  </data>
+  <data name="anime" xml:space="preserve">
+    <value>Anime</value>
+  </data>
+  <data name="anime_list" xml:space="preserve">
+    <value>Lista de anime</value>
+  </data>
+  <data name="anime_stats" xml:space="preserve">
+    <value>Estadísticas de anime</value>
+  </data>
+  <data name="anonymous_poll" xml:space="preserve">
+    <value>Voto anónimo</value>
+  </data>
+  <data name="another_trivia_playing" xml:space="preserve">
+    <value>Otra trivia se está jugando en este canal</value>
+  </data>
+  <data name="another_trivia_playing_desc" xml:space="preserve">
+    <value>Si quieres empezar una nueva trivia, cancela la actual o ejecuta este comando en otro canal</value>
+  </data>
+  <data name="answer" xml:space="preserve">
+    <value>Respuesta</value>
+  </data>
+  <data name="authorize" xml:space="preserve">
+    <value>Autorizar</value>
+  </data>
+  <data name="badges" xml:space="preserve">
+    <value>Insignias</value>
+  </data>
+  <data name="bot_about" xml:space="preserve">
+    <value>{0} es un bot de trivia de animes, con otros juegos y funcionalidades</value>
+  </data>
+  <data name="bot_guilds" xml:space="preserve">
+    <value>Servidores de {0}</value>
+  </data>
+  <data name="bot_left_guild" xml:space="preserve">
+    <value>Me he salido del servidor `{0}` ({1})</value>
+  </data>
+  <data name="bot_not_ready" xml:space="preserve">
+    <value>El bot se está inicializando.</value>
+  </data>
+  <data name="bot_permission_required" xml:space="preserve">
+    <value>Permiso del bot requerido</value>
+  </data>
+  <data name="bot_permission_required_desc" xml:space="preserve">
+    <value>{0} necesita el permiso `{1}` para ejecutar este comando</value>
+  </data>
+  <data name="bot_stats" xml:space="preserve">
+    <value>Estadísticas de {0}</value>
+  </data>
+  <data name="cant_play_vs_bot" xml:space="preserve">
+    <value>No puedes jugar en contra de un bot</value>
+  </data>
+  <data name="chapters" xml:space="preserve">
+    <value>Capítulos</value>
+  </data>
+  <data name="character" xml:space="preserve">
+    <value>Personaje</value>
+  </data>
+  <data name="characters" xml:space="preserve">
+    <value>personajes</value>
+  </data>
+  <data name="choose_an_option" xml:space="preserve">
+    <value>Elige una opción</value>
+  </data>
+  <data name="code" xml:space="preserve">
+    <value>Código</value>
+  </data>
+  <data name="color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="commands_not_used" xml:space="preserve">
+    <value>No se ha utilizado ningún comando</value>
+  </data>
+  <data name="commands_used" xml:space="preserve">
+    <value>Comandos usados</value>
+  </data>
+  <data name="confirm_delete_profile" xml:space="preserve">
+    <value>Confirma que quieres eliminar tu perfil</value>
+  </data>
+  <data name="confirm_delete_stats" xml:space="preserve">
+    <value>Confirma si realmente quieres eliminar tus estadísticas</value>
+  </data>
+  <data name="creating_poll" xml:space="preserve">
+    <value>Creando encuesta</value>
+  </data>
+  <data name="creation_date" xml:space="preserve">
+    <value>Fecha de creación</value>
+  </data>
+  <data name="date_of_birth" xml:space="preserve">
+    <value>Fecha de nacimiento</value>
+  </data>
+  <data name="date_of_death" xml:space="preserve">
+    <value>Fecha de defunción</value>
+  </data>
+  <data name="defeat" xml:space="preserve">
+    <value>¡Derrota!</value>
+  </data>
+  <data name="delete_stats_cancelled" xml:space="preserve">
+    <value>Elegiste no eliminar tus estadísticas</value>
+  </data>
+  <data name="delete_stats_done" xml:space="preserve">
+    <value>Has eliminado todas tus estadísticas en este servidor</value>
+  </data>
+  <data name="did_not_press_button_to_write" xml:space="preserve">
+    <value>¡No pulsaste el botón a tiempo!</value>
+  </data>
+  <data name="did_not_write_on_time" xml:space="preserve">
+    <value>¡No escribiste a tiempo!</value>
+  </data>
+  <data name="difficulty" xml:space="preserve">
+    <value>Dificultad</value>
+  </data>
+  <data name="dm_required" xml:space="preserve">
+    <value>Mensaje directo requerido</value>
+  </data>
+  <data name="dm_required_desc" xml:space="preserve">
+    <value>Solo puedes ejecutar este comando dentro de mensajes directos</value>
+  </data>
+  <data name="emote_not_found" xml:space="preserve">
+    <value>Emote `{0}` no encontrado</value>
+  </data>
+  <data name="end_date" xml:space="preserve">
+    <value>Fecha de finalización</value>
+  </data>
+  <data name="episode" xml:space="preserve">
+    <value>Episodio</value>
+  </data>
+  <data name="episodes" xml:space="preserve">
+    <value>Episodios</value>
+  </data>
+  <data name="error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="error_max_options_limit" xml:space="preserve">
+    <value>Solo puedes crear un máximo de 25 opciones</value>
+  </data>
+  <data name="error_more_than_one_option" xml:space="preserve">
+    <value>Debes crear al menos dos opciones. Ejemplo: opción 1, opción 2, opción 3</value>
+  </data>
+  <data name="error_retrieving_guild_with_id" xml:space="preserve">
+    <value>Ha sucedido un error obteniendo el servidor con el Id: `{0}`</value>
+  </data>
+  <data name="external_links" xml:space="preserve">
+    <value>Links externos</value>
+  </data>
+  <data name="favorite_animes" xml:space="preserve">
+    <value>Animes favoritos</value>
+  </data>
+  <data name="favorite_characters" xml:space="preserve">
+    <value>Personajes favoritos</value>
+  </data>
+  <data name="favorite_mangas" xml:space="preserve">
+    <value>Mangas favoritos</value>
+  </data>
+  <data name="favorite_staff" xml:space="preserve">
+    <value>Staff favoritos</value>
+  </data>
+  <data name="favorite_studios" xml:space="preserve">
+    <value>Estudios favoritos</value>
+  </data>
+  <data name="feels_like" xml:space="preserve">
+    <value>Sensación térmica</value>
+  </data>
+  <data name="finish_game" xml:space="preserve">
+    <value>Finalizar partida</value>
+  </data>
+  <data name="format" xml:space="preserve">
+    <value>Formato</value>
+  </data>
+  <data name="from" xml:space="preserve">
+    <value>Desde</value>
+  </data>
+  <data name="from_the_anime" xml:space="preserve">
+    <value>del anime</value>
+  </data>
+  <data name="games" xml:space="preserve">
+    <value>Partidas</value>
+  </data>
+  <data name="game_cancelled" xml:space="preserve">
+    <value>Partida cancelada</value>
+  </data>
+  <data name="gender" xml:space="preserve">
+    <value>Género</value>
+  </data>
+  <data name="genre" xml:space="preserve">
+    <value>Genero</value>
+  </data>
+  <data name="genres" xml:space="preserve">
+    <value>Géneros</value>
+  </data>
+  <data name="guess" xml:space="preserve">
+    <value>Adivinar</value>
+  </data>
+  <data name="guesses" xml:space="preserve">
+    <value>Aciertos</value>
+  </data>
+  <data name="guess_the" xml:space="preserve">
+    <value>Adivina el</value>
+  </data>
+  <data name="guess_the_anime" xml:space="preserve">
+    <value>Adivina el anime</value>
+  </data>
+  <data name="guess_the_character" xml:space="preserve">
+    <value>Adivina el personaje</value>
+  </data>
+  <data name="guess_the_genre" xml:space="preserve">
+    <value>Adivina el genero</value>
+  </data>
+  <data name="guess_the_manga" xml:space="preserve">
+    <value>Adivina el manga</value>
+  </data>
+  <data name="guess_the_protagonist" xml:space="preserve">
+    <value>Adivina el protagonista</value>
+  </data>
+  <data name="guess_the_studio" xml:space="preserve">
+    <value>Adivina el estudio de animación</value>
+  </data>
+  <data name="guess_user" xml:space="preserve">
+    <value>¡{0} le ha acertado!</value>
+  </data>
+  <data name="guild_required" xml:space="preserve">
+    <value>Server requerido</value>
+  </data>
+  <data name="guild_required_desc" xml:space="preserve">
+    <value>Solo puedes ejecutar este comando dentro de un servidor</value>
+  </data>
+  <data name="guild_with_id_not_found" xml:space="preserve">
+    <value>Servidor con la id `{0}` no encontrado</value>
+  </data>
+  <data name="hangman" xml:space="preserve">
+    <value>Ahorcado</value>
+  </data>
+  <data name="higher_or_lower_desc" xml:space="preserve">
+    <value>¡Elige el anime con mejor puntuación para ganar!</value>
+  </data>
+  <data name="higher_or_lower_desc_popularity" xml:space="preserve">
+    <value>¡Elige el anime con mayor popularidad para ganar!</value>
+  </data>
+  <data name="higher_or_lower_round_defeat" xml:space="preserve">
+    <value>**{0}** tiene menor puntuación promedio **({1}/10)** que **{2} ({3}/10)**</value>
+  </data>
+  <data name="higher_or_lower_round_defeat_popularity" xml:space="preserve">
+    <value>**{0}** tiene menos favoritos **({1} ♥)** que **{2} ({3} ♥)**</value>
+  </data>
+  <data name="higher_or_lower_round_win" xml:space="preserve">
+    <value>**{0}** tiene **{1}/10** de puntuación promedio mientras que **{2}** tiene **{3}/10**</value>
+  </data>
+  <data name="higher_or_lower_round_win_popularity" xml:space="preserve">
+    <value>**{0}** tiene **{1} ♥** favoritos mientras que **{2}** tiene **{3} ♥**</value>
+  </data>
+  <data name="hint" xml:space="preserve">
+    <value>¡Pista!</value>
+  </data>
+  <data name="humidity" xml:space="preserve">
+    <value>Humedad</value>
+  </data>
+  <data name="id_not_valid" xml:space="preserve">
+    <value>Id `{0}` no valida</value>
+  </data>
+  <data name="image_format_error" xml:space="preserve">
+    <value>La extensión de la imagen debe ser JPG, PNG o JPEG</value>
+  </data>
+  <data name="image_from_nsfw_anime" xml:space="preserve">
+    <value>Esta imagen es de un anime NSFW</value>
+  </data>
+  <data name="image_must_enter_link" xml:space="preserve">
+    <value>Debes ingresar el link de una imagen</value>
+  </data>
+  <data name="invite" xml:space="preserve">
+    <value>Invítame</value>
+  </data>
+  <data name="in_english" xml:space="preserve">
+    <value>En ingés</value>
+  </data>
+  <data name="in_popularity_rank" xml:space="preserve">
+    <value>en el ranking de popularidad</value>
+  </data>
+  <data name="joined_date" xml:space="preserve">
+    <value>Fecha en la que entró Yumiko</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="lastest_log_file" xml:space="preserve">
+    <value>Archivo de log más reciente</value>
+  </data>
+  <data name="latency" xml:space="preserve">
+    <value>Latencia</value>
+  </data>
+  <data name="letters_used" xml:space="preserve">
+    <value>Letras usadas</value>
+  </data>
+  <data name="library" xml:space="preserve">
+    <value>Libería</value>
+  </data>
+  <data name="link" xml:space="preserve">
+    <value>Enlace</value>
+  </data>
+  <data name="link_for" xml:space="preserve">
+    <value>Enlace para</value>
+  </data>
+  <data name="location_not_found" xml:space="preserve">
+    <value>Localidad `{0}, {1}` no encontrada</value>
+  </data>
+  <data name="love_0" xml:space="preserve">
+    <value>¡Alejense! Se terminarán asesinando mutuamente</value>
+  </data>
+  <data name="love_10" xml:space="preserve">
+    <value>Se odiarán mutuamente, no son para nada compatibles</value>
+  </data>
+  <data name="love_100" xml:space="preserve">
+    <value>¡Relación perfecta! Se casarán y tendrán muchos hijos</value>
+  </data>
+  <data name="love_25" xml:space="preserve">
+    <value>Lo mejor es que se alejen uno del otro, no encajan</value>
+  </data>
+  <data name="love_50" xml:space="preserve">
+    <value>Serán buenos amigos, pero encuentro difícil el amor</value>
+  </data>
+  <data name="love_75" xml:space="preserve">
+    <value>Serán mejores amigos y quizás algo más</value>
+  </data>
+  <data name="love_90" xml:space="preserve">
+    <value>Tienen que darse una oportunidad</value>
+  </data>
+  <data name="love_99" xml:space="preserve">
+    <value>Están destinados a estar juntos</value>
+  </data>
+  <data name="love_between" xml:space="preserve">
+    <value>Amor entre **{0}** y **{1}**</value>
+  </data>
+  <data name="manga" xml:space="preserve">
+    <value>Manga</value>
+  </data>
+  <data name="manga_list" xml:space="preserve">
+    <value>Lista de manga</value>
+  </data>
+  <data name="manga_stats" xml:space="preserve">
+    <value>Estadísticas de manga</value>
+  </data>
+  <data name="mean_score" xml:space="preserve">
+    <value>Puntuación media</value>
+  </data>
+  <data name="media_recommendations" xml:space="preserve">
+    <value>Recomendaciones de {0}</value>
+  </data>
+  <data name="media_recommendations_explanation" xml:space="preserve">
+    <value>Explicación: Mientras mas alto sea el número es más probable que te guste. Las recomendaciones son calculadas en base a tus {1}s {0} y las puntuaciones que les has asignado.</value>
+  </data>
+  <data name="member_avatar" xml:space="preserve">
+    <value>Avatar de {0}</value>
+  </data>
+  <data name="member_count" xml:space="preserve">
+    <value>Cantidad de miembros</value>
+  </data>
+  <data name="memory_usage" xml:space="preserve">
+    <value>Uso de memoria</value>
+  </data>
+  <data name="message_will_not_be_triggered" xml:space="preserve">
+    <value>Este mensaje no saldrá si el usuario ha votado en las últimas 12 horas</value>
+  </data>
+  <data name="minute" xml:space="preserve">
+    <value>Minuto</value>
+  </data>
+  <data name="miss_user_games" xml:space="preserve">
+    <value>¡{0} le ha errado!</value>
+  </data>
+  <data name="my_love_to_user_is" xml:space="preserve">
+    <value>Mi amor hacia **{0}** es del **{1}%**</value>
+  </data>
+  <data name="name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="new_profile_saved" xml:space="preserve">
+    <value>Nuevo perfil guardado exitosamente</value>
+  </data>
+  <data name="new_profile_saved_mention" xml:space="preserve">
+    <value>{0}, has guardado tu perfil de Anilist correctamente</value>
+  </data>
+  <data name="new_record" xml:space="preserve">
+    <value>Nuevo record</value>
+  </data>
+  <data name="new_record_desc" xml:space="preserve">
+    <value>¡Felicitaciones {0}! Superaste tu mejor puntuación.</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="nobody_has_guessed" xml:space="preserve">
+    <value>Nadie ha acertado</value>
+  </data>
+  <data name="notes" xml:space="preserve">
+    <value>Notas</value>
+  </data>
+  <data name="not_assigned" xml:space="preserve">
+    <value>Sin asignar</value>
+  </data>
+  <data name="not_found" xml:space="preserve">
+    <value>{0} no encontrado</value>
+  </data>
+  <data name="not_yet_released" xml:space="preserve">
+    <value>No estrenado</value>
+  </data>
+  <data name="no_active_game" xml:space="preserve">
+    <value>No hay ninguna partida activa en este canal</value>
+  </data>
+  <data name="no_anilist_profile_vinculated" xml:space="preserve">
+    <value>{0}, no tienes ningún perfil de Anilist vinculado</value>
+  </data>
+  <data name="no_answser_in_time" xml:space="preserve">
+    <value>Pasaron {0} segundos y nadie ha respondido a tiempo</value>
+  </data>
+  <data name="no_click_button" xml:space="preserve">
+    <value>Nadie apretó ningún botón</value>
+  </data>
+  <data name="no_current_trivia" xml:space="preserve">
+    <value>No hay ninguna trivia activa en este canal</value>
+  </data>
+  <data name="no_genre_selected" xml:space="preserve">
+    <value>No has elegido ningún genero</value>
+  </data>
+  <data name="no_logs_found" xml:space="preserve">
+    <value>No se han encontrado logs</value>
+  </data>
+  <data name="no_one_has_voted" xml:space="preserve">
+    <value>Nadie ha votado</value>
+  </data>
+  <data name="no_recommendations_found" xml:space="preserve">
+    <value>No se encontró ninguna recomendación. Probablemente sucede esto porque tienes pocos registros en tu lista o no les tengas una puntuación asignada.</value>
+  </data>
+  <data name="no_results_found_image" xml:space="preserve">
+    <value>No se encontraron resultados para esta imagen</value>
+  </data>
+  <data name="no_stats_available" xml:space="preserve">
+    <value>No has jugado ninguna partida todavía</value>
+  </data>
+  <data name="nsfw_required" xml:space="preserve">
+    <value>NSFW Requerido</value>
+  </data>
+  <data name="of" xml:space="preserve">
+    <value>de</value>
+  </data>
+  <data name="only_bot_owner" xml:space="preserve">
+    <value>Solo el dueño del bot puede ejecutar este comando</value>
+  </data>
+  <data name="options" xml:space="preserve">
+    <value>Opciones</value>
+  </data>
+  <data name="paste_code_here" xml:space="preserve">
+    <value>Pegar código aquí</value>
+  </data>
+  <data name="permission_required" xml:space="preserve">
+    <value>Permiso requerido</value>
+  </data>
+  <data name="permission_required_desc" xml:space="preserve">
+    <value>Tu y {0} necesitan el permiso `{1}` para ejecutar este comando</value>
+  </data>
+  <data name="player_turn" xml:space="preserve">
+    <value>Turno de {0}</value>
+  </data>
+  <data name="please_wait" xml:space="preserve">
+    <value>Por favor espera mientras todo se prepara</value>
+  </data>
+  <data name="poll" xml:space="preserve">
+    <value>Encuesta</value>
+  </data>
+  <data name="poll_description" xml:space="preserve">
+    <value>Selecciona una opción para votar</value>
+  </data>
+  <data name="poll_finished" xml:space="preserve">
+    <value>Encuesta terminada</value>
+  </data>
+  <data name="poll_options_placeholder" xml:space="preserve">
+    <value>Opciones separadas por comas. Ejemplo: opción 1, opción 2, opción 3</value>
+  </data>
+  <data name="poll_title_placeholder" xml:space="preserve">
+    <value>Título de la encuesta</value>
+  </data>
+  <data name="pressure" xml:space="preserve">
+    <value>Presión atmosférica</value>
+  </data>
+  <data name="privacy_policy" xml:space="preserve">
+    <value>Política de Privacidad</value>
+  </data>
+  <data name="processing" xml:space="preserve">
+    <value>Procesando</value>
+  </data>
+  <data name="processing_desc" xml:space="preserve">
+    <value>Espera mientras se procesa el comando</value>
+  </data>
+  <data name="processing_image" xml:space="preserve">
+    <value>Procesando imagen</value>
+  </data>
+  <data name="profile" xml:space="preserve">
+    <value>Perfil</value>
+  </data>
+  <data name="protagonist" xml:space="preserve">
+    <value>Protagonista</value>
+  </data>
+  <data name="question" xml:space="preserve">
+    <value>Pregunta</value>
+  </data>
+  <data name="random_cat" xml:space="preserve">
+    <value>Gatito aleatorio</value>
+  </data>
+  <data name="random_cat_error" xml:space="preserve">
+    <value>Hubo un error tratando de obtener el gatito</value>
+  </data>
+  <data name="random_dog" xml:space="preserve">
+    <value>Perro aleatorio</value>
+  </data>
+  <data name="random_dog_error" xml:space="preserve">
+    <value>Hubo un error tratando de obtener al perro</value>
+  </data>
+  <data name="read" xml:space="preserve">
+    <value>leidos</value>
+  </data>
+  <data name="registered" xml:space="preserve">
+    <value>Registro en Discord</value>
+  </data>
+  <data name="related" xml:space="preserve">
+    <value>Relacionado</value>
+  </data>
+  <data name="resource_not_found" xml:space="preserve">
+    <value>El recurso que estabas buscando no fue encontrado</value>
+  </data>
+  <data name="response_timed_out" xml:space="preserve">
+    <value>Tiempo agotado esperando la respuesta</value>
+  </data>
+  <data name="results" xml:space="preserve">
+    <value>Resultados</value>
+  </data>
+  <data name="retrieved_from" xml:space="preserve">
+    <value>Obtenido de</value>
+  </data>
+  <data name="retrieving" xml:space="preserve">
+    <value>Obteniendo</value>
+  </data>
+  <data name="roles" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="round" xml:space="preserve">
+    <value>Ronda</value>
+  </data>
+  <data name="rounds" xml:space="preserve">
+    <value>Rondas</value>
+  </data>
+  <data name="sauce_remember" xml:space="preserve">
+    <value>Recuerda que solo funciona con imágenes que son partes de un episodio de anime</value>
+  </data>
+  <data name="score" xml:space="preserve">
+    <value>Puntuación</value>
+  </data>
+  <data name="see_stats" xml:space="preserve">
+    <value>Puedes ver las estadísticas usando el comando /stats</value>
+  </data>
+  <data name="select_an_option" xml:space="preserve">
+    <value>Selecciona una opción</value>
+  </data>
+  <data name="select_a_genre" xml:space="preserve">
+    <value>Selecciona un genero</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="setup_anilist_profile" xml:space="preserve">
+    <value>Configura tu perfil de AniList</value>
+  </data>
+  <data name="set_anilist_profile" xml:space="preserve">
+    <value>Vincular AniList</value>
+  </data>
+  <data name="shutting_down" xml:space="preserve">
+    <value>Apagando</value>
+  </data>
+  <data name="similarity" xml:space="preserve">
+    <value>Similaridad</value>
+  </data>
+  <data name="start_date" xml:space="preserve">
+    <value>Fecha de inicio</value>
+  </data>
+  <data name="stats" xml:space="preserve">
+    <value>Estadísticas</value>
+  </data>
+  <data name="status" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="studio" xml:space="preserve">
+    <value>Estudio</value>
+  </data>
+  <data name="studios" xml:space="preserve">
+    <value>Estudios</value>
+  </data>
+  <data name="success" xml:space="preserve">
+    <value>Éxito</value>
+  </data>
+  <data name="sunrise" xml:space="preserve">
+    <value>Salida del sol</value>
+  </data>
+  <data name="sunset" xml:space="preserve">
+    <value>Puesta del sol</value>
+  </data>
+  <data name="synonyms" xml:space="preserve">
+    <value>Sinónimos</value>
+  </data>
+  <data name="tags" xml:space="preserve">
+    <value>Etiquetas</value>
+  </data>
+  <data name="talk_with_yumiko" xml:space="preserve">
+    <value>Habla con Yumiko</value>
+  </data>
+  <data name="temperature" xml:space="preserve">
+    <value>Temperatura</value>
+  </data>
+  <data name="the_anime_is" xml:space="preserve">
+    <value>El anime es: {0}</value>
+  </data>
+  <data name="the_character_is" xml:space="preserve">
+    <value>El personaje es: {0} de {1}</value>
+  </data>
+  <data name="the_manga_is" xml:space="preserve">
+    <value>El manga es: {0}</value>
+  </data>
+  <data name="the_possible_anime_is" xml:space="preserve">
+    <value>El posible anime de la imagen es</value>
+  </data>
+  <data name="the_protagonists_of_are" xml:space="preserve">
+    <value>Los protagonistas de {0} son:</value>
+  </data>
+  <data name="the_studios_of_are" xml:space="preserve">
+    <value>Los estudios de {0} son:</value>
+  </data>
+  <data name="tictactoe" xml:space="preserve">
+    <value>Ta-Te-Ti</value>
+  </data>
+  <data name="tie" xml:space="preserve">
+    <value>Empate!</value>
+  </data>
+  <data name="tie_desc" xml:space="preserve">
+    <value>Nadie alcanzó la victoria</value>
+  </data>
+  <data name="time" xml:space="preserve">
+    <value>Tiempo</value>
+  </data>
+  <data name="timed_out_choosing_genre" xml:space="preserve">
+    <value>Tiempo agotado eligiendo el genero</value>
+  </data>
+  <data name="time_to_vote" xml:space="preserve">
+    <value>Tiempo para votar</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="titles_language" xml:space="preserve">
+    <value>Idioma de títulos</value>
+  </data>
+  <data name="to" xml:space="preserve">
+    <value>Hasta</value>
+  </data>
+  <data name="total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="total_guilds" xml:space="preserve">
+    <value>Total de servidores</value>
+  </data>
+  <data name="total_shards" xml:space="preserve">
+    <value>Total de shards</value>
+  </data>
+  <data name="total_users" xml:space="preserve">
+    <value>Total de usuarios</value>
+  </data>
+  <data name="to_vinculate_anilist_profile" xml:space="preserve">
+    <value>Para vincular tu perfil, debes usar el siguiente comando</value>
+  </data>
+  <data name="type_a_letter" xml:space="preserve">
+    <value>¡Escribe una letra!</value>
+  </data>
+  <data name="type_guess_command" xml:space="preserve">
+    <value>Escribe /adivinar para hacer tu intento</value>
+  </data>
+  <data name="unknown_error" xml:space="preserve">
+    <value>Error desconocido</value>
+  </data>
+  <data name="unknown_error_tracemoe" xml:space="preserve">
+    <value>Error desconocido obteniendo imagen desde trace.moe</value>
+  </data>
+  <data name="uptime" xml:space="preserve">
+    <value>Uptime</value>
+  </data>
+  <data name="user_anime_list" xml:space="preserve">
+    <value>Lista de anime de {0} ({1})</value>
+  </data>
+  <data name="user_game_stats" xml:space="preserve">
+    <value>Estadísticas de juegos de {0}</value>
+  </data>
+  <data name="user_has_guessed" xml:space="preserve">
+    <value>¡{0} le ha acertado!</value>
+  </data>
+  <data name="user_made_a_mistake" xml:space="preserve">
+    <value>¡{0} le ha errado!</value>
+  </data>
+  <data name="user_permission_required" xml:space="preserve">
+    <value>Permiso de usuario requerido</value>
+  </data>
+  <data name="user_permission_required_desc" xml:space="preserve">
+    <value>Necesitas el permiso `{0}` para ejecutar este comando</value>
+  </data>
+  <data name="user_self_love" xml:space="preserve">
+    <value>Amor propio de {0}</value>
+  </data>
+  <data name="user_won_the_game" xml:space="preserve">
+    <value>{0} ganó la partida</value>
+  </data>
+  <data name="uses" xml:space="preserve">
+    <value>Usos</value>
+  </data>
+  <data name="use_command_in_nsfw_channel" xml:space="preserve">
+    <value>Por favor usa este comando en un canal con restricción de edad</value>
+  </data>
+  <data name="victory" xml:space="preserve">
+    <value>¡Victoria!</value>
+  </data>
+  <data name="video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="vote" xml:space="preserve">
+    <value>Vótame</value>
+  </data>
+  <data name="voted" xml:space="preserve">
+    <value>Voto realizado</value>
+  </data>
+  <data name="votes" xml:space="preserve">
+    <value>Voto(s)</value>
+  </data>
+  <data name="vote_count" xml:space="preserve">
+    <value>Cantidad de votos</value>
+  </data>
+  <data name="vote_me_on_topgg" xml:space="preserve">
+    <value>¡Vótame en Top.gg!</value>
+  </data>
+  <data name="vote_me_on_topgg_desc" xml:space="preserve">
+    <value>Puedes ayudarme mucho votándome en [este sitio web]({0}). ¡Gracias!</value>
+  </data>
+  <data name="waifu_level_100" xml:space="preserve">
+    <value>Estoy completamente enamorada de ti, ¿cuándo nos casamos?</value>
+  </data>
+  <data name="waifu_level_25" xml:space="preserve">
+    <value>Me pego un tiro antes de tocarte</value>
+  </data>
+  <data name="waifu_level_50" xml:space="preserve">
+    <value>Me das asquito, mejor me alejo de ti</value>
+  </data>
+  <data name="waifu_level_75" xml:space="preserve">
+    <value>No estás mal, quizas tengas una oportunidad conmigo</value>
+  </data>
+  <data name="waifu_level_99" xml:space="preserve">
+    <value>Soy tu waifu, puedes hacer lo que quieras conmigo</value>
+  </data>
+  <data name="watched" xml:space="preserve">
+    <value>vistos</value>
+  </data>
+  <data name="weather" xml:space="preserve">
+    <value>Clima</value>
+  </data>
+  <data name="weather_in" xml:space="preserve">
+    <value>Clima en</value>
+  </data>
+  <data name="website" xml:space="preserve">
+    <value>Sitio Web</value>
+  </data>
+  <data name="we_have_a_winner" xml:space="preserve">
+    <value>¡Tenemos un ganador!</value>
+  </data>
+  <data name="which_one_has_better_score" xml:space="preserve">
+    <value>¿Cuál tiene mayor puntuación?</value>
+  </data>
+  <data name="which_one_is_more_popular" xml:space="preserve">
+    <value>¿Cuál es más popular?</value>
+  </data>
+  <data name="wind_speed" xml:space="preserve">
+    <value>Velocidad del viento</value>
+  </data>
+  <data name="winner" xml:space="preserve">
+    <value>Ganador</value>
+  </data>
+  <data name="without_description" xml:space="preserve">
+    <value>(Sin descripción)</value>
+  </data>
+  <data name="without_notes" xml:space="preserve">
+    <value>(Sin notas)</value>
+  </data>
+  <data name="without_titles" xml:space="preserve">
+    <value>Sin títulos</value>
+  </data>
+  <data name="write_any_letter_to_continue" xml:space="preserve">
+    <value>Escribe cualquier letra para seguir con el juego</value>
+  </data>
+  <data name="write_a_letter" xml:space="preserve">
+    <value>¡Escribe una letra!</value>
+  </data>
+  <data name="wrong_choice" xml:space="preserve">
+    <value>¡Le erraste!</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>Si</value>
+  </data>
+  <data name="yes_or_no" xml:space="preserve">
+    <value>¿SI O NO?</value>
+  </data>
+  <data name="your_attempt" xml:space="preserve">
+    <value>Tu intento</value>
+  </data>
+  <data name="your_new_record_is" xml:space="preserve">
+    <value>Tu nuevo record es: **{0}**</value>
+  </data>
+  <data name="you_guessed" xml:space="preserve">
+    <value>¡Le acertaste!</value>
+  </data>
+  <data name="you_have_cancelled_the_game" xml:space="preserve">
+    <value>¡Cancelaste la partida!</value>
+  </data>
+  <data name="you_voted_to" xml:space="preserve">
+    <value>Votaste: `{0}`</value>
+  </data>
+  <data name="ping.description" xml:space="preserve">
+    <value>Muestra el ping de Yumiko</value>
+  </data>
+  <data name="min_max_temperature" xml:space="preserve">
+    <value>Temperatura mín - máx</value>
+  </data>
+  <data name="weather.name" xml:space="preserve">
+    <value>clima</value>
+  </data>
+  <data name="weather.description" xml:space="preserve">
+    <value>Muestra el clima en una localidad</value>
+  </data>
+  <data name="cat.name" xml:space="preserve">
+    <value>gato</value>
+  </data>
+  <data name="cat.description" xml:space="preserve">
+    <value>Gatito aleatorio</value>
+  </data>
+  <data name="dog.name" xml:space="preserve">
+    <value>perro</value>
+  </data>
+  <data name="dog.description" xml:space="preserve">
+    <value>Perro aleatorio</value>
+  </data>
+  <data name="say.description" xml:space="preserve">
+    <value>Replica un texto</value>
+  </data>
+  <data name="question.name" xml:space="preserve">
+    <value>pregunta</value>
+  </data>
+  <data name="question.description" xml:space="preserve">
+    <value>Responde con si o no</value>
+  </data>
+  <data name="choose.name" xml:space="preserve">
+    <value>elegir</value>
+  </data>
+  <data name="choose.description" xml:space="preserve">
+    <value>Elige entre varias opciones separadas por comas</value>
+  </data>
+  <data name="poll.name" xml:space="preserve">
+    <value>encuesta</value>
+  </data>
+  <data name="poll.description" xml:space="preserve">
+    <value>Hace una encuesta en el servidor</value>
+  </data>
+  <data name="emote.description" xml:space="preserve">
+    <value>Muestra información sobre un emote</value>
+  </data>
+  <data name="avatar.description" xml:space="preserve">
+    <value>Muestra el avatar de un usuario</value>
+  </data>
+  <data name="user.name" xml:space="preserve">
+    <value>usuario</value>
+  </data>
+  <data name="user.description" xml:space="preserve">
+    <value>Busca información sobre un usuario</value>
+  </data>
+  <data name="waifu.description" xml:space="preserve">
+    <value>Mi nivel de amor hacia un usuario</value>
+  </data>
+  <data name="love.name" xml:space="preserve">
+    <value>amor</value>
+  </data>
+  <data name="love.description" xml:space="preserve">
+    <value>Porcentaje de amor entre dos usuarios</value>
+  </data>
+  <data name="anilist.description" xml:space="preserve">
+    <value>Consultas a Anilist</value>
+  </data>
+  <data name="anilist.setprofile.name" xml:space="preserve">
+    <value>asignarperfil</value>
+  </data>
+  <data name="anilist.setprofile.description" xml:space="preserve">
+    <value>Asigna tu perfil de AniList</value>
+  </data>
+  <data name="anilist.deleteprofile.name" xml:space="preserve">
+    <value>eliminarperfil</value>
+  </data>
+  <data name="anilist.deleteprofile.description" xml:space="preserve">
+    <value>Elimina tu perfil de AniList</value>
+  </data>
+  <data name="anilist.profile.name" xml:space="preserve">
+    <value>perfil</value>
+  </data>
+  <data name="anilist.profile.description" xml:space="preserve">
+    <value>Busca un perfil de AniList</value>
+  </data>
+  <data name="anilist.anime.description" xml:space="preserve">
+    <value>Busca un anime</value>
+  </data>
+  <data name="anilist.manga.description" xml:space="preserve">
+    <value>Busca un manga</value>
+  </data>
+  <data name="anilist.character.name" xml:space="preserve">
+    <value>personaje</value>
+  </data>
+  <data name="anilist.character.description" xml:space="preserve">
+    <value>Busca un personaje</value>
+  </data>
+  <data name="anilist.staff.description" xml:space="preserve">
+    <value>Busca a un staff</value>
+  </data>
+  <data name="anilist.pj.description" xml:space="preserve">
+    <value>Personaje aleatorio</value>
+  </data>
+  <data name="anilist.sauce.description" xml:space="preserve">
+    <value>Busca el anime de una imágen</value>
+  </data>
+  <data name="anilist.anitheme.description" xml:space="preserve">
+    <value>Busca por openings y endings de anime</value>
+  </data>
+  <data name="anilist.recommendations.name" xml:space="preserve">
+    <value>recomendaciones</value>
+  </data>
+  <data name="anilist.recommendations.description" xml:space="preserve">
+    <value>Recomendaciones automáticas basada en tu lista</value>
+  </data>
+  <data name="anilist.animelist.description" xml:space="preserve">
+    <value>Busca la lista de anime de un usuario</value>
+  </data>
+  <data name="AniList Profile.name" xml:space="preserve">
+    <value>Perfil de AniList</value>
+  </data>
+  <data name="Anime Recommendations.name" xml:space="preserve">
+    <value>Recomendaciones de anime</value>
+  </data>
+  <data name="Manga Recommendations.name" xml:space="preserve">
+    <value>Recomendaciones de manga</value>
+  </data>
+  <data name="trivia.description" xml:space="preserve">
+    <value>Juega una partida de trivia de anime</value>
+  </data>
+  <data name="hangman.name" xml:space="preserve">
+    <value>ahorcado</value>
+  </data>
+  <data name="hangman.description" xml:space="preserve">
+    <value>Juega al juego del ahorcado</value>
+  </data>
+  <data name="higherorlower.description" xml:space="preserve">
+    <value>Juega al juego de Higher or Lower</value>
+  </data>
+  <data name="tictactoe.name" xml:space="preserve">
+    <value>tateti</value>
+  </data>
+  <data name="tictactoe.description" xml:space="preserve">
+    <value>Juega al juego del Ta-Te-Ti</value>
+  </data>
+  <data name="stats.description" xml:space="preserve">
+    <value>Estadísticas de los distintos juegos</value>
+  </data>
+  <data name="stats.user.name" xml:space="preserve">
+    <value>usuario</value>
+  </data>
+  <data name="stats.user.description" xml:space="preserve">
+    <value>Muestra las estadisticas de todos los juegos de un usuario</value>
+  </data>
+  <data name="stats.trivia.description" xml:space="preserve">
+    <value>Muestra las estadísticas del juego trivia</value>
+  </data>
+  <data name="stats.higherorlower.description" xml:space="preserve">
+    <value>Muestra las estadísticas del juego Higher or Lower</value>
+  </data>
+  <data name="stats.delete.name" xml:space="preserve">
+    <value>eliminar</value>
+  </data>
+  <data name="stats.delete.description" xml:space="preserve">
+    <value>Elimina tus estadísticas del servidor</value>
+  </data>
+  <data name="stats.bot.description" xml:space="preserve">
+    <value>Muestra información y estadísticas del bot</value>
+  </data>
+  <data name="owner.description" xml:space="preserve">
+    <value>Comandos solo disponibles para el owner de Yumiko</value>
+  </data>
+  <data name="owner.test.description" xml:space="preserve">
+    <value>Comando de pruebas</value>
+  </data>
+  <data name="owner.guild.name" xml:space="preserve">
+    <value>servidor</value>
+  </data>
+  <data name="owner.guild.description" xml:space="preserve">
+    <value>Información sobre un servidor</value>
+  </data>
+  <data name="owner.guilds.name" xml:space="preserve">
+    <value>servidores</value>
+  </data>
+  <data name="owner.guilds.description" xml:space="preserve">
+    <value>Muestra los servidores de Yumiko</value>
+  </data>
+  <data name="owner.deleteguild.name" xml:space="preserve">
+    <value>eliminarservidor</value>
+  </data>
+  <data name="owner.deleteguild.description" xml:space="preserve">
+    <value>Yumiko deja un servidor</value>
+  </data>
+  <data name="owner.ratelimits.description" xml:space="preserve">
+    <value>Muestra los ratelimits</value>
+  </data>
+  <data name="owner.commands.name" xml:space="preserve">
+    <value>comandos</value>
+  </data>
+  <data name="owner.commands.description" xml:space="preserve">
+    <value>Muestra los comandos usados desde que se inicializó el bot</value>
+  </data>
+  <data name="owner.logs.description" xml:space="preserve">
+    <value>Muestra el último archivo de log</value>
+  </data>
+  <data name="owner.poweroff.name" xml:space="preserve">
+    <value>apagar</value>
+  </data>
+  <data name="owner.poweroff.description" xml:space="preserve">
+    <value>Apaga el bot</value>
+  </data>
+  <data name="help.description" xml:space="preserve">
+    <value>Ayuda e información sobre Yumiko</value>
+  </data>
+</root>
