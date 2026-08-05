@@ -80,6 +80,10 @@ internal sealed class AnilistGraphQLExecutor : IDisposable
         {
             throw new AnilistRateLimitException(GetRetryAfter(ex.ResponseHeaders), ex);
         }
+        catch (GraphQLHttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            throw new AnilistNotFoundException(ex);
+        }
         catch (GraphQLHttpRequestException ex) when ((int)ex.StatusCode >= 500)
         {
             throw new AnilistServerErrorException((int)ex.StatusCode, ex);
@@ -117,7 +121,7 @@ internal sealed class AnilistGraphQLExecutor : IDisposable
                 {
                     _logger.LogWarning(
                         args.Outcome.Exception,
-                        "Reintentando request a AniList (intento {Attempt}) tras esperar {Delay}",
+                        "Retrying AniList request (attempt {Attempt}) after waiting {Delay}",
                         args.AttemptNumber + 1,
                         args.RetryDelay);
                     return ValueTask.CompletedTask;

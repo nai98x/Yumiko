@@ -3,6 +3,7 @@ using Yumiko.Infrastructure.Anilist.Responses;
 using Yumiko.Model.Entities;
 using Yumiko.Model.Entities.Anilist;
 using Yumiko.Model.Enum;
+using Yumiko.Model.Exceptions;
 using Yumiko.Model.Interfaces;
 
 namespace Yumiko.Infrastructure.Anilist;
@@ -99,15 +100,23 @@ internal sealed class AnilistClient(AnilistGraphQLExecutor executor) : IAnilistC
 
     public async Task<MediaUserStatistics?> GetMediaFromUserAsync(int userId, int mediaId, CancellationToken cancellationToken = default)
     {
-        AnilistResponse<MediaListResponse> response = await executor.SendQueryAsync<MediaListResponse>(
-            new GraphQLRequest
-            {
-                Query = AnilistQueries.MediaUser,
-                Variables = new { userId, mediaId },
-            },
-            cancellationToken);
+        try
+        {
+            AnilistResponse<MediaListResponse> response = await executor.SendQueryAsync<MediaListResponse>(
+                new GraphQLRequest
+                {
+                    Query = AnilistQueries.MediaUser,
+                    Variables = new { userId, mediaId },
+                },
+                cancellationToken);
 
-        return response.Data?.MediaList;
+            return response.Data?.MediaList;
+        }
+        catch (AnilistNotFoundException)
+        {
+            // The user has no entry for that media: it is a valid answer, not a failure.
+            return null;
+        }
     }
 
     public async Task<MediaUserList?> GetMediaListsAsync(int userId, MediaUserStatus status, MediaUserSort order, MediaTitleType titleLanguage, MediaType type, CancellationToken cancellationToken = default)
@@ -126,15 +135,23 @@ internal sealed class AnilistClient(AnilistGraphQLExecutor executor) : IAnilistC
             };
         }
 
-        AnilistResponse<MediaUserListResponse> response = await executor.SendQueryAsync<MediaUserListResponse>(
-            new GraphQLRequest
-            {
-                Query = AnilistQueries.MediaList,
-                Variables = new { userId, status = System.Enum.GetName(status), sort, type = System.Enum.GetName(type) },
-            },
-            cancellationToken);
+        try
+        {
+            AnilistResponse<MediaUserListResponse> response = await executor.SendQueryAsync<MediaUserListResponse>(
+                new GraphQLRequest
+                {
+                    Query = AnilistQueries.MediaList,
+                    Variables = new { userId, status = System.Enum.GetName(status), sort, type = System.Enum.GetName(type) },
+                },
+                cancellationToken);
 
-        return response.Data?.MediaListCollection?.Lists?.FirstOrDefault();
+            return response.Data?.MediaListCollection?.Lists?.FirstOrDefault();
+        }
+        catch (AnilistNotFoundException)
+        {
+            // The user has no list for that status/type.
+            return null;
+        }
     }
 
     public async Task<(User? User, MediaListCollection? Recommendations)> GetRecommendationsAsync(int userId, MediaType type, CancellationToken cancellationToken = default)

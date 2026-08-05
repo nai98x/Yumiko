@@ -13,6 +13,13 @@ public class AnilistApiException : Exception
 }
 
 /// <summary>
+/// Thrown when AniList answers 404. It means the queried resource does not exist (for instance a
+/// user with no list entry for a media), not that the request was malformed.
+/// </summary>
+public class AnilistNotFoundException(Exception innerException)
+    : AnilistApiException("AniList answered HTTP 404; the queried resource does not exist.", innerException);
+
+/// <summary>
 /// Thrown when AniList answers with a server error (5xx) after the retries are exhausted.
 /// It usually means the API is down or degraded, not a problem with the query.
 /// </summary>

@@ -23,7 +23,7 @@ public abstract class CronBackgroundService(DiscordBotService discordBotService,
     {
         if (discordBotService.Debug)
         {
-            logger.LogInformation("Tareas programadas deshabilitadas en modo debug ({Task})", GetType().Name);
+            logger.LogInformation("Scheduled tasks disabled in debug mode ({Task})", GetType().Name);
             return;
         }
 
