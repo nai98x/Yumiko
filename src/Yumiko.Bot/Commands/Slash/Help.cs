@@ -5,6 +5,7 @@ using DSharpPlus.Commands.Trees;
 using DSharpPlus.Commands.Processors.SlashCommands;
 using DSharpPlus.Commands.Processors.SlashCommands.Localization;
 using DSharpPlus.Entities;
+using Yumiko.Application.Helpers;
 using Yumiko.Bot.Commands.Framework;
 using Yumiko.Bot.Commands.Framework.Attributes;
 using Yumiko.Bot.Configuration;
@@ -48,14 +49,17 @@ public sealed class Help(
 
         string description = Formatter.BlockCode(loc.Format(Keys.bot_about, ctx.Client.CurrentUser.Username)) + "\n";
 
-        foreach (Command command in ctx.Extension.Commands.Values.OrderBy(c => c.Name, StringComparer.Ordinal))
-        {
-            if (command.Name == "owner" && !isLogGuild)
-            {
-                continue;
-            }
+        IEnumerable<IGrouping<string, Command>> categories = ctx.Extension.Commands.Values
+            .Where(c => c.Name != "owner" || isLogGuild)
+            .GroupBy(Category)
+            .OrderBy(category => category.Key, StringComparer.Ordinal);
 
-            description += FormatCommand(command);
+        foreach (IGrouping<string, Command> category in categories)
+        {
+            description += $"\n{Formatter.Bold(category.Key)}\n";
+            description += string.Concat(category
+                .OrderBy(c => c.Name, StringComparer.Ordinal)
+                .Select(FormatCommand));
         }
 
         List<DiscordLinkButtonComponent> buttons =
@@ -85,7 +89,15 @@ public sealed class Help(
     }
 
     /// <summary>
-    /// A command with subcommands is listed as a group; a standalone one, as a single line under its name.
+    /// The category is the class the command is declared in, which is what groups <c>/trivia</c> and
+    /// <c>/hangman</c> under Games without them being a command group.
+    /// </summary>
+    private static string Category(Command command) =>
+        (command.Method?.DeclaringType ?? command.Subcommands.FirstOrDefault()?.Method?.DeclaringType)?.Name
+            ?? command.Name.UppercaseFirst();
+
+    /// <summary>
+    /// A group lists one line per subcommand; a standalone command, a single line.
     /// The context menus are left out: they are not typed, they are used from the context menu.
     /// </summary>
     private static string FormatCommand(Command command)
@@ -95,10 +107,9 @@ public sealed class Help(
             return $"{Formatter.InlineCode($"/{command.Name}")} {command.Description}\n";
         }
 
-        return $"\n{Formatter.Bold(command.Name)}\n" +
-               string.Concat(command.Subcommands
-                   .OrderBy(sub => sub.Name, StringComparer.Ordinal)
-                   .Select(sub => $"{Formatter.InlineCode($"/{command.Name} {sub.Name}")} {sub.Description}\n"));
+        return string.Concat(command.Subcommands
+            .OrderBy(sub => sub.Name, StringComparer.Ordinal)
+            .Select(sub => $"{Formatter.InlineCode($"/{command.Name} {sub.Name}")} {sub.Description}\n"));
     }
 
     private static string InvitationUri(SlashCommandContext ctx) =>

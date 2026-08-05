@@ -895,9 +895,6 @@
   <data name="write_any_letter_to_continue" xml:space="preserve">
     <value>Escribe cualquier letra para seguir con el juego</value>
   </data>
-  <data name="write_a_letter" xml:space="preserve">
-    <value>¡Escribe una letra!</value>
-  </data>
   <data name="wrong_choice" xml:space="preserve">
     <value>¡Le erraste!</value>
   </data>

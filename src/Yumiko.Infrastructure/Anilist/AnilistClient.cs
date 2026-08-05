@@ -285,7 +285,7 @@ internal sealed class AnilistClient(AnilistGraphQLExecutor executor) : IAnilistC
 
     public async Task<AnilistRateLimit> GetRateLimitAsync(CancellationToken cancellationToken = default)
     {
-        AnilistResponse<MediaResponse> response = await executor.SendQueryAsync<MediaResponse>(
+        AnilistResponse<RateLimitProbeResponse> response = await executor.SendQueryAsync<RateLimitProbeResponse>(
             new GraphQLRequest { Query = AnilistQueries.RateLimitProbe },
             cancellationToken);
 
