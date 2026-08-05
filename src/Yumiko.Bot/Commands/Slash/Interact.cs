@@ -97,7 +97,8 @@ public sealed class Interact(
     [RequireGuild]
     public async Task PollAsync(
         SlashCommandContext ctx,
-        [Parameter("limit")] [Description("Limit to end the poll (in minutes)")] [MinMaxValue(1, 10)] long timeout,
+        // The MinMaxValue bounds must be long literals: the check unboxes them as the parameter type.
+        [Parameter("limit")] [Description("Limit to end the poll (in minutes)")] [MinMaxValue(1L, 10L)] long timeout,
         [Parameter("anonymous")] [Description("If you want the poll to be anonymous")] bool anonymous)
     {
         Loc loc = ctx.Loc(localizer);

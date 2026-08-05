@@ -43,11 +43,13 @@ public sealed class Games(
     [Command("trivia")]
     [Description("Plays an anime trivia game")]
     [InteractionLocalizer<ResxInteractionLocalizer>]
+    // The bounds of MinMaxValue are boxed and the check unboxes them as the type of the parameter:
+    // with an int literal against a long parameter it throws InvalidCastException and the command dies.
     public async Task TriviaAsync(
         SlashCommandContext ctx,
         [Parameter("gamemode")] [Description("The type of game you want to play")] GamemodeChoice gamemodeChoice,
         [Parameter("difficulty")] [Description("Choose the difficulty of the trivia")] DifficultyChoice difficultyChoice,
-        [Parameter("rounds")] [Description("Rounds to play (minimum is 1 and maximum is 30)")] [MinMaxValue(1, 30)] long rounds)
+        [Parameter("rounds")] [Description("Rounds to play (minimum is 1 and maximum is 30)")] [MinMaxValue(1L, 30L)] long rounds)
     {
         Loc loc = ctx.Loc(localizer);
 
