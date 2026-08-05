@@ -18,9 +18,14 @@ Persistencia en **Firestore**.
 Es **bilingüe EN/ES**: cada texto de usuario existe en los dos idiomas y se resuelve por el locale de
 la interacción.
 
-**Idioma del código**: los identificadores del código heredado están en **inglés** (a diferencia de
-AnilistConEnie, que usa español). El código nuevo puede seguir la convención del archivo que toca;
-los comentarios, los commits y la comunicación van en **español**.
+**Idioma del código**: **todo el código va en inglés**, sin excepción: identificadores, comentarios,
+XML summaries, mensajes de log, mensajes de excepción y nombres de tests. No debe quedar nada en
+español dentro de `src/` ni `tests/`. Las dos únicas excepciones son los textos de usuario de
+`Translations.es.resx` (que por definición son la traducción al español) y los nombres de campo e
+ids de documento de Firestore (`puntuacion`, `Dificultad`, `Fácil`, etc.), que son contrato de
+producción.
+
+Los commits y la comunicación con el dueño del repo siguen siendo en **español**.
 
 ## Arquitectura (Clean Architecture, 4 proyectos en `src/`)
 
@@ -112,7 +117,7 @@ inversas.
   `DiscordLogService` sin cambiar el flujo.
 - **Estilo**: **no** agregar comentarios ni XML summaries explicando *cómo se resolvió* algo o
   justificando un cambio. Comentar solo lo no obvio del dominio; las rarezas de Firestore de arriba
-  califican.
+  califican. Los comentarios que se escriban van **en inglés** (ver "Idioma del código").
 
 ## Tests
 

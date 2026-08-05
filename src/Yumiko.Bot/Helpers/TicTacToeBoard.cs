@@ -4,8 +4,8 @@ using Yumiko.Model.Enum;
 namespace Yumiko.Bot.Helpers;
 
 /// <summary>
-/// Los botones <em>son</em> el tablero: el estilo y el estar deshabilitado indican de quién es cada
-/// casilla. Este helper traduce entre esa representación y el <c>TicTacToeCell[]</c> que entiende
+/// The buttons <em>are</em> the board: the style and being disabled tell whose each cell is.
+/// This helper translates between that representation and the <c>TicTacToeCell[]</c> understood by
 /// <c>Application.Games.TicTacToe</c>.
 /// </summary>
 public static class TicTacToeBoard
@@ -15,7 +15,7 @@ public static class TicTacToeBoard
     public static List<DiscordButtonComponent> Initial() =>
         [.. Ids.Select(id => new DiscordButtonComponent(DiscordButtonStyle.Secondary, id, "[ ]"))];
 
-    /// <summary>Marca la casilla clickeada con la ficha del jugador de turno y la deshabilita.</summary>
+    /// <summary>Marks the clicked cell with the token of the player on turn and disables it.</summary>
     public static List<DiscordButtonComponent> Mark(IReadOnlyList<DiscordButtonComponent> buttons, string clickedId, bool isFirstPlayer) =>
     [
         .. buttons.Select(button => button.CustomId == clickedId

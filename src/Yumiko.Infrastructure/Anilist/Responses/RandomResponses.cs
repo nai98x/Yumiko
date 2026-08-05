@@ -2,8 +2,8 @@ using Newtonsoft.Json;
 
 namespace Yumiko.Infrastructure.Anilist.Responses;
 
-// DTOs de las dos consultas "al azar". Son proyecciones
-// mínimas: solo los campos que la query pide.
+// DTOs of the two "random" queries. They are minimal
+// projections: only the fields the query asks for.
 internal sealed class SimpleCharacterPageResponse
 {
     [JsonProperty("Page")]

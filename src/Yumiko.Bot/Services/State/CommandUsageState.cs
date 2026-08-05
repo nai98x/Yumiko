@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 
 namespace Yumiko.Bot.Services.State;
 
-/// <summary>Contador de usos por comando desde que arrancó el proceso (lo muestra <c>/owner commands</c>).</summary>
+/// <summary>Usage counter per command since the process started (shown by <c>/owner commands</c>).</summary>
 public sealed class CommandUsageState
 {
     private readonly ConcurrentDictionary<string, int> _uses = new();

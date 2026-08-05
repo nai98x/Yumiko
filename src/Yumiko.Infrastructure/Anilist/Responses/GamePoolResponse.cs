@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace Yumiko.Infrastructure.Anilist.Responses;
 
-// Proyección de la query que alimenta el pool de medias de los juegos (trivia, ahorcado, HoL).
+// Projection of the query that feeds the media pool of the games (trivia, hangman, HoL).
 internal sealed class GamePoolResponse
 {
     [JsonProperty("Page")]
@@ -44,7 +44,7 @@ internal sealed class GamePoolMedia
     [JsonProperty("title")]
     public GamePoolTitle? Title { get; set; }
 
-    /// <summary>AniList devuelve <c>null</c> cuando el media todavía no tiene puntaje.</summary>
+    /// <summary>AniList returns <c>null</c> when the media does not have a score yet.</summary>
     [JsonProperty("averageScore")]
     public int? AverageScore { get; set; }
 

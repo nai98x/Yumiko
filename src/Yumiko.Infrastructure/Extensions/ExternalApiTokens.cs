@@ -1,7 +1,7 @@
 namespace Yumiko.Infrastructure.Extensions;
 
 /// <summary>
-/// Tokens de las APIs externas. Se pasan por parámetro para que Infrastructure nunca lea configuración.
+/// Tokens of the external APIs. They are passed by parameter so Infrastructure never reads configuration.
 /// </summary>
 public sealed record ExternalApiTokens
 {

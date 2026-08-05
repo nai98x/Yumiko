@@ -5,8 +5,8 @@ using Yumiko.Model.Entities;
 namespace Yumiko.Bot.Helpers;
 
 /// <summary>
-/// Catálogo de países para el autocomplete de <c>/weather</c>. Se carga una sola vez desde
-/// <c>Resources/countries.json</c>, relativo al directorio del ejecutable.
+/// Country catalog for the <c>/weather</c> autocomplete. It is loaded once from
+/// <c>Resources/countries.json</c>, relative to the executable directory.
 /// </summary>
 public sealed class CountriesCatalog
 {

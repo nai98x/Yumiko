@@ -5,11 +5,11 @@ using NCrontab;
 namespace Yumiko.Bot.Services.Scheduling;
 
 /// <summary>
-/// Base de las tareas programadas.
+/// Base of the scheduled tasks.
 /// </summary>
 /// <remarks>
-/// Las expresiones cron se evalúan en <b>UTC</b>: Yumiko es un bot multi-guild global, así que no hay
-/// un huso horario "del servidor" que tenga sentido privilegiar.
+/// The cron expressions are evaluated in <b>UTC</b>: Yumiko is a global multi-guild bot, so there is no
+/// "server" time zone worth privileging.
 /// </remarks>
 public abstract class CronBackgroundService(DiscordBotService discordBotService, ILogger logger) : BackgroundService
 {
@@ -32,8 +32,8 @@ public abstract class CronBackgroundService(DiscordBotService discordBotService,
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            // Task.Delay puede despertar unos ms antes del objetivo; sin este chequeo la tarea correría
-            // del lado anterior del borde (hora/día equivocados) y otra vez al instante, duplicando el trabajo.
+            // Task.Delay can wake up a few ms before the target; without this check the task would run
+            // on the previous side of the edge (wrong hour/day) and again right away, duplicating the work.
             DateTime target = schedule.GetNextOccurrence(DateTime.UtcNow);
 
             TimeSpan remaining;
@@ -52,7 +52,7 @@ public abstract class CronBackgroundService(DiscordBotService discordBotService,
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error ejecutando la tarea programada {Task}", GetType().Name);
+                logger.LogError(ex, "Error running the scheduled task {Task}", GetType().Name);
             }
         }
     }

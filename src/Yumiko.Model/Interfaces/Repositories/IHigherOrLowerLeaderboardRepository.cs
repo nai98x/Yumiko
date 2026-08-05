@@ -8,7 +8,7 @@ public interface IHigherOrLowerLeaderboardRepository
 
     Task<HigherOrLowerEntry?> GetStatsUserAsync(ulong guildId, ulong userId);
 
-    /// <returns><c>true</c> si la puntuación superó el récord previo y se guardó.</returns>
+    /// <returns><c>true</c> if the score beat the previous record and was saved.</returns>
     Task<bool> AddResultAsync(ulong guildId, ulong userId, int score);
 
     Task DeleteStatsAsync(ulong guildId, ulong userId);

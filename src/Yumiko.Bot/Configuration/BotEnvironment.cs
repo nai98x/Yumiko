@@ -1,6 +1,6 @@
 namespace Yumiko.Bot.Configuration;
 
-/// <summary>Entorno de ejecución: en debug los comandos se registran solo en el guild de logs.</summary>
+/// <summary>Execution environment: on debug the commands are registered only on the logs guild.</summary>
 public static class BotEnvironment
 {
 #if DEBUG

@@ -1,13 +1,13 @@
 namespace Yumiko.Application.Games;
 
-/// <summary>Posición y porcentaje de aciertos de un participante en el ranking final.</summary>
+/// <summary>Position and hit percentage of a participant in the final ranking.</summary>
 public sealed record TriviaRank<T>(T Participant, int Score, int Position, int Percentage);
 
 public static class TriviaScoring
 {
     /// <summary>
-    /// Ordena los participantes por puntaje descendente y les asigna posición. Los que empatan comparten
-    /// posición. El porcentaje usa división entera.
+    /// Sorts participants by descending score and assigns them a position. Ties share
+    /// position. The percentage uses integer division.
     /// </summary>
     public static List<TriviaRank<T>> Rank<T>(IEnumerable<T> participants, Func<T, int> score, int rounds)
     {

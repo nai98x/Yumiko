@@ -4,7 +4,7 @@ namespace Yumiko.Application.Games;
 
 public static class TicTacToe
 {
-    /// <summary>Cantidad de casillas del tablero.</summary>
+    /// <summary>Amount of cells on the board.</summary>
     public const int Cells = 9;
 
     private static readonly int[][] Lines =
@@ -30,7 +30,7 @@ public static class TicTacToe
         board.Any(c => c == TicTacToeCell.Empty);
 
     /// <summary>
-    /// Estado de la partida: si terminó y, en ese caso, quién ganó
+    /// State of the match: whether it ended and, if so, who won
     /// (<see cref="TicTacToeCell.Empty"/> significa empate).
     /// </summary>
     public static (bool Finished, TicTacToeCell Winner) Result(IReadOnlyList<TicTacToeCell> board)

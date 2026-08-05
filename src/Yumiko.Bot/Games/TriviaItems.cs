@@ -7,8 +7,8 @@ using Yumiko.Model.Enum;
 namespace Yumiko.Bot.Games;
 
 /// <summary>
-/// Una entrada del pool de trivia ya resuelta a texto: el nombre que va en el botón y la descripción
-/// que revela la respuesta. Deja que el runner trate igual a personajes y a medias.
+/// An entry of the trivia pool already resolved to text: the name that goes on the button and the description
+/// that reveals the answer. It lets the runner treat characters and media alike.
 /// </summary>
 public sealed record TriviaItem(string Name, string? Image, string Description);
 

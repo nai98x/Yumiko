@@ -3,8 +3,8 @@ using DSharpPlus.Entities;
 namespace Yumiko.Bot.Games;
 
 /// <summary>
-/// Partida de trivia en curso. Vive en el Bot porque referencia tipos de Discord: es estado de sesión,
-/// no de dominio.
+/// Ongoing trivia match. It lives in the Bot because it references Discord types: it is session state,
+/// not domain state.
 /// </summary>
 public sealed class Trivia
 {

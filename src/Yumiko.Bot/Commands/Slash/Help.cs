@@ -85,8 +85,8 @@ public sealed class Help(
     }
 
     /// <summary>
-    /// Un comando con subcomandos se lista como grupo; uno suelto, como una sola línea bajo su nombre.
-    /// Los context menus quedan fuera: no se escriben, se usan desde el menú contextual.
+    /// A command with subcommands is listed as a group; a standalone one, as a single line under its name.
+    /// The context menus are left out: they are not typed, they are used from the context menu.
     /// </summary>
     private static string FormatCommand(Command command)
     {

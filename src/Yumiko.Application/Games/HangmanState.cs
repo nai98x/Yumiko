@@ -4,12 +4,12 @@ using System.Text.RegularExpressions;
 namespace Yumiko.Application.Games;
 
 /// <summary>
-/// Estado de una partida de ahorcado: qué letras se adivinaron, cuántos errores van y cómo se ve la
-/// palabra enmascarada. No sabe nada de Discord ni de puntajes.
+/// State of a hangman match: which letters were guessed, how many misses there are and how the masked
+/// word looks. It knows nothing about Discord or scores.
 /// </summary>
 public sealed partial class HangmanState
 {
-    /// <summary>Errores que dan la partida por perdida.</summary>
+    /// <summary>Misses that lose the match.</summary>
     public const int MaxMistakes = 6;
 
     private readonly char[] _word;
@@ -20,10 +20,10 @@ public sealed partial class HangmanState
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(word);
 
-        // Los espacios repetidos se colapsan en uno solo.
+        // Repeated spaces are collapsed into a single one.
         _word = [.. RepeatedWhitespace().Replace(word.ToLowerInvariant().Trim(), " ")];
 
-        // Todo lo que no es letra (espacios, dos puntos, guiones) se muestra desde el arranque.
+        // Everything that is not a letter (spaces, colons, dashes) is shown from the start.
         foreach (char c in _word.Where(c => !char.IsLetter(c)))
         {
             _guessed.Add(c);
@@ -34,7 +34,7 @@ public sealed partial class HangmanState
 
     public IReadOnlyList<string> UsedLetters => _usedLetters;
 
-    /// <summary>La palabra normalizada, carácter por carácter, para que la presentación la formatee.</summary>
+    /// <summary>The normalized word, character by character, so the presentation can format it.</summary>
     public IReadOnlyList<char> Word => _word;
 
     public bool IsRevealed(char character) => _guessed.Contains(character);
@@ -46,8 +46,8 @@ public sealed partial class HangmanState
     public bool IsFinished => IsLost || IsComplete;
 
     /// <summary>
-    /// Prueba una letra. Devuelve <c>true</c> si estaba en la palabra; si no, suma un error.
-    /// La letra queda registrada en <see cref="UsedLetters"/> en cualquier caso.
+    /// Tries a letter. Returns <c>true</c> if it was in the word; otherwise it adds a miss.
+    /// The letter is recorded in <see cref="UsedLetters"/> either way.
     /// </summary>
     public bool Guess(string letter)
     {
@@ -73,7 +73,7 @@ public sealed partial class HangmanState
     }
 
     /// <summary>
-    /// Revela la palabra entera (alguien la adivinó de una). Devuelve cuántas letras faltaban.
+    /// Reveals the whole word (someone guessed it in one go). Returns how many letters were left.
     /// </summary>
     public int RevealAll()
     {
@@ -87,13 +87,13 @@ public sealed partial class HangmanState
         return remaining;
     }
 
-    /// <summary>Suma un error sin consumir un intento de letra (timeouts, cancelaciones).</summary>
+    /// <summary>Adds a miss without consuming a letter attempt (timeouts, cancellations).</summary>
     public void AddMistake() => Mistakes++;
 
-    /// <summary>Fuerza la derrota (cancelación de la partida).</summary>
+    /// <summary>Forces the loss (match cancellation).</summary>
     public void Surrender() => Mistakes = MaxMistakes;
 
-    /// <summary>La palabra con las letras adivinadas visibles y el resto como <c>_</c>.</summary>
+    /// <summary>The word with the guessed letters visible and the rest as <c>_</c>.</summary>
     public string Masked()
     {
         StringBuilder sb = new();

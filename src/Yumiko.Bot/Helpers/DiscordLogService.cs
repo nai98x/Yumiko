@@ -7,13 +7,13 @@ using Yumiko.Bot.Services;
 namespace Yumiko.Bot.Helpers;
 
 /// <summary>
-/// Escribe los errores y el alta/baja de guilds en los canales de log del guild propio.
+/// Writes the errors and the guild join/leave events to the log channels of the own guild.
 /// </summary>
 public sealed class DiscordLogService(DiscordBotService discordBotService, ILogger<DiscordLogService> logger)
 {
     public async Task LogExceptionAsync(DiscordGuild? guild, DiscordChannel? channel, Exception ex, string context)
     {
-        logger.LogError(ex, "Error en {Contexto}", context);
+        logger.LogError(ex, "Error in {Context}", context);
 
         await SendToErrorChannelAsync(new DiscordEmbedBuilder
         {
@@ -73,14 +73,14 @@ public sealed class DiscordLogService(DiscordBotService discordBotService, ILogg
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "No se pudo escribir en el canal de guilds");
+            logger.LogError(ex, "Could not write to the guilds channel");
         }
     }
 
     public void LogCommandExecuted(CommandContext ctx)
     {
         logger.LogInformation(
-            "Comando ejecutado: /{Comando} | Guild: {Guild} | Usuario: {Usuario}",
+            "Command executed: /{Command} | Guild: {Guild} | User: {User}",
             ctx.Command.FullName,
             ctx.Guild?.Name ?? "DM",
             ctx.User.Username);
@@ -88,7 +88,7 @@ public sealed class DiscordLogService(DiscordBotService discordBotService, ILogg
 
     private async Task SendToErrorChannelAsync(DiscordEmbedBuilder embed)
     {
-        // Si el bot todavía no resolvió los canales, el log de Serilog ya dejó registro del error.
+        // If the bot has not resolved the channels yet, the Serilog log already recorded the error.
         if (!discordBotService.Initialized)
         {
             return;
@@ -100,7 +100,7 @@ public sealed class DiscordLogService(DiscordBotService discordBotService, ILogg
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "No se pudo escribir en el canal de errores");
+            logger.LogError(ex, "Could not write to the errors channel");
         }
     }
 }

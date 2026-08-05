@@ -3,8 +3,8 @@ using Yumiko.Model.Entities;
 namespace Yumiko.Bot.Services.State;
 
 /// <summary>
-/// Caché de medias de AniList que alimenta Higher or Lower y la trivia. El intercambio es atómico:
-/// el refresco tarda varios minutos y durante ese lapso los juegos siguen viendo el pool anterior.
+/// Cache of AniList media that feeds Higher or Lower and the trivia. The swap is atomic:
+/// the refresh takes several minutes and during that window the games keep seeing the previous pool.
 /// </summary>
 public sealed class AnilistMediaCacheState
 {

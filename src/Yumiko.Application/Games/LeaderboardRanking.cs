@@ -7,12 +7,12 @@ public sealed record Rank<T>(T Player, int Position);
 public static class LeaderboardRanking
 {
     /// <summary>
-    /// Asigna posiciones al leaderboard de trivia. Dos jugadores comparten posición solo si coinciden
-    /// en porcentaje de aciertos <em>y</em> en partidas jugadas.
+    /// Assigns positions to the trivia leaderboard. Two players share a position only if they match
+    /// in hit percentage <em>and</em> in games played.
     /// </summary>
     /// <remarks>
-    /// Se descartan los jugadores con menos de 2 rondas por partida en promedio: son partidas
-    /// abandonadas que inflarían el porcentaje. La división es entera.
+    /// Players averaging less than 2 rounds per game are discarded: those are abandoned
+    /// games that would inflate the percentage. The division is integer.
     /// </remarks>
     public static List<Rank<GameStats>> RankQuiz(IEnumerable<GameStats> players)
     {
@@ -41,7 +41,7 @@ public static class LeaderboardRanking
         return ranks;
     }
 
-    /// <summary>Posiciones del leaderboard de Higher or Lower, empatando por puntuación.</summary>
+    /// <summary>Positions of the Higher or Lower leaderboard, tying by score.</summary>
     public static List<Rank<HigherOrLowerEntry>> RankHigherOrLower(IEnumerable<HigherOrLowerEntry> players, int maxRanks = 10)
     {
         List<Rank<HigherOrLowerEntry>> ranks = [];

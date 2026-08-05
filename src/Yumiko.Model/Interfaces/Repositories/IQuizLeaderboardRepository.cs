@@ -8,7 +8,7 @@ public interface IQuizLeaderboardRepository
     Task<List<GameStats>> GetLeaderboardAsync(ulong guildId, Gamemode gamemode, Difficulty difficulty, int limit);
 
     /// <summary>
-    /// En el modo géneros el nombre del género ocupa el lugar del documento de dificultad.
+    /// In genres mode the genre name takes the place of the difficulty document.
     /// </summary>
     Task<List<GameStats>> GetGenreLeaderboardAsync(ulong guildId, string genre, int limit);
 

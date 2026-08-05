@@ -9,7 +9,7 @@ using Yumiko.Model.Interfaces;
 namespace Yumiko.Bot.Helpers;
 
 /// <summary>
-/// Envuelve a <c>ITopggClient</c> con el gating de "solo si está habilitado y no estamos en debug".
+/// Wraps <c>ITopggClient</c> with the "only if it is enabled and we are not in debug" gating.
 /// </summary>
 public sealed class TopggService(
     ITopggClient topgg,
@@ -32,7 +32,7 @@ public sealed class TopggService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "No se pudieron actualizar las stats en top.gg");
+            logger.LogError(ex, "Could not update the stats on top.gg");
         }
     }
 
@@ -40,15 +40,15 @@ public sealed class TopggService(
     {
         if (!Enabled)
         {
-            throw new NotSupportedException("top.gg no está habilitado.");
+            throw new NotSupportedException("top.gg is not enabled.");
         }
 
         return await topgg.GetMonthlyVotesCountAsync(client.CurrentApplication.Id);
     }
 
     /// <summary>
-    /// Si el usuario no votó todavía, devuelve el embed para recordárselo. <c>null</c> si ya votó,
-    /// si top.gg está deshabilitado, o si la consulta falló (no se le corta la experiencia por eso).
+    /// If the user has not voted yet, returns the embed to remind them. <c>null</c> if they already voted,
+    /// if top.gg is disabled, or if the query failed (the experience is not cut short because of that).
     /// </summary>
     public async Task<DiscordEmbedBuilder?> GetVoteReminderAsync(DiscordClient client, ulong userId, Loc loc)
     {
@@ -76,7 +76,7 @@ public sealed class TopggService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "No se pudo consultar el voto en top.gg");
+            logger.LogError(ex, "Could not query the vote on top.gg");
             return null;
         }
     }

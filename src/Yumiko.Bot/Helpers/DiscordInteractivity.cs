@@ -10,7 +10,7 @@ using Yumiko.Model.Entities;
 namespace Yumiko.Bot.Helpers;
 
 /// <summary>
-/// Los dos diálogos que usan varios comandos: elegir uno de N resultados y confirmar sí/no.
+/// The two dialogs used by several commands: picking one of N results and confirming yes/no.
 /// </summary>
 public sealed class DiscordInteractivity(InteractivityExtension interactivity, TimeoutSettings timeouts)
 {
@@ -18,8 +18,8 @@ public sealed class DiscordInteractivity(InteractivityExtension interactivity, T
     private const int MaxOptions = 25;
 
     /// <summary>
-    /// Muestra un desplegable con las opciones y devuelve el índice elegido (base 0), o <c>null</c> si
-    /// venció el tiempo. Con una sola opción no pregunta nada.
+    /// Shows a dropdown with the options and returns the chosen index (0 based), or <c>null</c> if
+    /// it timed out. With a single option it does not ask anything.
     /// </summary>
     public async Task<int?> ChooseAsync(SlashCommandContext ctx, IReadOnlyList<TitleDescription> options, Loc loc)
     {
@@ -59,7 +59,7 @@ public sealed class DiscordInteractivity(InteractivityExtension interactivity, T
         return result.TimedOut ? null : int.Parse(result.Result.Values[0]);
     }
 
-    /// <summary>Confirmación con botones. Un timeout cuenta como "no".</summary>
+    /// <summary>Confirmation with buttons. A timeout counts as "no".</summary>
     public async Task<bool> ConfirmAsync(SlashCommandContext ctx, string title, string description, Loc loc)
     {
         DiscordMessage message = await ctx.FollowupAsync(new DiscordFollowupMessageBuilder()

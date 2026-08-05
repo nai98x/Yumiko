@@ -3,8 +3,8 @@ using System.Globalization;
 namespace Yumiko.Bot.Localization;
 
 /// <summary>
-/// Localizador ya atado a una cultura, creado a partir del locale de la interacción. Es un struct
-/// para que se capture por valor dentro de los <c>Task.Run</c> de los juegos.
+/// Localizer already bound to a culture, created from the locale of the interaction. It is a struct
+/// so it is captured by value inside the <c>Task.Run</c> of the games.
 /// </summary>
 public readonly struct Loc(ILocalizer localizer, CultureInfo culture)
 {

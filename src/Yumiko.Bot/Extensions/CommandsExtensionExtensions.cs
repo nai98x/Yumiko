@@ -10,9 +10,9 @@ public static class CommandsExtensionExtensions
     private const string ContextMenuCommandsNamespace = "Yumiko.Bot.Commands.ContextMenu";
 
     /// <summary>
-    /// Descubre por reflexión las clases de slash command del namespace correspondiente. En RELEASE
-    /// se registran globalmente; en DEBUG solo las marcadas con <see cref="TestCommandAttribute"/>,
-    /// y acotadas al guild de logs.
+    /// Discovers by reflection the slash command classes of the matching namespace. In RELEASE
+    /// they are registered globally, except the ones marked with <see cref="LogGuildOnlyAttribute"/>; in DEBUG
+    /// only the ones marked with <see cref="TestCommandAttribute"/>, and all of them scoped to the logs guild.
     /// </summary>
     public static void AddDiscoveredSlashCommands(this CommandsExtension extension, ulong logGuildId)
     {
@@ -36,7 +36,18 @@ public static class CommandsExtensionExtensions
 #if DEBUG
         extension.AddCommands(types, logGuildId);
 #else
-        extension.AddCommands(types);
+        Type[] logGuildOnly = [.. types.Where(type => type.GetCustomAttribute<LogGuildOnlyAttribute>() is not null)];
+        Type[] global = [.. types.Except(logGuildOnly)];
+
+        if (global.Length > 0)
+        {
+            extension.AddCommands(global);
+        }
+
+        if (logGuildOnly.Length > 0)
+        {
+            extension.AddCommands(logGuildOnly, logGuildId);
+        }
 #endif
     }
 

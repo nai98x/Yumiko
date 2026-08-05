@@ -114,7 +114,7 @@ internal sealed class AnilistClient(AnilistGraphQLExecutor executor) : IAnilistC
     {
         string sort = System.Enum.GetName(order)!;
 
-        // MEDIA_TITLE_DESC no existe en AniList: hay que resolverlo al idioma de título pedido.
+        // MEDIA_TITLE_DESC does not exist on AniList: it has to be resolved to the requested title language.
         if (sort == "MEDIA_TITLE_DESC")
         {
             sort = titleLanguage switch

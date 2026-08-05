@@ -4,7 +4,7 @@ using Google.Cloud.Firestore;
 namespace Yumiko.Infrastructure.Firebase.Documents;
 
 [FirestoreData]
-[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Nombres de campo de Firestore")]
+[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Firestore field names")]
 internal class HigherOrLowerDocument
 {
     [FirestoreProperty]

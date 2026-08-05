@@ -11,7 +11,7 @@ using Yumiko.Bot.Localization;
 
 namespace Yumiko.Bot.Games;
 
-/// <summary>Datos de la palabra a adivinar, ya resueltos a texto por el comando.</summary>
+/// <summary>Data of the word to guess, already resolved to text by the command.</summary>
 public sealed record HangmanTarget(string Word, string? Image, string Reveal, string Mode);
 
 public sealed class HangmanGameRunner(InteractivityExtension interactivity)
@@ -171,7 +171,7 @@ public sealed class HangmanGameRunner(InteractivityExtension interactivity)
 
     private static string Board(HangmanState state, Loc loc)
     {
-        // Los espacios cierran y reabren el bloque inline: si no, Discord los colapsa.
+        // The spaces close and reopen the inline block: otherwise Discord collapses them.
         string letters = "`" + string.Concat(state.Word.Select(c =>
             c == ' ' ? "` `" : state.IsRevealed(c) ? $"{c} " : "_ ")) + "`\n\n";
 

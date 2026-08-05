@@ -4,7 +4,7 @@ namespace Yumiko.Model.Interfaces;
 
 public interface IAnimalImageClient
 {
-    /// <summary>Descarga una imagen al azar del animal pedido.</summary>
-    /// <returns><c>null</c> si la API no devolvió ninguna.</returns>
+    /// <summary>Downloads a random image of the requested animal.</summary>
+    /// <returns><c>null</c> if the API did not return any.</returns>
     Task<byte[]?> GetRandomImageAsync(AnimalKind kind, CancellationToken cancellationToken = default);
 }

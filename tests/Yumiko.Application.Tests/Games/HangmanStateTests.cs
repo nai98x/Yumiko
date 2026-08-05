@@ -153,7 +153,7 @@ public class HangmanStateTests
     {
         HangmanState state = new("  Cowboy   Bebop  ");
 
-        // Se pasa a minúsculas, se recorta y los espacios repetidos se colapsan en uno.
+        // It is lowercased, trimmed and repeated spaces are collapsed into one.
         Assert.Equal("cowboy bebop", new string([.. state.Word]));
     }
 

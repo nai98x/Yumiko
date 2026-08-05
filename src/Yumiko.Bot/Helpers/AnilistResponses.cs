@@ -9,7 +9,7 @@ using Yumiko.Model.Interfaces.Repositories;
 
 namespace Yumiko.Bot.Helpers;
 
-/// <summary>Respuestas que comparten los slash commands de <c>/anilist</c> y los context menus.</summary>
+/// <summary>Responses shared by the <c>/anilist</c> slash commands and the context menus.</summary>
 public sealed class AnilistResponses(
     IAnilistClient anilist,
     IAnilistUsersRepository anilistUsers,

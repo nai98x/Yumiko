@@ -6,9 +6,9 @@ using GraphQL.Client.Http;
 namespace Yumiko.Infrastructure.Anilist;
 
 /// <summary>
-/// Request de GraphQL que adjunta el token OAuth del usuario en el header <c>Authorization</c>.
-/// El header se agrega por request (no en el cliente compartido), por lo que es seguro usarlo
-/// con el <see cref="GraphQLHttpClient"/> singleton del executor.
+/// GraphQL request that attaches the user OAuth token in the <c>Authorization</c> header.
+/// The header is added per request (not on the shared client), so it is safe to use it
+/// with the singleton <see cref="GraphQLHttpClient"/> of the executor.
 /// </summary>
 internal sealed class AuthenticatedGraphQLHttpRequest(GraphQLRequest request, string accessToken) : GraphQLHttpRequest(request)
 {

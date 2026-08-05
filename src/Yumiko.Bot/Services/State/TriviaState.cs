@@ -4,8 +4,8 @@ using Yumiko.Bot.Games;
 namespace Yumiko.Bot.Services.State;
 
 /// <summary>
-/// Trivias en curso, indexadas por (guild, canal). Se muta desde hilos del gateway, así que va sobre
-/// un <see cref="ConcurrentDictionary{TKey,TValue}"/>.
+/// Ongoing trivias, indexed by (guild, channel). It is mutated from gateway threads, so it goes on
+/// a <see cref="ConcurrentDictionary{TKey,TValue}"/>.
 /// </summary>
 public sealed class TriviaState
 {

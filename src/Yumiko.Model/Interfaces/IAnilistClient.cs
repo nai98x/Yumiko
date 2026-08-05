@@ -5,9 +5,9 @@ using Yumiko.Model.Enum;
 namespace Yumiko.Model.Interfaces;
 
 /// <summary>
-/// Acceso a la API de AniList. Las implementaciones traducen los fallos de transporte a
-/// <see cref="Exceptions.AnilistApiException"/> y derivados; "no encontrado" se devuelve como
-/// <c>null</c> o lista vacía, no como excepción.
+/// Access to the AniList API. Implementations translate transport failures into
+/// <see cref="Exceptions.AnilistApiException"/> and derivatives; "not found" is returned as
+/// <c>null</c> or an empty list, not as an exception.
 /// </summary>
 public interface IAnilistClient
 {
@@ -23,7 +23,7 @@ public interface IAnilistClient
 
     Task<User?> GetProfileAsync(int userId, CancellationToken cancellationToken = default);
 
-    /// <summary>Perfil del dueño del token OAuth (query <c>Viewer</c>).</summary>
+    /// <summary>Profile of the owner of the OAuth token (<c>Viewer</c> query).</summary>
     Task<User?> GetViewerAsync(string accessToken, CancellationToken cancellationToken = default);
 
     Task<MediaUserStatistics?> GetMediaFromUserAsync(int userId, int mediaId, CancellationToken cancellationToken = default);
@@ -32,24 +32,24 @@ public interface IAnilistClient
 
     Task<(User? User, MediaListCollection? Recommendations)> GetRecommendationsAsync(int userId, MediaType type, CancellationToken cancellationToken = default);
 
-    /// <summary>Personaje al azar de la página <paramref name="page"/> ordenada por favoritos.</summary>
+    /// <summary>Random character from page <paramref name="page"/> sorted by favourites.</summary>
     Task<CharacterOld?> GetRandomCharacterSimpleAsync(int page, CancellationToken cancellationToken = default);
 
-    /// <summary>Media al azar de la página <paramref name="page"/> ordenada por favoritos.</summary>
+    /// <summary>Random media from page <paramref name="page"/> sorted by favourites.</summary>
     Task<Anime?> GetRandomMediaAsync(int page, MediaType type, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Página del pool de medias que alimenta los juegos. Los flags de <paramref name="query"/>
-    /// deciden qué colecciones anidadas se traen y se mapean.
+    /// Page of the media pool that feeds the games. The flags of <paramref name="query"/>
+    /// decide which nested collections are fetched and mapped.
     /// </summary>
     Task<GameMediaPage> GetGameMediaPageAsync(GameMediaQuery query, int page, CancellationToken cancellationToken = default);
 
-    /// <summary>Página de personajes ordenada por favoritos, para el pool de los juegos.</summary>
+    /// <summary>Page of characters sorted by favourites, for the games pool.</summary>
     Task<GameCharacterPage> GetGameCharacterPageAsync(int page, CancellationToken cancellationToken = default);
 
-    /// <summary>Lista completa de géneros que maneja AniList.</summary>
+    /// <summary>Full list of genres AniList handles.</summary>
     Task<List<string>> GetGenresAsync(CancellationToken cancellationToken = default);
 
-    /// <summary>Estado actual del rate limit, leído de una consulta mínima.</summary>
+    /// <summary>Current rate limit state, read from a minimal query.</summary>
     Task<AnilistRateLimit> GetRateLimitAsync(CancellationToken cancellationToken = default);
 }

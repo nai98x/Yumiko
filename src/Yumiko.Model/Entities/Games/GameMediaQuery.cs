@@ -2,12 +2,12 @@ using Yumiko.Model.Enum;
 
 namespace Yumiko.Model.Entities;
 
-/// <summary>Filtros del pool de medias que alimenta los juegos.</summary>
+/// <summary>Filters of the media pool that feeds the games.</summary>
 public sealed record GameMediaQuery
 {
     public required MediaType Type { get; init; }
 
-    /// <summary>Si se define, filtra por género y ordena por popularidad en vez de por favoritos.</summary>
+    /// <summary>If set, filters by genre and sorts by popularity instead of by favourites.</summary>
     public string? Genre { get; init; }
 
     public bool IncludeAdult { get; init; }
@@ -18,7 +18,7 @@ public sealed record GameMediaQuery
 
     public bool IncludeRelatedMedia { get; init; }
 
-    /// <summary>Excluye los medias que todavía no salieron (se usa para el caché de Higher or Lower).</summary>
+    /// <summary>Excludes media that has not aired yet (used by the Higher or Lower cache).</summary>
     public bool ExcludeUnreleased { get; init; }
 }
 

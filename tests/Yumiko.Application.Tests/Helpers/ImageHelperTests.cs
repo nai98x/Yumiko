@@ -81,7 +81,7 @@ public class ImageHelperTests
     [Fact]
     public void DrawIntoImage_OpaqueTemplateCoversTheImage()
     {
-        // DstATop: donde la plantilla es opaca gana la plantilla; la imagen solo asoma por sus huecos.
+        // DstATop: where the template is opaque the template wins; the image only shows through its gaps.
         byte[] template = SolidPng(600, 600, SKColors.White);
         byte[] image = SolidPng(50, 50, SKColors.Red);
 
@@ -106,8 +106,8 @@ public class ImageHelperTests
     [Fact]
     public void DrawIntoImage_HonoursTheRequestedOffset()
     {
-        // La imagen se escala a 500x500 desde el offset: con offset (300, 300) sobre un lienzo de 400,
-        // el cuadrante superior izquierdo queda fuera de su rectángulo y no se dibuja nada ahí.
+        // The image is scaled to 500x500 from the offset: with offset (300, 300) on a 400 canvas,
+        // the top left quadrant falls outside its rectangle and nothing is drawn there.
         byte[] template = SolidPng(400, 400, SKColors.Transparent);
         byte[] image = SolidPng(50, 50, SKColors.Red);
 

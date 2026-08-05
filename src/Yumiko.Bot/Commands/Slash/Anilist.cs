@@ -45,7 +45,7 @@ public sealed class Anilist(
     InteractivityExtension interactivity,
     DiscordLogService logService)
 {
-    /// <summary>Debajo de este porcentaje de similitud trace.moe no es confiable.</summary>
+    /// <summary>Below this similarity percentage trace.moe is not reliable.</summary>
     private const int MinimumSimilarity = 87;
 
     private const int EntriesPerPage = 25;
@@ -244,7 +244,7 @@ public sealed class Anilist(
             return;
         }
 
-        int page = RandomHelper.GetRandomNumber(1, 10000);
+        int page = RandomHelper.GetRandomNumber(1, gamesSettings.RandomPageMax);
         Character? character = await anilist.GetRandomCharacterAsync(page);
 
         await ctx.EditResponseAsync(character is null
@@ -436,7 +436,7 @@ public sealed class Anilist(
             return;
         }
 
-        // TODO: soportar manga; hoy el comando solo lista anime.
+    // TODO: support manga; today the command only lists anime.
         MediaUserList? mediaList = await anilist.GetMediaListsAsync(link.AnilistId, status, orderChoice.ToModel(), language, MediaType.ANIME);
 
         if (mediaList?.Entries is null || mediaList.Entries.Count == 0)
@@ -480,7 +480,7 @@ public sealed class Anilist(
         await interactivity.SendPaginatedResponseAsync(ctx.Interaction, false, ctx.User, pages, token: cts.Token);
     }
 
-    /// <summary>Corta si el bot todavía no terminó de inicializarse; si no, difiere la respuesta.</summary>
+    /// <summary>Stops if the bot has not finished initializing; otherwise it defers the response.</summary>
     private async Task<bool> PrepareAsync(SlashCommandContext ctx, Loc loc)
     {
         if (!await ctx.EnsureBotReadyAsync(discordBotService, loc))

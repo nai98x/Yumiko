@@ -15,9 +15,9 @@ using Yumiko.Model.Interfaces.Repositories;
 namespace Yumiko.Bot.Games;
 
 /// <summary>
-/// Corre una partida de trivia completa. Los aciertos no se esperan con Interactivity: llegan por el
-/// handler global de componentes, que marca la ronda como acertada en <see cref="TriviaState"/>; acá
-/// se sondea ese estado cada 100 ms hasta que alguien acierta o se agota el tiempo.
+/// Runs a full trivia match. The hits are not awaited with Interactivity: they arrive through the
+/// global component handler, which marks the round as hit on <see cref="TriviaState"/>; here
+/// that state is polled every 100 ms until someone hits or the time runs out.
 /// </summary>
 public sealed class TriviaGameRunner(
     TriviaState triviaState,
@@ -115,7 +115,7 @@ public sealed class TriviaGameRunner(
 
         DiscordMessage message = await ctx.FollowupAsync(builder);
 
-        // El botón lleva el nombre completo; el label se recorta, así que se compara contra el nombre.
+        // The button carries the full name; the label is trimmed, so the comparison is against the name.
         triviaState.UpdateCurrentRound(ctx.Guild!.Id, ctx.Channel.Id, new QuizRound { Match = correct.Name });
 
         string reveal = correct.Description.NormalizeDescription();

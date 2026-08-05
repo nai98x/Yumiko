@@ -3,8 +3,8 @@ using Yumiko.Model.Enum;
 
 namespace Yumiko.Bot.Commands.Framework.Choices;
 
-// Enums de presentación: solo existen para que Discord muestre etiquetas lindas en el selector.
-// Los valores reales de la API de AniList viven en Yumiko.Model.Enum, que no conoce DSharpPlus.
+// Presentation enums: they only exist so Discord shows nice labels in the selector.
+// The real AniList API values live in Yumiko.Model.Enum, which does not know DSharpPlus.
 public enum MediaUserStatusChoice
 {
     [ChoiceDisplayName("Current")]

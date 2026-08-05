@@ -3,8 +3,8 @@ using Yumiko.Model.Enum;
 
 namespace Yumiko.Application.Tests.Games;
 
-// Estos strings son ids de documento de Firestore en producción. Si un test de acá falla, no se toca
-// el test: se revierte el cambio que lo rompió.
+// These strings are Firestore document ids in production. If a test here fails, the test is not
+// touched: the change that broke it is reverted.
 public class GameNamingTests
 {
     [Theory]
@@ -46,8 +46,8 @@ public class GameNamingTests
     [Fact]
     public void ValueOutsideTheEnum_Throws()
     {
-        // Si alguien agrega un valor al enum sin darle nombre, tiene que romper acá y no guardar
-        // silenciosamente un documento con otro id en Firestore.
+        // If someone adds a value to the enum without giving it a name, it has to break here instead of
+        // silently storing a document with a different id in Firestore.
         Assert.Throws<ArgumentOutOfRangeException>(() => ((Difficulty)99).ToSpanish());
         Assert.Throws<ArgumentOutOfRangeException>(() => ((Gamemode)99).ToSpanish());
     }

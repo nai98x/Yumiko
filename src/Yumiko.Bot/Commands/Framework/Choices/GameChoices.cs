@@ -3,8 +3,8 @@ using Yumiko.Model.Enum;
 
 namespace Yumiko.Bot.Commands.Framework.Choices;
 
-// Espejo de los enums de dominio con las etiquetas que muestra Discord. Los enums de Yumiko.Model no
-// pueden llevar atributos de DSharpPlus porque esa capa no referencia paquetes.
+// Mirror of the domain enums with the labels Discord shows. The Yumiko.Model enums cannot
+// carry DSharpPlus attributes because that layer does not reference packages.
 public enum GamemodeChoice
 {
     [ChoiceDisplayName("Characters")]

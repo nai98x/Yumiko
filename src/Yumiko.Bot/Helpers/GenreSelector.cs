@@ -5,7 +5,7 @@ using Yumiko.Model.Entities;
 
 namespace Yumiko.Bot.Helpers;
 
-/// <summary>Deja al usuario elegir un género de AniList.</summary>
+/// <summary>Lets the user pick an AniList genre.</summary>
 public sealed class GenreSelector(GamePool pool, DiscordInteractivity discordInteractivity)
 {
     public async Task<string?> ChooseAsync(SlashCommandContext ctx, Loc loc)

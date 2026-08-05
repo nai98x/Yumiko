@@ -26,9 +26,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddDiscordEventHandlers();
 
-        // No fijar ShardingOptions.ShardCount: con el valor por defecto (null) el orquestador usa el
-        // que recomienda Discord en /gateway/bot, que crece con la cantidad de guilds. Un número fijo
-        // queda corto apenas el bot crece y Discord empieza a rechazar el IDENTIFY.
+        // Do not set ShardingOptions.ShardCount: with the default value (null) the orchestrator uses the
+        // one Discord recommends on /gateway/bot, which grows with the amount of guilds. A fixed number
+        // falls short as soon as the bot grows and Discord starts rejecting the IDENTIFY.
         services.AddShardedDiscordClient(discordToken, DiscordIntents.Guilds);
 
         services.AddInteractivityExtension(new InteractivityConfiguration

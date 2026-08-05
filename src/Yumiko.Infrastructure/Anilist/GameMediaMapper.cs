@@ -47,7 +47,7 @@ internal static class GameMediaMapper
         {
             Anime anime = MapMedia(item, query);
 
-            // Se descartan los medias que no aportan lo que el modo de juego necesita.
+            // Media that does not provide what the game mode needs is discarded.
             bool matches = (!query.IncludeStudios && !query.IncludeCharacters)
                 || (query.IncludeStudios && anime.Studios!.Count > 0)
                 || (query.IncludeCharacters && anime.Characters!.Count > 0);
@@ -79,7 +79,7 @@ internal static class GameMediaMapper
             SiteUrl = item.SiteUrl,
             Type = item.Type,
             Favourites = item.Favourites,
-            // -1 marca "sin puntaje".
+            // -1 marks "no score".
             AvarageScore = item.AverageScore ?? -1,
             Synonyms = [.. (item.Synonyms ?? []).Select(TextHelper.RemoveSpecialCharacters)],
             Studios = [],

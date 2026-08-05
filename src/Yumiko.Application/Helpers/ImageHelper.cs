@@ -7,7 +7,7 @@ public static class ImageHelper
     private static readonly SKSamplingOptions Sampling = new(SKFilterMode.Linear, SKMipmapMode.None);
 
     /// <summary>
-    /// Coloca dos imágenes lado a lado (cada una ocupando la mitad izquierda/derecha) en un lienzo de x*y.
+    /// Places two images side by side (each one taking the left/right half) on an x*y canvas.
     /// </summary>
     public static byte[] MergeImage(byte[] bytes1, byte[] bytes2, int x, int y)
     {
@@ -25,7 +25,7 @@ public static class ImageHelper
     }
 
     /// <summary>
-    /// Superpone <paramref name="image2"/> sobre <paramref name="image1"/> ocupando ambas el lienzo de x*y.
+    /// Overlays <paramref name="image2"/> on top of <paramref name="image1"/>, both filling the x*y canvas.
     /// </summary>
     public static byte[] OverlapImage(byte[] image1, byte[] image2, int x, int y)
     {
@@ -44,9 +44,9 @@ public static class ImageHelper
     }
 
     /// <summary>
-    /// Dibuja <paramref name="image"/> (redimensionada a 500x500) dentro de <paramref name="templateImage"/> en la
-    /// posición (x, y). Usa composición DstAtop para que la imagen solo se vea por los huecos transparentes de la
-    /// plantilla, manteniéndola por detrás del marco.
+    /// Draws <paramref name="image"/> (resized to 500x500) inside <paramref name="templateImage"/> at
+    /// position (x, y). Uses DstAtop composition so the image only shows through the transparent gaps of the
+    /// template, keeping it behind the frame.
     /// </summary>
     public static byte[] DrawIntoImage(byte[] templateImage, byte[] image, int x, int y)
     {
@@ -65,7 +65,7 @@ public static class ImageHelper
         return Encode(surface);
     }
 
-    /// <summary>Verifica que los bytes correspondan a una imagen decodificable (no alcanza con el content-type declarado).</summary>
+    /// <summary>Checks that the bytes are a decodable image (the declared content-type is not enough).</summary>
     public static bool IsValidImage(byte[] bytes)
     {
         if (bytes.Length == 0) return false;

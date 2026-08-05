@@ -5,7 +5,7 @@ using Yumiko.Model.Interfaces;
 
 namespace Yumiko.Infrastructure.Animals;
 
-// TheCatAPI y TheDogAPI son la misma API con distinto host y token.
+// TheCatAPI and TheDogAPI are the same API with a different host and token.
 internal sealed class AnimalImageClient(HttpClient http, string catApiKey, string dogApiKey) : IAnimalImageClient
 {
     public async Task<byte[]?> GetRandomImageAsync(AnimalKind kind, CancellationToken cancellationToken = default)

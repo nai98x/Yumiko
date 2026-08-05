@@ -107,7 +107,7 @@ public class RecommendationServiceTests
 
         await new RecommendationService(client).GetAsync(42, MediaType.ANIME);
 
-        // Para recomendaciones de anime se consultan las listas de MANGA, no las de anime.
+        // For anime recommendations the MANGA lists are queried, not the anime ones.
         Assert.Equal(
             [(MediaUserStatus.COMPLETED, MediaType.MANGA), (MediaUserStatus.CURRENT, MediaType.MANGA)],
             client.ListasPedidas);
@@ -130,7 +130,7 @@ public class RecommendationServiceTests
     [Fact]
     public async Task GetAsync_ScoresWithTheStatisticsOfTheRequestedType()
     {
-        // Anime: media 7, desvío 1 => adjustedScore (10-7)/1 = 3, peso 2 => 6.
+        // Anime: mean 7, deviation 1 => adjustedScore (10-7)/1 = 3, weight 2 => 6.
         FakeAnilistClient client = new()
         {
             Recommendations = (_, _) => (Profile(7, 1), Collection(1, 10, 100, "Steins;Gate")),

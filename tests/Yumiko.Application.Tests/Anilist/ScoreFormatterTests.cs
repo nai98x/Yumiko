@@ -58,7 +58,7 @@ public class ScoreFormatterTests
     [Fact]
     public void FormatScoreUser_Point3_OutOfRange_ReturnsEmpty()
     {
-        // A diferencia de FormatScore, la variante de string no tira: devuelve vacío.
+        // Unlike FormatScore, the string variant does not throw: it returns empty.
         Assert.Equal(string.Empty, ScoreFormatter.FormatScoreUser("POINT_3", "4"));
     }
 

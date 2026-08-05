@@ -1,8 +1,8 @@
 namespace Yumiko.Bot.Helpers;
 
 /// <summary>
-/// El muñeco del ahorcado, dibujado con caracteres de caja. Los puntos hacen de espacios porque
-/// Discord colapsa los espacios consecutivos fuera de un bloque de código.
+/// The hangman figure, drawn with box characters. The dots act as spaces because
+/// Discord collapses consecutive spaces outside a code block.
 /// </summary>
 public static class HangmanArt
 {
@@ -22,7 +22,7 @@ public static class HangmanArt
         ".┃.............:dizzy_face: \n.┃............./ | \\   \n.┃............../\\ \n",
     ];
 
-    /// <summary>Cantidad de errores que terminan la partida.</summary>
+    /// <summary>Amount of misses that end the match.</summary>
     public static int MaxMistakes => Bodies.Length - 1;
 
     public static string Draw(int mistakes) =>

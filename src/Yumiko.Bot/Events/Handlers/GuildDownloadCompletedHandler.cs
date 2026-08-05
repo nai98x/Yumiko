@@ -20,11 +20,11 @@ public sealed class GuildDownloadCompletedHandler(
         try
         {
             discordBotService.SetChannels();
-            logger.LogInformation("Guild y canales de log inicializados");
+            logger.LogInformation("Guild and log channels initialized");
         }
         catch (Exception ex)
         {
-            logger.LogCritical(ex, "No se pudieron resolver el guild o los canales de log; se aborta la inicialización");
+            logger.LogCritical(ex, "Could not resolve the guild or the log channels; aborting initialization");
             discordBotService.SetInitializationFailed();
             return;
         }
@@ -35,7 +35,7 @@ public sealed class GuildDownloadCompletedHandler(
         sw.Stop();
 
         logger.LogInformation(
-            "Bot inicializado en {Segundos:0.00}s | Guilds: {Guilds} | Media en caché: {Media}",
+            "Bot initialized in {Seconds:0.00}s | Guilds: {Guilds} | Cached media: {Media}",
             sw.Elapsed.TotalSeconds,
             client.Guilds.Count,
             mediaCache.Media.Count);

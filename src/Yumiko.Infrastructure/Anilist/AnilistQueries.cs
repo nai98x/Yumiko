@@ -1,6 +1,6 @@
 namespace Yumiko.Infrastructure.Anilist;
 
-// Cualquier cambio acá altera los campos que llegan a los embeds.
+// Any change here alters the fields that reach the embeds.
 internal static class AnilistQueries
 {
     internal const string MediaSearch = @"
@@ -465,12 +465,12 @@ internal static class AnilistQueries
             }
         }";
 
-    // Consulta mínima: solo interesa leer los headers X-RateLimit-* de la respuesta.
+    // Minimal query: the point is only to read the X-RateLimit-* headers of the response.
     internal const string RateLimitProbe = @"query { Media(id: 1) { id } }";
 
     /// <summary>
-    /// Pool de medias de los juegos. Los filtros se interpolan porque AniList no acepta variables en
-    /// `genre` combinado con los `*_not_in`; el llamador arma el string con GameMediaFilters.
+    /// Media pool of the games. The filters are interpolated because AniList does not accept variables in
+    /// `genre` combined with the `*_not_in` ones; the caller builds the string with GameMediaFilters.
     /// </summary>
     internal static string GamePool(string filtros) => $$"""
         query($page: Int){
@@ -502,7 +502,7 @@ internal static class AnilistQueries
         }
         """;
 
-    /// <summary>Página de personajes ordenada por favoritos, para el pool de trivia/ahorcado.</summary>
+    /// <summary>Page of characters sorted by favourites, for the trivia/hangman pool.</summary>
     internal const string CharacterPool = @"
         query($page: Int){
             Page(page: $page){

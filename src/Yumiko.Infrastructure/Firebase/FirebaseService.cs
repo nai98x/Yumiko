@@ -35,5 +35,5 @@ public class FirebaseService
 
     private static string ProjectId(string jsonCredentials, string path) =>
         JsonDocument.Parse(jsonCredentials).RootElement.GetProperty("project_id").GetString()
-        ?? throw new InvalidOperationException($"'project_id' no encontrado en {path}");
+        ?? throw new InvalidOperationException($"'project_id' not found in {path}");
 }

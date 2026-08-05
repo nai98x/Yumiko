@@ -59,7 +59,7 @@ public class TextHelperTests
     [Fact]
     public void CleanText_LeavesUnlistedTagsAlone()
     {
-        // Solo se reemplazan las variantes exactas que devuelve AniList; `<br />` y `<em>` sobreviven.
+        // Only the exact variants AniList returns are replaced; `<br />` and `<em>` survive.
         Assert.Equal("<br /><em>x</em>", TextHelper.CleanText("<br /><em>x</em>"));
     }
 
@@ -83,7 +83,7 @@ public class TextHelperTests
     [Fact]
     public void RemoveSpecialCharacters_StripsAccents()
     {
-        // El regex es ASCII puro: las vocales acentuadas cuentan como separadores, no como letras.
+        // The regex is pure ASCII: accented vowels count as separators, not as letters.
         Assert.Equal("Bakemonogatari", TextHelper.RemoveSpecialCharacters("Bakemonogatari"));
         Assert.Equal("Pok mon", TextHelper.RemoveSpecialCharacters("Pokémon"));
     }

@@ -29,8 +29,8 @@ public sealed class HigherOrLowerGameRunner(
     private static readonly TimeSpan AnswerTimeout = TimeSpan.FromSeconds(15);
 
     /// <summary>
-    /// El token de una interacción vence a los 15 minutos; se corta un minuto antes para poder mandar
-    /// el mensaje de cierre.
+    /// The token of an interaction expires after 15 minutes; it is cut a minute earlier to be able to send
+    /// the closing message.
     /// </summary>
     private static readonly TimeSpan MaxDuration = TimeSpan.FromMinutes(14);
 

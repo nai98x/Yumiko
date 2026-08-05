@@ -8,7 +8,7 @@ public sealed class DailyScheduledService(
     ILogger<DailyScheduledService> logger)
     : CronBackgroundService(discordBotService, logger)
 {
-    /// <summary>4 AM UTC: la franja más tranquila para el crawl de AniList.</summary>
+    /// <summary>4 AM UTC: the quietest slot for the AniList crawl.</summary>
     protected override string CronExpression => "0 4 * * *";
 
     protected override async Task DoWorkAsync(CancellationToken cancellationToken)

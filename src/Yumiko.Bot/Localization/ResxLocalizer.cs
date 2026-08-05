@@ -5,7 +5,7 @@ namespace Yumiko.Bot.Localization;
 
 public sealed class ResxLocalizer : ILocalizer
 {
-    /// <summary>Culturas con traducción propia; el resto cae al neutral (inglés).</summary>
+    /// <summary>Cultures with their own translation; the rest falls back to the neutral one (English).</summary>
     public static readonly CultureInfo Spanish = CultureInfo.GetCultureInfo("es");
 
     public static readonly CultureInfo Neutral = CultureInfo.InvariantCulture;
@@ -29,8 +29,8 @@ public sealed class ResxLocalizer : ILocalizer
     public Loc For(string? discordLocale) => new(this, Culture(discordLocale));
 
     /// <summary>
-    /// Discord manda locales tipo "es-ES" o "es-419". Cualquier variante de español usa el .resx
-    /// español; el resto cae al neutral.
+    /// Discord sends locales like "es-ES" or "es-419". Any Spanish variant uses the Spanish
+    /// .resx; the rest falls back to the neutral one.
     /// </summary>
     public static CultureInfo Culture(string? discordLocale) =>
         discordLocale is not null && discordLocale.StartsWith("es", StringComparison.OrdinalIgnoreCase)

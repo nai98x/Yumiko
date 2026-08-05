@@ -21,6 +21,7 @@ using Yumiko.Model.Interfaces;
 namespace Yumiko.Bot.Commands.Slash;
 
 [TestCommand]
+[LogGuildOnly]
 [Command("owner")]
 [Description("Commands only available to Yumiko's owner")]
 [RequireApplicationOwner]
@@ -195,7 +196,7 @@ public sealed class Owner(
             return;
         }
 
-        // Serilog mantiene el archivo abierto: hay que compartir la escritura para poder leerlo.
+        // Serilog keeps the file open: writing has to be shared to be able to read it.
         await using FileStream fs = File.Open(log.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
         await ctx.EditResponseAsync(new DiscordWebhookBuilder()
@@ -214,7 +215,7 @@ public sealed class Owner(
             .AsEphemeral()
             .WithContent(loc[Keys.shutting_down]));
 
-        // Apagado ordenado: el host desconecta el cliente y vacía los buffers de Serilog.
+        // Graceful shutdown: the host disconnects the client and flushes the Serilog buffers.
         lifetime.StopApplication();
     }
 

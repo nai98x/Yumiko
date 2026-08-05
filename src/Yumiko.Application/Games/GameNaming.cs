@@ -2,9 +2,9 @@ using Yumiko.Model.Enum;
 
 namespace Yumiko.Application.Games;
 
-// Estos nombres son contrato de producción: son los ids de documento con los que ya está guardado todo
-// en Firestore. Las tildes son inconsistentes a propósito ("Fácil" con tilde, "Dificil" sin): cambiarlas
-// huerfaniza los datos existentes.
+// These names are a production contract: they are the document ids everything is already stored with
+// in Firestore. The accents are inconsistent on purpose ("Fácil" with accent, "Dificil" without): changing them
+// orphans the existing data.
 public static class GameNaming
 {
     public static string ToSpanish(this Difficulty difficulty) => difficulty switch

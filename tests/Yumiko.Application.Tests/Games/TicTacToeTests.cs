@@ -5,7 +5,7 @@ namespace Yumiko.Application.Tests.Games;
 
 public class TicTacToeTests
 {
-    // "x" = Player1, "o" = Player2, "." = vacío.
+    // "x" = Player1, "o" = Player2, "." = empty.
     private static List<TicTacToeCell> Board(string cells) =>
         [.. cells.Where(c => c is 'x' or 'o' or '.').Select(c => c switch
         {
@@ -78,7 +78,7 @@ public class TicTacToeTests
 
         Assert.False(TicTacToe.HasWinningLine(board, TicTacToeCell.Player1));
         Assert.False(TicTacToe.HasWinningLine(board, TicTacToeCell.Player2));
-        // Un tablero vacío no puede hacer ganar al "jugador vacío".
+        // An empty board cannot make the "empty player" win.
         Assert.False(TicTacToe.HasWinningLine(board, TicTacToeCell.Empty));
     }
 

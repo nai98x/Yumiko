@@ -29,7 +29,7 @@ public sealed class CommandErrorHandler(DiscordLogService logService, ILocalizer
         {
             await logService.LogExceptionAsync(args.Context.Guild, args.Context.Channel, args.Exception, $"Comando /{args.Context.Command.FullName}");
 
-            // Si reventó una trivia hay que soltar el slot del canal, si no queda trabado para siempre.
+            // If a trivia blew up the channel slot has to be released, otherwise it stays stuck forever.
             if (args.Context.Guild is not null && args.Exception.StackTrace?.Contains("Trivia", StringComparison.Ordinal) == true)
             {
                 triviaState.Remove(args.Context.Guild.Id, args.Context.Channel.Id);
@@ -65,7 +65,7 @@ public sealed class CommandErrorHandler(DiscordLogService logService, ILocalizer
         }
         catch
         {
-            // La interacción pudo haber vencido (los juegos duran minutos); no hay nada más que hacer.
+            // The interaction may have expired (games last minutes); there is nothing else to do.
         }
     }
 }

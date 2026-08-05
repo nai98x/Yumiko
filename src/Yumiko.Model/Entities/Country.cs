@@ -6,7 +6,7 @@ public sealed class Country
 
     public required string NameSpanish { get; init; }
 
-    /// <summary>Código ISO de dos letras; es lo que espera OpenWeatherMap.</summary>
+    /// <summary>Two letter ISO code; that is what OpenWeatherMap expects.</summary>
     public required string Code { get; init; }
 
     public string? DialCode { get; init; }

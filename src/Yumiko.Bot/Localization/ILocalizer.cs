@@ -4,12 +4,12 @@ namespace Yumiko.Bot.Localization;
 
 public interface ILocalizer
 {
-    /// <summary>Texto de <paramref name="key"/> en la cultura pedida, formateado con <paramref name="args"/>.</summary>
+    /// <summary>Text of <paramref name="key"/> in the requested culture, formatted with <paramref name="args"/>.</summary>
     string Get(string key, CultureInfo culture, params object?[] args);
 
-    /// <summary>Captura una cultura para no tener que pasarla en cada llamada.</summary>
+    /// <summary>Captures a culture so it does not have to be passed on every call.</summary>
     Loc For(CultureInfo culture);
 
-    /// <summary>Igual que <see cref="For(CultureInfo)"/> pero a partir del locale que manda Discord.</summary>
+    /// <summary>Same as <see cref="For(CultureInfo)"/> but from the locale Discord sends.</summary>
     Loc For(string? discordLocale);
 }

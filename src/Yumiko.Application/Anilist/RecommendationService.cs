@@ -6,8 +6,8 @@ using Yumiko.Model.Interfaces;
 namespace Yumiko.Application.Anilist;
 
 /// <summary>
-/// Arma las recomendaciones de un usuario: trae su lista del tipo pedido, la del otro tipo (para
-/// excluir lo que ya vio) y puntúa con <see cref="RecommendationScoring"/>.
+/// Builds the recommendations of a user: fetches their list of the requested type, the one of the other
+/// type (to exclude what they already watched) and scores it with <see cref="RecommendationScoring"/>.
 /// </summary>
 public sealed class RecommendationService(IAnilistClient anilist)
 {
@@ -36,7 +36,7 @@ public sealed class RecommendationService(IAnilistClient anilist)
             .. (inProgress?.Entries ?? []).Select(e => e.Media.Id),
         ];
 
-        // Las estadísticas de anime y manga son tipos distintos en el modelo, así que no se unifican.
+        // Anime and manga statistics are different types in the model, so they are not unified.
         decimal meanScore = type == MediaType.ANIME ? profile.Statistics.Anime.MeanScore : profile.Statistics.Manga.MeanScore;
         decimal deviation = type == MediaType.ANIME ? profile.Statistics.Anime.StandardDeviation : profile.Statistics.Manga.StandardDeviation;
 

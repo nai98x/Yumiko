@@ -15,7 +15,7 @@ internal sealed class TraceMoeClient(HttpClient http) : ITraceMoeClient
     {
         using HttpResponseMessage response = await http.GetAsync($"search?url={HttpUtility.UrlEncode(imageUrl)}", cancellationToken);
 
-        // 402 = cuota agotada, 429 = demasiadas búsquedas. En los dos casos no hay resultados que mostrar.
+        // 402 = quota depleted, 429 = too many searches. In both cases there are no results to show.
         if (response.StatusCode is HttpStatusCode.PaymentRequired or HttpStatusCode.TooManyRequests)
         {
             throw new TraceMoeQuotaException((int)response.StatusCode);
@@ -35,7 +35,7 @@ internal sealed class TraceMoeClient(HttpClient http) : ITraceMoeClient
         })];
     }
 
-    // trace.moe manda el episodio como número, array de números o null según el caso.
+    // trace.moe sends the episode as a number, an array of numbers or null depending on the case.
     private static string? FormatearEpisodio(JsonElement episode) => episode.ValueKind switch
     {
         JsonValueKind.Undefined or JsonValueKind.Null => null,

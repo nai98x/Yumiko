@@ -8,13 +8,13 @@ namespace Yumiko.Bot.Extensions;
 
 public static class CommandContextExtensions
 {
-    /// <summary>Localizador atado al idioma que el usuario tiene configurado en Discord.</summary>
+    /// <summary>Localizer bound to the language the user has configured in Discord.</summary>
     public static Loc Loc(this CommandContext ctx, ILocalizer localizer) =>
         localizer.For(ctx is SlashCommandContext slash ? slash.Interaction.Locale : null);
 
     /// <summary>
-    /// Verifica que el bot haya terminado de inicializarse. Si no, responde avisando y devuelve
-    /// <c>false</c> para que el comando corte antes de diferir.
+    /// Checks that the bot finished initializing. If not, it answers with a notice and returns
+    /// <c>false</c> so the command stops before deferring.
     /// </summary>
     public static async Task<bool> EnsureBotReadyAsync(this CommandContext ctx, DiscordBotService discordBotService, Loc loc)
     {

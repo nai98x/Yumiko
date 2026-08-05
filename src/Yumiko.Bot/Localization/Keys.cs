@@ -1,7 +1,7 @@
 namespace Yumiko.Bot.Localization;
 
 /// <summary>
-/// Claves de <c>Resources/Translations.resx</c>, para tenerlas verificadas en compilación.
+/// Keys of <c>Resources/Translations.resx</c>, to have them checked at compile time.
 /// </summary>
 public static class Keys
 {

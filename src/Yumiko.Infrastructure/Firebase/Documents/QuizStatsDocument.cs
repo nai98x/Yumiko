@@ -3,9 +3,9 @@ using Google.Cloud.Firestore;
 
 namespace Yumiko.Infrastructure.Firebase.Documents;
 
-// Los nombres de campo replican exactamente lo que ya está guardado en Firestore.
+// The field names replicate exactly what is already stored in Firestore.
 [FirestoreData]
-[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Nombres de campo de Firestore")]
+[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Firestore field names")]
 internal class QuizStatsDocument
 {
     [FirestoreProperty]

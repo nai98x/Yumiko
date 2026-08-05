@@ -22,7 +22,7 @@ public sealed class AnimeRecommendations(ILocalizer localizer, AnilistResponses 
     {
         Loc loc = ctx.Loc(localizer);
 
-        // Pedir las recomendaciones de uno mismo responde en privado; sobre otro, a la vista de todos.
+        // Asking for your own recommendations answers privately; over someone else, in plain sight.
         await ctx.DeferResponseAsync(ctx.User.Id == target.Id);
         await ctx.EditResponseAsync(await responses.RecommendationsAsync(target, MediaType.ANIME, loc));
     }

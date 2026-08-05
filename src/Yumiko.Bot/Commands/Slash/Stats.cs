@@ -170,7 +170,7 @@ public sealed class Stats(
             return;
         }
 
-        // El true fuerza una colección completa antes de medir; si no, el número incluye basura.
+        // The true forces a full collection before measuring; otherwise the number includes garbage.
         string memory = $"{GC.GetTotalMemory(true) / 1024 / 1024:n0} MB";
 
         DiscordEmbedBuilder embed = new DiscordEmbedBuilder

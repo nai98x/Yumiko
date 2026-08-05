@@ -278,7 +278,7 @@ public sealed class Interact(
             Description = $"{loc[Keys.processing_desc]}..",
         }));
 
-        // Sin forzar la recarga el banner y los flags llegan vacíos: no vienen en el objeto cacheado.
+        // Without forcing the reload the banner and the flags come empty: they are not in the cached object.
         user = await ctx.Client.GetUserAsync(user.Id, true);
         DiscordMember member = await ctx.Guild!.GetMemberAsync(user.Id);
 
@@ -324,7 +324,7 @@ public sealed class Interact(
 
         DiscordMember member = await ctx.Guild!.GetMemberAsync((user ?? ctx.User).Id);
 
-        // El "real" siembra con el id del miembro: siempre da el mismo número para la misma persona.
+        // The "real" one seeds with the member id: it always gives the same number for the same person.
         int level = real ? new Random((int)member.Id).Next(0, 101) : RandomHelper.GetRandomNumber(0, 100);
 
         (DiscordColor color, string messageKey, string image) = level switch
@@ -359,7 +359,7 @@ public sealed class Interact(
 
         await ctx.DeferResponseAsync();
 
-        // Con un solo usuario se compara al invocante contra él; con ninguno, al invocante consigo mismo.
+        // With a single user the invoker is compared against them; with none, the invoker against themselves.
         DiscordUser first = user1 ?? ctx.User;
         DiscordUser? second = user2;
 
@@ -394,7 +394,7 @@ public sealed class Interact(
             builder.AddFile("imageLove.png", image.ToMemoryStream());
         }
 
-        // El auto-amor siembra sumando el id consigo mismo, distinto de la semilla que usa /waifu.
+        // Self love seeds by adding the id to itself, different from the seed used by /waifu.
         int percentage = real
             ? LoveMeter.RealPercentage(first.Id, second?.Id ?? first.Id)
             : RandomHelper.GetRandomNumber(0, 100);

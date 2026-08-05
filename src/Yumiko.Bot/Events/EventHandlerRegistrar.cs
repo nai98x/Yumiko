@@ -18,9 +18,9 @@ public static class EventHandlerRegistrar
         return services;
     }
 
-    // Cada handler se resuelve recién cuando se dispara el evento, vía c.ServiceProvider. Esto rompe
-    // el ciclo DiscordClient -> Handler -> DiscordBotService -> DiscordClient del arranque y permite
-    // que los handlers inyecten sus dependencias por constructor.
+    // Each handler is resolved only when the event fires, via c.ServiceProvider. This breaks
+    // the DiscordClient -> Handler -> DiscordBotService -> DiscordClient cycle of the startup and lets
+    // the handlers inject their dependencies by constructor.
     public static EventHandlingBuilder BindEventHandlers(this EventHandlingBuilder builder)
     {
         return builder

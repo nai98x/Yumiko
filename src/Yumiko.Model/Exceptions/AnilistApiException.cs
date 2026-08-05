@@ -1,9 +1,9 @@
 namespace Yumiko.Model.Exceptions;
 
 /// <summary>
-/// Excepción base para cualquier error al consultar la API de AniList. La capa que consume
-/// <c>IAnilistClient</c> puede capturar este tipo (o sus derivados) sin conocer detalles del
-/// transporte GraphQL/HTTP.
+/// Base exception for any failure while querying the AniList API. The layer consuming
+/// <c>IAnilistClient</c> can catch this type (or its derivatives) without knowing transport
+/// details of the GraphQL/HTTP layer.
 /// </summary>
 public class AnilistApiException : Exception
 {
@@ -13,24 +13,24 @@ public class AnilistApiException : Exception
 }
 
 /// <summary>
-/// Se lanza cuando AniList responde con un error de servidor (5xx) tras agotar los reintentos.
-/// Suele indicar que la API está caída o degradada, no un problema de la consulta.
+/// Thrown when AniList answers with a server error (5xx) after the retries are exhausted.
+/// It usually means the API is down or degraded, not a problem with the query.
 /// </summary>
 public class AnilistServerErrorException : AnilistApiException
 {
     public int StatusCode { get; }
 
     public AnilistServerErrorException(int statusCode, Exception innerException)
-        : base($"AniList respondió HTTP {statusCode}; la API probablemente esté caída.", innerException)
+        : base($"AniList answered HTTP {statusCode}; the API is probably down.", innerException)
     {
         StatusCode = statusCode;
     }
 }
 
 /// <summary>
-/// Se lanza cuando AniList responde 429 (Too Many Requests) y los reintentos se agotaron.
-/// <see cref="RetryAfter"/> indica cuánto esperar antes de volver a intentar, si el header
-/// <c>Retry-After</c> lo informó.
+/// Thrown when AniList answers 429 (Too Many Requests) and the retries are exhausted.
+/// <see cref="RetryAfter"/> tells how long to wait before trying again, when the
+/// <c>Retry-After</c> header reported it.
 /// </summary>
 public class AnilistRateLimitException : AnilistApiException
 {
@@ -44,6 +44,6 @@ public class AnilistRateLimitException : AnilistApiException
 
     private static string BuildMessage(TimeSpan? retryAfter) =>
         retryAfter is { } ra
-            ? $"AniList alcanzó el rate limit. Reintentar en {ra.TotalSeconds:0}s."
-            : "AniList alcanzó el rate limit.";
+            ? $"AniList hit the rate limit. Retry in {ra.TotalSeconds:0}s."
+            : "AniList hit the rate limit.";
 }

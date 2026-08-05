@@ -9,8 +9,8 @@ using Yumiko.Bot.Services.State;
 namespace Yumiko.Bot.Events.Handlers;
 
 /// <summary>
-/// Rutea las interacciones de componentes que no maneja Interactivity: los votos de encuesta y los
-/// botones de la trivia. El resto se acusa recibo para que Discord no muestre "la interacción falló".
+/// Routes the component interactions Interactivity does not handle: the poll votes and the
+/// trivia buttons. The rest are acknowledged so Discord does not show "the interaction failed".
 /// </summary>
 public sealed class ComponentInteractionHandler(
     PollState pollState,
@@ -42,8 +42,8 @@ public sealed class ComponentInteractionHandler(
                 return;
             }
 
-            // Interactivity ya se encarga de los componentes que espera un comando; acá solo hay que
-            // evitar que Discord marque la interacción como fallida.
+            // Interactivity already takes care of the components a command is waiting for; here it is only
+            // about avoiding Discord marking the interaction as failed.
             if (!args.Id.StartsWith("modal-", StringComparison.Ordinal) && !args.Id.StartsWith("cancel-", StringComparison.Ordinal))
             {
                 await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.DeferredMessageUpdate);
@@ -51,7 +51,7 @@ public sealed class ComponentInteractionHandler(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error manejando la interacción de componente {Id}", args.Id);
+            logger.LogError(ex, "Error handling the component interaction {Id}", args.Id);
         }
     }
 
@@ -79,7 +79,7 @@ public sealed class ComponentInteractionHandler(
             }).AsEphemeral());
     }
 
-    /// <summary>Solo quien abrió la partida la puede cancelar.</summary>
+    /// <summary>Only whoever opened the match can cancel it.</summary>
     private async Task HandleTriviaCancelAsync(ComponentInteractionCreatedEventArgs args)
     {
         if (args.Guild is null || triviaState.Get(args.Guild.Id, args.Channel.Id) is not { } trivia)

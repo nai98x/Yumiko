@@ -3,8 +3,8 @@ using System.Collections.Concurrent;
 namespace Yumiko.Bot.Games;
 
 /// <summary>
-/// Encuesta en curso. Los votos van en un diccionario userId → opción: así un usuario tiene siempre
-/// un voto y cambiarlo pisa el anterior de forma atómica.
+/// Ongoing poll. The votes go in a userId → option dictionary: that way a user always has
+/// one vote and changing it overwrites the previous one atomically.
 /// </summary>
 public sealed class Poll
 {
@@ -16,7 +16,7 @@ public sealed class Poll
 
     private readonly ConcurrentDictionary<ulong, string> _votes = new();
 
-    /// <summary>Registra el voto. Devuelve <c>false</c> si el usuario ya había votado esa misma opción.</summary>
+    /// <summary>Registers the vote. Returns <c>false</c> if the user had already voted for that same option.</summary>
     public bool Vote(ulong userId, string option)
     {
         if (!Options.Contains(option))

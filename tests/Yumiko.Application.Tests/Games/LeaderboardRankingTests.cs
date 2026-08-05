@@ -18,8 +18,8 @@ public class LeaderboardRankingTests
     {
         List<GameStats> players =
         [
-            Player(1, 100, 5, 5),   // 1 ronda por partida: fuera
-            Player(2, 80, 5, 20),   // 4 rondas por partida: entra
+            Player(1, 100, 5, 5),   // 1 round per game: out
+            Player(2, 80, 5, 20),   // 4 rounds per game: in
         ];
 
         List<Rank<GameStats>> ranks = LeaderboardRanking.RankQuiz(players);

@@ -5,7 +5,7 @@ namespace Yumiko.Model.Interfaces;
 public interface IAnimeThemesClient
 {
     /// <summary>
-    /// Busca animes en animethemes.moe incluyendo sus openings/endings y los videos de cada uno.
+    /// Searches animes on animethemes.moe including their openings/endings and the videos of each one.
     /// </summary>
     Task<List<AnimeAniTheme>> SearchAsync(string search, CancellationToken cancellationToken = default);
 }

@@ -49,7 +49,7 @@ public class RecommendationScoringTests
     [Fact]
     public void AccumulatesTheScoreOfSeveralEntriesPointingAtTheSameMedia()
     {
-        // adjustedScore = (10 - 7) / 1 = 3 por entrada; peso 2 => 6 cada una, 12 en total.
+        // adjustedScore = (10 - 7) / 1 = 3 per entry; weight 2 => 6 each one, 12 in total.
         var collection = Collection(
             Entry(1, 10, (100, "Steins;Gate", 50)),
             Entry(2, 10, (100, "Steins;Gate", 50)));
@@ -98,11 +98,11 @@ public class RecommendationScoringTests
     [Fact]
     public void AppliesTheThresholdOfThree()
     {
-        // adjustedScore = (8 - 7) / 1 = 1; peso 2 => 2, por debajo del umbral de 3.
+        // adjustedScore = (8 - 7) / 1 = 1; weight 2 => 2, below the threshold of 3.
         var justoDebajo = Collection(Entry(1, 8, (100, "A", 50)));
         Assert.Empty(RecommendationScoring.Score(justoDebajo, 7, 1, false, new HashSet<int>()));
 
-        // (9 - 7) / 1 = 2; peso 2 => 4, por encima del umbral.
+        // (9 - 7) / 1 = 2; weight 2 => 4, above the threshold.
         var justoArriba = Collection(Entry(1, 9, (100, "A", 50)));
         Assert.Single(RecommendationScoring.Score(justoArriba, 7, 1, false, new HashSet<int>()));
     }
@@ -166,8 +166,8 @@ public class RecommendationScoringTests
     [Fact]
     public void TheRatingWeightIsAlwaysTwoExceptForRatingOne()
     {
-        // 2 - (1 / rating) en aritmética entera: da 1 solo con rating 1 y 2 con cualquier otro.
-        // Cambiar el peso re-ordena las recomendaciones, así que queda fijado acá.
+        // 2 - (1 / rating) in integer arithmetic: it gives 1 only with rating 1 and 2 with any other.
+        // Changing the weight re-orders the recommendations, so it is pinned here.
         var ratingUno = Collection(Entry(1, 10, (100, "A", 1)));
         var ratingCien = Collection(Entry(1, 10, (100, "A", 100)));
 
@@ -178,7 +178,7 @@ public class RecommendationScoringTests
     [Fact]
     public void MinimumScore_IsThree()
     {
-        // El umbral define qué se muestra: bajarlo llena el embed de ruido, subirlo lo vacía.
+        // The threshold defines what is shown: lowering it fills the embed with noise, raising it empties it.
         Assert.Equal(3m, RecommendationScoring.MinimumScore);
     }
 }

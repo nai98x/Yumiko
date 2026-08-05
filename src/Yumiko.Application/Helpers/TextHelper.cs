@@ -5,7 +5,7 @@ namespace Yumiko.Application.Helpers;
 
 public static partial class TextHelper
 {
-    // AniList devuelve HTML y su propio marcado de spoilers; esto lo lleva a markdown de Discord.
+    // AniList returns HTML and its own spoiler markup; this converts it to Discord markdown.
     public static string CleanText(string? text)
     {
         if (text is null)
@@ -42,7 +42,7 @@ public static partial class TextHelper
         return NonAlphanumeric().Replace(str, " ").Trim();
     }
 
-    /// <summary>Title case sobre el texto completo llevado antes a minúsculas.</summary>
+    /// <summary>Title case over the whole text lowercased beforehand.</summary>
     public static string UppercaseFirst(this string? s) =>
         string.IsNullOrEmpty(s)
             ? string.Empty

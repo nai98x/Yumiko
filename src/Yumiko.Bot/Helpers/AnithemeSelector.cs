@@ -6,7 +6,7 @@ using Yumiko.Model.Interfaces;
 
 namespace Yumiko.Bot.Helpers;
 
-/// <summary>Encadena las tres elecciones de <c>/anitheme</c>: anime → tema (OP/ED) → versión.</summary>
+/// <summary>Chains the three choices of <c>/anitheme</c>: anime → theme (OP/ED) → version.</summary>
 public sealed class AnithemeSelector(IAnimeThemesClient client, DiscordInteractivity discordInteractivity)
 {
     public async Task<AnithemeData?> SearchAsync(SlashCommandContext ctx, string search, Loc loc)
@@ -58,8 +58,8 @@ public sealed class AnithemeSelector(IAnimeThemesClient client, DiscordInteracti
         [.. animeResults.OrderBy(a => $"{a.Name} ({a.Season} {a.Year})", StringComparer.Ordinal)];
 
     /// <summary>
-    /// Ordena por tipo descendente (OP antes que ED) y dentro de cada tipo por secuencia, y descarta
-    /// los temas cuyo slug lleva sufijo (versiones alternativas que no tienen entrada propia).
+    /// Sorts by descending type (OP before ED) and by sequence inside each type, and discards
+    /// the themes whose slug carries a suffix (alternative versions without their own entry).
     /// </summary>
     private static IEnumerable<Animetheme> SortThemes(List<Animetheme> themes) =>
         themes

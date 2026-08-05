@@ -5,19 +5,19 @@ namespace Yumiko.Application.Anilist;
 
 public static class RecommendationScoring
 {
-    /// <summary>Puntaje mínimo acumulado para que una recomendación se muestre.</summary>
+    /// <summary>Minimum accumulated score for a recommendation to be shown.</summary>
     public const decimal MinimumScore = 3;
 
     /// <summary>
-    /// Puntúa las recomendaciones que cuelgan de la lista del usuario. Cada entrada puntuada aporta a sus
-    /// recomendaciones un puntaje ajustado <c>(score - meanScore) / stdDev</c>, ponderado por el rating
-    /// del nodo. Se descartan las que el usuario ya tiene en esta lista o en la del otro tipo.
+    /// Scores the recommendations hanging from the user list. Each scored entry contributes to its
+    /// recommendations an adjusted score <c>(score - meanScore) / stdDev</c>, weighted by the rating
+    /// of the node. The ones the user already has in this list or in the other type list are discarded.
     /// </summary>
-    /// <param name="collection">Lista del usuario para el tipo consultado.</param>
-    /// <param name="meanScore">Puntaje promedio del usuario para ese tipo.</param>
-    /// <param name="standardDeviation">Desvío estándar del usuario. Si es 0 no se puede normalizar.</param>
-    /// <param name="preferEnglishTitle">Si el perfil tiene los títulos configurados en inglés.</param>
-    /// <param name="excludedIds">Ids del otro tipo que el usuario ya vio o está viendo.</param>
+    /// <param name="collection">User list for the queried type.</param>
+    /// <param name="meanScore">Average user score for that type.</param>
+    /// <param name="standardDeviation">User standard deviation. If it is 0 there is no way to normalize.</param>
+    /// <param name="preferEnglishTitle">Whether the profile has titles configured in English.</param>
+    /// <param name="excludedIds">Ids of the other type the user already watched or is watching.</param>
     public static List<AnimeRecommendation> Score(
         MediaListCollection? collection,
         decimal meanScore,
@@ -96,8 +96,8 @@ public static class RecommendationScoring
     }
 
     /// <summary>
-    /// Peso que aporta un nodo según su rating. La división es entera a propósito: da 1 con rating 1 y
-    /// 2 con cualquier rating mayor. Tocarla re-ordena todas las recomendaciones.
+    /// Weight a node contributes based on its rating. The division is integer on purpose: it gives 1 with rating 1 and
+    /// 2 with any higher rating. Touching it re-orders every recommendation.
     /// </summary>
     private static int RatingWeight(int nodeRating) => 2 - (1 / nodeRating);
 }

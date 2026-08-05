@@ -4,13 +4,13 @@ using Microsoft.Extensions.Configuration;
 namespace Yumiko.Bot.Configuration;
 
 /// <summary>
-/// Ids y URLs con los que arranca el bot. Falla al arrancar si falta alguno, en vez de reventar
-/// cuando alguien usa el comando.
+/// Ids and URLs the bot starts with. It fails at startup if any is missing, instead of blowing up
+/// when someone uses the command.
 /// </summary>
 /// <remarks>
-/// Los ids de Discord y <c>Website</c> salen de appsettings.json;
-/// <see cref="AnilistApiClientId"/> es un secret (User Secrets en local, variable de entorno en el
-/// servidor) y por eso no está versionado.
+/// The Discord ids and <c>Website</c> come from appsettings.json;
+/// <see cref="AnilistApiClientId"/> is a secret (User Secrets locally, environment variable on the
+/// server) and that is why it is not versioned.
 /// </remarks>
 public sealed class BotConfiguration
 {
@@ -20,7 +20,7 @@ public sealed class BotConfiguration
 
     public required string Website { get; init; }
 
-    /// <summary>Client id de la app de AniList, para armar la URL de OAuth de <c>/anilist setprofile</c>.</summary>
+    /// <summary>Client id of the AniList app, to build the OAuth URL of <c>/anilist setprofile</c>.</summary>
     public required string AnilistApiClientId { get; init; }
 
     public static BotConfiguration FromConfiguration(IConfiguration configuration)
@@ -43,25 +43,25 @@ public sealed class BotConfiguration
     private static ulong RequireUlong(IConfigurationSection section, string key) =>
         ulong.TryParse(section[key], NumberStyles.Integer, CultureInfo.InvariantCulture, out ulong value)
             ? value
-            : throw new InvalidOperationException($"Configuración faltante o inválida en appsettings.json: {section.Path}:{key}");
+            : throw new InvalidOperationException($"Missing or invalid configuration in appsettings.json: {section.Path}:{key}");
 
     private static string RequireString(IConfiguration configuration, string key) =>
         configuration.GetValue<string>(key) is { Length: > 0 } value
             ? value
-            : throw new InvalidOperationException($"Configuración faltante o inválida en appsettings.json: {key}");
+            : throw new InvalidOperationException($"Missing or invalid configuration in appsettings.json: {key}");
 
     private static string RequireSecret(IConfiguration configuration, string key) =>
         configuration.GetValue<string>(key) is { Length: > 0 } value
             ? value
             : throw new InvalidOperationException(
-                $"'{key}' es obligatorio: configuralo via User Secrets (local) o variable de entorno (servidor)");
+                $"'{key}' is required: set it via User Secrets (local) or an environment variable (server)");
 }
 
 public sealed class ChannelConfiguration
 {
-    /// <summary>Canal donde se avisan altas y bajas de guild.</summary>
+    /// <summary>Channel where guild joins and leaves are announced.</summary>
     public required ulong Guilds { get; init; }
 
-    /// <summary>Canal donde se loguean los errores.</summary>
+    /// <summary>Channel where the errors are logged.</summary>
     public required ulong Errors { get; init; }
 }

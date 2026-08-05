@@ -3,12 +3,12 @@ using System.Text.RegularExpressions;
 
 namespace Yumiko.Application.Helpers;
 
-/// <summary>Emote personalizado de Discord tal como aparece escrito en un mensaje.</summary>
+/// <summary>Custom Discord emote exactly as it is written in a message.</summary>
 public sealed record CustomEmoji(string Name, ulong Id, bool Animated)
 {
     public string Url => $"https://cdn.discordapp.com/emojis/{Id}.{(Animated ? "gif" : "png")}";
 
-    /// <summary>Fecha embebida en el snowflake (época de Discord: 2015-01-01).</summary>
+    /// <summary>Date embedded in the snowflake (Discord epoch: 2015-01-01).</summary>
     public DateTimeOffset CreationTimestamp =>
         DateTimeOffset.FromUnixTimeMilliseconds((long)(Id >> 22) + 1420070400000L);
 }
@@ -16,7 +16,7 @@ public sealed record CustomEmoji(string Name, ulong Id, bool Animated)
 public static partial class EmojiHelper
 {
     /// <summary>
-    /// Reconoce las formas <c>&lt;:nombre:id&gt;</c>, <c>&lt;a:nombre:id&gt;</c> y <c>nombre:id</c>.
+    /// Recognizes the <c>&lt;:name:id&gt;</c>, <c>&lt;a:name:id&gt;</c> and <c>name:id</c> forms.
     /// </summary>
     public static CustomEmoji? ParseCustom(string? text)
     {

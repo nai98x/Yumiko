@@ -6,7 +6,7 @@ namespace Yumiko.Application.Games;
 public static class HigherOrLower
 {
     /// <summary>
-    /// Elige dos medias distintos al azar de la lista. Devuelve <c>null</c> si no hay al menos dos.
+    /// Picks two distinct random media from the list. Returns <c>null</c> if there are not at least two.
     /// </summary>
     public static (Anime First, Anime Second)? PickPair(IReadOnlyList<Anime> list, Random? random = null)
     {
@@ -29,7 +29,7 @@ public static class HigherOrLower
     }
 
     /// <summary>
-    /// Valor que se compara en cada modo: puntaje promedio o cantidad de favoritos.
+    /// Value compared in each mode: average score or amount of favourites.
     /// </summary>
     public static int ComparedValue(Anime anime, GamemodeHoL gamemode) => gamemode switch
     {
@@ -39,11 +39,11 @@ public static class HigherOrLower
     };
 
     /// <summary>
-    /// Si la elección del jugador acierta. Los empates cuentan como acierto.
+    /// Whether the player choice is right. Ties count as a hit.
     /// </summary>
     public static bool IsCorrect(Anime selected, Anime other, GamemodeHoL gamemode) =>
         ComparedValue(selected, gamemode) >= ComparedValue(other, gamemode);
 
-    /// <summary>Puntaje de AniList en escala 0-10 (viene en 0-100).</summary>
+    /// <summary>AniList score on a 0-10 scale (it comes as 0-100).</summary>
     public static double ScoreOutOfTen(Anime anime) => anime.AvarageScore / 10d;
 }

@@ -108,7 +108,7 @@ public static class GameStatsEmbeds
         Color = stats is null ? DiscordColor.Red : YumikoColors.Primary,
     };
 
-    /// <summary>Nombre del juego tal como se muestra: en español los enums tienen traducción propia.</summary>
+    /// <summary>Game name as it is displayed: in Spanish the enums have their own translation.</summary>
     public static string GamemodeName(Gamemode gamemode, Loc loc) =>
         loc.IsSpanish ? gamemode.ToSpanish() : $"{gamemode}";
 

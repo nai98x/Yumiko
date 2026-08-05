@@ -47,7 +47,7 @@ public static class Program
         }
         catch (Exception ex)
         {
-            Log.Fatal(ex, "El servicio principal terminó de forma inesperada");
+            Log.Fatal(ex, "The main service terminated unexpectedly");
             throw;
         }
         finally
@@ -66,8 +66,8 @@ public static class Program
             .AddUserSecrets(typeof(Program).Assembly, optional: true)
             .AddEnvironmentVariables();
 
-        // Los overrides de desarrollo solo aplican en builds Debug. Si se cargaran siempre, el
-        // gating de top.gg de ese archivo pisaría el de producción.
+        // The development overrides only apply on Debug builds. If they were always loaded, the
+        // top.gg gating of that file would override the production one.
         if (BotEnvironment.IsDebug)
         {
             host.Configuration.AddJsonFile("appsettings.Development.json", optional: true);
@@ -101,5 +101,5 @@ public static class Program
         configuration.GetValue<string>(key) is { Length: > 0 } value
             ? value
             : throw new InvalidOperationException(
-                $"'{key}' es obligatorio: configuralo via User Secrets (local) o variable de entorno (servidor)");
+                $"'{key}' is required: set it via User Secrets (local) or an environment variable (server)");
 }

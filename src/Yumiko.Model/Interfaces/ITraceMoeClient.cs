@@ -4,6 +4,6 @@ namespace Yumiko.Model.Interfaces;
 
 public interface ITraceMoeClient
 {
-    /// <summary>Busca el anime de una imagen. Los resultados vienen ordenados por similitud.</summary>
+    /// <summary>Searches for the anime of an image. Results come sorted by similarity.</summary>
     Task<List<TraceMoeMatch>> SearchAsync(string imageUrl, CancellationToken cancellationToken = default);
 }

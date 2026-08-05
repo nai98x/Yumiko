@@ -6,8 +6,8 @@ using Yumiko.Model.Interfaces;
 namespace Yumiko.Application.Tests.Anilist;
 
 /// <summary>
-/// Doble de <see cref="IAnilistClient"/> para los tests de Application. Solo implementa lo que usan
-/// los servicios bajo prueba; el resto tira, así un test que empiece a llamar algo nuevo se entera.
+/// Double of <see cref="IAnilistClient"/> for the Application tests. It only implements what the
+/// services under test use; the rest throws, so a test that starts calling something new finds out.
 /// </summary>
 internal sealed class FakeAnilistClient : IAnilistClient
 {

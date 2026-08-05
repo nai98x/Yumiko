@@ -7,8 +7,8 @@ public static class LoveMeter
     private const int Segments = 20;
 
     /// <summary>
-    /// Barra de 20 segmentos: cada bloque lleno representa 5%. La división es entera, así que
-    /// cualquier porcentaje que no sea múltiplo de 5 redondea hacia abajo.
+    /// 20 segment bar: each filled block represents 5%. The division is integer, so
+    /// any percentage that is not a multiple of 5 rounds down.
     /// </summary>
     public static string Bar(int percentage)
     {
@@ -29,8 +29,8 @@ public static class LoveMeter
     }
 
     /// <summary>
-    /// Porcentaje "real": determinista a partir de los ids, así siempre da lo mismo para la misma pareja.
-    /// La semilla trunca a <c>int</c> a propósito; cambiarla cambiaría el resultado de todas las parejas.
+    /// "Real" percentage: deterministic from the ids, so the same couple always gets the same result.
+    /// The seed truncates to <c>int</c> on purpose; changing it would change the result of every couple.
     /// </summary>
     public static int RealPercentage(ulong id1, ulong id2) => new Random((int)(id1 + id2)).Next(0, 101);
 }

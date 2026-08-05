@@ -5,7 +5,7 @@ using Yumiko.Model.Interfaces;
 namespace Yumiko.Bot.Games;
 
 /// <summary>
-/// Trae el pool de medias y personajes que alimenta a los juegos.
+/// Fetches the pool of media and characters that feeds the games.
 /// </summary>
 public sealed class GamePool(IAnilistClient anilist)
 {
@@ -29,8 +29,8 @@ public sealed class GamePool(IAnilistClient anilist)
     }
 
     /// <summary>
-    /// En el modo géneros el rango de páginas depende de cuántas tenga el género, así que hay que
-    /// consultar la primera página antes de sortear.
+    /// In genres mode the page range depends on how many the genre has, so the first page has to be
+    /// queried before drawing.
     /// </summary>
     public async Task<(int PageFrom, int PageTo)> GetGenreRangeAsync(GameMediaQuery query, CancellationToken cancellationToken = default)
     {
@@ -57,7 +57,7 @@ public sealed class GamePool(IAnilistClient anilist)
         return characters;
     }
 
-    /// <summary>Pool completo para el caché de Higher or Lower: páginas consecutivas, sin sorteo.</summary>
+    /// <summary>Full pool for the Higher or Lower cache: consecutive pages, no draw.</summary>
     public async Task<List<Anime>> GetMediaForCacheAsync(GameMediaQuery query, int pageFrom, int pageTo, CancellationToken cancellationToken = default)
     {
         List<Anime> media = [];

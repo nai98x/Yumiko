@@ -71,7 +71,7 @@ public sealed class Misc(
             return;
         }
 
-        // Los valores meteorológicos van sin localizar: son unidades, no texto.
+        // The weather values go unlocalized: they are units, not text.
         CultureInfo ic = CultureInfo.InvariantCulture;
 
         DiscordEmbedBuilder embed = new DiscordEmbedBuilder

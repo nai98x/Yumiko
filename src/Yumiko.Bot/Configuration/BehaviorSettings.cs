@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Yumiko.Bot.Configuration;
 
-/// <summary>Timeouts de interactividad, en segundos.</summary>
+/// <summary>Interactivity timeouts, in seconds.</summary>
 public sealed record TimeoutSettings(double General, double Games)
 {
     public static TimeoutSettings FromConfiguration(IConfiguration configuration)
@@ -18,7 +18,7 @@ public sealed record TimeoutSettings(double General, double Games)
     private static double RequireDouble(IConfigurationSection section, string key) =>
         double.TryParse(section[key], NumberStyles.Float, CultureInfo.InvariantCulture, out double value)
             ? value
-            : throw new InvalidOperationException($"Configuración faltante o inválida en appsettings.json: {section.Path}:{key}");
+            : throw new InvalidOperationException($"Missing or invalid configuration in appsettings.json: {section.Path}:{key}");
 }
 
 public sealed record LogsSettings(long FileSizeBytes, int RetainedFileCount)
@@ -38,8 +38,8 @@ public sealed record TopggSettings(bool Enabled)
         new(configuration.GetSection("Topgg").GetValue<bool>("Enabled"));
 }
 
-/// <summary>Parámetros del pool de medias que alimenta los juegos.</summary>
-public sealed record GamesSettings(int MediaCachePageFrom, int MediaCachePageTo, int AnilistPerPage)
+/// <summary>Parameters of the media pool that feeds the games.</summary>
+public sealed record GamesSettings(int MediaCachePageFrom, int MediaCachePageTo, int AnilistPerPage, int RandomPageMax)
 {
     public static GamesSettings FromConfiguration(IConfiguration configuration)
     {
@@ -47,7 +47,9 @@ public sealed record GamesSettings(int MediaCachePageFrom, int MediaCachePageTo,
         return new GamesSettings(
             section.GetValue<int?>("MediaCachePageFrom") ?? 1,
             section.GetValue<int?>("MediaCachePageTo") ?? 36,
-            section.GetValue<int?>("AnilistPerPage") ?? 25);
+            section.GetValue<int?>("AnilistPerPage") ?? 25,
+            // AniList rejects the query when page * perPage goes over 5000 entries.
+            section.GetValue<int?>("RandomPageMax") ?? 5000);
     }
 }
 

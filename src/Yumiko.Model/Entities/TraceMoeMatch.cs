@@ -6,7 +6,7 @@ public class TraceMoeMatch
 
     public string? Episode { get; init; }
 
-    /// <summary>Similitud como fracción (0 a 1), tal cual la devuelve trace.moe.</summary>
+    /// <summary>Similarity as a fraction (0 to 1), exactly as trace.moe returns it.</summary>
     public double Similarity { get; init; }
 
     public double From { get; init; }

@@ -1,18 +1,18 @@
 ﻿namespace Yumiko.Model.Entities.Anilist;
 
 /// <summary>
-/// Estado del rate limit de la API de AniList, leído de los headers <c>X-RateLimit-*</c>
-/// de la última respuesta. Los valores son nullable porque no todas las respuestas
-/// incluyen los headers.
+/// State of the AniList API rate limit, read from the <c>X-RateLimit-*</c> headers of the last
+/// response. The values are nullable because not every response includes
+/// those headers.
 /// </summary>
 public class AnilistRateLimit
 {
-    /// <summary>Cantidad máxima de requests permitidas en la ventana actual.</summary>
+    /// <summary>Maximum amount of requests allowed in the current window.</summary>
     public int? Limit { get; set; }
 
-    /// <summary>Requests restantes en la ventana actual.</summary>
+    /// <summary>Requests left in the current window.</summary>
     public int? Remaining { get; set; }
 
-    /// <summary>Momento en que la ventana se reinicia (si el header lo informa).</summary>
+    /// <summary>Moment the window resets (when the header reports it).</summary>
     public DateTimeOffset? ResetAt { get; set; }
 }

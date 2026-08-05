@@ -9,7 +9,7 @@ using Yumiko.Model.Enum;
 
 namespace Yumiko.Bot.Helpers;
 
-/// <summary>Embeds de los comandos de AniList.</summary>
+/// <summary>Embeds of the AniList commands.</summary>
 public static class AnilistEmbeds
 {
     public static DiscordEmbedBuilder Profile(User profile, Loc loc)

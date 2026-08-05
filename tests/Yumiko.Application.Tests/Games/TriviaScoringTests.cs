@@ -34,7 +34,7 @@ public class TriviaScoringTests
 
         var ranking = TriviaScoring.Rank(players, j => j.Score, rounds: 3);
 
-        // 2 * 100 / 3 = 66 (no 66.67 ni 67)
+        // 2 * 100 / 3 = 66 (not 66.67 nor 67)
         Assert.Equal(66, ranking.Single().Percentage);
     }
 

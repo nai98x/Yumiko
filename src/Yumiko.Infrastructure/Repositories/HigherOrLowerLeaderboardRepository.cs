@@ -43,7 +43,7 @@ internal sealed class HigherOrLowerLeaderboardRepository(FirebaseService firebas
             return true;
         }
 
-        // Solo se guarda el récord: si no lo supera, el documento queda como está.
+        // Only the record is stored: if it is not beaten, the document stays as it is.
         if (score <= snap.ConvertTo<HigherOrLowerDocument>().puntuacion)
         {
             return false;

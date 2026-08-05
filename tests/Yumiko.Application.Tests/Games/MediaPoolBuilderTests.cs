@@ -8,7 +8,7 @@ public class MediaPoolBuilderTests
     [Fact]
     public void PickPages_SinglePageRangeReturnsZero()
     {
-        // La query interpreta la página 0 como la primera.
+        // The query reads page 0 as the first one.
         Assert.Equal((0, 0), MediaPoolBuilder.PickPages(7, 7));
     }
 

@@ -11,6 +11,7 @@ using Yumiko.Application.Helpers;
 using Yumiko.Bot.Commands.Framework;
 using Yumiko.Bot.Commands.Framework.Attributes;
 using Yumiko.Bot.Commands.Framework.Choices;
+using Yumiko.Bot.Configuration;
 using Yumiko.Bot.Extensions;
 using Yumiko.Bot.Games;
 using Yumiko.Bot.Helpers;
@@ -36,7 +37,8 @@ public sealed class Games(
     HigherOrLowerGameRunner higherOrLowerRunner,
     TicTacToeGameRunner ticTacToeRunner,
     InteractivityExtension interactivity,
-    IAnilistClient anilist)
+    IAnilistClient anilist,
+    GamesSettings gamesSettings)
 {
     [Command("trivia")]
     [Description("Plays an anime trivia game")]
@@ -123,7 +125,7 @@ public sealed class Games(
         await ctx.DeferResponseAsync();
 
         HangmanGamemode gamemode = gamemodeChoice.ToModel();
-        int page = RandomHelper.GetRandomNumber(1, 10000);
+        int page = RandomHelper.GetRandomNumber(1, gamesSettings.RandomPageMax);
         HangmanTarget? target = gamemode == HangmanGamemode.Characters
             ? FromCharacter(await anilist.GetRandomCharacterSimpleAsync(page), loc)
             : FromAnime(await anilist.GetRandomMediaAsync(page, MediaType.ANIME), loc);
@@ -219,8 +221,8 @@ public sealed class Games(
     };
 
     /// <summary>
-    /// Lo que se lee después de "adivina el/la". En español los enums tienen traducción propia; en
-    /// inglés se saca la "s" del plural del enum, salvo los dos casos que no se pueden derivar.
+    /// What is read after "guess the". In Spanish the enums have their own translation; in
+    /// English the plural "s" of the enum is dropped, except for the two cases that cannot be derived.
     /// </summary>
     private static string GameName(GameSettings settings, Loc loc)
     {

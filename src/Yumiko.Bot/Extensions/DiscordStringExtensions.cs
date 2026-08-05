@@ -1,7 +1,7 @@
 namespace Yumiko.Bot.Helpers;
 
 /// <summary>
-/// Recortes a los límites duros de Discord. Son constantes de la API, no configuración.
+/// Trims to the hard limits of Discord. They are API constants, not configuration.
 /// </summary>
 public static class DiscordStringExtensions
 {
@@ -29,7 +29,7 @@ public static class DiscordStringExtensions
 
     public static MemoryStream ToMemoryStream(this byte[] byteArray) => new(byteArray) { Position = 0 };
 
-    /// <summary>Corta sin partir un enlace markdown por la mitad.</summary>
+    /// <summary>Trims without cutting a markdown link in half.</summary>
     private static string Truncate(string s, int limit)
     {
         if (s.Length <= limit)

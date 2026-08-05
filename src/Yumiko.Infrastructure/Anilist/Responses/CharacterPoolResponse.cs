@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace Yumiko.Infrastructure.Anilist.Responses;
 
-// Proyección del pool de personajes de los juegos.
+// Projection of the character pool of the games.
 internal sealed class CharacterPoolResponse
 {
     [JsonProperty("Page")]

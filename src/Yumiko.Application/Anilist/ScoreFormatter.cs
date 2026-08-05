@@ -34,7 +34,7 @@ public static class ScoreFormatter
         }
     }
 
-    // AniList devuelve el formato de puntaje del usuario como string crudo, sin normalizar al enum.
+    // AniList returns the user score format as a raw string, without normalizing it to the enum.
     public static string FormatScoreUser(string scoreFormat, string scorePers)
     {
         string scoreF = string.Empty;

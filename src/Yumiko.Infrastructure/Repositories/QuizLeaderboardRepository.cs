@@ -57,8 +57,8 @@ internal sealed class QuizLeaderboardRepository(FirebaseService firebase) : IQui
                 { "partidasJugadas", record.partidasJugadas },
                 { "rondasAcertadas", record.rondasAcertadas },
                 { "rondasTotales", record.rondasTotales },
-                // División entera a propósito: es el valor con el que está guardado todo y define el orden
-        // del leaderboard.
+                // Integer division on purpose: it is the value everything is stored with and it defines the
+        // leaderboard order.
                 { "porcentajeAciertos", record.rondasAcertadas * 100 / record.rondasTotales },
             });
 
@@ -122,8 +122,8 @@ internal sealed class QuizLeaderboardRepository(FirebaseService firebase) : IQui
         List<GameStats> ret = [];
         string game = Gamemode.Genres.ToSpanish();
 
-        // En el modo géneros los documentos de "Dificultad" son nombres de género, así que hay que
-        // enumerarlos en vez de recorrer el enum.
+        // In genres mode the "Dificultad" documents are genre names, so they have to be
+        // enumerated instead of walking the enum.
         await foreach (DocumentReference genre in Difficulties(guildId, game).ListDocumentsAsync())
         {
             DocumentSnapshot snap = await Users(guildId, game, genre.Id).Document($"{userId}").GetSnapshotAsync();
