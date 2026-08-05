@@ -355,6 +355,9 @@
   <data name="id_not_valid" xml:space="preserve">
     <value>Id `{0}` no valida</value>
   </data>
+  <data name="image_could_not_be_downloaded" xml:space="preserve">
+    <value>trace.moe no pudo descargar esa imagen. Fijate que el link sea directo y siga funcionando.</value>
+  </data>
   <data name="image_format_error" xml:space="preserve">
     <value>La extensión de la imagen debe ser JPG, PNG o JPEG</value>
   </data>

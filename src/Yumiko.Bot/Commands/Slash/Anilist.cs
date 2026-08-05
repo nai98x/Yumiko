@@ -285,6 +285,12 @@ public sealed class Anilist(
         {
             results = await traceMoe.SearchAsync(url);
         }
+        catch (TraceMoeImageFetchException)
+        {
+            // The link is the problem, not the bot: there is nothing to log.
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(loc[Keys.image_could_not_be_downloaded]));
+            return;
+        }
         catch (Exception ex)
         {
             string detail = ex is TraceMoeQuotaException quota

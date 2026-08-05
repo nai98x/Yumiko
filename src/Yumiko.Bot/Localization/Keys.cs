@@ -203,6 +203,8 @@ public static class Keys
 
     public const string id_not_valid = "id_not_valid";
 
+    public const string image_could_not_be_downloaded = "image_could_not_be_downloaded";
+
     public const string image_format_error = "image_format_error";
 
     public const string image_from_nsfw_anime = "image_from_nsfw_anime";

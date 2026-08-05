@@ -21,22 +21,32 @@ internal sealed class TraceMoeClient(HttpClient http) : ITraceMoeClient
             throw new TraceMoeQuotaException((int)response.StatusCode);
         }
 
+        // 400 and 404 both mean trace.moe could not download the image of the given link.
+        if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
+        {
+            TraceMoeResponse? failure = await ReadResponseAsync(response, cancellationToken);
+            throw new TraceMoeImageFetchException((int)response.StatusCode, failure?.Error ?? "could not fetch the image.");
+        }
+
         response.EnsureSuccessStatusCode();
 
-        TraceMoeResponse? data = await response.Content.ReadFromJsonAsync<TraceMoeResponse>(cancellationToken);
+        TraceMoeResponse? data = await ReadResponseAsync(response, cancellationToken);
 
         return [.. (data?.Result ?? []).Select(r => new TraceMoeMatch
         {
             AnilistId = r.Anilist,
-            Episode = FormatearEpisodio(r.Episode),
+            Episode = FormatEpisode(r.Episode),
             Similarity = r.Similarity,
             From = r.From,
             Video = r.Video,
         })];
     }
 
+    private static Task<TraceMoeResponse?> ReadResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken) =>
+        response.Content.ReadFromJsonAsync<TraceMoeResponse>(cancellationToken);
+
     // trace.moe sends the episode as a number, an array of numbers or null depending on the case.
-    private static string? FormatearEpisodio(JsonElement episode) => episode.ValueKind switch
+    private static string? FormatEpisode(JsonElement episode) => episode.ValueKind switch
     {
         JsonValueKind.Undefined or JsonValueKind.Null => null,
         JsonValueKind.String => episode.GetString(),
@@ -46,6 +56,9 @@ internal sealed class TraceMoeClient(HttpClient http) : ITraceMoeClient
 
 internal sealed class TraceMoeResponse
 {
+    [JsonPropertyName("error")]
+    public string? Error { get; set; }
+
     [JsonPropertyName("result")]
     public List<TraceMoeResult>? Result { get; set; }
 }
