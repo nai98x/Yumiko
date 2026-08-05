@@ -1,5 +1,4 @@
-using System.Net.Http.Headers;
-using System.Web;
+using System.Text;
 using Newtonsoft.Json;
 using Yumiko.Infrastructure.AnimeThemes.Responses;
 using Yumiko.Model.Entities.AnimeThemes;
@@ -9,16 +8,31 @@ namespace Yumiko.Infrastructure.AnimeThemes;
 
 internal sealed class AnimeThemesClient(HttpClient http) : IAnimeThemesClient
 {
+    // The search only feeds a Discord select menu, which holds up to 25 options.
+    private const int ResultsPerSearch = 25;
+
     public async Task<List<AnimeAniTheme>> SearchAsync(string search, CancellationToken cancellationToken = default)
     {
-        string url = $"anime?q={HttpUtility.UrlEncode(search)}&include=animethemes.animethemeentries.videos";
+        string body = JsonConvert.SerializeObject(new
+        {
+            query = AnimeThemesQueries.Search,
+            variables = new { search, first = ResultsPerSearch },
+        });
 
-        using HttpResponseMessage response = await http.GetAsync(url, cancellationToken);
+        using StringContent content = new(body, Encoding.UTF8, "application/json");
+        using HttpResponseMessage response = await http.PostAsync(string.Empty, content, cancellationToken);
         response.EnsureSuccessStatusCode();
 
-        string content = await response.Content.ReadAsStringAsync(cancellationToken);
-        SearchResponse? data = JsonConvert.DeserializeObject<SearchResponse>(content);
+        string payload = await response.Content.ReadAsStringAsync(cancellationToken);
+        GraphQLEnvelope<SearchResponse>? envelope = JsonConvert.DeserializeObject<GraphQLEnvelope<SearchResponse>>(payload);
 
-        return data?.Anime ?? [];
+        // GraphQL level errors arrive with HTTP 200 and an "errors" array.
+        if (envelope?.Errors is { Count: > 0 } errors)
+        {
+            string detail = string.Join("; ", errors.Select(e => e.Message));
+            throw new HttpRequestException($"animethemes.moe returned errors: {detail}");
+        }
+
+        return AnimeThemesMapper.ToAnime(envelope?.Data?.Search?.Anime);
     }
 }

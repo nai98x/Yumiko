@@ -1,5 +1,7 @@
 using System.Net.Http.Headers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Yumiko.Infrastructure.Http;
 using Yumiko.Infrastructure.Animals;
 using Yumiko.Infrastructure.Anilist;
 using Yumiko.Infrastructure.AnimeThemes;
@@ -15,6 +17,10 @@ namespace Yumiko.Infrastructure.Extensions;
 
 public static class InfrastructureServiceExtensions
 {
+    // animethemes.moe answers 403 to requests without a User-Agent, and HttpClient does not send one
+    // by default. It applies to both its REST and its GraphQL host.
+    private const string UserAgent = "Yumiko/1.0 (+https://github.com/nai98x/Yumiko)";
+
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, string firebaseCredentialsDir, ExternalApiTokens tokens)
     {
         services.AddSingleton(new FirebaseService(firebaseCredentialsDir));
@@ -37,8 +43,20 @@ public static class InfrastructureServiceExtensions
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
+        // animethemes.moe documents a limit of 90 requests per minute; the window is the fallback
+        // for when the response does not report X-RateLimit-Reset.
+        RateLimitState animeThemesRateLimit = new(TimeSpan.FromMinutes(1));
+
         services.AddHttpClient<IAnimeThemesClient, AnimeThemesClient>(client =>
-            client.BaseAddress = new Uri("https://api.animethemes.moe/"));
+        {
+            client.BaseAddress = new Uri("https://graphql.animethemes.moe/");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        })
+        .AddHttpMessageHandler(provider => new RateLimitHandler(
+            animeThemesRateLimit,
+            provider.GetRequiredService<ILoggerFactory>().CreateLogger<RateLimitHandler>(),
+            "animethemes.moe"));
 
         services.AddHttpClient<ITopggClient, TopggClient>(client =>
         {
