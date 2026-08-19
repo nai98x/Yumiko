@@ -184,9 +184,16 @@ public sealed class Owner(
     [InteractionLocalizer<ResxInteractionLocalizer>]
     public async Task MigrateAsync(SlashCommandContext ctx)
     {
-        await ctx.DeferResponseAsync();
+        // The whole migration takes far longer than the 15 minutes an interaction lives, so the
+        // progress goes to the channel as plain messages and the interaction is answered right away.
+        await ctx.RespondAsync(new DiscordInteractionResponseBuilder()
+            .AsEphemeral()
+            .WithContent("Migration started."));
 
-        List<MigrationResult> results = await migration.MigrateAsync();
+        DiscordChannel channel = ctx.Channel;
+
+        List<MigrationResult> results = await migration.MigrateAsync(
+            async line => await channel.SendMessageAsync(line));
 
         string description = string.Join("\n\n", results.Select(result =>
             $"{Formatter.Bold(result.Table)}\n" +
@@ -194,9 +201,9 @@ public sealed class Owner(
             $"  - Written: {result.Written}\n" +
             $"  - Skipped: {result.Skipped}"));
 
-        await ctx.EditResponseAsync(new DiscordEmbedBuilder
+        await channel.SendMessageAsync(new DiscordEmbedBuilder
         {
-            Title = "Migration",
+            Title = "Migration finished",
             Description = description.NormalizeDescription(),
             Color = YumikoColors.Primary,
         });

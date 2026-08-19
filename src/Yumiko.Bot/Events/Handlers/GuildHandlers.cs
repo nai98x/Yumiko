@@ -9,7 +9,7 @@ public sealed class GuildCreatedHandler(DiscordLogService logService, TopggServi
 {
     public async Task Handle(DiscordClient client, GuildCreatedEventArgs args)
     {
-        logger.LogInformation("Guild agregado: {Name} | Total: {Count}", args.Guild.Name, client.Guilds.Count);
+        logger.LogInformation("Guild added: {Name} | Total: {Count}", args.Guild.Name, client.Guilds.Count);
 
         await logService.LogGuildAsync(args.Guild, client.Guilds.Count, added: true);
         await topggService.UpdateStatsAsync(client);
@@ -20,7 +20,7 @@ public sealed class GuildDeletedHandler(DiscordLogService logService, TopggServi
 {
     public async Task Handle(DiscordClient client, GuildDeletedEventArgs args)
     {
-        logger.LogInformation("Guild removido: {Name} | Total: {Count}", args.Guild.Name, client.Guilds.Count);
+        logger.LogInformation("Guild removed: {Name} | Total: {Count}", args.Guild.Name, client.Guilds.Count);
 
         await logService.LogGuildAsync(args.Guild, client.Guilds.Count, added: false);
         await topggService.UpdateStatsAsync(client);

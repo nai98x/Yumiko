@@ -4,25 +4,33 @@ using Yumiko.Model.Interfaces;
 namespace Yumiko.Application.Tests.Migration;
 
 /// <summary>
-/// Double of <see cref="IFirestoreMigrationSource"/>. Every collection is empty unless the test
-/// fills it.
+/// Double of <see cref="IFirestoreMigrationSource"/>. Every collection hands over the sections the
+/// test loads into it, in order.
 /// </summary>
 internal sealed class FakeFirestoreMigrationSource : IFirestoreMigrationSource
 {
-    public List<AnilistUserRecord> AnilistUsers { get; init; } = [];
+    public List<MigrationBatch<AnilistUserRecord>> AnilistUsers { get; init; } = [];
 
-    public List<HigherOrLowerRecord> HigherOrLower { get; init; } = [];
+    public List<MigrationBatch<HigherOrLowerRecord>> HigherOrLower { get; init; } = [];
 
-    public List<QuizStatsRecord> QuizStats { get; init; } = [];
+    public List<MigrationBatch<QuizStatsRecord>> QuizStats { get; init; } = [];
 
-    public int Skipped { get; init; }
+    public IAsyncEnumerable<MigrationBatch<AnilistUserRecord>> ReadAnilistUsersAsync(CancellationToken cancellationToken = default) =>
+        Stream(AnilistUsers);
 
-    public Task<(List<AnilistUserRecord> Records, int Skipped)> ReadAnilistUsersAsync(CancellationToken cancellationToken = default) =>
-        Task.FromResult((AnilistUsers, Skipped));
+    public IAsyncEnumerable<MigrationBatch<HigherOrLowerRecord>> ReadHigherOrLowerAsync(CancellationToken cancellationToken = default) =>
+        Stream(HigherOrLower);
 
-    public Task<(List<HigherOrLowerRecord> Records, int Skipped)> ReadHigherOrLowerAsync(CancellationToken cancellationToken = default) =>
-        Task.FromResult((HigherOrLower, Skipped));
+    public IAsyncEnumerable<MigrationBatch<QuizStatsRecord>> ReadQuizStatsAsync(CancellationToken cancellationToken = default) =>
+        Stream(QuizStats);
 
-    public Task<(List<QuizStatsRecord> Records, int Skipped)> ReadQuizStatsAsync(CancellationToken cancellationToken = default) =>
-        Task.FromResult((QuizStats, Skipped));
+    private static async IAsyncEnumerable<MigrationBatch<T>> Stream<T>(List<MigrationBatch<T>> batches)
+    {
+        foreach (MigrationBatch<T> batch in batches)
+        {
+            yield return batch;
+        }
+
+        await Task.CompletedTask;
+    }
 }

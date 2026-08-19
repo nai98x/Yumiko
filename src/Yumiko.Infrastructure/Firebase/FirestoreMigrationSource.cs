@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using Google.Cloud.Firestore;
 using Yumiko.Application.Games;
 using Yumiko.Infrastructure.Firebase.Documents;
@@ -10,7 +11,8 @@ namespace Yumiko.Infrastructure.Firebase;
 
 internal sealed class FirestoreMigrationSource(FirebaseService firebase) : IFirestoreMigrationSource
 {
-    public async Task<(List<AnilistUserRecord> Records, int Skipped)> ReadAnilistUsersAsync(CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<MigrationBatch<AnilistUserRecord>> ReadAnilistUsersAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         List<AnilistUserRecord> records = [];
         int skipped = 0;
@@ -28,18 +30,20 @@ internal sealed class FirestoreMigrationSource(FirebaseService firebase) : IFire
             records.Add(new AnilistUserRecord(userId, document.ConvertTo<AnilistUserDocument>().AnilistId));
         }
 
-        return (records, skipped);
+        // A single flat collection: one query, one section.
+        yield return new MigrationBatch<AnilistUserRecord>("AnilistUsers", records, skipped);
     }
 
-    public async Task<(List<HigherOrLowerRecord> Records, int Skipped)> ReadHigherOrLowerAsync(CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<MigrationBatch<HigherOrLowerRecord>> ReadHigherOrLowerAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        List<HigherOrLowerRecord> records = [];
-        int skipped = 0;
-
         // The guild documents hold no fields, only the "Usuarios" subcollection: they have to be
         // listed instead of queried.
         await foreach (DocumentReference guild in firebase.GetDb().Collection("HigherOrLower").ListDocumentsAsync().WithCancellation(cancellationToken))
         {
+            List<HigherOrLowerRecord> records = [];
+            int skipped = 0;
+
             QuerySnapshot users = await guild.Collection("Usuarios").GetSnapshotAsync(cancellationToken);
 
             foreach (DocumentSnapshot user in users.Documents)
@@ -52,20 +56,24 @@ internal sealed class FirestoreMigrationSource(FirebaseService firebase) : IFire
 
                 records.Add(new HigherOrLowerRecord(guildId, userId, user.ConvertTo<HigherOrLowerDocument>().puntuacion));
             }
-        }
 
-        return (records, skipped);
+            if (records.Count > 0 || skipped > 0)
+            {
+                yield return new MigrationBatch<HigherOrLowerRecord>(guild.Id, records, skipped);
+            }
+        }
     }
 
-    public async Task<(List<QuizStatsRecord> Records, int Skipped)> ReadQuizStatsAsync(CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<MigrationBatch<QuizStatsRecord>> ReadQuizStatsAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        List<QuizStatsRecord> records = [];
-        int skipped = 0;
-
         CollectionReference root = firebase.GetDb().Collection("Estadisticas");
 
         await foreach (DocumentReference guild in root.ListDocumentsAsync().WithCancellation(cancellationToken))
         {
+            List<QuizStatsRecord> records = [];
+            int skipped = 0;
+
             await foreach (DocumentReference game in guild.Collection("Juegos").ListDocumentsAsync().WithCancellation(cancellationToken))
             {
                 Gamemode? gamemode = GameNaming.GamemodeFromSpanish(game.Id);
@@ -106,9 +114,12 @@ internal sealed class FirestoreMigrationSource(FirebaseService firebase) : IFire
                     }
                 }
             }
-        }
 
-        return (records, skipped);
+            if (records.Count > 0 || skipped > 0)
+            {
+                yield return new MigrationBatch<QuizStatsRecord>(guild.Id, records, skipped);
+            }
+        }
     }
 
     private static bool TryParseId(string id, out ulong value) =>
