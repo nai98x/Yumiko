@@ -1,65 +1,47 @@
-using Google.Cloud.Firestore;
-using Yumiko.Infrastructure.Firebase;
-using Yumiko.Infrastructure.Firebase.Documents;
+using System.Data;
+using Dapper;
+using Yumiko.Infrastructure.Database;
+using Yumiko.Infrastructure.Database.Rows;
 using Yumiko.Model.Entities;
 using Yumiko.Model.Interfaces.Repositories;
 
 namespace Yumiko.Infrastructure.Repositories;
 
-internal sealed class AnilistUsersRepository(FirebaseService firebase) : IAnilistUsersRepository
+internal sealed class AnilistUsersRepository(DbConnectionFactory connectionFactory) : IAnilistUsersRepository
 {
-    private DocumentReference DocumentFor(ulong userId) =>
-        firebase.GetDb().Collection("AnilistUsers").Document($"{userId}");
-
     public async Task<AnilistUserLink?> GetLinkAsync(ulong userId)
     {
-        DocumentSnapshot snap = await DocumentFor(userId).GetSnapshotAsync();
+        using IDbConnection connection = await connectionFactory.OpenConnectionAsync();
 
-        if (!snap.Exists)
-        {
-            return null;
-        }
+        AnilistUserRow? row = await connection.QuerySingleOrDefaultAsync<AnilistUserRow>(
+            "anilist_user_get",
+            new { p_user_id = (long)userId },
+            commandType: CommandType.StoredProcedure);
 
-        AnilistUserDocument doc = snap.ConvertTo<AnilistUserDocument>();
-        return new AnilistUserLink
+        return row is null ? null : new AnilistUserLink
         {
-            AnilistId = doc.AnilistId,
-            UserId = (ulong)doc.UserId,
+            AnilistId = row.AnilistId,
+            UserId = (ulong)row.UserId,
         };
     }
 
     public async Task SetAnilistAsync(int anilistId, ulong userId)
     {
-        DocumentReference doc = DocumentFor(userId);
-        DocumentSnapshot snap = await doc.GetSnapshotAsync();
+        using IDbConnection connection = await connectionFactory.OpenConnectionAsync();
 
-        Dictionary<string, object> data = new()
-        {
-            { "AnilistId", anilistId },
-            { "UserId", (long)userId },
-        };
-
-        if (snap.Exists)
-        {
-            await doc.UpdateAsync(data);
-        }
-        else
-        {
-            await doc.SetAsync(data);
-        }
+        await connection.ExecuteAsync(
+            "anilist_user_upsert",
+            new { p_user_id = (long)userId, p_anilist_id = anilistId },
+            commandType: CommandType.StoredProcedure);
     }
 
     public async Task<bool> DeleteAnilistAsync(ulong userId)
     {
-        DocumentReference doc = DocumentFor(userId);
-        DocumentSnapshot snap = await doc.GetSnapshotAsync();
+        using IDbConnection connection = await connectionFactory.OpenConnectionAsync();
 
-        if (!snap.Exists)
-        {
-            return false;
-        }
-
-        await doc.DeleteAsync();
-        return true;
+        return await connection.QuerySingleAsync<bool>(
+            "anilist_user_delete",
+            new { p_user_id = (long)userId },
+            commandType: CommandType.StoredProcedure);
     }
 }

@@ -25,7 +25,7 @@ Discord, incluidos los nombres y descripciones de los comandos.
 
 ## Stack
 
-.NET 10 · DSharpPlus 5 (nightly) · Firestore · SkiaSharp · Serilog · xUnit
+.NET 10 · DSharpPlus 5 (nightly) · PostgreSQL (Dapper) · SkiaSharp · Serilog · xUnit
 
 ## Arquitectura
 
@@ -36,7 +36,7 @@ Clean Architecture, cuatro proyectos en `src/`. La dirección de dependencias es
 |---|---|---|
 | `Yumiko.Model` | Entidades, enums, excepciones e interfaces. POCOs puros, **cero paquetes NuGet**. | — |
 | `Yumiko.Application` | Reglas de negocio y cálculo puro: juegos, scoring de recomendaciones, formateo de puntajes, imágenes. Sin Discord ni I/O. | Model |
-| `Yumiko.Infrastructure` | Repositorios Firestore, cliente de AniList (GraphQL + Polly) y clientes HTTP tipados. | Model, Application |
+| `Yumiko.Infrastructure` | Repositorios PostgreSQL (Dapper + stored procedures), cliente de AniList (GraphQL + Polly) y clientes HTTP tipados. | Model, Application |
 | `Yumiko.Bot` | Entry point, comandos, handlers, scheduling, estado en memoria, localización, DI. | las tres |
 
 `tests/Yumiko.Application.Tests` referencia **solo** `Yumiko.Application`.
@@ -59,12 +59,12 @@ src/Yumiko.Application/
 
 src/Yumiko.Infrastructure/
   Anilist/             AnilistClient, AnilistGraphQLExecutor (Polly), AnilistQueries, Responses/
-  Firebase/            FirebaseService, Documents/ (mapeo [FirestoreData])
+  Database/            DbConnectionFactory (Npgsql + Dapper), Rows/ (DTOs de fila)
   Repositories/        QuizLeaderboard, HigherOrLowerLeaderboard, AnilistUsers
   OpenWeather/ Animals/ TraceMoe/ AnimeThemes/ Topgg/
 
 src/Yumiko.Bot/
-  Commands/Slash/      Anilist, Games, Interact, Misc, Owner, Stats, Help
+  Commands/Slash/      Anilist, Games, Interact, Misc, Owner, Stats
   Commands/ContextMenu/ AnilistProfile, AnimeRecommendations, MangaRecommendations
   Commands/Framework/  Choices/, AutoComplete/, CommandErrorHandler, ResxInteractionLocalizer
   Games/               Runners de los 4 juegos, Poll, Trivia, GamePool, TriviaItems
@@ -74,7 +74,14 @@ src/Yumiko.Bot/
   Localization/        ILocalizer, ResxLocalizer, Loc, Keys
   Resources/           Translations.resx (+ .es), countries.json
   Configuration/       BotConfiguration, BehaviorSettings, BotEnvironment
+
+db/
+  schema/              anilist_users, higher_or_lower_scores, quiz_stats
+  procedures/          un .sql por stored procedure
 ```
+
+El esquema de la base es la fuente de verdad y se versiona en [`db/`](db/README.md): el acceso desde
+el bot es siempre por stored procedures invocados con Dapper, nunca con SQL embebido en el código.
 
 ## Comandos
 
@@ -85,8 +92,8 @@ dotnet test
 dotnet run --project src/Yumiko.Bot
 ```
 
-Antes de correrlo hace falta configurar los secrets (User Secrets en local): ver
-[`deploy-setup/README.md`](deploy-setup/README.md).
+Antes de correrlo hace falta configurar los secrets (User Secrets en local) y tener la base creada
+con los scripts de `db/` aplicados: ver [`deploy-setup/README.md`](deploy-setup/README.md).
 
 En build **Debug** los comandos se registran solo en el guild de `Ids:LogGuildId`, así que se puede
 probar sin tocar la instancia pública.

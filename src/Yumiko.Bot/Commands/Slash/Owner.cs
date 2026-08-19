@@ -8,6 +8,7 @@ using DSharpPlus.Commands.Processors.SlashCommands.Localization;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using Microsoft.Extensions.Hosting;
+using Yumiko.Application.Migration;
 using Yumiko.Bot.Commands.Framework;
 using Yumiko.Bot.Commands.Framework.Attributes;
 using Yumiko.Bot.Configuration;
@@ -16,6 +17,7 @@ using Yumiko.Bot.Helpers;
 using Yumiko.Bot.Localization;
 using Yumiko.Bot.Services.State;
 using Yumiko.Model.Entities.Anilist;
+using Yumiko.Model.Entities.Migration;
 using Yumiko.Model.Interfaces;
 
 namespace Yumiko.Bot.Commands.Slash;
@@ -31,7 +33,8 @@ public sealed class Owner(
     CommandUsageState commandUsage,
     InteractivityExtension interactivity,
     TimeoutSettings timeouts,
-    IHostApplicationLifetime lifetime)
+    IHostApplicationLifetime lifetime,
+    FirestoreMigrationService migration)
 {
     private const int GuildsPerPage = 10;
 
@@ -171,6 +174,29 @@ public sealed class Owner(
         await ctx.EditResponseAsync(new DiscordEmbedBuilder
         {
             Title = loc[Keys.commands_used],
+            Description = description.NormalizeDescription(),
+            Color = YumikoColors.Primary,
+        });
+    }
+
+    [Command("migrate")]
+    [Description("Copies every Firestore collection into PostgreSQL")]
+    [InteractionLocalizer<ResxInteractionLocalizer>]
+    public async Task MigrateAsync(SlashCommandContext ctx)
+    {
+        await ctx.DeferResponseAsync();
+
+        List<MigrationResult> results = await migration.MigrateAsync();
+
+        string description = string.Join("\n\n", results.Select(result =>
+            $"{Formatter.Bold(result.Table)}\n" +
+            $"  - Read: {result.Read}\n" +
+            $"  - Written: {result.Written}\n" +
+            $"  - Skipped: {result.Skipped}"));
+
+        await ctx.EditResponseAsync(new DiscordEmbedBuilder
+        {
+            Title = "Migration",
             Description = description.NormalizeDescription(),
             Color = YumikoColors.Primary,
         });

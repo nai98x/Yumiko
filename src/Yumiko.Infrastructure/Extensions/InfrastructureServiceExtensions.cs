@@ -5,6 +5,7 @@ using Yumiko.Infrastructure.Http;
 using Yumiko.Infrastructure.Animals;
 using Yumiko.Infrastructure.Anilist;
 using Yumiko.Infrastructure.AnimeThemes;
+using Yumiko.Infrastructure.Database;
 using Yumiko.Infrastructure.Firebase;
 using Yumiko.Infrastructure.OpenWeather;
 using Yumiko.Infrastructure.Repositories;
@@ -21,12 +22,19 @@ public static class InfrastructureServiceExtensions
     // by default. It applies to both its REST and its GraphQL host.
     private const string UserAgent = "Yumiko/1.0 (+https://github.com/nai98x/Yumiko)";
 
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string firebaseCredentialsDir, ExternalApiTokens tokens)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string firebaseCredentialsDir, string dbConnectionString, ExternalApiTokens tokens)
     {
-        services.AddSingleton(new FirebaseService(firebaseCredentialsDir));
+        services.AddSingleton(new DbConnectionFactory(dbConnectionString));
         services.AddSingleton<IQuizLeaderboardRepository, QuizLeaderboardRepository>();
         services.AddSingleton<IHigherOrLowerLeaderboardRepository, HigherOrLowerLeaderboardRepository>();
         services.AddSingleton<IAnilistUsersRepository, AnilistUsersRepository>();
+
+        // Firebase is only alive for the migration to PostgreSQL: these three registrations and the
+        // whole Firebase folder go away once /owner migrate has been run.
+        services.AddSingleton(new FirebaseService(firebaseCredentialsDir));
+        services.AddSingleton<IFirestoreMigrationSource, FirestoreMigrationSource>();
+        services.AddSingleton<IMigrationRepository, MigrationRepository>();
+
         services.AddSingleton<AnilistGraphQLExecutor>();
         services.AddSingleton<IAnilistClient, AnilistClient>();
 

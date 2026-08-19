@@ -79,11 +79,18 @@ public static class Program
         string discordToken = Required(host.Configuration, "discordToken");
         string firebaseCredentialsDir = Required(host.Configuration, "FIREBASE_CREDENTIALS_DIR");
 
+        // Local via User Secrets (pointing at the SSH tunnel), on the server via an environment
+        // variable (ConnectionStrings__Database).
+        string dbConnectionString = host.Configuration.GetConnectionString("Database") is { Length: > 0 } connectionString
+            ? connectionString
+            : throw new InvalidOperationException(
+                "'ConnectionStrings:Database' is required: set it via User Secrets (local) or an environment variable (server)");
+
         host.Services
             .AddSingleton(botConfig)
             .AddBehaviorSettings(host.Configuration)
             .AddApplication()
-            .AddInfrastructure(firebaseCredentialsDir, new ExternalApiTokens
+            .AddInfrastructure(firebaseCredentialsDir, dbConnectionString, new ExternalApiTokens
             {
                 OpenWeatherMap = Required(host.Configuration, "openWeatherMapToken"),
                 TheCatApi = Required(host.Configuration, "theCatApiToken"),

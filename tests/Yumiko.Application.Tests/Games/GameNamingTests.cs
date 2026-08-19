@@ -3,8 +3,9 @@ using Yumiko.Model.Enum;
 
 namespace Yumiko.Application.Tests.Games;
 
-// These strings are Firestore document ids in production. If a test here fails, the test is not
-// touched: the change that broke it is reverted.
+// These strings are the Spanish labels shown in the embeds and the Firestore document ids the
+// migration reads. If a test here fails, the test is not touched: the change that broke it is
+// reverted.
 public class GameNamingTests
 {
     [Theory]
@@ -12,7 +13,7 @@ public class GameNamingTests
     [InlineData(Difficulty.Normal, "Media")]
     [InlineData(Difficulty.Hard, "Dificil")]
     [InlineData(Difficulty.Extreme, "Extremo")]
-    public void Difficulty_ToSpanish_KeepsTheInconsistentProductionAccents(Difficulty difficulty, string expected)
+    public void Difficulty_ToSpanish_KeepsTheInconsistentAccents(Difficulty difficulty, string expected)
     {
         Assert.Equal(expected, difficulty.ToSpanish());
     }
@@ -24,7 +25,7 @@ public class GameNamingTests
     [InlineData(Gamemode.Studios, "estudio")]
     [InlineData(Gamemode.Protagonists, "protagonista")]
     [InlineData(Gamemode.Genres, "genero")]
-    public void Gamemode_ToSpanish_KeepsTheProductionNames(Gamemode gamemode, string expected)
+    public void Gamemode_ToSpanish_KeepsTheNames(Gamemode gamemode, string expected)
     {
         Assert.Equal(expected, gamemode.ToSpanish());
     }
@@ -46,9 +47,43 @@ public class GameNamingTests
     [Fact]
     public void ValueOutsideTheEnum_Throws()
     {
-        // If someone adds a value to the enum without giving it a name, it has to break here instead of
-        // silently storing a document with a different id in Firestore.
+        // If someone adds a value to the enum without giving it a name, it has to break here instead
+        // of silently showing a label that is not there.
         Assert.Throws<ArgumentOutOfRangeException>(() => ((Difficulty)99).ToSpanish());
         Assert.Throws<ArgumentOutOfRangeException>(() => ((Gamemode)99).ToSpanish());
+    }
+
+    [Fact]
+    public void FromSpanish_RoundTripsEveryEnumValue()
+    {
+        foreach (Difficulty difficulty in System.Enum.GetValues<Difficulty>())
+        {
+            Assert.Equal(difficulty, GameNaming.DifficultyFromSpanish(difficulty.ToSpanish()));
+        }
+
+        foreach (Gamemode gamemode in System.Enum.GetValues<Gamemode>())
+        {
+            Assert.Equal(gamemode, GameNaming.GamemodeFromSpanish(gamemode.ToSpanish()));
+        }
+    }
+
+    [Theory]
+    [InlineData("Facil")]
+    [InlineData("Difícil")]
+    [InlineData("Easy")]
+    [InlineData("")]
+    public void DifficultyFromSpanish_UnknownName_IsNull(string name)
+    {
+        // The migration counts these as skipped instead of guessing a difficulty.
+        Assert.Null(GameNaming.DifficultyFromSpanish(name));
+    }
+
+    [Theory]
+    [InlineData("Personaje")]
+    [InlineData("géneros")]
+    [InlineData("characters")]
+    public void GamemodeFromSpanish_UnknownName_IsNull(string name)
+    {
+        Assert.Null(GameNaming.GamemodeFromSpanish(name));
     }
 }

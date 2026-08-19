@@ -13,17 +13,16 @@ archivos, correr builds/tests y preparar cambios, pero el versionado lo controla
 
 Bot de Discord **público y multi-guild** (DSharpPlus, .NET 10), centrado en consultas a AniList, más
 juegos, comandos de interacción y utilidades. Está listado en top.gg y corre con sharding.
-Persistencia en **Firestore**.
+Persistencia en **PostgreSQL** (Dapper + stored procedures).
 
 Es **bilingüe EN/ES**: cada texto de usuario existe en los dos idiomas y se resuelve por el locale de
 la interacción.
 
 **Idioma del código**: **todo el código va en inglés**, sin excepción: identificadores, comentarios,
 XML summaries, mensajes de log, mensajes de excepción y nombres de tests. No debe quedar nada en
-español dentro de `src/` ni `tests/`. Las dos únicas excepciones son los textos de usuario de
-`Translations.es.resx` (que por definición son la traducción al español) y los nombres de campo e
-ids de documento de Firestore (`puntuacion`, `Dificultad`, `Fácil`, etc.), que son contrato de
-producción.
+español dentro de `src/` ni `tests/`. La única excepción son los textos de usuario de
+`Translations.es.resx` (que por definición son la traducción al español), incluidas las etiquetas en
+español de `GameNaming` (`personaje`, `Fácil`, `Dificil`).
 
 Los commits y la comunicación con el dueño del repo siguen siendo en **español**.
 
@@ -36,7 +35,7 @@ inversas.
   `Interfaces/Repositories/*`). POCOs puros, **cero paquetes NuGet**.
 - **Yumiko.Application** — lógica de negocio y cálculo puro. Sin dependencias de Discord ni de
   infraestructura.
-- **Yumiko.Infrastructure** — repositorios Firestore, `FirebaseService`, cliente de AniList y los
+- **Yumiko.Infrastructure** — repositorios PostgreSQL (Dapper), `DbConnectionFactory`, cliente de AniList y los
   clientes HTTP tipados (weather, cat/dog, trace.moe, AnimeThemes, top.gg).
 - **Yumiko.Bot** — entry point, comandos, handlers, scheduling, estado en memoria, configuración, DI.
 
@@ -53,30 +52,27 @@ inversas.
 - Preferí mover lógica fuera de los comandos hacia Application antes que engordarlos. No
   sobre-ingenierizar: un predicado de una línea de orquestación puede quedar en Bot.
 
-## Firestore
+## Base de datos (PostgreSQL)
 
+La base es **database-first**: el esquema vive en `db/` (ver `db/README.md`) y es la fuente de
+verdad; el C# se adapta. Tablas, columnas y funciones **en inglés**, como el resto del código.
+
+- **Nunca SQL embebido en el código.** El acceso es con **Dapper invocando stored procedures**
+  (`CommandType.StoredProcedure`); un `.sql` por SP en `db/procedures/`, con el nombre del SP como
+  nombre de archivo. Cambio de esquema y código que lo usa van en el mismo commit.
 - **Repositorios**: inyectar SIEMPRE por su interfaz de Model (`IXxxRepository`), nunca la clase
   concreta de Infrastructure. Solo las interfaces están registradas en el contenedor.
-- Los POCOs de Model **no** llevan atributos de `Google.Cloud.Firestore`. El mapeo vive en
-  `Infrastructure/Firebase/Documents/*` (documentos `[FirestoreData]` locales a esa capa) + mappers.
-- Un **único `FirestoreDb` de larga vida** vía `FirebaseService`. Nunca construir uno por llamada.
-- **Los paths de colección y los nombres de campo son contrato de producción.** No renombrarlos:
-
-  ```
-  Estadisticas/{guildId}/Juegos/{juego}/Dificultad/{dificultad}/Usuarios/{userId}
-  HigherOrLower/{guildId}/Usuarios/{userId}
-  AnilistUsers/{userId}
-  ```
-
-  Campos: `user_id`, `partidasJugadas`, `rondasAcertadas`, `rondasTotales`, `porcentajeAciertos`,
-  `puntuacion`, `AnilistId`, `UserId`.
-
-- Los ids de documento de dificultad son literalmente `Fácil` / `Media` / `Dificil` / `Extremo`. **Las
-  tildes son inconsistentes a propósito** (`Fácil` con tilde, `Dificil` sin): normalizarlas huerfaniza
-  los datos existentes. Está fijado con tests en `GameNamingTests`.
-- `porcentajeAciertos` se guarda con **división entera**. Pasarlo a decimal re-rankea todos los
-  leaderboards que ya existen. No cambiar.
-- Firestore guarda todos los enteros como int64: leer por `long` y estrechar.
+- Los POCOs de Model **no** conocen la base. El mapeo vive en `Infrastructure/Database/Rows/*`
+  (DTOs de fila locales a esa capa) + mappers en el repositorio.
+- Un **único `NpgsqlDataSource` de larga vida** vía `DbConnectionFactory` (singleton). Nunca
+  construir uno por llamada; sí abrir y cerrar una conexión por operación.
+- Los ids de Discord son `ulong` en C# y `bigint` en la base: castear a `long` al pasar el parámetro
+  y volver a `ulong` al leer.
+- `quiz_stats.accuracy_percentage` se guarda con **división entera**. Pasarlo a decimal re-rankea
+  todos los leaderboards que ya existen. No cambiar.
+- En modo `Genres`, la columna `difficulty` guarda el **nombre del género**, no una dificultad.
+- `gamemode` y `difficulty` guardan los **nombres de los enums** (`Characters`, `Easy`), nunca las
+  etiquetas en español de `GameNaming`: esas son solo para mostrar.
 
 ## Bilingüe
 
@@ -106,7 +102,7 @@ inversas.
     esos valores **por parámetro**, nunca como `const`.
   - Las diferencias Debug/Release van en `appsettings.Development.json`, **no** en claves prod/test
     duplicadas.
-- **Secrets**: `discordToken`, `FIREBASE_CREDENTIALS_DIR`, `openWeatherMapToken`, `theCatApiToken`,
+- **Secrets**: `discordToken`, `ConnectionStrings:Database`, `openWeatherMapToken`, `theCatApiToken`,
   `theDogApiToken`, `AnilistApiClientId`, `topggToken`. User Secrets en local, variables de entorno
   en el server. Nada de esto se versiona. Detalle en `deploy-setup/README.md`.
 - **Estado en memoria**: `Bot/Services/State/*`, siempre thread-safe (`ConcurrentDictionary` o swap
@@ -116,7 +112,7 @@ inversas.
 - **Catch amplios**: la resiliencia de los loops de juego es intencional. Loguear con
   `DiscordLogService` sin cambiar el flujo.
 - **Estilo**: **no** agregar comentarios ni XML summaries explicando *cómo se resolvió* algo o
-  justificando un cambio. Comentar solo lo no obvio del dominio; las rarezas de Firestore de arriba
+  justificando un cambio. Comentar solo lo no obvio del dominio; las rarezas de la base de arriba
   califican. Los comentarios que se escriban van **en inglés** (ver "Idioma del código").
 
 ## Tests

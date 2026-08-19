@@ -1,72 +1,63 @@
-using Google.Cloud.Firestore;
-using Yumiko.Infrastructure.Firebase;
-using Yumiko.Infrastructure.Firebase.Documents;
+using System.Data;
+using Dapper;
+using Yumiko.Infrastructure.Database;
+using Yumiko.Infrastructure.Database.Rows;
 using Yumiko.Model.Entities;
 using Yumiko.Model.Interfaces.Repositories;
 
 namespace Yumiko.Infrastructure.Repositories;
 
-internal sealed class HigherOrLowerLeaderboardRepository(FirebaseService firebase) : IHigherOrLowerLeaderboardRepository
+internal sealed class HigherOrLowerLeaderboardRepository(DbConnectionFactory connectionFactory) : IHigherOrLowerLeaderboardRepository
 {
-    private CollectionReference Users(ulong guildId) =>
-        firebase.GetDb().Collection("HigherOrLower").Document($"{guildId}").Collection("Usuarios");
+    private const int LeaderboardSize = 20;
 
     public async Task<List<HigherOrLowerEntry>> GetLeaderboardAsync(ulong guildId)
     {
-        Query query = Users(guildId).OrderByDescending("puntuacion").Limit(20);
-        QuerySnapshot snap = await query.GetSnapshotAsync();
+        using IDbConnection connection = await connectionFactory.OpenConnectionAsync();
 
-        return [.. snap.Documents.Select(d => Map(d.ConvertTo<HigherOrLowerDocument>()))];
+        IEnumerable<HigherOrLowerRow> rows = await connection.QueryAsync<HigherOrLowerRow>(
+            "higher_or_lower_leaderboard",
+            new { p_guild_id = (long)guildId, p_limit = LeaderboardSize },
+            commandType: CommandType.StoredProcedure);
+
+        return [.. rows.Select(Map)];
     }
 
     public async Task<HigherOrLowerEntry?> GetStatsUserAsync(ulong guildId, ulong userId)
     {
-        DocumentSnapshot snap = await Users(guildId).Document($"{userId}").GetSnapshotAsync();
+        using IDbConnection connection = await connectionFactory.OpenConnectionAsync();
 
-        return snap.Exists ? Map(snap.ConvertTo<HigherOrLowerDocument>()) : null;
+        HigherOrLowerRow? row = await connection.QuerySingleOrDefaultAsync<HigherOrLowerRow>(
+            "higher_or_lower_user_get",
+            new { p_guild_id = (long)guildId, p_user_id = (long)userId },
+            commandType: CommandType.StoredProcedure);
+
+        return row is null ? null : Map(row);
     }
 
     public async Task<bool> AddResultAsync(ulong guildId, ulong userId, int score)
     {
-        DocumentReference doc = Users(guildId).Document($"{userId}");
-        DocumentSnapshot snap = await doc.GetSnapshotAsync();
+        using IDbConnection connection = await connectionFactory.OpenConnectionAsync();
 
-        Dictionary<string, object> data = new()
-        {
-            { "user_id", (long)userId },
-            { "puntuacion", score },
-        };
-
-        if (!snap.Exists)
-        {
-            await doc.CreateAsync(data);
-            return true;
-        }
-
-        // Only the record is stored: if it is not beaten, the document stays as it is.
-        if (score <= snap.ConvertTo<HigherOrLowerDocument>().puntuacion)
-        {
-            return false;
-        }
-
-        await doc.UpdateAsync(data);
-        return true;
+        return await connection.QuerySingleAsync<bool>(
+            "higher_or_lower_add_result",
+            new { p_guild_id = (long)guildId, p_user_id = (long)userId, p_score = score },
+            commandType: CommandType.StoredProcedure);
     }
 
     public async Task DeleteStatsAsync(ulong guildId, ulong userId)
     {
-        DocumentReference doc = Users(guildId).Document($"{userId}");
-        DocumentSnapshot snap = await doc.GetSnapshotAsync();
+        using IDbConnection connection = await connectionFactory.OpenConnectionAsync();
 
-        if (snap.Exists)
-        {
-            await doc.DeleteAsync();
-        }
+        await connection.ExecuteAsync(
+            "higher_or_lower_delete",
+            new { p_guild_id = (long)guildId, p_user_id = (long)userId },
+            commandType: CommandType.StoredProcedure);
     }
 
-    private static HigherOrLowerEntry Map(HigherOrLowerDocument doc) => new()
+    private static HigherOrLowerEntry Map(HigherOrLowerRow row) => new()
     {
-        UserId = (ulong)doc.user_id,
-        Score = doc.puntuacion,
+        UserId = (ulong)row.UserId,
+        Score = row.Score,
     };
 }
