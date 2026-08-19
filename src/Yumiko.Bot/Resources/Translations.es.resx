@@ -1123,12 +1123,6 @@
   <data name="owner.commands.description" xml:space="preserve">
     <value>Muestra los comandos usados desde que se inicializó el bot</value>
   </data>
-  <data name="owner.migrate.name" xml:space="preserve">
-    <value>migrar</value>
-  </data>
-  <data name="owner.migrate.description" xml:space="preserve">
-    <value>Copia todas las colecciones de Firestore a PostgreSQL</value>
-  </data>
   <data name="owner.logs.description" xml:space="preserve">
     <value>Muestra el último archivo de log</value>
   </data>

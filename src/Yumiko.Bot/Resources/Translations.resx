@@ -1123,12 +1123,6 @@
   <data name="owner.commands.description" xml:space="preserve">
     <value>Shows the commands used since startup</value>
   </data>
-  <data name="owner.migrate.name" xml:space="preserve">
-    <value>migrate</value>
-  </data>
-  <data name="owner.migrate.description" xml:space="preserve">
-    <value>Copies every Firestore collection into PostgreSQL</value>
-  </data>
   <data name="owner.logs.description" xml:space="preserve">
     <value>Shows the lastest log file</value>
   </data>

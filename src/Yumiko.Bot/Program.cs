@@ -77,7 +77,6 @@ public static class Program
         TimeoutSettings timeouts = TimeoutSettings.FromConfiguration(host.Configuration);
 
         string discordToken = Required(host.Configuration, "discordToken");
-        string firebaseCredentialsDir = Required(host.Configuration, "FIREBASE_CREDENTIALS_DIR");
 
         // Local via User Secrets (pointing at the SSH tunnel), on the server via an environment
         // variable (ConnectionStrings__Database).
@@ -90,7 +89,7 @@ public static class Program
             .AddSingleton(botConfig)
             .AddBehaviorSettings(host.Configuration)
             .AddApplication()
-            .AddInfrastructure(firebaseCredentialsDir, dbConnectionString, new ExternalApiTokens
+            .AddInfrastructure(dbConnectionString, new ExternalApiTokens
             {
                 OpenWeatherMap = Required(host.Configuration, "openWeatherMapToken"),
                 TheCatApi = Required(host.Configuration, "theCatApiToken"),
