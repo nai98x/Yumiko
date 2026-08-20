@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using DSharpPlus.Entities;
 
 namespace Yumiko.Bot.Games;
@@ -17,6 +18,10 @@ public sealed class Trivia
     public double TimeoutTotal { get; set; }
 
     public QuizRound CurrentRound { get; set; } = new();
+
+    // The buttons carry an opaque option id, so the display name of every option played so far is kept
+    // here: buttons of past rounds stay clickable and their attempt still has to be shown by name.
+    public ConcurrentDictionary<string, string> OptionNames { get; } = new();
 
     public DiscordUser? CreatedBy { get; set; }
 

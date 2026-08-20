@@ -129,14 +129,20 @@ public sealed class ComponentInteractionHandler(
 
         if (trivia.CurrentRound.Match != attempt)
         {
+            DiscordEmbedBuilder embed = new()
+            {
+                Title = loc[Keys.wrong_choice],
+                Color = DiscordColor.Red,
+            };
+
+            if (trivia.OptionNames.TryGetValue(attempt, out string? name))
+            {
+                embed.Description = $"{loc[Keys.your_attempt]}: `{name}`";
+            }
+
             await args.Interaction.CreateResponseAsync(
                 DiscordInteractionResponseType.ChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AsEphemeral().AddEmbed(new DiscordEmbedBuilder
-                {
-                    Title = loc[Keys.wrong_choice],
-                    Description = $"{loc[Keys.your_attempt]}: `{attempt}`",
-                    Color = DiscordColor.Red,
-                }));
+                new DiscordInteractionResponseBuilder().AsEphemeral().AddEmbed(embed));
             return;
         }
 

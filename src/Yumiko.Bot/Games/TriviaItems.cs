@@ -24,7 +24,8 @@ public static class TriviaItems
                 loc.Format(
                     Keys.the_character_is,
                     Formatter.Bold($"[{p.NameFull}]({p.SiteUrl})"),
-                    $"[{p.MainAnime?.TitleRomaji}]({p.MainAnime?.SiteUrl})"))),
+                    $"[{p.MainAnime?.TitleRomaji}]({p.MainAnime?.SiteUrl})")))
+            .DistinctBy(item => item.Name, StringComparer.Ordinal),
     ];
 
     public static List<TriviaItem> FromMedia(IEnumerable<Anime> media, Gamemode gamemode, Loc loc) =>
@@ -32,7 +33,10 @@ public static class TriviaItems
         .. media
             .Select(m => Build(m, gamemode, loc))
             .Where(item => item is not null)
-            .Select(item => item!),
+            .Select(item => item!)
+            // Different entries can resolve to the same name (several anime by the same studio, for
+            // instance), and two options with the same name make the round unanswerable.
+            .DistinctBy(item => item.Name, StringComparer.Ordinal),
     ];
 
     private static TriviaItem? Build(Anime media, Gamemode gamemode, Loc loc) => gamemode switch

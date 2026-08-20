@@ -59,7 +59,7 @@ public sealed class TriviaGameRunner(
             for (int round = 1; round <= rounds; round++)
             {
                 roundsPlayed = round;
-                RoundResult result = await PlayRoundAsync(ctx, pool, round, rounds, gameLabel, participants, loc);
+                RoundResult result = await PlayRoundAsync(ctx, trivia, pool, round, rounds, gameLabel, participants, loc);
 
                 if (result is RoundResult.Cancelled or RoundResult.NoGame)
                 {
@@ -76,6 +76,7 @@ public sealed class TriviaGameRunner(
 
     private async Task<RoundResult> PlayRoundAsync(
         SlashCommandContext ctx,
+        Trivia trivia,
         List<TriviaItem> pool,
         int round,
         int rounds,
@@ -89,12 +90,22 @@ public sealed class TriviaGameRunner(
 
         pool.RemoveAt(indices[0]);
 
+        // The names go on the label only: as a custom id they would blow past the 100 character limit and
+        // two options sharing a name would collide, and Discord rejects the whole message in both cases.
+        string roundId = Guid.NewGuid().ToString("N");
+        List<(string Id, string Name)> choices = [.. options.Select((name, i) => ($"{roundId}-{i}", name))];
+
+        foreach ((string id, string name) in choices)
+        {
+            trivia.OptionNames[id] = name;
+        }
+
         List<DiscordButtonComponent> buttons =
         [
-            .. options.Select(name => new DiscordButtonComponent(
+            .. choices.Select(choice => new DiscordButtonComponent(
                 DiscordButtonStyle.Secondary,
-                $"{TriviaCustomIds.RoundPrefix}{name}",
-                name.NormalizeButton())),
+                $"{TriviaCustomIds.RoundPrefix}{choice.Id}",
+                choice.Name.NormalizeButton())),
         ];
 
         RandomHelper.Shuffle(buttons, Random.Shared);
@@ -115,8 +126,7 @@ public sealed class TriviaGameRunner(
 
         DiscordMessage message = await ctx.FollowupAsync(builder);
 
-        // The button carries the full name; the label is trimmed, so the comparison is against the name.
-        triviaState.UpdateCurrentRound(ctx.Guild!.Id, ctx.Channel.Id, new QuizRound { Match = correct.Name });
+        triviaState.UpdateCurrentRound(ctx.Guild!.Id, ctx.Channel.Id, new QuizRound { Match = choices[0].Id });
 
         string reveal = correct.Description.NormalizeDescription();
         RoundResult result = await WaitForAnswerAsync(ctx, message, reveal, participants, loc);
