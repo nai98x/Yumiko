@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily backup of Yumiko's database
+
+[Timer]
+# Local time of the server (not UTC): systemd 239 does not accept a zone on this line.
+# 15 minutes after AnilistConEnie's backup, so the two dumps do not overlap.
+OnCalendar=*-*-* 07:45:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -13,6 +13,8 @@ namespace Yumiko.Bot.Services.Scheduling;
 /// </remarks>
 public abstract class CronBackgroundService(DiscordBotService discordBotService, ILogger logger) : BackgroundService
 {
+    protected DiscordBotService Bot => discordBotService;
+
     protected bool Initialized => discordBotService.Initialized;
 
     protected abstract string CronExpression { get; }

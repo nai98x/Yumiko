@@ -245,6 +245,10 @@ UpgradeLog*.htm
 ServiceFabricBackup/
 *.rptproj.bak
 
+# The Backup*/ above matches the source folders of the backups domain.
+!src/Yumiko.Application/Backups/
+!tests/Yumiko.Application.Tests/Backups/
+
 # SQL Server files
 *.mdf
 *.ldf

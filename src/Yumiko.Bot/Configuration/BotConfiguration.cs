@@ -34,6 +34,7 @@ public sealed class BotConfiguration
             {
                 Guilds = RequireUlong(ids.GetSection("Channels"), "Guilds"),
                 Errors = RequireUlong(ids.GetSection("Channels"), "Errors"),
+                ConfigBots = RequireUlong(ids.GetSection("Channels"), "ConfigBots"),
             },
             Website = RequireString(configuration, "Website"),
             AnilistApiClientId = RequireSecret(configuration, "AnilistApiClientId"),
@@ -64,4 +65,7 @@ public sealed class ChannelConfiguration
 
     /// <summary>Channel where the errors are logged.</summary>
     public required ulong Errors { get; init; }
+
+    /// <summary>Channel where the bot notices aimed at the owner are posted, such as a missing backup.</summary>
+    public required ulong ConfigBots { get; init; }
 }

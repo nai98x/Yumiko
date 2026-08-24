@@ -4,10 +4,10 @@
     <DataCollectors>
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
-          <!-- Solo se mide Application: Yumiko.Model son POCOs sin lógica. -->
+          <!-- Only Application is measured: Yumiko.Model is POCOs with no logic. -->
           <Include>[Yumiko.Application]*</Include>
-          <!-- No agregar CompilerGeneratedAttribute acá: excluiría las máquinas de estado de los
-               métodos async, que es donde vive la lógica de los servicios. -->
+          <!-- Do not add CompilerGeneratedAttribute here: it would exclude the state machines of the
+               async methods, which is where the logic of the services lives. -->
           <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
           <SkipAutoProps>true</SkipAutoProps>
         </Configuration>

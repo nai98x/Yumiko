@@ -24,6 +24,12 @@ español dentro de `src/` ni `tests/`. La única excepción son los textos de us
 `Translations.es.resx` (que por definición son la traducción al español), incluidas las etiquetas en
 español de `GameNaming` (`personaje`, `Fácil`, `Dificil`).
 
+**Idioma de la documentación**: los `README.md` (raíz, `db/`, `deploy-setup/`), los comentarios de
+los workflows, de los scripts de deploy y de `backup.env.example` van **en inglés**. Este CLAUDE.md
+es la única excepción: es la guía para los agentes y queda en español. En la documentación, los
+valores propios del server (base, roles, host, puerto, remote, bucket, usuario) se escriben como
+`<placeholders>`, nunca con los valores reales.
+
 Los commits y la comunicación con el dueño del repo siguen siendo en **español**.
 
 ## Arquitectura (Clean Architecture, 4 proyectos en `src/`)

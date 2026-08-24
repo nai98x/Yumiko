@@ -16,38 +16,38 @@
 
 ---
 
-Bot de Discord público y multi-guild centrado en **AniList**: buscar animes, mangas, personajes y
-staff, vincular tu perfil, sacar recomendaciones automáticas de tu lista. Además tiene juegos
-(trivia, ahorcado, higher-or-lower, ta-te-ti), comandos de interacción y utilidades.
+Public, multi-guild Discord bot centred on **AniList**: search animes, mangas, characters and staff,
+link your profile, get automatic recommendations out of your list. It also has games (trivia,
+hangman, higher-or-lower, tic-tac-toe), interaction commands and utilities.
 
-Es **bilingüe**: responde en inglés o español según el idioma que cada usuario tenga configurado en
-Discord, incluidos los nombres y descripciones de los comandos.
+It is **bilingual**: it answers in English or Spanish depending on the language each user has set in
+Discord, command names and descriptions included.
 
 ## Stack
 
 .NET 10 · DSharpPlus 5 (nightly) · PostgreSQL (Dapper) · SkiaSharp · Serilog · xUnit
 
-## Arquitectura
+## Architecture
 
-Clean Architecture, cuatro proyectos en `src/`. La dirección de dependencias es
-**Model ← Application ← Infrastructure ← Bot** y nunca al revés.
+Clean Architecture, four projects under `src/`. Dependencies flow
+**Model ← Application ← Infrastructure ← Bot** and never the other way around.
 
-| Proyecto | Qué contiene | Depende de |
+| Project | What it holds | Depends on |
 |---|---|---|
-| `Yumiko.Model` | Entidades, enums, excepciones e interfaces. POCOs puros, **cero paquetes NuGet**. | — |
-| `Yumiko.Application` | Reglas de negocio y cálculo puro: juegos, scoring de recomendaciones, formateo de puntajes, imágenes. Sin Discord ni I/O. | Model |
-| `Yumiko.Infrastructure` | Repositorios PostgreSQL (Dapper + stored procedures), cliente de AniList (GraphQL + Polly) y clientes HTTP tipados. | Model, Application |
-| `Yumiko.Bot` | Entry point, comandos, handlers, scheduling, estado en memoria, localización, DI. | las tres |
+| `Yumiko.Model` | Entities, enums, exceptions and interfaces. Plain POCOs, **zero NuGet packages**. | — |
+| `Yumiko.Application` | Business rules and pure computation: games, recommendation scoring, score formatting, images. No Discord, no I/O. | Model |
+| `Yumiko.Infrastructure` | PostgreSQL repositories (Dapper + stored procedures), the AniList client (GraphQL + Polly) and the typed HTTP clients. | Model, Application |
+| `Yumiko.Bot` | Entry point, commands, handlers, scheduling, in-memory state, localization, DI. | all three |
 
-`tests/Yumiko.Application.Tests` referencia **solo** `Yumiko.Application`.
+`tests/Yumiko.Application.Tests` references **only** `Yumiko.Application`.
 
-## Mapa del código
+## Code map
 
 ```
 src/Yumiko.Model/
   Entities/            Anilist/, Games/, AnimeThemes/, Weather, Poll, Country...
   Enum/                Difficulty, Gamemode, GamemodeHoL, MediaType...
-  Exceptions/          AnilistApiException y derivadas, TraceMoeQuotaException
+  Exceptions/          AnilistApiException and derived, TraceMoeQuotaException
   Interfaces/          IAnilistClient, IWeatherClient, ITopggClient... + Repositories/
 
 src/Yumiko.Application/
@@ -56,10 +56,11 @@ src/Yumiko.Application/
                        TriviaRound, LeaderboardRanking, MediaPoolBuilder, GameNaming
   Fun/                 LoveMeter
   Helpers/             TextHelper, ImageHelper (SkiaSharp), EmojiHelper, RandomHelper
+  Backups/             BackupState
 
 src/Yumiko.Infrastructure/
   Anilist/             AnilistClient, AnilistGraphQLExecutor (Polly), AnilistQueries, Responses/
-  Database/            DbConnectionFactory (Npgsql + Dapper), Rows/ (DTOs de fila)
+  Database/            DbConnectionFactory (Npgsql + Dapper), Rows/ (row DTOs)
   Repositories/        QuizLeaderboard, HigherOrLowerLeaderboard, AnilistUsers
   OpenWeather/ Animals/ TraceMoe/ AnimeThemes/ Topgg/
 
@@ -67,7 +68,7 @@ src/Yumiko.Bot/
   Commands/Slash/      Anilist, Games, Interact, Misc, Owner, Stats
   Commands/ContextMenu/ AnilistProfile, AnimeRecommendations, MangaRecommendations
   Commands/Framework/  Choices/, AutoComplete/, CommandErrorHandler, ResxInteractionLocalizer
-  Games/               Runners de los 4 juegos, Poll, Trivia, GamePool, TriviaItems
+  Games/               Runners of the 4 games, Poll, Trivia, GamePool, TriviaItems
   Helpers/             Embeds, DiscordInteractivity, DiscordLogService, TopggService...
   Events/              EventHandlerRegistrar + Handlers/
   Services/            DiscordBotService, MediaCacheRefresher, Scheduling/, State/
@@ -77,13 +78,13 @@ src/Yumiko.Bot/
 
 db/
   schema/              anilist_users, higher_or_lower_scores, quiz_stats
-  procedures/          un .sql por stored procedure
+  procedures/          one .sql per stored procedure
 ```
 
-El esquema de la base es la fuente de verdad y se versiona en [`db/`](db/README.md): el acceso desde
-el bot es siempre por stored procedures invocados con Dapper, nunca con SQL embebido en el código.
+The database schema is the source of truth and lives in [`db/`](db/README.md): the bot always goes
+through stored procedures invoked with Dapper, never through SQL embedded in the code.
 
-## Comandos
+## Commands
 
 ```bash
 dotnet restore
@@ -92,14 +93,14 @@ dotnet test
 dotnet run --project src/Yumiko.Bot
 ```
 
-Antes de correrlo hace falta configurar los secrets (User Secrets en local) y tener la base creada
-con los scripts de `db/` aplicados: ver [`deploy-setup/README.md`](deploy-setup/README.md).
+Before running it you need the secrets configured (User Secrets locally) and the database created
+with the scripts of `db/` applied: see [`deploy-setup/README.md`](deploy-setup/README.md).
 
-En build **Debug** los comandos se registran solo en el guild de `Ids:LogGuildId`, así que se puede
-probar sin tocar la instancia pública.
+On a **Debug** build the commands are registered only on the `Ids:LogGuildId` guild, so it can be
+tested without touching the public instance.
 
 ## Deploy
 
-Automático por GitHub Actions al pushear a `master`: build → tests → escaneo de paquetes vulnerables
-→ `publish` para `linux-arm64` → SCP al server → reinicio con `systemctl --user`. El detalle y el
-setup inicial están en [`deploy-setup/README.md`](deploy-setup/README.md).
+Automatic through GitHub Actions on every push to `master`: build → tests → vulnerable package scan
+→ `publish` for `linux-arm64` → SCP to the server → restart with `systemctl --user`. The details and
+the initial setup are in [`deploy-setup/README.md`](deploy-setup/README.md).

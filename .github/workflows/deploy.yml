@@ -21,11 +21,11 @@ jobs:
       - name: Restore
         run: dotnet restore
 
-      - name: Escaneo de dependencias vulnerables
+      - name: Vulnerable dependency scan
         run: |
           dotnet list package --vulnerable --include-transitive | tee vulnerables.txt
           if grep -q "has the following vulnerable packages" vulnerables.txt; then
-            echo "::error::Se detectaron paquetes con vulnerabilidades conocidas"
+            echo "::error::Packages with known vulnerabilities were detected"
             exit 1
           fi
 
@@ -38,10 +38,10 @@ jobs:
       - name: Publish
         run: dotnet publish src/Yumiko.Bot -c Release -r linux-arm64 --no-self-contained -o ./publish
 
-      - name: Empaquetar artefacto
+      - name: Pack artifact
         run: tar czf publish.tar.gz -C ./publish .
 
-      - name: Copiar artefacto al server
+      - name: Copy artifact to the server
         uses: appleboy/scp-action@917f8b81dfc1ccd331fef9e2d61bdc6c8be94634 # v0.1.7
         with:
           host: ${{ secrets.HOST }}
@@ -50,7 +50,7 @@ jobs:
           source: publish.tar.gz
           target: ~/bots
 
-      - name: Desplegar y reiniciar
+      - name: Deploy and restart
         uses: appleboy/ssh-action@7eaf76671a0d7eec5d98ee897acda4f968735a17 # v1.2.0
         with:
           host: ${{ secrets.HOST }}

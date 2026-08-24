@@ -1,0 +1,6 @@
+[Unit]
+Description=Daily backup of Yumiko's database to external storage
+
+[Service]
+Type=oneshot
+ExecStart=%h/bin/yumiko-backup-db.sh

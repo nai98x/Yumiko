@@ -53,6 +53,31 @@ public sealed record GamesSettings(int MediaCachePageFrom, int MediaCachePageTo,
     }
 }
 
+/// <summary>Where the backup script leaves the mark of its last successful run.</summary>
+/// <remarks>
+/// The path is not in appsettings.json (public repo, and it carries the server user name): it comes
+/// from the <c>Backups__StatePath</c> environment variable, like the connection string. It is only
+/// required in release: the backup belongs to the deployed bot and the scheduled tasks do not run in
+/// debug.
+/// </remarks>
+public sealed record BackupsSettings(string StatePath)
+{
+    public static BackupsSettings FromConfiguration(IConfiguration configuration)
+    {
+        string? path = configuration["Backups:StatePath"];
+
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return BotEnvironment.IsDebug
+                ? new BackupsSettings(string.Empty)
+                : throw new InvalidOperationException(
+                    "'Backups:StatePath' is required in release: set it via the Backups__StatePath environment variable");
+        }
+
+        return new BackupsSettings(path);
+    }
+}
+
 public static class BehaviorSettingsExtensions
 {
     public static IServiceCollection AddBehaviorSettings(this IServiceCollection services, IConfiguration configuration)
@@ -61,6 +86,7 @@ public static class BehaviorSettingsExtensions
         services.AddSingleton(LogsSettings.FromConfiguration(configuration));
         services.AddSingleton(TopggSettings.FromConfiguration(configuration));
         services.AddSingleton(GamesSettings.FromConfiguration(configuration));
+        services.AddSingleton(BackupsSettings.FromConfiguration(configuration));
         return services;
     }
 }

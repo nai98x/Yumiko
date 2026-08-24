@@ -42,6 +42,7 @@ public static class BotServiceExtensions
         services.AddSingleton<DiscordBotService>();
         services.AddHostedService(sp => sp.GetRequiredService<DiscordBotService>());
         services.AddHostedService<DailyScheduledService>();
+        services.AddHostedService<BackupScheduledService>();
 
         return services;
     }

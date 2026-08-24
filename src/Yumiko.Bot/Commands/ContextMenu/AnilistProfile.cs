@@ -21,7 +21,8 @@ public sealed class AnilistProfile(ILocalizer localizer, AnilistResponses respon
     {
         Loc loc = ctx.Loc(localizer);
 
-        await ctx.DeferResponseAsync();
+        // Always private, whether it is your own profile or someone else's.
+        await ctx.DeferResponseAsync(true);
         await ctx.EditResponseAsync(await responses.ProfileAsync(target, loc));
     }
 }

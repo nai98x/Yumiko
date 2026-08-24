@@ -15,6 +15,7 @@ public class DiscordBotService(DiscordClient client, BotConfiguration config, IL
 
     private DiscordChannel? _logChannelGuilds;
     private DiscordChannel? _logChannelErrors;
+    private DiscordChannel? _logChannelConfigBots;
 
     public DiscordClient Client => client;
 
@@ -32,11 +33,15 @@ public class DiscordBotService(DiscordClient client, BotConfiguration config, IL
     public DiscordChannel LogChannelErrors =>
         _logChannelErrors ?? throw new InvalidOperationException($"Channel {nameof(LogChannelErrors)} is not initialized.");
 
+    public DiscordChannel LogChannelConfigBots =>
+        _logChannelConfigBots ?? throw new InvalidOperationException($"Channel {nameof(LogChannelConfigBots)} is not initialized.");
+
     public void SetChannels()
     {
         DiscordGuild guild = client.Guilds[config.LogGuildId];
         _logChannelGuilds = GetChannel(guild, config.Channels.Guilds, nameof(config.Channels.Guilds));
         _logChannelErrors = GetChannel(guild, config.Channels.Errors, nameof(config.Channels.Errors));
+        _logChannelConfigBots = GetChannel(guild, config.Channels.ConfigBots, nameof(config.Channels.ConfigBots));
     }
 
     public void SetInitialized() => Initialized = true;

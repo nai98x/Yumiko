@@ -1,72 +1,75 @@
-# Base de datos
+# Database
 
-Esquema y stored procedures versionados. La base es **database-first**: el esquema se diseña acá (es
-la fuente de verdad) y el código C# se adapta. El acceso desde el bot es vía **Dapper invocando
-stored procedures** — nunca SQL embebido en el código.
+Versioned schema and stored procedures. The database is **database-first**: the schema is designed
+here (it is the source of truth) and the C# code adapts to it. The bot reaches it through **Dapper
+invoking stored procedures** — never through SQL embedded in the code.
 
-Es el mismo criterio que AnilistConEnie, con una diferencia: acá **tablas, columnas y funciones van
-en inglés**, como el resto del código de este repo.
+Same criterion as AnilistConEnie, with one difference: here **tables, columns and functions are in
+English**, like the rest of the code of this repo.
 
-## Estructura
+Values that belong to the server (database name, roles, passwords) are written as `<placeholders>`:
+they are not versioned.
+
+## Layout
 
 ```
 db/
-  schema/        # tablas, índices, constraints
-  procedures/    # un .sql por stored procedure
+  schema/        # tables, indexes, constraints
+  procedures/    # one .sql per stored procedure
 ```
 
-## Tablas
+## Tables
 
-| Tabla | Qué guarda |
+| Table | What it holds |
 |---|---|
-| `anilist_users` | Vínculo entre una cuenta de Discord y una de AniList. Global, no por guild |
-| `higher_or_lower_scores` | Récord de Higher or Lower por usuario y guild |
-| `quiz_stats` | Stats acumuladas de trivia por usuario, guild, modo de juego y dificultad |
+| `anilist_users` | Link between a Discord account and an AniList one. Global, not per guild |
+| `higher_or_lower_scores` | Higher or Lower record per user and guild |
+| `quiz_stats` | Accumulated trivia stats per user, guild, gamemode and difficulty |
 
-Dos particularidades de `quiz_stats`:
+Two quirks of `quiz_stats`:
 
-- `accuracy_percentage` se guarda calculado con **división entera** sobre los totales acumulados.
-  Pasarlo a decimal re-rankea todos los leaderboards que ya existen.
-- En modo `Genres`, la columna `difficulty` guarda el **nombre del género** en lugar de una
-  dificultad.
+- `accuracy_percentage` is stored, computed with **integer division** over the accumulated totals.
+  Turning it into a decimal re-ranks every leaderboard that already exists.
+- In `Genres` mode, the `difficulty` column holds the **genre name** instead of a difficulty.
 
-`gamemode` y `difficulty` guardan los nombres de los enums de C# (`Characters`, `Easy`, …), nunca
-las etiquetas en español que se muestran en los embeds.
+`gamemode` and `difficulty` hold the names of the C# enums (`Characters`, `Easy`, …), never the
+Spanish labels shown in the embeds.
 
-## Convenciones de los scripts
+## Script conventions
 
-- **Idempotentes**: cada script se puede correr más de una vez sin romper (`CREATE TABLE IF NOT
+- **Idempotent**: every script can be run more than once without breaking (`CREATE TABLE IF NOT
   EXISTS`, `CREATE OR REPLACE FUNCTION`).
-- **Un stored procedure por archivo** en `procedures/`, con el nombre del SP como nombre de archivo.
-- Cambios de esquema y los SPs que los consumen van en el **mismo commit** que el código C# que los
-  usa.
-- **Las migraciones no se versionan**: `schema/` refleja siempre el estado actual de cada tabla (el
-  `CREATE` limpio), sin `ALTER` ni scripts de datos.
+- **One stored procedure per file** under `procedures/`, named after the stored procedure.
+- Schema changes and the stored procedures that consume them go in the **same commit** as the C#
+  code that uses them.
+- **Migrations are not versioned**: `schema/` always reflects the current state of each table (the
+  clean `CREATE`), with no `ALTER` and no data scripts.
 
-## Aplicar los scripts
+## Applying the scripts
 
-Conectado a la base (por DBeaver o `psql`), correr primero los de `schema/` y después los de
-`procedures/`. Como son idempotentes, reaplicarlos sincroniza la base con lo versionado.
+Connected to the database (through DBeaver or `psql`), run the ones in `schema/` first and the ones
+in `procedures/` afterwards. Being idempotent, reapplying them syncs the database with what is
+versioned.
 
 ```bash
-for f in db/schema/*.sql db/procedures/*.sql; do psql -d yumiko -f "$f"; done
+for f in db/schema/*.sql db/procedures/*.sql; do psql -d <database> -f "$f"; done
 ```
 
-## Seguridad del rol del bot
+## Security of the bot role
 
-El usuario con el que se conecta el bot no debe ser superuser ni dueño del schema: alcanza con
-`CONNECT` a la base, `USAGE` del schema y `EXECUTE` sobre las funciones de `procedures/` (más los
-permisos de tabla que esas funciones necesiten). La base escucha solo en localhost.
+The role the bot connects with must not be a superuser nor own the schema: `CONNECT` to the
+database, `USAGE` on the schema and `EXECUTE` on the functions of `procedures/` are enough (plus
+whatever table permissions those functions need). The database listens on localhost only.
 
 ## AnilistConEnie
 
-AnilistConEnie escribe el vínculo de AniList en `anilist_users`. Se conecta con un rol propio que
-solo tiene `EXECUTE` sobre `anilist_user_upsert`:
+AnilistConEnie writes the AniList link into `anilist_users`. It connects with a role of its own that
+only has `EXECUTE` on `anilist_user_upsert`:
 
 ```sql
-CREATE ROLE anilistconenie LOGIN PASSWORD '...';
-GRANT CONNECT ON DATABASE yumiko TO anilistconenie;
-GRANT USAGE ON SCHEMA public TO anilistconenie;
-GRANT EXECUTE ON FUNCTION anilist_user_upsert(bigint, integer) TO anilistconenie;
-GRANT INSERT, UPDATE ON anilist_users TO anilistconenie;
+CREATE ROLE <anilistconenie_role> LOGIN PASSWORD '...';
+GRANT CONNECT ON DATABASE <database> TO <anilistconenie_role>;
+GRANT USAGE ON SCHEMA public TO <anilistconenie_role>;
+GRANT EXECUTE ON FUNCTION anilist_user_upsert(bigint, integer) TO <anilistconenie_role>;
+GRANT INSERT, UPDATE ON anilist_users TO <anilistconenie_role>;
 ```
