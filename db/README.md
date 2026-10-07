@@ -24,6 +24,7 @@ db/
 |---|---|
 | `anilist_users` | Link between a Discord account and an AniList one. Global, not per guild |
 | `higher_or_lower_scores` | Higher or Lower record per user and guild |
+| `higher_or_lower_duo_scores` | Higher or Lower duo record per pair of users and guild. The pair is stored ordered (`first_user_id < second_user_id`) |
 | `quiz_stats` | Accumulated trivia stats per user, guild, gamemode and difficulty |
 
 Two quirks of `quiz_stats`:

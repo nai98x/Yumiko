@@ -27,11 +27,13 @@ public sealed class Stats(
     DiscordBotService discordBotService,
     IQuizLeaderboardRepository quizLeaderboard,
     IHigherOrLowerLeaderboardRepository holLeaderboard,
+    IHigherOrLowerDuoLeaderboardRepository holDuoLeaderboard,
     GenreSelector genreSelector,
     DiscordInteractivity discordInteractivity,
     TopggService topgg)
 {
     private const int LeaderboardSize = 10;
+    private const int UserDuoPairs = 5;
 
     [Command("user")]
     [Description("Shows the statistics of all games of a user")]
@@ -53,11 +55,13 @@ public sealed class Stats(
         List<GameStatsUser> trivia = await quizLeaderboard.GetStatsUserAsync(ctx.Guild.Id, target.Id);
         List<GameStats> genres = await quizLeaderboard.GetGenreStatsUserAsync(ctx.Guild.Id, target.Id);
         HigherOrLowerEntry? hol = await holLeaderboard.GetStatsUserAsync(ctx.Guild.Id, target.Id);
+        List<HigherOrLowerDuoEntry> holDuo = await holDuoLeaderboard.GetStatsUserAsync(ctx.Guild.Id, target.Id, UserDuoPairs);
 
         await ctx.EditResponseAsync(new DiscordWebhookBuilder()
             .AddEmbed(GameStatsEmbeds.UserTriviaStats(member?.DisplayName ?? target.Username, trivia, loc))
             .AddEmbed(GameStatsEmbeds.UserGenreStats(genres, loc))
-            .AddEmbed(GameStatsEmbeds.UserHigherOrLowerStats(hol, loc)));
+            .AddEmbed(GameStatsEmbeds.UserHigherOrLowerStats(hol, loc))
+            .AddEmbed(GameStatsEmbeds.UserHigherOrLowerDuoStats(target.Id, holDuo, loc)));
 
         await SendVoteReminderAsync(ctx, loc);
     }
@@ -125,6 +129,24 @@ public sealed class Stats(
         await SendVoteReminderAsync(ctx, loc);
     }
 
+    [Command("higherorlower_duo")]
+    [Description("Shows the statistics of the Higher or Lower duo game")]
+    [InteractionLocalizer<ResxInteractionLocalizer>]
+    public async Task HigherOrLowerDuoAsync(SlashCommandContext ctx)
+    {
+        Loc loc = ctx.Loc(localizer);
+
+        if (!await PrepareAsync(ctx, loc))
+        {
+            return;
+        }
+
+        List<HigherOrLowerDuoEntry> pairs = await holDuoLeaderboard.GetLeaderboardAsync(ctx.Guild!.Id);
+
+        await ctx.EditResponseAsync(GameStatsEmbeds.LeaderboardHigherOrLowerDuo(pairs, loc));
+        await SendVoteReminderAsync(ctx, loc);
+    }
+
     [Command("delete")]
     [Description("Deletes user statistics on the server")]
     [InteractionLocalizer<ResxInteractionLocalizer>]
@@ -155,6 +177,7 @@ public sealed class Stats(
         }
 
         await holLeaderboard.DeleteStatsAsync(ctx.Guild!.Id, ctx.User.Id);
+        await holDuoLeaderboard.DeleteStatsAsync(ctx.Guild!.Id, ctx.User.Id);
         await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(loc[Keys.delete_stats_done]));
     }
 

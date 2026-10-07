@@ -26,6 +26,7 @@ public static class InfrastructureServiceExtensions
         services.AddSingleton(new DbConnectionFactory(dbConnectionString));
         services.AddSingleton<IQuizLeaderboardRepository, QuizLeaderboardRepository>();
         services.AddSingleton<IHigherOrLowerLeaderboardRepository, HigherOrLowerLeaderboardRepository>();
+        services.AddSingleton<IHigherOrLowerDuoLeaderboardRepository, HigherOrLowerDuoLeaderboardRepository>();
         services.AddSingleton<IAnilistUsersRepository, AnilistUsersRepository>();
         services.AddSingleton<AnilistGraphQLExecutor>();
         services.AddSingleton<IAnilistClient, AnilistClient>();

@@ -61,6 +61,22 @@ public static class GameStatsEmbeds
         };
     }
 
+    public static DiscordEmbedBuilder LeaderboardHigherOrLowerDuo(List<HigherOrLowerDuoEntry> pairs, Loc loc)
+    {
+        string table = string.Join("\n", LeaderboardRanking
+            .RankHigherOrLowerDuo(pairs)
+            .Select(p =>
+                $"{Prefix(p.Position)} - <@{p.Player.FirstUserId}> & <@{p.Player.SecondUserId}> - " +
+                $"{loc[Keys.score]}: {Formatter.Bold($"{p.Player.Score}")}"));
+
+        return new DiscordEmbedBuilder
+        {
+            Title = $"{loc[Keys.stats]} - Higher or Lower Duo",
+            Description = table.NormalizeDescription(),
+            Color = YumikoColors.Primary,
+        };
+    }
+
     public static DiscordEmbedBuilder UserTriviaStats(string name, List<GameStatsUser> stats, Loc loc)
     {
         string desc = string.Join("\n", stats
@@ -106,6 +122,17 @@ public static class GameStatsEmbeds
             ? loc[Keys.no_stats_available]
             : $"{loc[Keys.score]}: {Formatter.Bold($"{stats.Score}")}",
         Color = stats is null ? DiscordColor.Red : YumikoColors.Primary,
+    };
+
+    /// <summary>Best pairs of the user, showing only the partner of each one.</summary>
+    public static DiscordEmbedBuilder UserHigherOrLowerDuoStats(ulong userId, List<HigherOrLowerDuoEntry> pairs, Loc loc) => new()
+    {
+        Title = "Higher or Lower Duo",
+        Description = pairs.Count == 0
+            ? loc[Keys.no_stats_available]
+            : string.Join("\n", pairs.Select(p =>
+                $"<@{(p.FirstUserId == userId ? p.SecondUserId : p.FirstUserId)}> - {loc[Keys.score]}: {Formatter.Bold($"{p.Score}")}")),
+        Color = pairs.Count == 0 ? DiscordColor.Red : YumikoColors.Primary,
     };
 
     /// <summary>Game name as it is displayed: in Spanish the enums have their own translation.</summary>

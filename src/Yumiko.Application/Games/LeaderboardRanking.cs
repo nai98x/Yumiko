@@ -42,15 +42,22 @@ public static class LeaderboardRanking
     }
 
     /// <summary>Positions of the Higher or Lower leaderboard, tying by score.</summary>
-    public static List<Rank<HigherOrLowerEntry>> RankHigherOrLower(IEnumerable<HigherOrLowerEntry> players, int maxRanks = 10)
+    public static List<Rank<HigherOrLowerEntry>> RankHigherOrLower(IEnumerable<HigherOrLowerEntry> players, int maxRanks = 10) =>
+        RankByScore(players, p => p.Score, maxRanks);
+
+    /// <summary>Positions of the Higher or Lower duo leaderboard, tying by score.</summary>
+    public static List<Rank<HigherOrLowerDuoEntry>> RankHigherOrLowerDuo(IEnumerable<HigherOrLowerDuoEntry> pairs, int maxRanks = 10) =>
+        RankByScore(pairs, p => p.Score, maxRanks);
+
+    private static List<Rank<T>> RankByScore<T>(IEnumerable<T> players, Func<T, int> score, int maxRanks)
     {
-        List<Rank<HigherOrLowerEntry>> ranks = [];
+        List<Rank<T>> ranks = [];
         int position = 0;
         int lastScore = -1;
 
-        foreach (HigherOrLowerEntry player in players)
+        foreach (T player in players)
         {
-            if (player.Score != lastScore)
+            if (score(player) != lastScore)
             {
                 position++;
             }
@@ -60,8 +67,8 @@ public static class LeaderboardRanking
                 break;
             }
 
-            ranks.Add(new Rank<HigherOrLowerEntry>(player, position));
-            lastScore = player.Score;
+            ranks.Add(new Rank<T>(player, position));
+            lastScore = score(player);
         }
 
         return ranks;

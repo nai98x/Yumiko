@@ -47,6 +47,8 @@ public static class Keys
 
     public const string authorize = "authorize";
 
+    public const string average_time = "average_time";
+
     public const string badges = "badges";
 
     public const string bot_about = "bot_about";
@@ -65,6 +67,8 @@ public static class Keys
 
     public const string cant_play_vs_bot = "cant_play_vs_bot";
 
+    public const string cant_play_with_yourself = "cant_play_with_yourself";
+
     public const string chapters = "chapters";
 
     public const string character = "character";
@@ -80,6 +84,8 @@ public static class Keys
     public const string commands_not_used = "commands_not_used";
 
     public const string commands_used = "commands_used";
+
+    public const string confirm = "confirm";
 
     public const string confirm_delete_profile = "confirm_delete_profile";
 
@@ -127,6 +133,8 @@ public static class Keys
 
     public const string external_links = "external_links";
 
+    public const string fastest_answer = "fastest_answer";
+
     public const string favorite_animes = "favorite_animes";
 
     public const string favorite_characters = "favorite_characters";
@@ -148,6 +156,10 @@ public static class Keys
     public const string from_the_anime = "from_the_anime";
 
     public const string game_cancelled = "game_cancelled";
+
+    public const string game_duration = "game_duration";
+
+    public const string game_summary = "game_summary";
 
     public const string games = "games";
 
@@ -188,6 +200,20 @@ public static class Keys
     public const string higher_or_lower_desc = "higher_or_lower_desc";
 
     public const string higher_or_lower_desc_popularity = "higher_or_lower_desc_popularity";
+
+    public const string higher_or_lower_duo_awaiting_confirmation = "higher_or_lower_duo_awaiting_confirmation";
+
+    public const string higher_or_lower_duo_confirm_prompt = "higher_or_lower_duo_confirm_prompt";
+
+    public const string higher_or_lower_duo_invite = "higher_or_lower_duo_invite";
+
+    public const string higher_or_lower_duo_new_record_desc = "higher_or_lower_duo_new_record_desc";
+
+    public const string higher_or_lower_duo_not_confirmed = "higher_or_lower_duo_not_confirmed";
+
+    public const string higher_or_lower_duo_rejected = "higher_or_lower_duo_rejected";
+
+    public const string higher_or_lower_duo_starts = "higher_or_lower_duo_starts";
 
     public const string higher_or_lower_round_defeat = "higher_or_lower_round_defeat";
 
@@ -380,6 +406,8 @@ public static class Keys
     public const string read = "read";
 
     public const string registered = "registered";
+
+    public const string reject = "reject";
 
     public const string related = "related";
 

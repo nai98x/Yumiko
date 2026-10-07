@@ -167,6 +167,32 @@ public sealed class Games(
         await higherOrLowerRunner.PlayAsync(ctx, gamemode, interactivity, loc);
     }
 
+    [Command("higherorlower_duo")]
+    [Description("Plays a Higher or Lower game in turns with another user")]
+    [InteractionLocalizer<ResxInteractionLocalizer>]
+    public async Task HigherOrLowerDuoAsync(
+        SlashCommandContext ctx,
+        [Parameter("gamemode")] [Description("Higher or Lower gamemode")] GamemodeHoLChoice gamemodeChoice,
+        [Parameter("player2")] [Description("The second player of the game")] DiscordUser player2)
+    {
+        Loc loc = ctx.Loc(localizer);
+
+        if (player2.IsBot || player2.Id == ctx.User.Id)
+        {
+            await ctx.RespondAsync(new DiscordInteractionResponseBuilder()
+                .AsEphemeral()
+                .AddEmbed(ErrorEmbed.Create(loc[Keys.error], loc[player2.IsBot ? Keys.cant_play_vs_bot : Keys.cant_play_with_yourself])));
+            return;
+        }
+
+        if (!await ctx.EnsureBotReadyAsync(discordBotService, loc))
+        {
+            return;
+        }
+
+        await higherOrLowerRunner.PlayDuoAsync(ctx, player2, gamemodeChoice.ToModel(), interactivity, loc);
+    }
+
     [Command("tictactoe")]
     [Description("Starts a Tic-Tac-Toe game")]
     [InteractionLocalizer<ResxInteractionLocalizer>]

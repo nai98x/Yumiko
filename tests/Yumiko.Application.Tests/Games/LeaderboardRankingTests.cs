@@ -83,4 +83,20 @@ public class LeaderboardRankingTests
 
         Assert.Equal(1, ranks[0].Position);
     }
+
+    [Fact]
+    public void RankHigherOrLowerDuo_TiesOnScoreAndStopsAtTheMaximum()
+    {
+        List<HigherOrLowerDuoEntry> pairs =
+        [
+            new() { FirstUserId = 1, SecondUserId = 2, Score = 20 },
+            new() { FirstUserId = 3, SecondUserId = 4, Score = 15 },
+            new() { FirstUserId = 1, SecondUserId = 3, Score = 15 },
+            new() { FirstUserId = 2, SecondUserId = 4, Score = 10 },
+        ];
+
+        List<Rank<HigherOrLowerDuoEntry>> ranks = LeaderboardRanking.RankHigherOrLowerDuo(pairs, maxRanks: 2);
+
+        Assert.Equal([1, 2, 2], ranks.Select(p => p.Position));
+    }
 }

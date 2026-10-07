@@ -121,6 +121,9 @@
   <data name="authorize" xml:space="preserve">
     <value>Autorizar</value>
   </data>
+  <data name="average_time" xml:space="preserve">
+    <value>Tiempo promedio</value>
+  </data>
   <data name="badges" xml:space="preserve">
     <value>Insignias</value>
   </data>
@@ -148,6 +151,9 @@
   <data name="cant_play_vs_bot" xml:space="preserve">
     <value>No puedes jugar en contra de un bot</value>
   </data>
+  <data name="cant_play_with_yourself" xml:space="preserve">
+    <value>No puedes jugar contigo mismo</value>
+  </data>
   <data name="chapters" xml:space="preserve">
     <value>Capítulos</value>
   </data>
@@ -171,6 +177,9 @@
   </data>
   <data name="commands_used" xml:space="preserve">
     <value>Comandos usados</value>
+  </data>
+  <data name="confirm" xml:space="preserve">
+    <value>Confirmar</value>
   </data>
   <data name="confirm_delete_profile" xml:space="preserve">
     <value>Confirma que quieres eliminar tu perfil</value>
@@ -241,6 +250,9 @@
   <data name="external_links" xml:space="preserve">
     <value>Links externos</value>
   </data>
+  <data name="fastest_answer" xml:space="preserve">
+    <value>Respuesta más rápida</value>
+  </data>
   <data name="favorite_animes" xml:space="preserve">
     <value>Animes favoritos</value>
   </data>
@@ -270,6 +282,12 @@
   </data>
   <data name="from_the_anime" xml:space="preserve">
     <value>del anime</value>
+  </data>
+  <data name="game_duration" xml:space="preserve">
+    <value>Duración de la partida</value>
+  </data>
+  <data name="game_summary" xml:space="preserve">
+    <value>Resumen de la partida</value>
   </data>
   <data name="games" xml:space="preserve">
     <value>Partidas</value>
@@ -333,6 +351,29 @@
   </data>
   <data name="higher_or_lower_desc_popularity" xml:space="preserve">
     <value>¡Elige el anime con mayor popularidad para ganar!</value>
+  </data>
+  <data name="higher_or_lower_duo_awaiting_confirmation" xml:space="preserve">
+    <value>⏳ {0} debe confirmar o rechazar la partida para empezar a jugar.</value>
+  </data>
+  <data name="higher_or_lower_duo_confirm_prompt" xml:space="preserve">
+    <value>{0}, ¡te invitaron a una partida de Higher or Lower en dúo! Acéptala o recházala con los botones de abajo.</value>
+  </data>
+  <data name="higher_or_lower_duo_invite" xml:space="preserve">
+    <value>{0} invita a {1} a jugar en dúo! Los turnos se alternan y la puntuación es compartida: un solo error termina la partida para los dos.</value>
+  </data>
+  <data name="higher_or_lower_duo_new_record_desc" xml:space="preserve">
+    <value>¡Felicitaciones {0} y {1}! Superaron su mejor puntuación en dúo.
+
+Su nuevo record es: **{2}**</value>
+  </data>
+  <data name="higher_or_lower_duo_not_confirmed" xml:space="preserve">
+    <value>{0} no confirmó la partida a tiempo</value>
+  </data>
+  <data name="higher_or_lower_duo_rejected" xml:space="preserve">
+    <value>{0} rechazó la partida</value>
+  </data>
+  <data name="higher_or_lower_duo_starts" xml:space="preserve">
+    <value>¡Empieza {0}!</value>
   </data>
   <data name="higher_or_lower_round_defeat" xml:space="preserve">
     <value>**{0}** tiene menor puntuación promedio **({1}/10)** que **{2} ({3}/10)**</value>
@@ -618,6 +659,9 @@
   </data>
   <data name="registered" xml:space="preserve">
     <value>Registro en Discord</value>
+  </data>
+  <data name="reject" xml:space="preserve">
+    <value>Rechazar</value>
   </data>
   <data name="related" xml:space="preserve">
     <value>Relacionado</value>
@@ -1060,6 +1104,9 @@
   <data name="higherorlower.description" xml:space="preserve">
     <value>Juega al juego de Higher or Lower</value>
   </data>
+  <data name="higherorlower_duo.description" xml:space="preserve">
+    <value>Juega al Higher or Lower por turnos con otro usuario</value>
+  </data>
   <data name="tictactoe.name" xml:space="preserve">
     <value>tateti</value>
   </data>
@@ -1080,6 +1127,9 @@
   </data>
   <data name="stats.higherorlower.description" xml:space="preserve">
     <value>Muestra las estadísticas del juego Higher or Lower</value>
+  </data>
+  <data name="stats.higherorlower_duo.description" xml:space="preserve">
+    <value>Muestra las estadísticas del Higher or Lower en dúo</value>
   </data>
   <data name="stats.delete.name" xml:space="preserve">
     <value>eliminar</value>

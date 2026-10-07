@@ -121,6 +121,9 @@
   <data name="authorize" xml:space="preserve">
     <value>Authorize</value>
   </data>
+  <data name="average_time" xml:space="preserve">
+    <value>Average time</value>
+  </data>
   <data name="badges" xml:space="preserve">
     <value>Badges</value>
   </data>
@@ -148,6 +151,9 @@
   <data name="cant_play_vs_bot" xml:space="preserve">
     <value>You cant play versus a bot</value>
   </data>
+  <data name="cant_play_with_yourself" xml:space="preserve">
+    <value>You can't play with yourself</value>
+  </data>
   <data name="chapters" xml:space="preserve">
     <value>Chapters</value>
   </data>
@@ -171,6 +177,9 @@
   </data>
   <data name="commands_used" xml:space="preserve">
     <value>Commands used</value>
+  </data>
+  <data name="confirm" xml:space="preserve">
+    <value>Confirm</value>
   </data>
   <data name="confirm_delete_profile" xml:space="preserve">
     <value>Confirm that you want to delete your profile</value>
@@ -241,6 +250,9 @@
   <data name="external_links" xml:space="preserve">
     <value>External &amp; Streaming links</value>
   </data>
+  <data name="fastest_answer" xml:space="preserve">
+    <value>Fastest answer</value>
+  </data>
   <data name="favorite_animes" xml:space="preserve">
     <value>Favorite animes</value>
   </data>
@@ -270,6 +282,12 @@
   </data>
   <data name="from_the_anime" xml:space="preserve">
     <value>from the anime</value>
+  </data>
+  <data name="game_duration" xml:space="preserve">
+    <value>Game duration</value>
+  </data>
+  <data name="game_summary" xml:space="preserve">
+    <value>Game summary</value>
   </data>
   <data name="games" xml:space="preserve">
     <value>Games</value>
@@ -333,6 +351,29 @@
   </data>
   <data name="higher_or_lower_desc_popularity" xml:space="preserve">
     <value>Choose the more popular anime to win!</value>
+  </data>
+  <data name="higher_or_lower_duo_awaiting_confirmation" xml:space="preserve">
+    <value>⏳ {0} must confirm or reject the game to start playing.</value>
+  </data>
+  <data name="higher_or_lower_duo_confirm_prompt" xml:space="preserve">
+    <value>{0}, you have been invited to a Higher or Lower duo game! Accept or reject it with the buttons below.</value>
+  </data>
+  <data name="higher_or_lower_duo_invite" xml:space="preserve">
+    <value>{0} invites {1} to play as a duo! Turns alternate and the score is shared: a single miss ends the game for both.</value>
+  </data>
+  <data name="higher_or_lower_duo_new_record_desc" xml:space="preserve">
+    <value>Congratulations {0} and {1}! You have beaten your best score as a duo.
+
+Your new record is: **{2}**</value>
+  </data>
+  <data name="higher_or_lower_duo_not_confirmed" xml:space="preserve">
+    <value>{0} did not confirm the game in time</value>
+  </data>
+  <data name="higher_or_lower_duo_rejected" xml:space="preserve">
+    <value>{0} has rejected the game</value>
+  </data>
+  <data name="higher_or_lower_duo_starts" xml:space="preserve">
+    <value>{0} starts!</value>
   </data>
   <data name="higher_or_lower_round_defeat" xml:space="preserve">
     <value>**{0}** has lower avarage score **({1}/10)** than **{2} ({3}/10)**</value>
@@ -618,6 +659,9 @@
   </data>
   <data name="registered" xml:space="preserve">
     <value>Registered</value>
+  </data>
+  <data name="reject" xml:space="preserve">
+    <value>Reject</value>
   </data>
   <data name="related" xml:space="preserve">
     <value>Related</value>
@@ -1060,6 +1104,9 @@
   <data name="higherorlower.description" xml:space="preserve">
     <value>Plays a Higher or Lower game</value>
   </data>
+  <data name="higherorlower_duo.description" xml:space="preserve">
+    <value>Plays a Higher or Lower game in turns with another user</value>
+  </data>
   <data name="tictactoe.name" xml:space="preserve">
     <value>tictactoe</value>
   </data>
@@ -1080,6 +1127,9 @@
   </data>
   <data name="stats.higherorlower.description" xml:space="preserve">
     <value>Shows the statistics of the Higher or Lower game</value>
+  </data>
+  <data name="stats.higherorlower_duo.description" xml:space="preserve">
+    <value>Shows the statistics of the Higher or Lower duo game</value>
   </data>
   <data name="stats.delete.name" xml:space="preserve">
     <value>delete</value>

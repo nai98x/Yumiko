@@ -52,8 +52,8 @@ src/Yumiko.Model/
 
 src/Yumiko.Application/
   Anilist/             RecommendationScoring, RecommendationService, ScoreFormatter
-  Games/               TicTacToe, HangmanState, HigherOrLower, TriviaScoring,
-                       TriviaRound, LeaderboardRanking, MediaPoolBuilder, GameNaming
+  Games/               TicTacToe, HangmanState, HigherOrLower, HigherOrLowerDuoState,
+                       TriviaScoring, TriviaRound, LeaderboardRanking, MediaPoolBuilder, GameNaming
   Fun/                 LoveMeter
   Helpers/             TextHelper, ImageHelper (SkiaSharp), EmojiHelper, RandomHelper
   Backups/             BackupState
@@ -61,7 +61,7 @@ src/Yumiko.Application/
 src/Yumiko.Infrastructure/
   Anilist/             AnilistClient, AnilistGraphQLExecutor (Polly), AnilistQueries, Responses/
   Database/            DbConnectionFactory (Npgsql + Dapper), Rows/ (row DTOs)
-  Repositories/        QuizLeaderboard, HigherOrLowerLeaderboard, AnilistUsers
+  Repositories/        QuizLeaderboard, HigherOrLowerLeaderboard, HigherOrLowerDuoLeaderboard, AnilistUsers
   OpenWeather/ Animals/ TraceMoe/ AnimeThemes/ Topgg/
 
 src/Yumiko.Bot/
