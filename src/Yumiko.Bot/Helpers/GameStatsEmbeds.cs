@@ -14,6 +14,7 @@ public static class GameStatsEmbeds
     public static DiscordEmbedBuilder LeaderboardQuiz(
         string title,
         IReadOnlyDictionary<Difficulty, List<GameStats>> byDifficulty,
+        IReadOnlyDictionary<ulong, string> names,
         Loc loc)
     {
         DiscordEmbedBuilder embed = new()
@@ -29,7 +30,7 @@ public static class GameStatsEmbeds
                 continue;
             }
 
-            string table = FormatQuiz(players, loc);
+            string table = FormatQuiz(players, names, loc);
 
             if (!string.IsNullOrEmpty(table))
             {
@@ -40,18 +41,24 @@ public static class GameStatsEmbeds
         return embed;
     }
 
-    public static DiscordEmbedBuilder LeaderboardGenre(string genre, List<GameStats> players, Loc loc) => new()
+    public static DiscordEmbedBuilder LeaderboardGenre(
+        string genre,
+        List<GameStats> players,
+        IReadOnlyDictionary<ulong, string> names,
+        Loc loc) => new()
     {
         Title = $"{loc[Keys.stats]} - {loc[Keys.guess_the]} {genre}",
         Color = YumikoColors.Primary,
-        Description = FormatQuiz(players, loc).NormalizeDescription(),
+        Description = FormatQuiz(players, names, loc).NormalizeDescription(),
     };
 
-    public static DiscordEmbedBuilder LeaderboardHigherOrLower(List<HigherOrLowerEntry> players, Loc loc)
+    public static DiscordEmbedBuilder LeaderboardHigherOrLower(
+        List<Rank<HigherOrLowerEntry>> ranks,
+        IReadOnlyDictionary<ulong, string> names,
+        Loc loc)
     {
-        string table = string.Join("\n", LeaderboardRanking
-            .RankHigherOrLower(players)
-            .Select(p => $"{Prefix(p.Position)} - <@{p.Player.UserId}> - {loc[Keys.score]}: {Formatter.Bold($"{p.Player.Score}")}"));
+        string table = string.Join("\n", ranks.Select(p =>
+            $"{Prefix(p.Position)} - {names[p.Player.UserId]} - {loc[Keys.score]}: {Formatter.Bold($"{p.Player.Score}")}"));
 
         return new DiscordEmbedBuilder
         {
@@ -61,13 +68,14 @@ public static class GameStatsEmbeds
         };
     }
 
-    public static DiscordEmbedBuilder LeaderboardHigherOrLowerDuo(List<HigherOrLowerDuoEntry> pairs, Loc loc)
+    public static DiscordEmbedBuilder LeaderboardHigherOrLowerDuo(
+        List<Rank<HigherOrLowerDuoEntry>> ranks,
+        IReadOnlyDictionary<ulong, string> names,
+        Loc loc)
     {
-        string table = string.Join("\n", LeaderboardRanking
-            .RankHigherOrLowerDuo(pairs)
-            .Select(p =>
-                $"{Prefix(p.Position)} - <@{p.Player.FirstUserId}> & <@{p.Player.SecondUserId}> - " +
-                $"{loc[Keys.score]}: {Formatter.Bold($"{p.Player.Score}")}"));
+        string table = string.Join("\n", ranks.Select(p =>
+            $"{Prefix(p.Position)} - {names[p.Player.FirstUserId]} & {names[p.Player.SecondUserId]} - " +
+            $"{loc[Keys.score]}: {Formatter.Bold($"{p.Player.Score}")}"));
 
         return new DiscordEmbedBuilder
         {
@@ -125,13 +133,17 @@ public static class GameStatsEmbeds
     };
 
     /// <summary>Best pairs of the user, showing only the partner of each one.</summary>
-    public static DiscordEmbedBuilder UserHigherOrLowerDuoStats(ulong userId, List<HigherOrLowerDuoEntry> pairs, Loc loc) => new()
+    public static DiscordEmbedBuilder UserHigherOrLowerDuoStats(
+        ulong userId,
+        List<HigherOrLowerDuoEntry> pairs,
+        IReadOnlyDictionary<ulong, string> names,
+        Loc loc) => new()
     {
         Title = "Higher or Lower Duo",
         Description = pairs.Count == 0
             ? loc[Keys.no_stats_available]
             : string.Join("\n", pairs.Select(p =>
-                $"<@{(p.FirstUserId == userId ? p.SecondUserId : p.FirstUserId)}> - {loc[Keys.score]}: {Formatter.Bold($"{p.Score}")}")),
+                $"{names[p.FirstUserId == userId ? p.SecondUserId : p.FirstUserId]} - {loc[Keys.score]}: {Formatter.Bold($"{p.Score}")}")),
         Color = pairs.Count == 0 ? DiscordColor.Red : YumikoColors.Primary,
     };
 
@@ -142,11 +154,11 @@ public static class GameStatsEmbeds
     public static string DifficultyLabel(Difficulty difficulty, Loc loc) =>
         loc.IsSpanish ? difficulty.ToSpanish() : $"{difficulty}";
 
-    private static string FormatQuiz(IEnumerable<GameStats> players, Loc loc) =>
+    private static string FormatQuiz(IEnumerable<GameStats> players, IReadOnlyDictionary<ulong, string> names, Loc loc) =>
         string.Join("\n", LeaderboardRanking
             .RankQuiz(players)
             .Select(p =>
-                $"{Prefix(p.Position)} - <@{p.Player.UserId}> - " +
+                $"{Prefix(p.Position)} - {names[(ulong)p.Player.UserId]} - " +
                 $"{loc[Keys.guesses]}: {Formatter.Bold($"{p.Player.AccuracyPercentage}%")} - " +
                 $"{loc[Keys.games]}: {Formatter.Bold($"{p.Player.GamesPlayed}")}"));
 

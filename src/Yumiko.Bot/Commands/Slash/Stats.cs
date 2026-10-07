@@ -5,6 +5,7 @@ using DSharpPlus.Commands.ContextChecks;
 using DSharpPlus.Commands.Processors.SlashCommands;
 using DSharpPlus.Commands.Processors.SlashCommands.Localization;
 using DSharpPlus.Entities;
+using Yumiko.Application.Games;
 using Yumiko.Bot.Commands.Framework;
 using Yumiko.Bot.Commands.Framework.Attributes;
 using Yumiko.Bot.Commands.Framework.Choices;
@@ -50,18 +51,18 @@ public sealed class Stats(
         }
 
         DiscordUser target = user ?? ctx.User;
-        DiscordMember? member = await ctx.Guild!.GetMemberAsync(target.Id);
-
-        List<GameStatsUser> trivia = await quizLeaderboard.GetStatsUserAsync(ctx.Guild.Id, target.Id);
+        List<GameStatsUser> trivia = await quizLeaderboard.GetStatsUserAsync(ctx.Guild!.Id, target.Id);
         List<GameStats> genres = await quizLeaderboard.GetGenreStatsUserAsync(ctx.Guild.Id, target.Id);
         HigherOrLowerEntry? hol = await holLeaderboard.GetStatsUserAsync(ctx.Guild.Id, target.Id);
         List<HigherOrLowerDuoEntry> holDuo = await holDuoLeaderboard.GetStatsUserAsync(ctx.Guild.Id, target.Id, UserDuoPairs);
+        Dictionary<ulong, string> names = await MemberNames.ResolveAsync(
+            ctx.Client, ctx.Guild, [target.Id, .. holDuo.SelectMany(p => new[] { p.FirstUserId, p.SecondUserId })]);
 
         await ctx.EditResponseAsync(new DiscordWebhookBuilder()
-            .AddEmbed(GameStatsEmbeds.UserTriviaStats(member?.DisplayName ?? target.Username, trivia, loc))
+            .AddEmbed(GameStatsEmbeds.UserTriviaStats(names[target.Id], trivia, loc))
             .AddEmbed(GameStatsEmbeds.UserGenreStats(genres, loc))
             .AddEmbed(GameStatsEmbeds.UserHigherOrLowerStats(hol, loc))
-            .AddEmbed(GameStatsEmbeds.UserHigherOrLowerDuoStats(target.Id, holDuo, loc)));
+            .AddEmbed(GameStatsEmbeds.UserHigherOrLowerDuoStats(target.Id, holDuo, names, loc)));
 
         await SendVoteReminderAsync(ctx, loc);
     }
@@ -91,7 +92,8 @@ public sealed class Stats(
             }
 
             List<GameStats> players = await quizLeaderboard.GetGenreLeaderboardAsync(ctx.Guild!.Id, genre, LeaderboardSize);
-            await ctx.EditResponseAsync(GameStatsEmbeds.LeaderboardGenre(genre, players, loc));
+            Dictionary<ulong, string> genreNames = await MemberNames.ResolveAsync(ctx.Client, ctx.Guild, players.Select(p => (ulong)p.UserId));
+            await ctx.EditResponseAsync(GameStatsEmbeds.LeaderboardGenre(genre, players, genreNames, loc));
             await SendVoteReminderAsync(ctx, loc);
             return;
         }
@@ -107,7 +109,10 @@ public sealed class Stats(
             ? GameStatsEmbeds.GamemodeName(gamemode, loc)
             : $"{loc[Keys.guess_the]} {$"{gamemode}".ToLower(loc.Culture)}";
 
-        await ctx.EditResponseAsync(GameStatsEmbeds.LeaderboardQuiz($"{loc[Keys.stats]} - {game}", byDifficulty, loc));
+        Dictionary<ulong, string> names = await MemberNames.ResolveAsync(
+            ctx.Client, ctx.Guild!, byDifficulty.Values.SelectMany(players => players.Select(p => (ulong)p.UserId)));
+
+        await ctx.EditResponseAsync(GameStatsEmbeds.LeaderboardQuiz($"{loc[Keys.stats]} - {game}", byDifficulty, names, loc));
         await SendVoteReminderAsync(ctx, loc);
     }
 
@@ -123,9 +128,10 @@ public sealed class Stats(
             return;
         }
 
-        List<HigherOrLowerEntry> players = await holLeaderboard.GetLeaderboardAsync(ctx.Guild!.Id);
+        List<Rank<HigherOrLowerEntry>> ranks = LeaderboardRanking.RankHigherOrLower(await holLeaderboard.GetLeaderboardAsync(ctx.Guild!.Id));
+        Dictionary<ulong, string> names = await MemberNames.ResolveAsync(ctx.Client, ctx.Guild, ranks.Select(r => r.Player.UserId));
 
-        await ctx.EditResponseAsync(GameStatsEmbeds.LeaderboardHigherOrLower(players, loc));
+        await ctx.EditResponseAsync(GameStatsEmbeds.LeaderboardHigherOrLower(ranks, names, loc));
         await SendVoteReminderAsync(ctx, loc);
     }
 
@@ -141,9 +147,12 @@ public sealed class Stats(
             return;
         }
 
-        List<HigherOrLowerDuoEntry> pairs = await holDuoLeaderboard.GetLeaderboardAsync(ctx.Guild!.Id);
+        List<Rank<HigherOrLowerDuoEntry>> ranks =
+            LeaderboardRanking.RankHigherOrLowerDuo(await holDuoLeaderboard.GetLeaderboardAsync(ctx.Guild!.Id));
+        Dictionary<ulong, string> names = await MemberNames.ResolveAsync(
+            ctx.Client, ctx.Guild, ranks.SelectMany(r => new[] { r.Player.FirstUserId, r.Player.SecondUserId }));
 
-        await ctx.EditResponseAsync(GameStatsEmbeds.LeaderboardHigherOrLowerDuo(pairs, loc));
+        await ctx.EditResponseAsync(GameStatsEmbeds.LeaderboardHigherOrLowerDuo(ranks, names, loc));
         await SendVoteReminderAsync(ctx, loc);
     }
 
