@@ -38,8 +38,16 @@ public sealed record TopggSettings(bool Enabled)
         new(configuration.GetSection("Topgg").GetValue<bool>("Enabled"));
 }
 
-/// <summary>Parameters of the media pool that feeds the games.</summary>
-public sealed record GamesSettings(int MediaCachePageFrom, int MediaCachePageTo, int AnilistPerPage, int RandomPageMax)
+/// <summary>Parameters of the media pool that feeds the games, and game rules.</summary>
+/// <param name="HigherOrLowerMinScoreDifference">
+/// Minimum score difference (0-10 scale) between the two media of a Higher or Lower round in score mode.
+/// </param>
+public sealed record GamesSettings(
+    int MediaCachePageFrom,
+    int MediaCachePageTo,
+    int AnilistPerPage,
+    int RandomPageMax,
+    double HigherOrLowerMinScoreDifference)
 {
     public static GamesSettings FromConfiguration(IConfiguration configuration)
     {
@@ -49,7 +57,8 @@ public sealed record GamesSettings(int MediaCachePageFrom, int MediaCachePageTo,
             section.GetValue<int?>("MediaCachePageTo") ?? 36,
             section.GetValue<int?>("AnilistPerPage") ?? 25,
             // AniList rejects the query when page * perPage goes over 5000 entries.
-            section.GetValue<int?>("RandomPageMax") ?? 5000);
+            section.GetValue<int?>("RandomPageMax") ?? 5000,
+            section.GetValue<double?>("HigherOrLowerMinScoreDifference") ?? 0.3);
     }
 }
 

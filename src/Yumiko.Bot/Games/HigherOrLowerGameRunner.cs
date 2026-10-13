@@ -23,7 +23,8 @@ public sealed class HigherOrLowerGameRunner(
     IHigherOrLowerLeaderboardRepository leaderboard,
     IHigherOrLowerDuoLeaderboardRepository duoLeaderboard,
     IHttpClientFactory httpClientFactory,
-    TimeoutSettings timeouts)
+    TimeoutSettings timeouts,
+    GamesSettings gamesSettings)
 {
     private const string CancelCustomId = "hol-cancel";
     private const string ConfirmCustomId = "hol-duo-confirm";
@@ -47,13 +48,8 @@ public sealed class HigherOrLowerGameRunner(
         DiscordEmbed? previousEmbed = null;
         int score = 0;
 
-        while (list.Count >= 2)
+        while (HigherOrLower.PickPair(list, gamemode, gamesSettings.HigherOrLowerMinScoreDifference) is { } pair)
         {
-            if (HigherOrLower.PickPair(list) is not { } pair)
-            {
-                break;
-            }
-
             (Anime first, Anime second) = pair;
 
             DiscordMessage message = await ctx.FollowupAsync(await BuildRoundAsync(first, second, gamemode, previousEmbed, null, loc));
@@ -108,7 +104,7 @@ public sealed class HigherOrLowerGameRunner(
             list.Remove(first);
             list.Remove(second);
 
-            if (list.Count < 2 || clock.Elapsed >= MaxDuration)
+            if (!HigherOrLower.HasPair(list, gamemode, gamesSettings.HigherOrLowerMinScoreDifference) || clock.Elapsed >= MaxDuration)
             {
                 await ctx.FollowupAsync(new DiscordFollowupMessageBuilder()
                     .AddEmbed(new DiscordEmbedBuilder { Title = loc[Keys.victory], Color = DiscordColor.Green }));
@@ -150,7 +146,7 @@ public sealed class HigherOrLowerGameRunner(
         List<Anime> list = [.. mediaCache.Media];
         DiscordEmbed? previousEmbed = null;
 
-        while (HigherOrLower.PickPair(list) is { } pair)
+        while (HigherOrLower.PickPair(list, gamemode, gamesSettings.HigherOrLowerMinScoreDifference) is { } pair)
         {
             (Anime first, Anime second) = pair;
             DiscordUser current = players[state.CurrentPlayer];
@@ -211,7 +207,7 @@ public sealed class HigherOrLowerGameRunner(
             list.Remove(first);
             list.Remove(second);
 
-            if (list.Count < 2 || clock.Elapsed >= MaxDuration)
+            if (!HigherOrLower.HasPair(list, gamemode, gamesSettings.HigherOrLowerMinScoreDifference) || clock.Elapsed >= MaxDuration)
             {
                 await ctx.FollowupAsync(new DiscordFollowupMessageBuilder()
                     .AddEmbed(new DiscordEmbedBuilder { Title = loc[Keys.victory], Color = DiscordColor.Green }));

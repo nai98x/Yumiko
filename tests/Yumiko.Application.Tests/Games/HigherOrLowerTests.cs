@@ -12,8 +12,9 @@ public class HigherOrLowerTests
     [Fact]
     public void PickPair_FewerThanTwo_ReturnsNull()
     {
-        Assert.Null(HigherOrLower.PickPair([]));
-        Assert.Null(HigherOrLower.PickPair([Media(1, 80, 100)]));
+        Assert.Null(HigherOrLower.PickPair([], GamemodeHoL.Score, 0.3));
+        Assert.Null(HigherOrLower.PickPair([Media(1, 80, 100)], GamemodeHoL.Score, 0.3));
+        Assert.Null(HigherOrLower.PickPair([Media(1, 80, 100)], GamemodeHoL.Popularity, 0.3));
     }
 
     [Fact]
@@ -24,11 +25,65 @@ public class HigherOrLowerTests
 
         for (int i = 0; i < 200; i++)
         {
-            var pair = HigherOrLower.PickPair(list, rnd);
+            var pair = HigherOrLower.PickPair(list, GamemodeHoL.Popularity, 0.3, rnd);
 
             Assert.NotNull(pair);
             Assert.NotEqual(pair.Value.First.Id, pair.Value.Second.Id);
         }
+    }
+
+    [Fact]
+    public void PickPair_Score_NeverPicksMediaCloserThanTheMinimumDifference()
+    {
+        List<Anime> list = [.. Enumerable.Range(0, 30).Select(i => Media(i, 60 + i, 0))];
+        Random rnd = new(12345);
+
+        for (int i = 0; i < 500; i++)
+        {
+            var pair = HigherOrLower.PickPair(list, GamemodeHoL.Score, 0.3, rnd);
+
+            Assert.NotNull(pair);
+            Assert.True(Math.Abs(pair.Value.First.AvarageScore - pair.Value.Second.AvarageScore) >= 3);
+        }
+    }
+
+    [Fact]
+    public void PickPair_Score_OnlyNearTies_ReturnsNull()
+    {
+        List<Anime> list = [Media(1, 80, 0), Media(2, 81, 0), Media(3, 82, 0), Media(4, 80, 0)];
+
+        Assert.Null(HigherOrLower.PickPair(list, GamemodeHoL.Score, 0.3));
+        Assert.False(HigherOrLower.HasPair(list, GamemodeHoL.Score, 0.3));
+    }
+
+    [Fact]
+    public void PickPair_Popularity_IgnoresTheScoreDifference()
+    {
+        List<Anime> list = [Media(1, 80, 10), Media(2, 80, 20)];
+
+        Assert.NotNull(HigherOrLower.PickPair(list, GamemodeHoL.Popularity, 0.3));
+        Assert.True(HigherOrLower.HasPair(list, GamemodeHoL.Popularity, 0.3));
+    }
+
+    [Theory]
+    [InlineData(80, 80, false)]
+    [InlineData(80, 81, false)]
+    [InlineData(80, 82, false)]
+    [InlineData(80, 83, true)]
+    [InlineData(83, 80, true)]
+    [InlineData(50, 90, true)]
+    public void IsValidPair_Score_RequiresTheMinimumDifference(int firstScore, int secondScore, bool expected)
+    {
+        Assert.Equal(expected, HigherOrLower.IsValidPair(Media(1, firstScore, 0), Media(2, secondScore, 0), GamemodeHoL.Score, 0.3));
+    }
+
+    [Fact]
+    public void IsValidPair_SameMedia_IsNeverValid()
+    {
+        Anime anime = Media(1, 80, 10);
+
+        Assert.False(HigherOrLower.IsValidPair(anime, anime, GamemodeHoL.Score, 0));
+        Assert.False(HigherOrLower.IsValidPair(anime, anime, GamemodeHoL.Popularity, 0.3));
     }
 
     [Theory]
