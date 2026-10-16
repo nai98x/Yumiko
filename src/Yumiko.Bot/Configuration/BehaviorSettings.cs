@@ -39,12 +39,22 @@ public sealed record TopggSettings(bool Enabled)
 }
 
 /// <summary>Parameters of the media pool that feeds the games, and game rules.</summary>
+/// <param name="MediaCacheWarmUpEntries">
+/// Entries the media cache needs at startup before the bot is marked as ready; the rest of the
+/// crawl keeps running in background.
+/// </param>
+/// <param name="MediaCachePageDelay">
+/// Pause between the pages of the media cache crawl, so it does not drain the AniList rate limit
+/// window shared with the commands.
+/// </param>
 /// <param name="HigherOrLowerMinScoreDifference">
 /// Minimum score difference (0-10 scale) between the two media of a Higher or Lower round in score mode.
 /// </param>
 public sealed record GamesSettings(
     int MediaCachePageFrom,
     int MediaCachePageTo,
+    int MediaCacheWarmUpEntries,
+    TimeSpan MediaCachePageDelay,
     int AnilistPerPage,
     int RandomPageMax,
     double HigherOrLowerMinScoreDifference)
@@ -55,6 +65,8 @@ public sealed record GamesSettings(
         return new GamesSettings(
             section.GetValue<int?>("MediaCachePageFrom") ?? 1,
             section.GetValue<int?>("MediaCachePageTo") ?? 36,
+            section.GetValue<int?>("MediaCacheWarmUpEntries") ?? 200,
+            TimeSpan.FromMilliseconds(section.GetValue<int?>("MediaCachePageDelayMilliseconds") ?? 2000),
             section.GetValue<int?>("AnilistPerPage") ?? 25,
             // AniList rejects the query when page * perPage goes over 5000 entries.
             section.GetValue<int?>("RandomPageMax") ?? 5000,

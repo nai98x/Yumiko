@@ -50,7 +50,7 @@ public sealed class GuildDownloadCompletedHandler(
             return;
         }
 
-        await mediaCacheRefresher.RefreshAsync();
+        bool mediaFullyLoaded = await mediaCacheRefresher.WarmUpAsync();
 
         discordBotService.SetInitialized();
         sw.Stop();
@@ -68,7 +68,8 @@ public sealed class GuildDownloadCompletedHandler(
             new DiscordTextDisplayComponent(
                 $"⏱️ **Initialization time:** {sw.Elapsed.TotalSeconds:0.00} s\n" +
                 $"🌐 **Guilds:** {client.Guilds.Count}\n" +
-                $"🎬 **Cached media:** {mediaCache.Media.Count}"),
+                $"🎬 **Cached media:** {mediaCache.Media.Count}" +
+                (mediaFullyLoaded ? string.Empty : " (the rest keeps loading in background)")),
         ];
 
         if (mediaCache.IsEmpty)
