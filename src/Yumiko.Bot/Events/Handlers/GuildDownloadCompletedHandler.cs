@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Logging;
+using Yumiko.Bot.Helpers;
 using Yumiko.Bot.Services;
 using Yumiko.Bot.Services.State;
 using Yumiko.Infrastructure.Database;
@@ -42,6 +44,9 @@ public sealed class GuildDownloadCompletedHandler(
         {
             logger.LogCritical(ex, "Could not connect to the database; aborting initialization");
             discordBotService.SetInitializationFailed();
+            await SendToConfigBotsAsync(new DiscordMessageBuilder().WithContent(
+                "⚠️ **Could not connect to the database.** The bot stays marked as not ready and its commands will not run. " +
+                "Check the connection string and that the database server is reachable."));
             return;
         }
 
@@ -55,5 +60,44 @@ public sealed class GuildDownloadCompletedHandler(
             sw.Elapsed.TotalSeconds,
             client.Guilds.Count,
             mediaCache.Media.Count);
+
+        List<DiscordComponent> components =
+        [
+            new DiscordTextDisplayComponent("# ✅ Bot initialized successfully"),
+            new DiscordSeparatorComponent(divider: true, spacing: DiscordSeparatorSpacing.Large),
+            new DiscordTextDisplayComponent(
+                $"⏱️ **Initialization time:** {sw.Elapsed.TotalSeconds:0.00} s\n" +
+                $"🌐 **Guilds:** {client.Guilds.Count}\n" +
+                $"🎬 **Cached media:** {mediaCache.Media.Count}"),
+        ];
+
+        if (mediaCache.IsEmpty)
+        {
+            components.Add(new DiscordSeparatorComponent(divider: true, spacing: DiscordSeparatorSpacing.Small));
+            components.Add(new DiscordTextDisplayComponent(
+                "⚠️ **Empty media cache:** Higher or Lower will not be available until the next successful refresh."));
+        }
+
+        if (discordBotService.Debug)
+        {
+            components.Add(new DiscordSeparatorComponent(divider: true, spacing: DiscordSeparatorSpacing.Small));
+            components.Add(new DiscordTextDisplayComponent("-# 🐛 Debug mode enabled"));
+        }
+
+        await SendToConfigBotsAsync(new DiscordMessageBuilder()
+            .EnableV2Components()
+            .AddContainerComponent(new DiscordContainerComponent(components, color: YumikoColors.Primary)));
+    }
+
+    private async Task SendToConfigBotsAsync(DiscordMessageBuilder builder)
+    {
+        try
+        {
+            await discordBotService.LogChannelConfigBots.SendMessageAsync(builder);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Could not send the initialization message to the ConfigBots channel");
+        }
     }
 }
