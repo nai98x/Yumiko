@@ -5,15 +5,15 @@ namespace Yumiko.Model.Entities.AnimeThemes
     {
         public long Id { get; set; }
 
-        public string Type { get; set; }
+        public string Type { get; set; } = null!;
 
         public long? Sequence { get; set; }
 
-        public object Group { get; set; }
+        public object? Group { get; set; }
 
-        public string Slug { get; set; }
+        public string Slug { get; set; } = null!;
 
-        public List<AnimeThemeEntry> Animethemeentries { get; set; }
+        public List<AnimeThemeEntry> Animethemeentries { get; set; } = null!;
 
         public string? GetSequence()
         {

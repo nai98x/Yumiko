@@ -106,9 +106,14 @@ internal static class GameMediaMapper
         {
             foreach (GamePoolStudio studio in (item.Studios?.Nodes ?? []).Where(e => e.IsAnimationStudio))
             {
+                if (studio.Name is not { } name)
+                {
+                    continue;
+                }
+
                 anime.Studios!.Add(new StudioOld
                 {
-                    Name = studio.Name,
+                    Name = name,
                     SiteUrl = studio.SiteUrl,
                     Favourites = studio.Favourites,
                 });

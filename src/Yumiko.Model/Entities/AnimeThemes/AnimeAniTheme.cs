@@ -5,16 +5,16 @@ namespace Yumiko.Model.Entities.AnimeThemes
     {
         public long Id { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        public string Slug { get; set; }
+        public string Slug { get; set; } = null!;
 
         public long Year { get; set; }
 
-        public string Season { get; set; }
+        public string Season { get; set; } = null!;
 
-        public string Synopsis { get; set; }
+        public string Synopsis { get; set; } = null!;
 
-        public List<Animetheme> Animethemes { get; set; }
+        public List<Animetheme> Animethemes { get; set; } = null!;
     }
 }

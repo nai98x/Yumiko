@@ -42,7 +42,7 @@ public sealed class DiscordInteractivity(InteractivityExtension interactivity, T
                 .Select(x => new DiscordSelectComponentOption(
                     x.option.Title!.NormalizeButton(),
                     $"{x.index}",
-                    x.option.Description?.NormalizeSelectMenuOption())),
+                    x.option.Description?.NormalizeSelectMenuOption()!)),
         ];
 
         DiscordMessage message = await ctx.EditResponseAsync(new DiscordWebhookBuilder()

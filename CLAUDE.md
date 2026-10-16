@@ -121,6 +121,14 @@ verdad; el C# se adapta. Tablas, columnas y funciones **en inglés**, como el re
   justificando un cambio. Comentar solo lo no obvio del dominio; las rarezas de la base de arriba
   califican. Los comentarios que se escriban van **en inglés** (ver "Idioma del código").
 
+## Cero warnings
+
+El repo compila con **cero warnings**: `Directory.Build.props` (raíz) activa `TreatWarningsAsErrors`,
+así que cualquier warning rompe el build. Corregir la causa (nulabilidad bien anotada, chequeos
+reales); **nunca** apagarlo con `#pragma warning disable`, `<NoWarn>`, ni sacando
+`TreatWarningsAsErrors`. El `!` solo vale cuando el valor está garantizado o la API acepta null pero
+no lo anota. Convención para POCOs que siempre se pueblan: `= null!`; si puede faltar, `?`.
+
 ## Tests
 
 `tests/Yumiko.Application.Tests` referencia **solo** `Yumiko.Application`. La estructura de carpetas

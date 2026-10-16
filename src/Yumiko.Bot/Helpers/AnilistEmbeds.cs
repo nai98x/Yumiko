@@ -77,8 +77,12 @@ public static class AnilistEmbeds
         DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithTitle(media.Title.Romaji)
             .WithUrl(media.SiteUrl)
-            .WithThumbnail(media.CoverImage.Large)
             .WithColor(YumikoColors.Primary);
+
+        if (media.CoverImage.Large is not null)
+        {
+            embed.WithThumbnail(media.CoverImage.Large);
+        }
 
         if (media.BannerImage is not null)
         {
@@ -131,7 +135,7 @@ public static class AnilistEmbeds
         AddIfPresent(embed, $"🗒️ {loc[Keys.tags]}", Join(media.Tags?.Select(t => t.IsMediaSpoiler ? $"||{t.Name}||" : t.Name)));
         AddIfPresent(embed, $"✏️ {loc[Keys.synonyms]}", media.Synonyms?.Count > 0 ? Join(media.Synonyms) : loc[Keys.without_titles]);
         AddIfPresent(embed, $"💽 {loc[Keys.studios]}", Join(media.Studios?.Nodes?.Select(s => Formatter.MaskedUrl(s.Name, s.SiteUrl))));
-        AddIfPresent(embed, $"🔗 {loc[Keys.external_links]}", Join(media.ExternalLinks?.Select(l => Formatter.MaskedUrl(l.Site, l.Url))));
+        AddIfPresent(embed, $"🔗 {loc[Keys.external_links]}", Join(media.ExternalLinks?.Where(l => l.Site is not null && l.Url is not null).Select(l => Formatter.MaskedUrl(l.Site!, l.Url!))));
 
         return embed;
     }
@@ -180,8 +184,12 @@ public static class AnilistEmbeds
         DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithTitle(character.Name.Full)
             .WithUrl(character.SiteUrl)
-            .WithThumbnail(character.Image.Large)
             .WithColor(YumikoColors.Primary);
+
+        if (character.Image.Large is not null)
+        {
+            embed.WithThumbnail(character.Image.Large);
+        }
 
         if (!string.IsNullOrEmpty(character.Description))
         {
@@ -199,9 +207,13 @@ public static class AnilistEmbeds
         DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithTitle(character.Name.Full)
             .WithUrl(character.SiteUrl)
-            .WithImageUrl(character.Image.Large)
             .WithColor(YumikoColors.Primary)
             .WithFooter($"{character.Favourites} ❤️ (nº {page} {loc[Keys.in_popularity_rank]})", YumikoColors.AnilistAvatarUrl);
+
+        if (character.Image.Large is not null)
+        {
+            embed.WithImageUrl(character.Image.Large);
+        }
 
         if (character.Animes?.Nodes?.Count > 0)
         {
@@ -219,8 +231,12 @@ public static class AnilistEmbeds
     {
         DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithColor(YumikoColors.Primary)
-            .WithTitle(staff.Name.Full)
-            .WithThumbnail(staff.Image.Large);
+            .WithTitle(staff.Name.Full);
+
+        if (staff.Image.Large is not null)
+        {
+            embed.WithThumbnail(staff.Image.Large);
+        }
 
         if (staff.Description is not null)
         {

@@ -7,6 +7,6 @@ namespace Yumiko.Infrastructure.Anilist.Responses
     public class MediaUserListResponse
     {
         [JsonProperty("MediaListCollection")]
-        public MediaListUserCollection MediaListCollection { get; set; }
+        public MediaListUserCollection? MediaListCollection { get; set; }
     }
 }

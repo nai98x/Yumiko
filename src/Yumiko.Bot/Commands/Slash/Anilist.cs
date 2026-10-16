@@ -76,7 +76,11 @@ public sealed class Anilist(
                     loc[Keys.authorize]),
                 new DiscordButtonComponent(DiscordButtonStyle.Primary, $"modal-anilistprofileset-{ctx.User.Id}", loc[Keys.paste_code_here])));
 
-        DiscordMessage message = await ctx.GetResponseAsync();
+        if (await ctx.GetResponseAsync() is not { } message)
+        {
+            return;
+        }
+
         InteractivityResult<ComponentInteractionCreatedEventArgs> button =
             await interactivity.WaitForButtonAsync(message, TimeSpan.FromMinutes(5));
 

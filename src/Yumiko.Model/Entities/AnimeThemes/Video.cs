@@ -5,15 +5,15 @@ namespace Yumiko.Model.Entities.AnimeThemes
     {
         public long Id { get; set; }
 
-        public string Basename { get; set; }
+        public string Basename { get; set; } = null!;
 
-        public string Filename { get; set; }
+        public string? Filename { get; set; }
 
-        public string Path { get; set; }
+        public string? Path { get; set; }
 
         public long Size { get; set; }
 
-        public string Mimetype { get; set; }
+        public string? Mimetype { get; set; }
 
         public long Resolution { get; set; }
 
@@ -25,12 +25,12 @@ namespace Yumiko.Model.Entities.AnimeThemes
 
         public bool Uncen { get; set; }
 
-        public string Source { get; set; }
+        public string? Source { get; set; }
 
-        public string Overlap { get; set; }
+        public string? Overlap { get; set; }
 
-        public string Tags { get; set; }
+        public string? Tags { get; set; }
 
-        public string Link { get; set; }
+        public string Link { get; set; } = null!;
     }
 }
