@@ -129,6 +129,10 @@ reales); **nunca** apagarlo con `#pragma warning disable`, `<NoWarn>`, ni sacand
 `TreatWarningsAsErrors`. El `!` solo vale cuando el valor está garantizado o la API acepta null pero
 no lo anota. Convención para POCOs que siempre se pueblan: `= null!`; si puede faltar, `?`.
 
+Verificar **siempre en Debug y en Release** (`dotnet build -c Release`): el CI compila Release y hay
+código que cambia por `#if DEBUG`. Por eso `BotEnvironment.IsDebug` es `static readonly` y no
+`const`: como constante, la rama muerta dispara CS0162 (código inalcanzable).
+
 ## Tests
 
 `tests/Yumiko.Application.Tests` referencia **solo** `Yumiko.Application`. La estructura de carpetas

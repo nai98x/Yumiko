@@ -4,8 +4,8 @@ namespace Yumiko.Bot.Configuration;
 public static class BotEnvironment
 {
 #if DEBUG
-    public const bool IsDebug = true;
+    public static readonly bool IsDebug = true;
 #else
-    public const bool IsDebug = false;
+    public static readonly bool IsDebug = false;
 #endif
 }
