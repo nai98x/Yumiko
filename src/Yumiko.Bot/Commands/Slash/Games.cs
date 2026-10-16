@@ -35,6 +35,7 @@ public sealed class Games(
     TriviaGameRunner triviaRunner,
     HangmanGameRunner hangmanRunner,
     HigherOrLowerGameRunner higherOrLowerRunner,
+    AnilistMediaCacheState mediaCache,
     TicTacToeGameRunner ticTacToeRunner,
     InteractivityExtension interactivity,
     IAnilistClient anilist,
@@ -150,7 +151,7 @@ public sealed class Games(
     {
         Loc loc = ctx.Loc(localizer);
 
-        if (!await ctx.EnsureBotReadyAsync(discordBotService, loc))
+        if (!await ctx.EnsureBotReadyAsync(discordBotService, loc) || !await EnsureMediaCacheLoadedAsync(ctx, loc))
         {
             return;
         }
@@ -185,7 +186,7 @@ public sealed class Games(
             return;
         }
 
-        if (!await ctx.EnsureBotReadyAsync(discordBotService, loc))
+        if (!await ctx.EnsureBotReadyAsync(discordBotService, loc) || !await EnsureMediaCacheLoadedAsync(ctx, loc))
         {
             return;
         }
@@ -287,4 +288,21 @@ public sealed class Games(
                 anime.Image,
                 loc.Format(Keys.the_anime_is, DSharpPlus.Formatter.Bold($"[{anime.TitleRomaji}]({anime.SiteUrl})")),
                 $"{HangmanGamemode.Animes}");
+
+    /// <summary>
+    /// The cache stays empty until the first successful refresh: Debug skips the ready check and a
+    /// failed refresh at startup still marks the bot as initialized.
+    /// </summary>
+    private async Task<bool> EnsureMediaCacheLoadedAsync(SlashCommandContext ctx, Loc loc)
+    {
+        if (!mediaCache.IsEmpty)
+        {
+            return true;
+        }
+
+        await ctx.RespondAsync(new DiscordInteractionResponseBuilder()
+            .AsEphemeral()
+            .AddEmbed(ErrorEmbed.Create(loc[Keys.error], loc[Keys.bot_not_ready])));
+        return false;
+    }
 }

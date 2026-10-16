@@ -45,6 +45,13 @@ public sealed class MediaCacheRefresher(
                 }
             }
 
+            // AniList sometimes answers HTTP 200 with an empty page and no errors while it is degraded.
+            if (media.Count == 0)
+            {
+                logger.LogWarning("AniList returned no media for the cache refresh; the previous one is kept");
+                return;
+            }
+
             mediaCache.Replace(media);
             logger.LogInformation("AniList media cache refreshed: {Count} entries", media.Count);
         }
