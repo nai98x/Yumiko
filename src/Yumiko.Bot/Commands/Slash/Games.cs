@@ -229,7 +229,7 @@ public sealed class Games(
             IncludeAdult = ctx.Channel.IsNSFW,
             IncludeCharacters = settings.Gamemode == Gamemode.Protagonists,
             IncludeStudios = settings.Gamemode == Gamemode.Studios,
-            IncludeRelatedMedia = settings.Gamemode is Gamemode.Animes or Gamemode.Genres,
+            IncludeRelatedMedia = settings.Gamemode == Gamemode.Genres,
         };
 
         (int pageFrom, int pageTo) = settings.Gamemode == Gamemode.Genres

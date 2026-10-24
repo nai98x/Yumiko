@@ -1,5 +1,7 @@
 using Yumiko.Application.Games;
+using Yumiko.Bot.Services.State;
 using Yumiko.Model.Entities;
+using Yumiko.Model.Enum;
 using Yumiko.Model.Interfaces;
 
 namespace Yumiko.Bot.Games;
@@ -7,11 +9,17 @@ namespace Yumiko.Bot.Games;
 /// <summary>
 /// Fetches the pool of media and characters that feeds the games.
 /// </summary>
-public sealed class GamePool(IAnilistClient anilist)
+public sealed class GamePool(IAnilistClient anilist, AnilistMediaCacheState mediaCache)
 {
     public async Task<List<Anime>> GetMediaAsync(GameMediaQuery query, int pageFrom, int pageTo, CancellationToken cancellationToken = default)
     {
         (int first, int second) = MediaPoolBuilder.PickPages(pageFrom, pageTo);
+
+        if (IsServedByCache(query) && mediaCache.GetPages(pageFrom, pageTo, [first, second]) is { } cached)
+        {
+            return cached;
+        }
+
         List<Anime> media = [];
 
         foreach (int pageNumber in new[] { first, second })
@@ -27,6 +35,13 @@ public sealed class GamePool(IAnilistClient anilist)
 
         return media;
     }
+
+    /// <summary>
+    /// The cache is crawled with the same ranking (anime by favourites) but without adult media nor
+    /// related media, so it only replaces queries that need neither.
+    /// </summary>
+    private static bool IsServedByCache(GameMediaQuery query) =>
+        query is { Type: MediaType.ANIME, Genre: null, IncludeAdult: false, IncludeRelatedMedia: false };
 
     /// <summary>
     /// In genres mode the page range depends on how many the genre has, so the first page has to be
@@ -55,25 +70,6 @@ public sealed class GamePool(IAnilistClient anilist)
         }
 
         return characters;
-    }
-
-    /// <summary>Full pool for the Higher or Lower cache: consecutive pages, no draw.</summary>
-    public async Task<List<Anime>> GetMediaForCacheAsync(GameMediaQuery query, int pageFrom, int pageTo, CancellationToken cancellationToken = default)
-    {
-        List<Anime> media = [];
-
-        for (int pageNumber = pageFrom; pageNumber <= pageTo; pageNumber++)
-        {
-            GameMediaPage page = await anilist.GetGameMediaPageAsync(query, pageNumber, cancellationToken);
-            media.AddRange(page.Media);
-
-            if (!page.HasNextPage)
-            {
-                break;
-            }
-        }
-
-        return media;
     }
 
     public Task<List<string>> GetGenresAsync(bool includeHentai, CancellationToken cancellationToken = default) =>

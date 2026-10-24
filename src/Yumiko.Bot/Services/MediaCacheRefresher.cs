@@ -44,23 +44,27 @@ public sealed class MediaCacheRefresher(
                 Type = MediaType.ANIME,
                 IncludeAdult = false,
                 ExcludeUnreleased = true,
+                IncludeCharacters = true,
+                IncludeStudios = true,
             };
 
-            List<Anime> media = [];
+            List<IReadOnlyList<Anime>> pages = [];
+            int count = 0;
 
             for (int pageNumber = gamesSettings.MediaCachePageFrom; pageNumber <= gamesSettings.MediaCachePageTo; pageNumber++)
             {
                 GameMediaPage page = await anilistClient.GetGameMediaPageAsync(query, pageNumber, cancellationToken);
-                media.AddRange(page.Media);
+                pages.Add(page.Media);
+                count += page.Media.Count;
 
                 if (!page.HasNextPage)
                 {
                     break;
                 }
 
-                if (warmedUp is not null && media.Count >= gamesSettings.MediaCacheWarmUpEntries)
+                if (warmedUp is not null && count >= gamesSettings.MediaCacheWarmUpEntries)
                 {
-                    mediaCache.Replace([.. media]);
+                    mediaCache.Replace(gamesSettings.MediaCachePageFrom, [.. pages]);
                     warmedUp.TrySetResult(false);
                 }
 
@@ -71,14 +75,14 @@ public sealed class MediaCacheRefresher(
             }
 
             // AniList sometimes answers HTTP 200 with an empty page and no errors while it is degraded.
-            if (media.Count == 0)
+            if (count == 0)
             {
                 logger.LogWarning("AniList returned no media for the cache refresh; the previous one is kept");
                 return;
             }
 
-            mediaCache.Replace(media);
-            logger.LogInformation("AniList media cache refreshed: {Count} entries", media.Count);
+            mediaCache.Replace(gamesSettings.MediaCachePageFrom, pages);
+            logger.LogInformation("AniList media cache refreshed: {Count} entries in {Pages} pages", count, pages.Count);
         }
         catch (Exception ex)
         {

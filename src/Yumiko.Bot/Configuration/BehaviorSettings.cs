@@ -38,6 +38,21 @@ public sealed record TopggSettings(bool Enabled)
         new(configuration.GetSection("Topgg").GetValue<bool>("Enabled"));
 }
 
+/// <summary>Gateway health watchdog.</summary>
+/// <param name="WatchdogSilenceTimeout">
+/// Time without receiving any gateway event after which the process is stopped to be restarted.
+/// </param>
+public sealed record GatewaySettings(TimeSpan WatchdogCheckInterval, TimeSpan WatchdogSilenceTimeout)
+{
+    public static GatewaySettings FromConfiguration(IConfiguration configuration)
+    {
+        IConfigurationSection section = configuration.GetSection("Gateway");
+        return new GatewaySettings(
+            TimeSpan.FromSeconds(section.GetValue<int?>("WatchdogCheckIntervalSeconds") ?? 30),
+            TimeSpan.FromSeconds(section.GetValue<int?>("WatchdogSilenceTimeoutSeconds") ?? 300));
+    }
+}
+
 /// <summary>Parameters of the media pool that feeds the games, and game rules.</summary>
 /// <param name="MediaCacheWarmUpEntries">
 /// Entries the media cache needs at startup before the bot is marked as ready; the rest of the
@@ -46,6 +61,10 @@ public sealed record TopggSettings(bool Enabled)
 /// <param name="MediaCachePageDelay">
 /// Pause between the pages of the media cache crawl, so it does not drain the AniList rate limit
 /// window shared with the commands.
+/// </param>
+/// <param name="HigherOrLowerPoolSize">
+/// How many of the cached media (the top ones by favourites) Higher or Lower draws from; the rest of the
+/// cache only feeds the harder trivia difficulties.
 /// </param>
 /// <param name="HigherOrLowerMinScoreDifference">
 /// Minimum score difference (0-10 scale) between the two media of a Higher or Lower round in score mode.
@@ -57,6 +76,7 @@ public sealed record GamesSettings(
     TimeSpan MediaCachePageDelay,
     int AnilistPerPage,
     int RandomPageMax,
+    int HigherOrLowerPoolSize,
     double HigherOrLowerMinScoreDifference)
 {
     public static GamesSettings FromConfiguration(IConfiguration configuration)
@@ -64,12 +84,13 @@ public sealed record GamesSettings(
         IConfigurationSection section = configuration.GetSection("Games");
         return new GamesSettings(
             section.GetValue<int?>("MediaCachePageFrom") ?? 1,
-            section.GetValue<int?>("MediaCachePageTo") ?? 36,
+            section.GetValue<int?>("MediaCachePageTo") ?? 60,
             section.GetValue<int?>("MediaCacheWarmUpEntries") ?? 200,
             TimeSpan.FromMilliseconds(section.GetValue<int?>("MediaCachePageDelayMilliseconds") ?? 2000),
             section.GetValue<int?>("AnilistPerPage") ?? 25,
             // AniList rejects the query when page * perPage goes over 5000 entries.
             section.GetValue<int?>("RandomPageMax") ?? 5000,
+            section.GetValue<int?>("HigherOrLowerPoolSize") ?? 2500,
             section.GetValue<double?>("HigherOrLowerMinScoreDifference") ?? 0.3);
     }
 }
@@ -106,6 +127,7 @@ public static class BehaviorSettingsExtensions
         services.AddSingleton(TimeoutSettings.FromConfiguration(configuration));
         services.AddSingleton(LogsSettings.FromConfiguration(configuration));
         services.AddSingleton(TopggSettings.FromConfiguration(configuration));
+        services.AddSingleton(GatewaySettings.FromConfiguration(configuration));
         services.AddSingleton(GamesSettings.FromConfiguration(configuration));
         services.AddSingleton(BackupsSettings.FromConfiguration(configuration));
         return services;

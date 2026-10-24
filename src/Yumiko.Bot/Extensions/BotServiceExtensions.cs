@@ -43,6 +43,7 @@ public static class BotServiceExtensions
         services.AddHostedService(sp => sp.GetRequiredService<DiscordBotService>());
         services.AddHostedService<DailyScheduledService>();
         services.AddHostedService<BackupScheduledService>();
+        services.AddHostedService<GatewayWatchdogService>();
 
         return services;
     }

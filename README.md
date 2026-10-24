@@ -71,7 +71,7 @@ src/Yumiko.Bot/
   Games/               Runners of the 4 games, Poll, Trivia, GamePool, TriviaItems
   Helpers/             Embeds, DiscordInteractivity, DiscordLogService, TopggService...
   Events/              EventHandlerRegistrar + Handlers/
-  Services/            DiscordBotService, MediaCacheRefresher, Scheduling/, State/
+  Services/            DiscordBotService, GatewayWatchdogService, MediaCacheRefresher, Scheduling/, State/
   Localization/        ILocalizer, ResxLocalizer, Loc, Keys
   Resources/           Translations.resx (+ .es), countries.json
   Configuration/       BotConfiguration, BehaviorSettings, BotEnvironment

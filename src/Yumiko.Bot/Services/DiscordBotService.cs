@@ -68,7 +68,7 @@ public class DiscordBotService(DiscordClient client, BotConfiguration config, IL
         }
 
         logger.LogInformation("Disconnecting Discord bot");
-        await client.DisconnectAsync();
+        await client.DisconnectAsync().WaitAsync(cancellationToken);
     }
 
     private static DiscordChannel GetChannel(DiscordGuild guild, ulong id, string name) =>

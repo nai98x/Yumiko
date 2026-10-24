@@ -41,26 +41,9 @@ internal static class GameMediaMapper
     {
         GamePoolPage? page = response?.Page;
 
-        List<Anime> media = [];
-
-        foreach (GamePoolMedia item in page?.Media ?? [])
-        {
-            Anime anime = MapMedia(item, query);
-
-            // Media that does not provide what the game mode needs is discarded.
-            bool matches = (!query.IncludeStudios && !query.IncludeCharacters)
-                || (query.IncludeStudios && anime.Studios!.Count > 0)
-                || (query.IncludeCharacters && anime.Characters!.Count > 0);
-
-            if (matches)
-            {
-                media.Add(anime);
-            }
-        }
-
         return new GameMediaPage
         {
-            Media = media,
+            Media = [.. (page?.Media ?? []).Select(item => MapMedia(item, query))],
             HasNextPage = page?.PageInfo?.HasNextPage ?? false,
             LastPage = page?.PageInfo?.LastPage ?? 0,
         };

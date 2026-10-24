@@ -43,7 +43,7 @@ public sealed class HigherOrLowerGameRunner(
     public async Task PlayAsync(SlashCommandContext ctx, GamemodeHoL gamemode, InteractivityExtension interactivity, Loc loc)
     {
         Stopwatch clock = Stopwatch.StartNew();
-        List<Anime> list = [.. mediaCache.Media];
+        List<Anime> list = [.. mediaCache.Media.Take(gamesSettings.HigherOrLowerPoolSize)];
 
         DiscordEmbed? previousEmbed = null;
         int score = 0;
@@ -143,7 +143,7 @@ public sealed class HigherOrLowerGameRunner(
         }));
 
         Stopwatch clock = Stopwatch.StartNew();
-        List<Anime> list = [.. mediaCache.Media];
+        List<Anime> list = [.. mediaCache.Media.Take(gamesSettings.HigherOrLowerPoolSize)];
         DiscordEmbed? previousEmbed = null;
 
         while (HigherOrLower.PickPair(list, gamemode, gamesSettings.HigherOrLowerMinScoreDifference) is { } pair)
