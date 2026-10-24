@@ -6,6 +6,7 @@ using Yumiko.Application.Games;
 using Yumiko.Bot.Games;
 using Yumiko.Bot.Localization;
 using Yumiko.Bot.Services.State;
+using Yumiko.Model.Enum;
 
 namespace Yumiko.Bot.Events.Handlers;
 
@@ -176,9 +177,17 @@ public sealed class ComponentInteractionHandler(
         // goes first to stay inside Discord's 3 second window.
         try
         {
-            await args.Interaction.CreateResponseAsync(
-                DiscordInteractionResponseType.ChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AsEphemeral().AddEmbed(embed));
+            // In singleplayer the public round message already tells the only player how it went.
+            if (trivia.Players == TriviaPlayers.Singleplayer && result is TriviaAttemptResult.Correct or TriviaAttemptResult.Wrong)
+            {
+                await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.DeferredMessageUpdate);
+            }
+            else
+            {
+                await args.Interaction.CreateResponseAsync(
+                    DiscordInteractionResponseType.ChannelMessageWithSource,
+                    new DiscordInteractionResponseBuilder().AsEphemeral().AddEmbed(embed));
+            }
         }
         finally
         {
@@ -191,6 +200,7 @@ public sealed class ComponentInteractionHandler(
                 else
                 {
                     round.Loser = args.User;
+                    round.MissedAttempt = trivia.OptionNames.GetValueOrDefault(attempt);
                 }
 
                 round.GuessTime = args.Interaction.CreationTimestamp;

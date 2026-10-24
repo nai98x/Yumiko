@@ -44,6 +44,8 @@ public sealed class QuizRound
 
     public DiscordUser? Loser { get; set; }
 
+    public string? MissedAttempt { get; set; }
+
     public DateTimeOffset GuessTime { get; set; }
 }
 

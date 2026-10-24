@@ -196,12 +196,19 @@ public sealed class TriviaGameRunner(
 
             if (game.CurrentRound is { Resolved: true, Loser: not null } missedRound)
             {
-                await ctx.FollowupAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
+                DiscordEmbedBuilder missed = new()
                 {
                     Title = loc.Format(Keys.user_has_missed, DisplayNameOf(missedRound.Loser)),
                     Description = reveal,
                     Color = DiscordColor.Red,
-                }));
+                };
+
+                if (missedRound.MissedAttempt is { } attempt)
+                {
+                    missed.AddField(loc[Keys.your_attempt], $"`{attempt}`");
+                }
+
+                await ctx.FollowupAsync(new DiscordFollowupMessageBuilder().AddEmbed(missed));
 
                 return RoundResult.NotGuessed;
             }
