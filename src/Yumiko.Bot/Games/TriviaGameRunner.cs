@@ -27,6 +27,8 @@ public sealed class TriviaGameRunner(
 {
     private const int PollingIntervalMs = 100;
 
+    private const int ButtonsPerRow = 5;
+
     public async Task PlayAsync(
         SlashCommandContext ctx,
         List<TriviaItem> pool,
@@ -124,12 +126,17 @@ public sealed class TriviaGameRunner(
                 Title = $"{loc[Keys.guess_the]} {gameLabel}",
                 Description = $"{loc[Keys.round]} {round} {loc[Keys.of]} {rounds}",
                 ImageUrl = correct.Image,
-            })
-            .AddActionRowComponent(buttons)
-            .AddActionRowComponent(new DiscordButtonComponent(
-                DiscordButtonStyle.Danger,
-                $"{TriviaCustomIds.CancelPrefix}{Guid.NewGuid()}",
-                loc[Keys.finish_game]));
+            });
+
+        foreach (DiscordButtonComponent[] row in buttons.Chunk(ButtonsPerRow))
+        {
+            builder.AddActionRowComponent(row);
+        }
+
+        builder.AddActionRowComponent(new DiscordButtonComponent(
+            DiscordButtonStyle.Danger,
+            $"{TriviaCustomIds.CancelPrefix}{Guid.NewGuid()}",
+            loc[Keys.finish_game]));
 
         DiscordMessage message = await ctx.FollowupAsync(builder);
 

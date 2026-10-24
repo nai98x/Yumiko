@@ -5,7 +5,7 @@ namespace Yumiko.Application.Tests.Games;
 public class TriviaRoundTests
 {
     [Fact]
-    public void PickOptions_ReturnsFiveDistinctIndexes()
+    public void PickOptions_ReturnsTenDistinctIndexes()
     {
         for (int i = 0; i < 200; i++)
         {
@@ -21,6 +21,7 @@ public class TriviaRoundTests
     [InlineData(1)]
     [InlineData(3)]
     [InlineData(5)]
+    [InlineData(10)]
     public void PickOptions_NeverAsksForMoreOptionsThanThePoolHas(int size)
     {
         List<int> indices = TriviaRound.PickOptions(size);

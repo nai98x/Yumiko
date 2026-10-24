@@ -4,8 +4,8 @@ namespace Yumiko.Application.Games;
 
 public static class TriviaRound
 {
-    /// <summary>Amount of options shown per round: the correct one plus four decoys.</summary>
-    public const int OptionsPerRound = 5;
+    /// <summary>Amount of options shown per round: the correct one plus nine decoys.</summary>
+    public const int OptionsPerRound = 10;
 
     /// <summary>
     /// Distinct indexes inside the pool for one round. The first one is the correct answer.
