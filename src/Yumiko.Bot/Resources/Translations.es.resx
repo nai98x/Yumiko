@@ -669,9 +669,6 @@ Su nuevo record es: **{2}**</value>
   <data name="reject" xml:space="preserve">
     <value>Rechazar</value>
   </data>
-  <data name="related" xml:space="preserve">
-    <value>Relacionado</value>
-  </data>
   <data name="resource_not_found" xml:space="preserve">
     <value>El recurso que estabas buscando no fue encontrado</value>
   </data>
@@ -968,9 +965,6 @@ Su nuevo record es: **{2}**</value>
   </data>
   <data name="your_new_record_is" xml:space="preserve">
     <value>Tu nuevo record es: **{0}**</value>
-  </data>
-  <data name="you_guessed" xml:space="preserve">
-    <value>¡Le acertaste!</value>
   </data>
   <data name="you_have_cancelled_the_game" xml:space="preserve">
     <value>¡Cancelaste la partida!</value>

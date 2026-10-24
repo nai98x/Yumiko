@@ -16,8 +16,6 @@ public sealed record GameMediaQuery
 
     public bool IncludeStudios { get; init; }
 
-    public bool IncludeRelatedMedia { get; init; }
-
     /// <summary>Excludes media that has not aired yet (used by the Higher or Lower cache).</summary>
     public bool ExcludeUnreleased { get; init; }
 }

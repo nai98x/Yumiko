@@ -139,11 +139,6 @@ public sealed class ComponentInteractionHandler(
 
         DiscordEmbedBuilder embed = result switch
         {
-            TriviaAttemptResult.Correct => new DiscordEmbedBuilder
-            {
-                Title = loc[Keys.you_guessed],
-                Color = DiscordColor.Green,
-            },
             TriviaAttemptResult.Wrong => new DiscordEmbedBuilder
             {
                 Title = loc[Keys.wrong_choice],
@@ -177,8 +172,9 @@ public sealed class ComponentInteractionHandler(
         // goes first to stay inside Discord's 3 second window.
         try
         {
-            // In singleplayer the public round message already tells the only player how it went.
-            if (trivia.Players == TriviaPlayers.Singleplayer && result is TriviaAttemptResult.Correct or TriviaAttemptResult.Wrong)
+            // The public round message already announces who guessed, and in singleplayer also the miss.
+            if (result is TriviaAttemptResult.Correct
+                || (trivia.Players == TriviaPlayers.Singleplayer && result is TriviaAttemptResult.Wrong))
             {
                 await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.DeferredMessageUpdate);
             }

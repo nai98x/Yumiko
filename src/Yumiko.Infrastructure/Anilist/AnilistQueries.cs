@@ -490,12 +490,6 @@ internal static class AnilistQueries
                     studios {
                         nodes { name siteUrl favourites isAnimationStudio }
                     }
-                    relations {
-                        edges {
-                            relationType
-                            node { id type siteUrl title { romaji english } synonyms }
-                        }
-                    }
                 }
                 pageInfo { hasNextPage lastPage }
             }

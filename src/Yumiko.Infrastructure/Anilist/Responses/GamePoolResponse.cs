@@ -59,9 +59,6 @@ internal sealed class GamePoolMedia
 
     [JsonProperty("studios")]
     public GamePoolStudioConnection? Studios { get; set; }
-
-    [JsonProperty("relations")]
-    public GamePoolRelationConnection? Relations { get; set; }
 }
 
 internal sealed class GamePoolTitle
@@ -128,37 +125,4 @@ internal sealed class GamePoolStudio
 
     [JsonProperty("isAnimationStudio")]
     public bool IsAnimationStudio { get; set; }
-}
-
-internal sealed class GamePoolRelationConnection
-{
-    [JsonProperty("edges")]
-    public List<GamePoolRelationEdge>? Edges { get; set; }
-}
-
-internal sealed class GamePoolRelationEdge
-{
-    [JsonProperty("relationType")]
-    public string? RelationType { get; set; }
-
-    [JsonProperty("node")]
-    public GamePoolRelationNode? Node { get; set; }
-}
-
-internal sealed class GamePoolRelationNode
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("type")]
-    public string? Type { get; set; }
-
-    [JsonProperty("siteUrl")]
-    public string? SiteUrl { get; set; }
-
-    [JsonProperty("title")]
-    public GamePoolTitle? Title { get; set; }
-
-    [JsonProperty("synonyms")]
-    public List<string>? Synonyms { get; set; }
 }

@@ -37,11 +37,11 @@ public sealed class GamePool(IAnilistClient anilist, AnilistMediaCacheState medi
     }
 
     /// <summary>
-    /// The cache is crawled with the same ranking (anime by favourites) but without adult media nor
-    /// related media, so it only replaces queries that need neither.
+    /// The cache is crawled with the same ranking (anime by favourites) but without adult media, so it
+    /// only replaces queries that do not need it.
     /// </summary>
     private static bool IsServedByCache(GameMediaQuery query) =>
-        query is { Type: MediaType.ANIME, Genre: null, IncludeAdult: false, IncludeRelatedMedia: false };
+        query is { Type: MediaType.ANIME, Genre: null, IncludeAdult: false };
 
     /// <summary>
     /// In genres mode the page range depends on how many the genre has, so the first page has to be

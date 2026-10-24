@@ -67,7 +67,6 @@ internal static class GameMediaMapper
             Synonyms = [.. (item.Synonyms ?? []).Select(TextHelper.RemoveSpecialCharacters)],
             Studios = [],
             Characters = [],
-            RelatedMedia = [],
         };
 
         if (query.IncludeCharacters)
@@ -99,30 +98,6 @@ internal static class GameMediaMapper
                     Name = name,
                     SiteUrl = studio.SiteUrl,
                     Favourites = studio.Favourites,
-                });
-            }
-        }
-
-        if (query.IncludeRelatedMedia)
-        {
-            foreach (GamePoolRelationEdge edge in item.Relations?.Edges ?? [])
-            {
-                if (edge.Node is not { } node)
-                {
-                    continue;
-                }
-
-                anime.RelatedMedia!.Add(new Anime
-                {
-                    Relation = edge.RelationType,
-                    Id = node.Id,
-                    SiteUrl = node.SiteUrl,
-                    Type = node.Type,
-                    TitleRomaji = node.Title?.Romaji!,
-                    TitleEnglish = node.Title?.English,
-                    TitleRomajiFormatted = TextHelper.RemoveSpecialCharacters(node.Title?.Romaji),
-                    TitleEnglishFormatted = TextHelper.RemoveSpecialCharacters(node.Title?.English),
-                    Synonyms = [.. (node.Synonyms ?? []).Select(TextHelper.RemoveSpecialCharacters)],
                 });
             }
         }

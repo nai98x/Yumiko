@@ -1,5 +1,4 @@
 using DSharpPlus;
-using Yumiko.Application.Helpers;
 using Yumiko.Bot.Localization;
 using Yumiko.Model.Entities;
 using Yumiko.Model.Enum;
@@ -67,17 +66,6 @@ public static class TriviaItems
         $"{loc.Format(Keys.the_protagonists_of_are, Link(media))}\n" +
         string.Join("\n", characters.Select(p => $"- {Formatter.Bold($"[{p.NameFull}]({p.SiteUrl})")}"));
 
-    private static string GenreDescription(Anime media, Loc loc)
-    {
-        string description = WithEnglishTitle(loc.Format(Keys.the_anime_is, Link(media)), media, loc);
-
-        if (media.RelatedMedia is not { Count: > 0 } related)
-        {
-            return description;
-        }
-
-        return $"{description}\n\n{loc[Keys.related]}:\n" +
-            string.Join("\n", related.Select(r =>
-                $"- {Formatter.Bold($"[{r.TitleRomaji}]({r.SiteUrl})")} ({r.Type.UppercaseFirst()})"));
-    }
+    private static string GenreDescription(Anime media, Loc loc) =>
+        WithEnglishTitle(loc.Format(Keys.the_anime_is, Link(media)), media, loc);
 }

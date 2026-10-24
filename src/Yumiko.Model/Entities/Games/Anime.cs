@@ -30,10 +30,6 @@
 
         public List<CharacterOld>? Characters { get; set; }
 
-        public string? Relation { get; set; }
-
         public string? Type { get; set; }
-
-        public List<Anime>? RelatedMedia { get; set; }
     }
 }

@@ -413,7 +413,6 @@ public static class Keys
 
     public const string reject = "reject";
 
-    public const string related = "related";
 
     public const string resource_not_found = "resource_not_found";
 
@@ -609,7 +608,6 @@ public static class Keys
 
     public const string yes_or_no = "yes_or_no";
 
-    public const string you_guessed = "you_guessed";
 
     public const string you_have_cancelled_the_game = "you_have_cancelled_the_game";
 
