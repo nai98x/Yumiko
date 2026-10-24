@@ -2,6 +2,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Logging;
+using Yumiko.Application.Games;
 using Yumiko.Bot.Games;
 using Yumiko.Bot.Localization;
 using Yumiko.Bot.Services.State;
@@ -127,35 +128,74 @@ public sealed class ComponentInteractionHandler(
 
         string attempt = args.Id[TriviaCustomIds.RoundPrefix.Length..];
 
-        if (trivia.CurrentRound.Match != attempt)
+        if (trivia.CurrentRound is not { } round)
         {
-            DiscordEmbedBuilder embed = new()
-            {
-                Title = loc[Keys.wrong_choice],
-                Color = DiscordColor.Red,
-            };
-
-            if (trivia.OptionNames.TryGetValue(attempt, out string? name))
-            {
-                embed.Description = $"{loc[Keys.your_attempt]}: `{name}`";
-            }
-
-            await args.Interaction.CreateResponseAsync(
-                DiscordInteractionResponseType.ChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AsEphemeral().AddEmbed(embed));
+            await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.DeferredMessageUpdate);
             return;
         }
 
-        trivia.CurrentRound.Guessed = true;
-        trivia.CurrentRound.Guesser = args.User;
-        trivia.CurrentRound.GuessTime = args.Interaction.CreationTimestamp;
+        TriviaAttemptResult result = round.State.Attempt(args.User.Id, attempt);
 
-        await args.Interaction.CreateResponseAsync(
-            DiscordInteractionResponseType.ChannelMessageWithSource,
-            new DiscordInteractionResponseBuilder().AsEphemeral().AddEmbed(new DiscordEmbedBuilder
+        DiscordEmbedBuilder embed = result switch
+        {
+            TriviaAttemptResult.Correct => new DiscordEmbedBuilder
             {
                 Title = loc[Keys.you_guessed],
                 Color = DiscordColor.Green,
-            }));
+            },
+            TriviaAttemptResult.Wrong => new DiscordEmbedBuilder
+            {
+                Title = loc[Keys.wrong_choice],
+                Description = trivia.OptionNames.TryGetValue(attempt, out string? name)
+                    ? $"{loc[Keys.your_attempt]}: `{name}`"
+                    : null,
+                Color = DiscordColor.Red,
+            },
+            TriviaAttemptResult.NotAllowed => new DiscordEmbedBuilder
+            {
+                Title = loc[Keys.singleplayer_trivia],
+                Description = loc.Format(Keys.only_user_can_answer, trivia.CreatedBy?.Mention ?? "-"),
+                Color = DiscordColor.Red,
+            },
+            TriviaAttemptResult.AlreadyTried => new DiscordEmbedBuilder
+            {
+                Title = loc[Keys.already_tried_round],
+                Color = DiscordColor.Red,
+            },
+            _ => new DiscordEmbedBuilder
+            {
+                Title = loc[Keys.round_already_over],
+                Color = DiscordColor.Orange,
+            },
+        };
+
+        bool endsRound = result is TriviaAttemptResult.Correct
+            || (result is TriviaAttemptResult.Wrong && round.State.IsFinished);
+
+        // Resolving the round makes the runner start posting its followups right away, so the response
+        // goes first to stay inside Discord's 3 second window.
+        try
+        {
+            await args.Interaction.CreateResponseAsync(
+                DiscordInteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AsEphemeral().AddEmbed(embed));
+        }
+        finally
+        {
+            if (endsRound)
+            {
+                if (result is TriviaAttemptResult.Correct)
+                {
+                    round.Guesser = args.User;
+                }
+                else
+                {
+                    round.Loser = args.User;
+                }
+
+                round.GuessTime = args.Interaction.CreationTimestamp;
+                round.Resolved = true;
+            }
+        }
     }
 }

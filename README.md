@@ -53,7 +53,8 @@ src/Yumiko.Model/
 src/Yumiko.Application/
   Anilist/             RecommendationScoring, RecommendationService, ScoreFormatter
   Games/               TicTacToe, HangmanState, HigherOrLower, HigherOrLowerDuoState,
-                       TriviaScoring, TriviaRound, LeaderboardRanking, MediaPoolBuilder, GameNaming
+                       TriviaScoring, TriviaRound, TriviaRoundState, LeaderboardRanking,
+                       MediaPoolBuilder, GameNaming
   Fun/                 LoveMeter
   Helpers/             TextHelper, ImageHelper (SkiaSharp), EmojiHelper, RandomHelper
   Backups/             BackupState

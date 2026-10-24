@@ -17,12 +17,4 @@ public sealed class TriviaState
         _trivias.TryGetValue((guildId, channelId), out Trivia? trivia) ? trivia : null;
 
     public void Remove(ulong guildId, ulong channelId) => _trivias.TryRemove((guildId, channelId), out _);
-
-    public void UpdateCurrentRound(ulong guildId, ulong channelId, QuizRound round)
-    {
-        if (_trivias.TryGetValue((guildId, channelId), out Trivia? trivia))
-        {
-            trivia.CurrentRound = round;
-        }
-    }
 }

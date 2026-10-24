@@ -15,6 +15,8 @@ public static class Keys
 
     public const string age = "age";
 
+    public const string already_tried_round = "already_tried_round";
+
     public const string anilist_profile_deleted_successfully = "anilist_profile_deleted_successfully";
 
     public const string anilist_profile_not_found = "anilist_profile_not_found";
@@ -357,6 +359,8 @@ public static class Keys
 
     public const string only_bot_owner = "only_bot_owner";
 
+    public const string only_user_can_answer = "only_user_can_answer";
+
     public const string options = "options";
 
     public const string paste_code_here = "paste_code_here";
@@ -425,6 +429,8 @@ public static class Keys
 
     public const string round = "round";
 
+    public const string round_already_over = "round_already_over";
+
     public const string rounds = "rounds";
 
     public const string sauce_remember = "sauce_remember";
@@ -446,6 +452,8 @@ public static class Keys
     public const string shutting_down = "shutting_down";
 
     public const string similarity = "similarity";
+
+    public const string singleplayer_trivia = "singleplayer_trivia";
 
     public const string start_date = "start_date";
 
@@ -528,6 +536,8 @@ public static class Keys
     public const string user_game_stats = "user_game_stats";
 
     public const string user_has_guessed = "user_has_guessed";
+
+    public const string user_has_missed = "user_has_missed";
 
     public const string user_made_a_mistake = "user_made_a_mistake";
 

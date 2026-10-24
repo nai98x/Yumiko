@@ -1,5 +1,7 @@
 using System.Collections.Concurrent;
 using DSharpPlus.Entities;
+using Yumiko.Application.Games;
+using Yumiko.Model.Enum;
 
 namespace Yumiko.Bot.Games;
 
@@ -17,7 +19,9 @@ public sealed class Trivia
 
     public double TimeoutTotal { get; set; }
 
-    public QuizRound CurrentRound { get; set; } = new();
+    public TriviaPlayers Players { get; set; }
+
+    public QuizRound? CurrentRound { get; set; }
 
     // The buttons carry an opaque option id, so the display name of every option played so far is kept
     // here: buttons of past rounds stay clickable and their attempt still has to be shown by name.
@@ -30,13 +34,15 @@ public sealed class Trivia
 
 public sealed class QuizRound
 {
-    public string Match { get; set; } = string.Empty;
+    public required TriviaRoundState State { get; init; }
 
-    public double TimeoutCurrent { get; set; }
-
-    public bool Guessed { get; set; }
+    // Set by the component handler only after the interaction has been answered, so the runner does not
+    // start posting followups while the response is still in flight.
+    public bool Resolved { get; set; }
 
     public DiscordUser? Guesser { get; set; }
+
+    public DiscordUser? Loser { get; set; }
 
     public DateTimeOffset GuessTime { get; set; }
 }

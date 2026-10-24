@@ -73,6 +73,9 @@
   <data name="age" xml:space="preserve">
     <value>Edad</value>
   </data>
+  <data name="already_tried_round" xml:space="preserve">
+    <value>Ya lo intentaste en esta ronda</value>
+  </data>
   <data name="anilist_profile_deleted_successfully" xml:space="preserve">
     <value>Perfil de Anilist eliminado correctamente</value>
   </data>
@@ -585,6 +588,9 @@ Su nuevo record es: **{2}**</value>
   <data name="only_bot_owner" xml:space="preserve">
     <value>Solo el dueño del bot puede ejecutar este comando</value>
   </data>
+  <data name="only_user_can_answer" xml:space="preserve">
+    <value>Solo {0} puede responder en esta trivia</value>
+  </data>
   <data name="options" xml:space="preserve">
     <value>Opciones</value>
   </data>
@@ -687,6 +693,9 @@ Su nuevo record es: **{2}**</value>
   <data name="round" xml:space="preserve">
     <value>Ronda</value>
   </data>
+  <data name="round_already_over" xml:space="preserve">
+    <value>Esta ronda ya terminó</value>
+  </data>
   <data name="rounds" xml:space="preserve">
     <value>Rondas</value>
   </data>
@@ -719,6 +728,9 @@ Su nuevo record es: **{2}**</value>
   </data>
   <data name="similarity" xml:space="preserve">
     <value>Similaridad</value>
+  </data>
+  <data name="singleplayer_trivia" xml:space="preserve">
+    <value>Trivia de un jugador</value>
   </data>
   <data name="start_date" xml:space="preserve">
     <value>Fecha de inicio</value>
@@ -839,6 +851,9 @@ Su nuevo record es: **{2}**</value>
   </data>
   <data name="user_has_guessed" xml:space="preserve">
     <value>¡{0} le ha acertado!</value>
+  </data>
+  <data name="user_has_missed" xml:space="preserve">
+    <value>¡{0} le ha errado!</value>
   </data>
   <data name="user_made_a_mistake" xml:space="preserve">
     <value>¡{0} le ha errado!</value>

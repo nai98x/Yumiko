@@ -33,6 +33,14 @@ public enum DifficultyChoice
     Extreme,
 }
 
+public enum TriviaPlayersChoice
+{
+    [ChoiceDisplayName("Singleplayer")]
+    Singleplayer,
+    [ChoiceDisplayName("Multiplayer")]
+    Multiplayer,
+}
+
 public enum HangmanGamemodeChoice
 {
     [ChoiceDisplayName("Characters")]
@@ -54,6 +62,8 @@ public static class GameChoiceMapper
     public static Gamemode ToModel(this GamemodeChoice choice) => (Gamemode)(int)choice;
 
     public static Difficulty ToModel(this DifficultyChoice choice) => (Difficulty)(int)choice;
+
+    public static TriviaPlayers ToModel(this TriviaPlayersChoice choice) => (TriviaPlayers)(int)choice;
 
     public static HangmanGamemode ToModel(this HangmanGamemodeChoice choice) => (HangmanGamemode)(int)choice;
 

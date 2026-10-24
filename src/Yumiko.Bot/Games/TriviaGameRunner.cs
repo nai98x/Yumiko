@@ -27,7 +27,13 @@ public sealed class TriviaGameRunner(
 {
     private const int PollingIntervalMs = 100;
 
-    public async Task PlayAsync(SlashCommandContext ctx, List<TriviaItem> pool, GameSettings settings, string gameLabel, Loc loc)
+    public async Task PlayAsync(
+        SlashCommandContext ctx,
+        List<TriviaItem> pool,
+        GameSettings settings,
+        TriviaPlayers players,
+        string gameLabel,
+        Loc loc)
     {
         int rounds = Math.Min(settings.Rounds, pool.Count);
 
@@ -42,6 +48,7 @@ public sealed class TriviaGameRunner(
             GuildId = ctx.Guild!.Id,
             ChannelId = ctx.Channel.Id,
             TimeoutTotal = timeouts.Games,
+            Players = players,
             Title = gameLabel,
             CreatedBy = ctx.User,
         };
@@ -126,7 +133,10 @@ public sealed class TriviaGameRunner(
 
         DiscordMessage message = await ctx.FollowupAsync(builder);
 
-        triviaState.UpdateCurrentRound(ctx.Guild!.Id, ctx.Channel.Id, new QuizRound { Match = choices[0].Id });
+        trivia.CurrentRound = new QuizRound
+        {
+            State = new TriviaRoundState(choices.Select(c => c.Id), choices[0].Id, trivia.Players, ctx.User.Id),
+        };
 
         string reveal = correct.Description.NormalizeDescription();
         RoundResult result = await WaitForAnswerAsync(ctx, message, reveal, participants, loc);
@@ -165,7 +175,7 @@ public sealed class TriviaGameRunner(
                 return RoundResult.Cancelled;
             }
 
-            if (game.CurrentRound is { Guessed: true, Guesser: not null } currentRound)
+            if (game.CurrentRound is { Resolved: true, Guesser: not null } currentRound)
             {
                 AddPoint(participants, currentRound.Guesser);
 
@@ -182,6 +192,18 @@ public sealed class TriviaGameRunner(
                 }));
 
                 return RoundResult.Guessed;
+            }
+
+            if (game.CurrentRound is { Resolved: true, Loser: not null } missedRound)
+            {
+                await ctx.FollowupAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
+                {
+                    Title = loc.Format(Keys.user_has_missed, DisplayNameOf(missedRound.Loser)),
+                    Description = reveal,
+                    Color = DiscordColor.Red,
+                }));
+
+                return RoundResult.NotGuessed;
             }
 
             await Task.Delay(PollingIntervalMs);
