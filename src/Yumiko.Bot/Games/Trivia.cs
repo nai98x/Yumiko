@@ -21,6 +21,9 @@ public sealed class Trivia
 
     public TriviaPlayers Players { get; set; }
 
+    // Only in multiplayer: who signed up before the start, and thus who can answer.
+    public TriviaLobby? Lobby { get; set; }
+
     public QuizRound? CurrentRound { get; set; }
 
     // The buttons carry an opaque option id, so the display name of every option played so far is kept

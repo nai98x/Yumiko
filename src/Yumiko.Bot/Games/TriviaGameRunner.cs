@@ -53,6 +53,7 @@ public sealed class TriviaGameRunner(
             Players = players,
             Title = gameLabel,
             CreatedBy = ctx.User,
+            Lobby = players == TriviaPlayers.Multiplayer ? new TriviaLobby(ctx.User.Id) : null,
         };
 
         if (!triviaState.TryAdd(trivia))
@@ -65,6 +66,11 @@ public sealed class TriviaGameRunner(
 
         try
         {
+            if (trivia.Lobby is { } lobby && !await WaitForPlayersAsync(ctx, trivia, lobby, gameLabel, loc))
+            {
+                return;
+            }
+
             for (int round = 1; round <= rounds; round++)
             {
                 roundsPlayed = round;
@@ -82,6 +88,82 @@ public sealed class TriviaGameRunner(
             await ShowResultsAsync(ctx, participants, roundsPlayed, settings, loc);
         }
     }
+
+    /// <summary>Returns false when the lobby is cancelled or times out before the owner starts it.</summary>
+    private async Task<bool> WaitForPlayersAsync(
+        SlashCommandContext ctx,
+        Trivia trivia,
+        TriviaLobby lobby,
+        string gameLabel,
+        Loc loc)
+    {
+        DiscordMessage message = await ctx.FollowupAsync(new DiscordFollowupMessageBuilder()
+            .AddEmbed(LobbyEmbed(lobby, gameLabel, loc))
+            .AddActionRowComponent(LobbyButtons(loc)));
+
+        int version = lobby.Version;
+        int iterations = (int)(timeouts.General * 1000 / PollingIntervalMs);
+
+        for (int i = 0; i <= iterations; i++)
+        {
+            if (trivia.Canceled)
+            {
+                lobby.Close();
+                await CloseLobbyAsync(ctx, message, loc[Keys.game_cancelled], DiscordColor.Red);
+                return false;
+            }
+
+            if (lobby.Status == TriviaLobbyStatus.Started)
+            {
+                await ctx.EditFollowupAsync(message.Id, new DiscordWebhookBuilder()
+                    .AddEmbed(LobbyEmbed(lobby, gameLabel, loc).WithTitle(loc[Keys.game_started]).WithColor(DiscordColor.Green)));
+                return true;
+            }
+
+            if (lobby.Version != version)
+            {
+                version = lobby.Version;
+                await ctx.EditFollowupAsync(message.Id, new DiscordWebhookBuilder()
+                    .AddEmbed(LobbyEmbed(lobby, gameLabel, loc))
+                    .AddActionRowComponent(LobbyButtons(loc)));
+            }
+
+            await Task.Delay(PollingIntervalMs);
+        }
+
+        if (!lobby.Close())
+        {
+            return true;
+        }
+
+        await CloseLobbyAsync(ctx, message, loc[Keys.lobby_timed_out], DiscordColor.Red);
+        return false;
+    }
+
+    private DiscordEmbedBuilder LobbyEmbed(TriviaLobby lobby, string gameLabel, Loc loc) =>
+        new DiscordEmbedBuilder
+        {
+            Title = loc[Keys.trivia_lobby],
+            Description = $"{loc[Keys.guess_the]} {gameLabel}\n\n" +
+                loc.Format(Keys.trivia_lobby_desc, $"<@{lobby.OwnerId}>", timeouts.General),
+            Color = YumikoColors.Primary,
+        }
+        .AddField(loc[Keys.players], string.Join("\n", lobby.Players.Select(id => $"<@{id}>")).NormalizeField());
+
+    private static DiscordButtonComponent[] LobbyButtons(Loc loc) =>
+    [
+        new(DiscordButtonStyle.Primary, $"{TriviaCustomIds.JoinPrefix}{Guid.NewGuid()}", loc[Keys.join]),
+        new(DiscordButtonStyle.Secondary, $"{TriviaCustomIds.LeavePrefix}{Guid.NewGuid()}", loc[Keys.leave]),
+        new(DiscordButtonStyle.Success, $"{TriviaCustomIds.StartPrefix}{Guid.NewGuid()}", loc[Keys.start_game]),
+        new(DiscordButtonStyle.Danger, $"{TriviaCustomIds.CancelPrefix}{Guid.NewGuid()}", loc[Keys.finish_game]),
+    ];
+
+    private static async Task CloseLobbyAsync(SlashCommandContext ctx, DiscordMessage message, string title, DiscordColor color) =>
+        await ctx.EditFollowupAsync(message.Id, new DiscordWebhookBuilder().AddEmbed(new DiscordEmbedBuilder
+        {
+            Title = title,
+            Color = color,
+        }));
 
     private async Task<RoundResult> PlayRoundAsync(
         SlashCommandContext ctx,
@@ -142,7 +224,7 @@ public sealed class TriviaGameRunner(
 
         trivia.CurrentRound = new QuizRound
         {
-            State = new TriviaRoundState(choices.Select(c => c.Id), choices[0].Id, trivia.Players, ctx.User.Id),
+            State = new TriviaRoundState(choices.Select(c => c.Id), choices[0].Id, trivia.Lobby?.Players ?? [ctx.User.Id]),
         };
 
         string reveal = correct.Description.NormalizeDescription();
@@ -218,6 +300,11 @@ public sealed class TriviaGameRunner(
                 await ctx.FollowupAsync(new DiscordFollowupMessageBuilder().AddEmbed(missed));
 
                 return RoundResult.NotGuessed;
+            }
+
+            if (game.CurrentRound is { Resolved: true })
+            {
+                break;
             }
 
             await Task.Delay(PollingIntervalMs);
@@ -321,4 +408,10 @@ public static class TriviaCustomIds
     public const string RoundPrefix = "quiz-round-";
 
     public const string CancelPrefix = "quiz-cancel-";
+
+    public const string JoinPrefix = "quiz-join-";
+
+    public const string LeavePrefix = "quiz-leave-";
+
+    public const string StartPrefix = "quiz-start-";
 }

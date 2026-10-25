@@ -1,5 +1,4 @@
 using Yumiko.Application.Games;
-using Yumiko.Model.Enum;
 
 namespace Yumiko.Application.Tests.Games;
 
@@ -8,21 +7,24 @@ public class TriviaRoundStateTests
     private const ulong Owner = 1;
     private const ulong Other = 2;
     private const ulong Third = 3;
+    private const ulong Outsider = 4;
 
     private static readonly string[] Options = ["a", "b", "c", "d", "e"];
 
-    private static TriviaRoundState Create(TriviaPlayers players) => new(Options, "a", players, Owner);
+    private static TriviaRoundState Solo() => new(Options, "a", [Owner]);
+
+    private static TriviaRoundState Group() => new(Options, "a", [Owner, Other, Third]);
 
     [Fact]
     public void Constructor_RejectsACorrectOptionOutsideTheOptions()
     {
-        Assert.Throws<ArgumentException>(() => new TriviaRoundState(Options, "z", TriviaPlayers.Multiplayer, Owner));
+        Assert.Throws<ArgumentException>(() => new TriviaRoundState(Options, "z", [Owner]));
     }
 
     [Fact]
-    public void Singleplayer_OnlyTheOwnerCanAnswer()
+    public void Solo_OnlyTheOwnerCanAnswer()
     {
-        TriviaRoundState state = Create(TriviaPlayers.Singleplayer);
+        TriviaRoundState state = Solo();
 
         Assert.Equal(TriviaAttemptResult.NotAllowed, state.Attempt(Other, "a"));
         Assert.False(state.IsFinished);
@@ -31,9 +33,9 @@ public class TriviaRoundStateTests
     }
 
     [Fact]
-    public void Singleplayer_AMissEndsTheRound()
+    public void Solo_AMissEndsTheRound()
     {
-        TriviaRoundState state = Create(TriviaPlayers.Singleplayer);
+        TriviaRoundState state = Solo();
 
         Assert.Equal(TriviaAttemptResult.Wrong, state.Attempt(Owner, "b"));
         Assert.True(state.IsFinished);
@@ -42,18 +44,18 @@ public class TriviaRoundStateTests
     }
 
     [Fact]
-    public void Singleplayer_OthersAreRejectedEvenAfterTheRoundEnds()
+    public void Solo_OthersAreRejectedEvenAfterTheRoundEnds()
     {
-        TriviaRoundState state = Create(TriviaPlayers.Singleplayer);
+        TriviaRoundState state = Solo();
         state.Attempt(Owner, "b");
 
         Assert.Equal(TriviaAttemptResult.NotAllowed, state.Attempt(Other, "a"));
     }
 
     [Fact]
-    public void Multiplayer_AnyoneCanAnswer()
+    public void Group_AnyPlayerCanAnswer()
     {
-        TriviaRoundState state = Create(TriviaPlayers.Multiplayer);
+        TriviaRoundState state = Group();
 
         Assert.Equal(TriviaAttemptResult.Correct, state.Attempt(Other, "a"));
         Assert.Equal(Other, state.WinnerId);
@@ -61,9 +63,18 @@ public class TriviaRoundStateTests
     }
 
     [Fact]
-    public void Multiplayer_AMissLocksOnlyThatPlayer()
+    public void Group_OutsidersCannotAnswer()
     {
-        TriviaRoundState state = Create(TriviaPlayers.Multiplayer);
+        TriviaRoundState state = Group();
+
+        Assert.Equal(TriviaAttemptResult.NotAllowed, state.Attempt(Outsider, "a"));
+        Assert.False(state.IsFinished);
+    }
+
+    [Fact]
+    public void Group_AMissLocksOnlyThatPlayer()
+    {
+        TriviaRoundState state = Group();
 
         Assert.Equal(TriviaAttemptResult.Wrong, state.Attempt(Other, "b"));
         Assert.False(state.IsFinished);
@@ -73,9 +84,23 @@ public class TriviaRoundStateTests
     }
 
     [Fact]
-    public void Multiplayer_OnlyTheFirstCorrectAttemptWins()
+    public void Group_EndsOnceEveryPlayerHasMissed()
     {
-        TriviaRoundState state = Create(TriviaPlayers.Multiplayer);
+        TriviaRoundState state = Group();
+
+        state.Attempt(Owner, "b");
+        state.Attempt(Other, "c");
+        Assert.False(state.IsFinished);
+
+        Assert.Equal(TriviaAttemptResult.Wrong, state.Attempt(Third, "d"));
+        Assert.True(state.IsFinished);
+        Assert.Null(state.WinnerId);
+    }
+
+    [Fact]
+    public void Group_OnlyTheFirstCorrectAttemptWins()
+    {
+        TriviaRoundState state = Group();
 
         Assert.Equal(TriviaAttemptResult.Correct, state.Attempt(Other, "a"));
         Assert.Equal(TriviaAttemptResult.RoundOver, state.Attempt(Third, "a"));
@@ -83,23 +108,22 @@ public class TriviaRoundStateTests
     }
 
     [Fact]
-    public void Multiplayer_ConcurrentCorrectAttemptsHaveASingleWinner()
+    public void Group_ConcurrentCorrectAttemptsHaveASingleWinner()
     {
-        TriviaRoundState state = Create(TriviaPlayers.Multiplayer);
+        ulong[] players = [.. Enumerable.Range(10, 100).Select(i => (ulong)i)];
+        TriviaRoundState state = new(Options, "a", players);
 
-        TriviaAttemptResult[] results = new TriviaAttemptResult[100];
-        Parallel.For(0, results.Length, i => results[i] = state.Attempt((ulong)i + 10, "a"));
+        TriviaAttemptResult[] results = new TriviaAttemptResult[players.Length];
+        Parallel.For(0, results.Length, i => results[i] = state.Attempt(players[i], "a"));
 
         Assert.Single(results, r => r == TriviaAttemptResult.Correct);
         Assert.All(results.Where(r => r != TriviaAttemptResult.Correct), r => Assert.Equal(TriviaAttemptResult.RoundOver, r));
     }
 
-    [Theory]
-    [InlineData(TriviaPlayers.Singleplayer)]
-    [InlineData(TriviaPlayers.Multiplayer)]
-    public void OptionsFromAnotherRoundAreTreatedAsOver(TriviaPlayers players)
+    [Fact]
+    public void OptionsFromAnotherRoundAreTreatedAsOver()
     {
-        TriviaRoundState state = Create(players);
+        TriviaRoundState state = Group();
 
         Assert.Equal(TriviaAttemptResult.RoundOver, state.Attempt(Owner, "old-round-option"));
         Assert.False(state.IsFinished);

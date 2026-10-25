@@ -1,5 +1,3 @@
-using Yumiko.Model.Enum;
-
 namespace Yumiko.Application.Games;
 
 public enum TriviaAttemptResult
@@ -12,8 +10,8 @@ public enum TriviaAttemptResult
 }
 
 /// <summary>
-/// Who can still answer one trivia round. Every player gets a single attempt per round; in
-/// <see cref="TriviaPlayers.Singleplayer"/> only the owner plays and a miss ends the round.
+/// Who can still answer one trivia round. Only the given players can answer, each with a single attempt;
+/// the round ends on the first correct attempt or once every player has missed.
 /// Attempts arrive concurrently from gateway threads, so only the first correct one wins.
 /// </summary>
 public sealed class TriviaRoundState
@@ -22,10 +20,9 @@ public sealed class TriviaRoundState
     private readonly HashSet<ulong> _attempted = [];
     private readonly HashSet<string> _options;
     private readonly string _correctOption;
-    private readonly TriviaPlayers _players;
-    private readonly ulong _ownerId;
+    private readonly HashSet<ulong> _players;
 
-    public TriviaRoundState(IEnumerable<string> options, string correctOption, TriviaPlayers players, ulong ownerId)
+    public TriviaRoundState(IEnumerable<string> options, string correctOption, IEnumerable<ulong> players)
     {
         _options = [.. options];
 
@@ -35,8 +32,7 @@ public sealed class TriviaRoundState
         }
 
         _correctOption = correctOption;
-        _players = players;
-        _ownerId = ownerId;
+        _players = [.. players];
     }
 
     public bool IsFinished { get; private set; }
@@ -48,7 +44,7 @@ public sealed class TriviaRoundState
     {
         lock (_lock)
         {
-            if (_players == TriviaPlayers.Singleplayer && userId != _ownerId)
+            if (!_players.Contains(userId))
             {
                 return TriviaAttemptResult.NotAllowed;
             }
@@ -70,7 +66,7 @@ public sealed class TriviaRoundState
                 return TriviaAttemptResult.Correct;
             }
 
-            if (_players == TriviaPlayers.Singleplayer)
+            if (_attempted.IsSupersetOf(_players))
             {
                 IsFinished = true;
             }

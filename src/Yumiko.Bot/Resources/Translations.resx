@@ -73,6 +73,9 @@
   <data name="age" xml:space="preserve">
     <value>Age</value>
   </data>
+  <data name="already_joined" xml:space="preserve">
+    <value>You already joined this game</value>
+  </data>
   <data name="already_tried_round" xml:space="preserve">
     <value>You already tried this round</value>
   </data>
@@ -286,8 +289,14 @@
   <data name="from_the_anime" xml:space="preserve">
     <value>from the anime</value>
   </data>
+  <data name="game_already_started" xml:space="preserve">
+    <value>The game already started</value>
+  </data>
   <data name="game_duration" xml:space="preserve">
     <value>Game duration</value>
+  </data>
+  <data name="game_started" xml:space="preserve">
+    <value>The game has started!</value>
   </data>
   <data name="game_summary" xml:space="preserve">
     <value>Game summary</value>
@@ -420,6 +429,9 @@ Your new record is: **{2}**</value>
   <data name="in_popularity_rank" xml:space="preserve">
     <value>in popularity rank</value>
   </data>
+  <data name="join" xml:space="preserve">
+    <value>Join</value>
+  </data>
   <data name="joined_date" xml:space="preserve">
     <value>Joined date</value>
   </data>
@@ -432,6 +444,9 @@ Your new record is: **{2}**</value>
   <data name="latency" xml:space="preserve">
     <value>Latency</value>
   </data>
+  <data name="leave" xml:space="preserve">
+    <value>Leave</value>
+  </data>
   <data name="letters_used" xml:space="preserve">
     <value>Letters used</value>
   </data>
@@ -443,6 +458,9 @@ Your new record is: **{2}**</value>
   </data>
   <data name="link_for" xml:space="preserve">
     <value>Link for</value>
+  </data>
+  <data name="lobby_timed_out" xml:space="preserve">
+    <value>The game was not started in time</value>
   </data>
   <data name="location_not_found" xml:space="preserve">
     <value>Location `{0}, {1}` not found</value>
@@ -534,6 +552,12 @@ Your new record is: **{2}**</value>
   <data name="nobody_has_guessed" xml:space="preserve">
     <value>Nobody has guessed</value>
   </data>
+  <data name="not_in_trivia" xml:space="preserve">
+    <value>You are not playing this trivia</value>
+  </data>
+  <data name="not_in_trivia_desc" xml:space="preserve">
+    <value>Only the players who joined before the start can answer</value>
+  </data>
   <data name="notes" xml:space="preserve">
     <value>Notes</value>
   </data>
@@ -588,11 +612,17 @@ Your new record is: **{2}**</value>
   <data name="only_bot_owner" xml:space="preserve">
     <value>Only the bot owner can execute this command</value>
   </data>
+  <data name="only_owner_can_start" xml:space="preserve">
+    <value>Only {0} can start the game</value>
+  </data>
   <data name="only_user_can_answer" xml:space="preserve">
     <value>Only {0} can answer in this trivia</value>
   </data>
   <data name="options" xml:space="preserve">
     <value>Options</value>
+  </data>
+  <data name="owner_cannot_leave" xml:space="preserve">
+    <value>You created this game: finish it if you don't want to play</value>
   </data>
   <data name="paste_code_here" xml:space="preserve">
     <value>Paste code here</value>
@@ -605,6 +635,9 @@ Your new record is: **{2}**</value>
   </data>
   <data name="player_turn" xml:space="preserve">
     <value>{0}'s turn</value>
+  </data>
+  <data name="players" xml:space="preserve">
+    <value>Players</value>
   </data>
   <data name="please_wait" xml:space="preserve">
     <value>Please wait while everything is prepared</value>
@@ -732,6 +765,9 @@ Your new record is: **{2}**</value>
   <data name="start_date" xml:space="preserve">
     <value>Start date</value>
   </data>
+  <data name="start_game" xml:space="preserve">
+    <value>Start</value>
+  </data>
   <data name="stats" xml:space="preserve">
     <value>Stats</value>
   </data>
@@ -824,6 +860,12 @@ Your new record is: **{2}**</value>
   </data>
   <data name="to_vinculate_anilist_profile" xml:space="preserve">
     <value>To vinculate your profile, you must use the following command</value>
+  </data>
+  <data name="trivia_lobby" xml:space="preserve">
+    <value>Multiplayer trivia</value>
+  </data>
+  <data name="trivia_lobby_desc" xml:space="preserve">
+    <value>Press **Join** to play. {0} starts the game when everyone is in; if it doesn't start within {1} seconds, it is cancelled.</value>
   </data>
   <data name="type_a_letter" xml:space="preserve">
     <value>Type a letter!</value>

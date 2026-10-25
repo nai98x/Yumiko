@@ -73,6 +73,9 @@
   <data name="age" xml:space="preserve">
     <value>Edad</value>
   </data>
+  <data name="already_joined" xml:space="preserve">
+    <value>Ya estás inscripto en esta partida</value>
+  </data>
   <data name="already_tried_round" xml:space="preserve">
     <value>Ya lo intentaste en esta ronda</value>
   </data>
@@ -286,8 +289,14 @@
   <data name="from_the_anime" xml:space="preserve">
     <value>del anime</value>
   </data>
+  <data name="game_already_started" xml:space="preserve">
+    <value>La partida ya empezó</value>
+  </data>
   <data name="game_duration" xml:space="preserve">
     <value>Duración de la partida</value>
+  </data>
+  <data name="game_started" xml:space="preserve">
+    <value>¡Empezó la partida!</value>
   </data>
   <data name="game_summary" xml:space="preserve">
     <value>Resumen de la partida</value>
@@ -420,6 +429,9 @@ Su nuevo record es: **{2}**</value>
   <data name="in_popularity_rank" xml:space="preserve">
     <value>en el ranking de popularidad</value>
   </data>
+  <data name="join" xml:space="preserve">
+    <value>Unirse</value>
+  </data>
   <data name="joined_date" xml:space="preserve">
     <value>Fecha en la que entró Yumiko</value>
   </data>
@@ -432,6 +444,9 @@ Su nuevo record es: **{2}**</value>
   <data name="latency" xml:space="preserve">
     <value>Latencia</value>
   </data>
+  <data name="leave" xml:space="preserve">
+    <value>Salir</value>
+  </data>
   <data name="letters_used" xml:space="preserve">
     <value>Letras usadas</value>
   </data>
@@ -443,6 +458,9 @@ Su nuevo record es: **{2}**</value>
   </data>
   <data name="link_for" xml:space="preserve">
     <value>Enlace para</value>
+  </data>
+  <data name="lobby_timed_out" xml:space="preserve">
+    <value>La partida no se empezó a tiempo</value>
   </data>
   <data name="location_not_found" xml:space="preserve">
     <value>Localidad `{0}, {1}` no encontrada</value>
@@ -534,6 +552,12 @@ Su nuevo record es: **{2}**</value>
   <data name="nobody_has_guessed" xml:space="preserve">
     <value>Nadie ha acertado</value>
   </data>
+  <data name="not_in_trivia" xml:space="preserve">
+    <value>No estás jugando esta trivia</value>
+  </data>
+  <data name="not_in_trivia_desc" xml:space="preserve">
+    <value>Solo pueden responder quienes se unieron antes de empezar</value>
+  </data>
   <data name="notes" xml:space="preserve">
     <value>Notas</value>
   </data>
@@ -588,11 +612,17 @@ Su nuevo record es: **{2}**</value>
   <data name="only_bot_owner" xml:space="preserve">
     <value>Solo el dueño del bot puede ejecutar este comando</value>
   </data>
+  <data name="only_owner_can_start" xml:space="preserve">
+    <value>Solo {0} puede empezar la partida</value>
+  </data>
   <data name="only_user_can_answer" xml:space="preserve">
     <value>Solo {0} puede responder en esta trivia</value>
   </data>
   <data name="options" xml:space="preserve">
     <value>Opciones</value>
+  </data>
+  <data name="owner_cannot_leave" xml:space="preserve">
+    <value>Creaste esta partida: finalízala si no quieres jugar</value>
   </data>
   <data name="paste_code_here" xml:space="preserve">
     <value>Pegar código aquí</value>
@@ -605,6 +635,9 @@ Su nuevo record es: **{2}**</value>
   </data>
   <data name="player_turn" xml:space="preserve">
     <value>Turno de {0}</value>
+  </data>
+  <data name="players" xml:space="preserve">
+    <value>Jugadores</value>
   </data>
   <data name="please_wait" xml:space="preserve">
     <value>Por favor espera mientras todo se prepara</value>
@@ -732,6 +765,9 @@ Su nuevo record es: **{2}**</value>
   <data name="start_date" xml:space="preserve">
     <value>Fecha de inicio</value>
   </data>
+  <data name="start_game" xml:space="preserve">
+    <value>Empezar</value>
+  </data>
   <data name="stats" xml:space="preserve">
     <value>Estadísticas</value>
   </data>
@@ -824,6 +860,12 @@ Su nuevo record es: **{2}**</value>
   </data>
   <data name="to_vinculate_anilist_profile" xml:space="preserve">
     <value>Para vincular tu perfil, debes usar el siguiente comando</value>
+  </data>
+  <data name="trivia_lobby" xml:space="preserve">
+    <value>Trivia multijugador</value>
+  </data>
+  <data name="trivia_lobby_desc" xml:space="preserve">
+    <value>Presiona **Unirse** para jugar. {0} empieza la partida cuando estén todos; si no empieza en {1} segundos, se cancela.</value>
   </data>
   <data name="type_a_letter" xml:space="preserve">
     <value>¡Escribe una letra!</value>

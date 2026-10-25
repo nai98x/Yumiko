@@ -15,6 +15,8 @@ public static class Keys
 
     public const string age = "age";
 
+    public const string already_joined = "already_joined";
+
     public const string already_tried_round = "already_tried_round";
 
     public const string anilist_profile_deleted_successfully = "anilist_profile_deleted_successfully";
@@ -157,9 +159,13 @@ public static class Keys
 
     public const string from_the_anime = "from_the_anime";
 
+    public const string game_already_started = "game_already_started";
+
     public const string game_cancelled = "game_cancelled";
 
     public const string game_duration = "game_duration";
+
+    public const string game_started = "game_started";
 
     public const string game_summary = "game_summary";
 
@@ -245,6 +251,8 @@ public static class Keys
 
     public const string invite = "invite";
 
+    public const string join = "join";
+
     public const string joined_date = "joined_date";
 
     public const string language = "language";
@@ -253,6 +261,8 @@ public static class Keys
 
     public const string latency = "latency";
 
+    public const string leave = "leave";
+
     public const string letters_used = "letters_used";
 
     public const string library = "library";
@@ -260,6 +270,8 @@ public static class Keys
     public const string link = "link";
 
     public const string link_for = "link_for";
+
+    public const string lobby_timed_out = "lobby_timed_out";
 
     public const string location_not_found = "location_not_found";
 
@@ -349,6 +361,10 @@ public static class Keys
 
     public const string not_found = "not_found";
 
+    public const string not_in_trivia = "not_in_trivia";
+
+    public const string not_in_trivia_desc = "not_in_trivia_desc";
+
     public const string not_yet_released = "not_yet_released";
 
     public const string notes = "notes";
@@ -359,9 +375,13 @@ public static class Keys
 
     public const string only_bot_owner = "only_bot_owner";
 
+    public const string only_owner_can_start = "only_owner_can_start";
+
     public const string only_user_can_answer = "only_user_can_answer";
 
     public const string options = "options";
+
+    public const string owner_cannot_leave = "owner_cannot_leave";
 
     public const string paste_code_here = "paste_code_here";
 
@@ -370,6 +390,8 @@ public static class Keys
     public const string permission_required_desc = "permission_required_desc";
 
     public const string player_turn = "player_turn";
+
+    public const string players = "players";
 
     public const string please_wait = "please_wait";
 
@@ -456,6 +478,8 @@ public static class Keys
 
     public const string start_date = "start_date";
 
+    public const string start_game = "start_game";
+
     public const string stats = "stats";
 
     public const string status = "status";
@@ -517,6 +541,10 @@ public static class Keys
     public const string total_shards = "total_shards";
 
     public const string total_users = "total_users";
+
+    public const string trivia_lobby = "trivia_lobby";
+
+    public const string trivia_lobby_desc = "trivia_lobby_desc";
 
     public const string type_a_letter = "type_a_letter";
 

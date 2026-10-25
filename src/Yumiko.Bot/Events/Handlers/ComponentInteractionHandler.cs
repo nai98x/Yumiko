@@ -38,6 +38,14 @@ public sealed class ComponentInteractionHandler(
                 return;
             }
 
+            if (args.Id.StartsWith(TriviaCustomIds.JoinPrefix, StringComparison.Ordinal)
+                || args.Id.StartsWith(TriviaCustomIds.LeavePrefix, StringComparison.Ordinal)
+                || args.Id.StartsWith(TriviaCustomIds.StartPrefix, StringComparison.Ordinal))
+            {
+                await HandleTriviaLobbyAsync(args);
+                return;
+            }
+
             if (args.Id.StartsWith(TriviaCustomIds.RoundPrefix, StringComparison.Ordinal))
             {
                 await HandleRoundAnswerAsync(args);
@@ -109,6 +117,54 @@ public sealed class ComponentInteractionHandler(
             }));
     }
 
+    /// <summary>
+    /// The lobby message itself is redrawn by the runner, so a roster change only needs to be acknowledged.
+    /// </summary>
+    private async Task HandleTriviaLobbyAsync(ComponentInteractionCreatedEventArgs args)
+    {
+        if (args.Guild is null || triviaState.Get(args.Guild.Id, args.Channel.Id) is not { Lobby: { } lobby } trivia)
+        {
+            await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.DeferredMessageUpdate);
+            return;
+        }
+
+        Loc loc = localizer.For(args.Interaction.Locale);
+
+        string? error = args.Id switch
+        {
+            _ when args.Id.StartsWith(TriviaCustomIds.JoinPrefix, StringComparison.Ordinal) => lobby.Join(args.User.Id) switch
+            {
+                TriviaLobbyJoinResult.AlreadyJoined => loc[Keys.already_joined],
+                TriviaLobbyJoinResult.NotOpen => loc[Keys.game_already_started],
+                _ => null,
+            },
+            _ when args.Id.StartsWith(TriviaCustomIds.LeavePrefix, StringComparison.Ordinal) => lobby.Leave(args.User.Id) switch
+            {
+                TriviaLobbyLeaveResult.IsOwner => loc[Keys.owner_cannot_leave],
+                _ => null,
+            },
+            _ => lobby.Start(args.User.Id) switch
+            {
+                TriviaLobbyStartResult.NotOwner => loc.Format(Keys.only_owner_can_start, trivia.CreatedBy?.Mention ?? "-"),
+                _ => null,
+            },
+        };
+
+        if (error is null)
+        {
+            await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.DeferredMessageUpdate);
+            return;
+        }
+
+        await args.Interaction.CreateResponseAsync(
+            DiscordInteractionResponseType.ChannelMessageWithSource,
+            new DiscordInteractionResponseBuilder().AsEphemeral().AddEmbed(new DiscordEmbedBuilder
+            {
+                Title = error,
+                Color = DiscordColor.Red,
+            }));
+    }
+
     private async Task HandleRoundAnswerAsync(ComponentInteractionCreatedEventArgs args)
     {
         Loc loc = localizer.For(args.Interaction.Locale);
@@ -145,6 +201,12 @@ public sealed class ComponentInteractionHandler(
                 Description = trivia.OptionNames.TryGetValue(attempt, out string? name)
                     ? $"{loc[Keys.your_attempt]}: `{name}`"
                     : null,
+                Color = DiscordColor.Red,
+            },
+            TriviaAttemptResult.NotAllowed when trivia.Players == TriviaPlayers.Multiplayer => new DiscordEmbedBuilder
+            {
+                Title = loc[Keys.not_in_trivia],
+                Description = loc[Keys.not_in_trivia_desc],
                 Color = DiscordColor.Red,
             },
             TriviaAttemptResult.NotAllowed => new DiscordEmbedBuilder
@@ -193,7 +255,8 @@ public sealed class ComponentInteractionHandler(
                 {
                     round.Guesser = args.User;
                 }
-                else
+                // In multiplayer every player missed: no single loser to announce.
+                else if (trivia.Players == TriviaPlayers.Singleplayer)
                 {
                     round.Loser = args.User;
                     round.MissedAttempt = trivia.OptionNames.GetValueOrDefault(attempt);

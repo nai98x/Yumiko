@@ -49,7 +49,7 @@ public sealed class Games(
     public async Task TriviaAsync(
         SlashCommandContext ctx,
         [Parameter("gamemode")] [Description("The type of game you want to play")] GamemodeChoice gamemodeChoice,
-        [Parameter("players")] [Description("Play alone or let anyone in the channel answer")] TriviaPlayersChoice playersChoice,
+        [Parameter("players")] [Description("Play alone or with whoever joins before the start")] TriviaPlayersChoice playersChoice,
         [Parameter("difficulty")] [Description("Choose the difficulty of the trivia")] DifficultyChoice difficultyChoice,
         [Parameter("rounds")] [Description("Rounds to play (minimum is 1 and maximum is 30)")] [MinMaxValue(1L, 30L)] long rounds
         )
