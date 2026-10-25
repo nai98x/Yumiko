@@ -28,11 +28,11 @@ public static class MediaPoolBuilder
     }
 
     /// <summary>
-    /// Page range to draw from in genres mode, based on the last page AniList reported.
-    /// With less than 3 pages there is nothing to choose from and the first one is always used.
+    /// Page range to draw from in genres mode: the genre's pages up to <paramref name="maxPage"/>, bounded by
+    /// the last page AniList reported.
     /// </summary>
-    public static (int PageFrom, int PageTo) GenreRange(int lastPage, Random? random = null) =>
-        lastPage < 3 ? (0, 1) : (0, Math.Min(RandomHelper.GetRandomNumber(1, 9, random), lastPage));
+    public static (int PageFrom, int PageTo) GenreRange(int lastPage, int maxPage) =>
+        (1, Math.Max(1, Math.Min(lastPage, maxPage)));
 
     /// <summary>Page range associated with each trivia difficulty.</summary>
     public static (int PageFrom, int PageTo) DifficultyRange(Model.Enum.Difficulty difficulty) => difficulty switch

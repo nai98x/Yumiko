@@ -1,4 +1,5 @@
 using Yumiko.Application.Games;
+using Yumiko.Bot.Configuration;
 using Yumiko.Bot.Services.State;
 using Yumiko.Model.Entities;
 using Yumiko.Model.Enum;
@@ -9,7 +10,7 @@ namespace Yumiko.Bot.Games;
 /// <summary>
 /// Fetches the pool of media and characters that feeds the games.
 /// </summary>
-public sealed class GamePool(IAnilistClient anilist, AnilistMediaCacheState mediaCache)
+public sealed class GamePool(IAnilistClient anilist, AnilistMediaCacheState mediaCache, GamesSettings gamesSettings)
 {
     public async Task<List<Anime>> GetMediaAsync(GameMediaQuery query, int pageFrom, int pageTo, CancellationToken cancellationToken = default)
     {
@@ -50,7 +51,7 @@ public sealed class GamePool(IAnilistClient anilist, AnilistMediaCacheState medi
     public async Task<(int PageFrom, int PageTo)> GetGenreRangeAsync(GameMediaQuery query, CancellationToken cancellationToken = default)
     {
         GameMediaPage first = await anilist.GetGameMediaPageAsync(query, 1, cancellationToken);
-        return MediaPoolBuilder.GenreRange(first.LastPage);
+        return MediaPoolBuilder.GenreRange(first.LastPage, gamesSettings.GenrePageDepth);
     }
 
     public async Task<List<CharacterOld>> GetCharactersAsync(int pageFrom, int pageTo, CancellationToken cancellationToken = default)

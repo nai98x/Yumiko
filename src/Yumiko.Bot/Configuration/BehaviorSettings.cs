@@ -69,6 +69,9 @@ public sealed record GatewaySettings(TimeSpan WatchdogCheckInterval, TimeSpan Wa
 /// <param name="HigherOrLowerMinScoreDifference">
 /// Minimum score difference (0-10 scale) between the two media of a Higher or Lower round in score mode.
 /// </param>
+/// <param name="GenrePageDepth">
+/// How many pages of a genre, sorted by popularity, the genres trivia draws from.
+/// </param>
 /// <param name="TriviaHintAt">
 /// Fraction of the round time after which the trivia hint shows up. Anything outside (0, 1) turns the hints off.
 /// </param>
@@ -81,6 +84,7 @@ public sealed record GamesSettings(
     int RandomPageMax,
     int HigherOrLowerPoolSize,
     double HigherOrLowerMinScoreDifference,
+    int GenrePageDepth,
     double TriviaHintAt)
 {
     public static GamesSettings FromConfiguration(IConfiguration configuration)
@@ -96,6 +100,7 @@ public sealed record GamesSettings(
             section.GetValue<int?>("RandomPageMax") ?? 5000,
             section.GetValue<int?>("HigherOrLowerPoolSize") ?? 2500,
             section.GetValue<double?>("HigherOrLowerMinScoreDifference") ?? 0.3,
+            section.GetValue<int?>("GenrePageDepth") ?? 20,
             section.GetValue<double?>("TriviaHintAt") ?? 0.5);
     }
 }

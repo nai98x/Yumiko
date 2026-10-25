@@ -26,23 +26,20 @@ public class MediaPoolBuilderTests
     }
 
     [Theory]
+    [InlineData(0)]
     [InlineData(1)]
-    [InlineData(2)]
-    public void GenreRange_FallsBackToTheFirstPageWhenTooFewPages(int lastPage)
+    public void GenreRange_UsesTheFirstPageWhenThereIsOnlyOne(int lastPage)
     {
-        Assert.Equal((0, 1), MediaPoolBuilder.GenreRange(lastPage));
+        Assert.Equal((1, 1), MediaPoolBuilder.GenreRange(lastPage, 20));
     }
 
-    [Fact]
-    public void GenreRange_NeverGoesPastTheLastPage()
+    [Theory]
+    [InlineData(4, 4)]
+    [InlineData(20, 20)]
+    [InlineData(150, 20)]
+    public void GenreRange_GoesUpToTheLastPageOrTheMaxPage(int lastPage, int expectedPageTo)
     {
-        for (int i = 0; i < 200; i++)
-        {
-            (int pageFrom, int pageTo) = MediaPoolBuilder.GenreRange(4);
-
-            Assert.Equal(0, pageFrom);
-            Assert.InRange(pageTo, 1, 4);
-        }
+        Assert.Equal((1, expectedPageTo), MediaPoolBuilder.GenreRange(lastPage, 20));
     }
 
     [Theory]
