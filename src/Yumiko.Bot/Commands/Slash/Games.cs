@@ -98,15 +98,20 @@ public sealed class Games(
 
         string gameLabel = GameName(settings, loc);
 
-        await ctx.EditResponseAsync(new DiscordEmbedBuilder
+        DiscordEmbedBuilder start = new DiscordEmbedBuilder
         {
-            Title = GameTitle(gamemode, loc),
+            Title = GameTitle(gamemode, gameLabel, loc),
             Color = YumikoColors.Primary,
         }
-        .AddField(loc[Keys.rounds], $"{settings.Rounds}")
-        .AddField(
-            gamemode == Gamemode.Genres ? loc[Keys.genre] : loc[Keys.difficulty],
-            gamemode == Gamemode.Genres ? settings.Genre! : GameStatsEmbeds.DifficultyLabel(difficulty, loc)));
+        .AddField(loc[Keys.rounds], $"{settings.Rounds}");
+
+        // The genre is already in the title, and genres mode has no difficulty.
+        if (gamemode != Gamemode.Genres)
+        {
+            start.AddField(loc[Keys.difficulty], GameStatsEmbeds.DifficultyLabel(difficulty, loc));
+        }
+
+        await ctx.EditResponseAsync(start);
 
         List<TriviaItem> items = await BuildPoolAsync(ctx, settings, loc);
 
@@ -240,34 +245,27 @@ public sealed class Games(
         return TriviaItems.FromMedia(await pool.GetMediaAsync(query, pageFrom, pageTo), settings.Gamemode, loc);
     }
 
-    private static string GameTitle(Gamemode gamemode, Loc loc) => gamemode switch
+    private static string GameTitle(Gamemode gamemode, string gameLabel, Loc loc) => gamemode switch
     {
         Gamemode.Characters => loc[Keys.guess_the_character],
         Gamemode.Animes => loc[Keys.guess_the_anime],
         Gamemode.Mangas => loc[Keys.guess_the_manga],
         Gamemode.Studios => loc[Keys.guess_the_studio],
         Gamemode.Protagonists => loc[Keys.guess_the_protagonist],
-        _ => loc[Keys.guess_the_genre],
+        _ => $"{loc[Keys.guess_the]} {gameLabel}",
     };
 
     /// <summary>
-    /// What is read after "guess the". In Spanish the enums have their own translation; in
-    /// English the plural "s" of the enum is dropped, except for the two cases that cannot be derived.
+    /// What is read after "guess the". Genres and studios cannot be derived from the enum and have their own
+    /// text; for the rest, Spanish has its own translation and English drops the plural "s" of the enum.
     /// </summary>
-    private static string GameName(GameSettings settings, Loc loc)
+    private static string GameName(GameSettings settings, Loc loc) => settings.Gamemode switch
     {
-        if (loc.IsSpanish)
-        {
-            return settings.Gamemode.ToSpanish();
-        }
-
-        return settings.Gamemode switch
-        {
-            Gamemode.Genres => settings.Genre ?? $"{settings.Gamemode}",
-            Gamemode.Studios => $"{loc[Keys.studio]} {loc[Keys.from_the_anime]}",
-            _ => $"{settings.Gamemode}"[..^1],
-        };
-    }
+        Gamemode.Genres => loc.Format(Keys.anime_of_genre, settings.Genre ?? loc[Keys.genre]),
+        Gamemode.Studios => $"{loc[Keys.studio].ToLower(loc.Culture)} {loc[Keys.from_the_anime]}",
+        _ when loc.IsSpanish => settings.Gamemode.ToSpanish(),
+        _ => $"{settings.Gamemode}"[..^1],
+    };
 
     private static HangmanTarget? FromCharacter(CharacterOld? character, Loc loc) =>
         character?.NameFull is null

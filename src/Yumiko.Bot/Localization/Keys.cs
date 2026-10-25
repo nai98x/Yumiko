@@ -39,6 +39,8 @@ public static class Keys
 
     public const string anime_list = "anime_list";
 
+    public const string anime_of_genre = "anime_of_genre";
+
     public const string anime_stats = "anime_stats";
 
     public const string anonymous_poll = "anonymous_poll";
@@ -186,8 +188,6 @@ public static class Keys
     public const string guess_the_anime = "guess_the_anime";
 
     public const string guess_the_character = "guess_the_character";
-
-    public const string guess_the_genre = "guess_the_genre";
 
     public const string guess_the_manga = "guess_the_manga";
 

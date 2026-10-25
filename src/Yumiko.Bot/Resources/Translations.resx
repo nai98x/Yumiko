@@ -109,6 +109,9 @@
   <data name="anime_list" xml:space="preserve">
     <value>Anime list</value>
   </data>
+  <data name="anime_of_genre" xml:space="preserve">
+    <value>{0} anime</value>
+  </data>
   <data name="anime_stats" xml:space="preserve">
     <value>Anime stats</value>
   </data>
@@ -333,9 +336,6 @@
   </data>
   <data name="guess_the_character" xml:space="preserve">
     <value>Guess the character</value>
-  </data>
-  <data name="guess_the_genre" xml:space="preserve">
-    <value>Guess the genre</value>
   </data>
   <data name="guess_the_manga" xml:space="preserve">
     <value>Guess the manga</value>

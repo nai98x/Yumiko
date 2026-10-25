@@ -109,6 +109,9 @@
   <data name="anime_list" xml:space="preserve">
     <value>Lista de anime</value>
   </data>
+  <data name="anime_of_genre" xml:space="preserve">
+    <value>anime del género {0}</value>
+  </data>
   <data name="anime_stats" xml:space="preserve">
     <value>Estadísticas de anime</value>
   </data>
@@ -333,9 +336,6 @@
   </data>
   <data name="guess_the_character" xml:space="preserve">
     <value>Adivina el personaje</value>
-  </data>
-  <data name="guess_the_genre" xml:space="preserve">
-    <value>Adivina el genero</value>
   </data>
   <data name="guess_the_manga" xml:space="preserve">
     <value>Adivina el manga</value>
