@@ -71,6 +71,9 @@ public sealed class TriviaGameRunner(
                 return;
             }
 
+            // Everyone signed up is ranked, hits or not.
+            participants.AddRange((trivia.Lobby?.Players ?? [ctx.User.Id]).Select(id => new GameUser { UserId = id }));
+
             for (int round = 1; round <= rounds; round++)
             {
                 roundsPlayed = round;
@@ -267,7 +270,7 @@ public sealed class TriviaGameRunner(
             if (game.CurrentRound is { Resolved: true, Guesser: not null } currentRound)
             {
                 TimeSpan elapsed = currentRound.GuessTime - message.CreationTimestamp;
-                AddPoint(participants, currentRound.Guesser, elapsed);
+                AddPoint(participants, currentRound.Guesser.Id, elapsed);
 
                 await ctx.FollowupAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
@@ -342,7 +345,7 @@ public sealed class TriviaGameRunner(
 
         foreach (TriviaRank<GameUser> entry in ranking)
         {
-            header += $"{Medal(entry.Position)} - {entry.Participant.User.Mention}: " +
+            header += $"{Medal(entry.Position)} - <@{entry.Participant.UserId}>: " +
                           $"{entry.Score} {loc[Keys.guesses]} ({entry.Percentage}%)";
 
             if (entry.AverageTime is { } average)
@@ -354,7 +357,7 @@ public sealed class TriviaGameRunner(
 
             await quizLeaderboard.AddResultAsync(
                 ctx.Guild!.Id,
-                entry.Participant.User.Id,
+                entry.Participant.UserId,
                 settings.Gamemode,
                 settings.Difficulty,
                 entry.Score,
@@ -377,13 +380,13 @@ public sealed class TriviaGameRunner(
         }
     }
 
-    private static void AddPoint(List<GameUser> participants, DiscordUser user, TimeSpan elapsed)
+    private static void AddPoint(List<GameUser> participants, ulong userId, TimeSpan elapsed)
     {
-        GameUser? existing = participants.Find(x => x.User.Id == user.Id);
+        GameUser? existing = participants.Find(x => x.UserId == userId);
 
         if (existing is null)
         {
-            participants.Add(new GameUser { User = user, Score = 1, TotalTime = elapsed });
+            participants.Add(new GameUser { UserId = userId, Score = 1, TotalTime = elapsed });
         }
         else
         {

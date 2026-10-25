@@ -54,7 +54,7 @@ public sealed class QuizRound
 
 public sealed class GameUser
 {
-    public required DiscordUser User { get; set; }
+    public required ulong UserId { get; init; }
 
     public int Score { get; set; }
 
