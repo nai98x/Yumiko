@@ -264,6 +264,7 @@ internal sealed class AnilistClient(AnilistGraphQLExecutor executor) : IAnilistC
                     NameFull = c.Name?.Full,
                     SiteUrl = c.SiteUrl,
                     Favourites = c.Favourites,
+                    Gender = c.Gender,
                     MainAnime = new Anime
                     {
                         TitleRomaji = mainMedia?.Title?.Romaji!,

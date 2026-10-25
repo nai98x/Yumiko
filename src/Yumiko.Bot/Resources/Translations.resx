@@ -528,6 +528,9 @@ Your new record is: **{2}**</value>
   <data name="miss_user_games" xml:space="preserve">
     <value>{0}, wrong choice!</value>
   </data>
+  <data name="multiplayer" xml:space="preserve">
+    <value>Multiplayer</value>
+  </data>
   <data name="my_love_to_user_is" xml:space="preserve">
     <value>My love to **{0}** is **{1}%**</value>
   </data>
@@ -758,6 +761,9 @@ Your new record is: **{2}**</value>
   </data>
   <data name="similarity" xml:space="preserve">
     <value>Similarity</value>
+  </data>
+  <data name="singleplayer" xml:space="preserve">
+    <value>Singleplayer</value>
   </data>
   <data name="singleplayer_trivia" xml:space="preserve">
     <value>Singleplayer trivia</value>

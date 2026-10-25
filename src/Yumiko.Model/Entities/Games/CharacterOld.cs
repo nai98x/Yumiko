@@ -16,6 +16,8 @@
 
         public int? Favourites { get; set; }
 
+        public string? Gender { get; set; }
+
         public Anime? MainAnime { get; set; }
     }
 }

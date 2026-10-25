@@ -1,4 +1,5 @@
 using DSharpPlus;
+using Yumiko.Application.Games;
 using Yumiko.Bot.Localization;
 using Yumiko.Model.Entities;
 using Yumiko.Model.Enum;
@@ -7,9 +8,10 @@ namespace Yumiko.Bot.Games;
 
 /// <summary>
 /// An entry of the trivia pool already resolved to text: the name that goes on the button and the description
-/// that reveals the answer. It lets the runner treat characters and media alike.
+/// that reveals the answer. It lets the runner treat characters and media alike. The decoys of a round share
+/// its <see cref="DecoyGroup"/>; <c>null</c> means any entry works as a decoy.
 /// </summary>
-public sealed record TriviaItem(string Name, string? Image, string Description);
+public sealed record TriviaItem(string Name, string? Image, string Description, string? DecoyGroup = null);
 
 public static class TriviaItems
 {
@@ -23,7 +25,8 @@ public static class TriviaItems
                 loc.Format(
                     Keys.the_character_is,
                     Formatter.Bold($"[{p.NameFull}]({p.SiteUrl})"),
-                    $"[{p.MainAnime?.TitleRomaji}]({p.MainAnime?.SiteUrl})")))
+                    $"[{p.MainAnime?.TitleRomaji}]({p.MainAnime?.SiteUrl})"),
+                TriviaRound.CharacterGenderGroup(p.Gender)))
             .DistinctBy(item => item.Name, StringComparer.Ordinal),
     ];
 

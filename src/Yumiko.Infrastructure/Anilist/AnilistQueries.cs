@@ -503,6 +503,7 @@ internal static class AnilistQueries
                 characters(sort: FAVOURITES_DESC){
                     siteUrl
                     favourites
+                    gender
                     name { first last full }
                     image { large }
                     media(sort: POPULARITY_DESC, perPage: 1){

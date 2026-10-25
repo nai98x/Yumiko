@@ -319,6 +319,8 @@ public static class Keys
 
     public const string miss_user_games = "miss_user_games";
 
+    public const string multiplayer = "multiplayer";
+
     public const string my_love_to_user_is = "my_love_to_user_is";
 
     public const string name = "name";
@@ -473,6 +475,8 @@ public static class Keys
     public const string shutting_down = "shutting_down";
 
     public const string similarity = "similarity";
+
+    public const string singleplayer = "singleplayer";
 
     public const string singleplayer_trivia = "singleplayer_trivia";
 

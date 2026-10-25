@@ -32,6 +32,9 @@ internal sealed class CharacterPoolCharacter
     [JsonProperty("favourites")]
     public int Favourites { get; set; }
 
+    [JsonProperty("gender")]
+    public string? Gender { get; set; }
+
     [JsonProperty("name")]
     public CharacterPoolName? Name { get; set; }
 

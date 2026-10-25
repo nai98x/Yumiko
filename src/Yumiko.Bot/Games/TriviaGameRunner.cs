@@ -178,7 +178,7 @@ public sealed class TriviaGameRunner(
         List<GameUser> participants,
         Loc loc)
     {
-        List<int> indices = TriviaRound.PickOptions(pool.Count);
+        List<int> indices = TriviaRound.PickOptions([.. pool.Select(item => item.DecoyGroup)]);
         TriviaItem correct = pool[indices[0]];
         List<string> options = [.. indices.Select(i => pool[i].Name)];
 
@@ -209,7 +209,7 @@ public sealed class TriviaGameRunner(
             {
                 Color = DiscordColor.Gold,
                 Title = $"{loc[Keys.guess_the]} {gameLabel}",
-                Description = $"{loc[Keys.round]} {round} {loc[Keys.of]} {rounds}",
+                Description = $"{loc[Keys.round]} {round} {loc[Keys.of]} {rounds} - {loc[trivia.Players == TriviaPlayers.Multiplayer ? Keys.multiplayer : Keys.singleplayer]}",
                 ImageUrl = correct.Image,
             });
 
