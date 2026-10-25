@@ -488,7 +488,12 @@ internal static class AnilistQueries
                         nodes { name { first last full } siteUrl favourites }
                     }
                     studios {
-                        nodes { name siteUrl favourites isAnimationStudio }
+                        nodes {
+                            name siteUrl favourites isAnimationStudio
+                            media(sort: POPULARITY_DESC, perPage: 5){
+                                nodes { id title { romaji } }
+                            }
+                        }
                     }
                 }
                 pageInfo { hasNextPage lastPage }

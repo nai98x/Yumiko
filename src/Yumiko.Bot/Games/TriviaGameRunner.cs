@@ -23,7 +23,9 @@ public sealed class TriviaGameRunner(
     TriviaState triviaState,
     IQuizLeaderboardRepository quizLeaderboard,
     TopggService topgg,
-    TimeoutSettings timeouts)
+    DiscordLogService logService,
+    TimeoutSettings timeouts,
+    GamesSettings gamesSettings)
 {
     private const int PollingIntervalMs = 100;
 
@@ -204,36 +206,62 @@ public sealed class TriviaGameRunner(
 
         RandomHelper.Shuffle(buttons, Random.Shared);
 
-        DiscordFollowupMessageBuilder builder = new DiscordFollowupMessageBuilder()
-            .AddEmbed(new DiscordEmbedBuilder
-            {
-                Color = DiscordColor.Gold,
-                Title = $"{loc[Keys.guess_the]} {gameLabel}",
-                Description = $"{loc[Keys.round]} {round} {loc[Keys.of]} {rounds} - {loc[trivia.Players == TriviaPlayers.Multiplayer ? Keys.multiplayer : Keys.singleplayer]}",
-                ImageUrl = correct.Image,
-            });
-
-        foreach (DiscordButtonComponent[] row in buttons.Chunk(ButtonsPerRow))
-        {
-            builder.AddActionRowComponent(row);
-        }
-
-        builder.AddActionRowComponent(new DiscordButtonComponent(
+        DiscordButtonComponent finish = new(
             DiscordButtonStyle.Danger,
             $"{TriviaCustomIds.CancelPrefix}{Guid.NewGuid()}",
-            loc[Keys.finish_game]));
+            loc[Keys.finish_game]);
 
-        DiscordMessage message = await ctx.FollowupAsync(builder);
+        DiscordEmbedBuilder embed = new()
+        {
+            Color = DiscordColor.Gold,
+            Title = $"{loc[Keys.guess_the]} {gameLabel}",
+            Description = $"{loc[Keys.round]} {round} {loc[Keys.of]} {rounds} - {loc[trivia.Players == TriviaPlayers.Multiplayer ? Keys.multiplayer : Keys.singleplayer]}",
+            ImageUrl = correct.Image,
+        };
+
+        DiscordMessage message = await ctx.FollowupAsync(
+            WithRoundButtons(new DiscordFollowupMessageBuilder(), buttons, finish).AddEmbed(embed));
 
         trivia.CurrentRound = new QuizRound
         {
             State = new TriviaRoundState(choices.Select(c => c.Id), choices[0].Id, trivia.Lobby?.Players ?? [ctx.User.Id]),
         };
 
+        Func<Task>? showHint = correct.Hint is null
+            ? null
+            : async () =>
+            {
+                embed.AddField(loc[Keys.hint], correct.Hint);
+                await ctx.EditFollowupAsync(message.Id, WithRoundButtons(new DiscordWebhookBuilder(), buttons, finish).AddEmbed(embed));
+            };
+
         string reveal = correct.Description.NormalizeDescription();
-        RoundResult result = await WaitForAnswerAsync(ctx, message, reveal, participants, loc);
+        RoundResult result = await WaitForAnswerAsync(ctx, message, reveal, participants, showHint, loc);
 
         return result;
+    }
+
+    private static T WithRoundButtons<T>(T builder, List<DiscordButtonComponent> buttons, DiscordButtonComponent finish)
+        where T : BaseDiscordMessageBuilder<T>
+    {
+        foreach (DiscordButtonComponent[] row in buttons.Chunk(ButtonsPerRow))
+        {
+            builder.AddActionRowComponent(row);
+        }
+
+        return builder.AddActionRowComponent(finish);
+    }
+
+    private async Task ShowHintAsync(SlashCommandContext ctx, Func<Task> showHint)
+    {
+        try
+        {
+            await showHint();
+        }
+        catch (Exception ex)
+        {
+            await logService.LogExceptionAsync(ctx.Guild, ctx.Channel, ex, "Trivia hint");
+        }
     }
 
     private async Task<RoundResult> WaitForAnswerAsync(
@@ -241,9 +269,11 @@ public sealed class TriviaGameRunner(
         DiscordMessage message,
         string reveal,
         List<GameUser> participants,
+        Func<Task>? showHint,
         Loc loc)
     {
         int iterations = (int)(timeouts.Games * 1000 / PollingIntervalMs);
+        int hintIteration = gamesSettings.TriviaHintAt is > 0 and < 1 ? (int)(iterations * gamesSettings.TriviaHintAt) : -1;
 
         for (int i = 0; i <= iterations; i++)
         {
@@ -309,6 +339,11 @@ public sealed class TriviaGameRunner(
             if (game.CurrentRound is { Resolved: true })
             {
                 break;
+            }
+
+            if (i == hintIteration && showHint is not null)
+            {
+                await ShowHintAsync(ctx, showHint);
             }
 
             await Task.Delay(PollingIntervalMs);

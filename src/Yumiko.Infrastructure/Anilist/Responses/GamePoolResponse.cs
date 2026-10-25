@@ -125,4 +125,22 @@ internal sealed class GamePoolStudio
 
     [JsonProperty("isAnimationStudio")]
     public bool IsAnimationStudio { get; set; }
+
+    [JsonProperty("media")]
+    public GamePoolStudioMediaConnection? Media { get; set; }
+}
+
+internal sealed class GamePoolStudioMediaConnection
+{
+    [JsonProperty("nodes")]
+    public List<GamePoolStudioMedia>? Nodes { get; set; }
+}
+
+internal sealed class GamePoolStudioMedia
+{
+    [JsonProperty("id")]
+    public int Id { get; set; }
+
+    [JsonProperty("title")]
+    public GamePoolTitle? Title { get; set; }
 }

@@ -166,6 +166,9 @@
   <data name="character" xml:space="preserve">
     <value>Personaje</value>
   </data>
+  <data name="character_appears_in" xml:space="preserve">
+    <value>Aparece en: {0}</value>
+  </data>
   <data name="characters" xml:space="preserve">
     <value>personajes</value>
   </data>
@@ -782,6 +785,9 @@ Su nuevo record es: **{2}**</value>
   </data>
   <data name="studio" xml:space="preserve">
     <value>Estudio</value>
+  </data>
+  <data name="studio_also_made" xml:space="preserve">
+    <value>Este estudio también hizo: {0}</value>
   </data>
   <data name="studios" xml:space="preserve">
     <value>Estudios</value>

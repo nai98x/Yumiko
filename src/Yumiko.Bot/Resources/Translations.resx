@@ -166,6 +166,9 @@
   <data name="character" xml:space="preserve">
     <value>Character</value>
   </data>
+  <data name="character_appears_in" xml:space="preserve">
+    <value>Appears in: {0}</value>
+  </data>
   <data name="characters" xml:space="preserve">
     <value>characters</value>
   </data>
@@ -782,6 +785,9 @@ Your new record is: **{2}**</value>
   </data>
   <data name="studio" xml:space="preserve">
     <value>Studio</value>
+  </data>
+  <data name="studio_also_made" xml:space="preserve">
+    <value>This studio also made: {0}</value>
   </data>
   <data name="studios" xml:space="preserve">
     <value>Studios</value>

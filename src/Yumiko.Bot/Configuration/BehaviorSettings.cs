@@ -69,6 +69,9 @@ public sealed record GatewaySettings(TimeSpan WatchdogCheckInterval, TimeSpan Wa
 /// <param name="HigherOrLowerMinScoreDifference">
 /// Minimum score difference (0-10 scale) between the two media of a Higher or Lower round in score mode.
 /// </param>
+/// <param name="TriviaHintAt">
+/// Fraction of the round time after which the trivia hint shows up. Anything outside (0, 1) turns the hints off.
+/// </param>
 public sealed record GamesSettings(
     int MediaCachePageFrom,
     int MediaCachePageTo,
@@ -77,7 +80,8 @@ public sealed record GamesSettings(
     int AnilistPerPage,
     int RandomPageMax,
     int HigherOrLowerPoolSize,
-    double HigherOrLowerMinScoreDifference)
+    double HigherOrLowerMinScoreDifference,
+    double TriviaHintAt)
 {
     public static GamesSettings FromConfiguration(IConfiguration configuration)
     {
@@ -91,7 +95,8 @@ public sealed record GamesSettings(
             // AniList rejects the query when page * perPage goes over 5000 entries.
             section.GetValue<int?>("RandomPageMax") ?? 5000,
             section.GetValue<int?>("HigherOrLowerPoolSize") ?? 2500,
-            section.GetValue<double?>("HigherOrLowerMinScoreDifference") ?? 0.3);
+            section.GetValue<double?>("HigherOrLowerMinScoreDifference") ?? 0.3,
+            section.GetValue<double?>("TriviaHintAt") ?? 0.5);
     }
 }
 

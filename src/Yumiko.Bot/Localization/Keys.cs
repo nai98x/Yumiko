@@ -77,6 +77,8 @@ public static class Keys
 
     public const string character = "character";
 
+    public const string character_appears_in = "character_appears_in";
+
     public const string characters = "characters";
 
     public const string choose_an_option = "choose_an_option";
@@ -489,6 +491,8 @@ public static class Keys
     public const string status = "status";
 
     public const string studio = "studio";
+
+    public const string studio_also_made = "studio_also_made";
 
     public const string studios = "studios";
 

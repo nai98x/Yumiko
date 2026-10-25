@@ -229,7 +229,7 @@ public sealed class Games(
             Type = settings.Gamemode == Gamemode.Mangas ? MediaType.MANGA : MediaType.ANIME,
             Genre = settings.Genre,
             IncludeAdult = ctx.Channel.IsNSFW,
-            IncludeCharacters = settings.Gamemode == Gamemode.Protagonists,
+            IncludeCharacters = settings.Gamemode is Gamemode.Protagonists or Gamemode.Animes or Gamemode.Mangas or Gamemode.Genres,
             IncludeStudios = settings.Gamemode == Gamemode.Studios,
         };
 

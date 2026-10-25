@@ -98,6 +98,9 @@ internal static class GameMediaMapper
                     Name = name,
                     SiteUrl = studio.SiteUrl,
                     Favourites = studio.Favourites,
+                    PopularMedia = [.. (studio.Media?.Nodes ?? [])
+                        .Where(m => !string.IsNullOrEmpty(m.Title?.Romaji))
+                        .Select(m => new Anime { Id = m.Id, TitleRomaji = m.Title!.Romaji! })],
                 });
             }
         }
