@@ -57,4 +57,6 @@ public sealed class GameUser
     public required DiscordUser User { get; set; }
 
     public int Score { get; set; }
+
+    public TimeSpan TotalTime { get; set; }
 }

@@ -266,7 +266,8 @@ public sealed class TriviaGameRunner(
 
             if (game.CurrentRound is { Resolved: true, Guesser: not null } currentRound)
             {
-                AddPoint(participants, currentRound.Guesser);
+                TimeSpan elapsed = currentRound.GuessTime - message.CreationTimestamp;
+                AddPoint(participants, currentRound.Guesser, elapsed);
 
                 await ctx.FollowupAsync(new DiscordFollowupMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
@@ -276,7 +277,7 @@ public sealed class TriviaGameRunner(
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {
                         IconUrl = currentRound.Guesser.AvatarUrl,
-                        Text = $"{loc[Keys.time]}: {(currentRound.GuessTime - message.CreationTimestamp).TotalSeconds:0.##}s",
+                        Text = $"{loc[Keys.time]}: {elapsed.TotalSeconds:0.##}s",
                     },
                 }));
 
@@ -336,13 +337,20 @@ public sealed class TriviaGameRunner(
             ? $"{GameStatsEmbeds.GamemodeName(settings.Gamemode, loc).UppercaseFirst()}: {Formatter.Bold(settings.Genre ?? "-")}\n\n"
             : $"{loc[Keys.difficulty]}: {Formatter.Bold(GameStatsEmbeds.DifficultyLabel(settings.Difficulty, loc))}\n\n";
 
-        List<TriviaRank<GameUser>> ranking = TriviaScoring.Rank(participants, x => x.Score, rounds);
+        List<TriviaRank<GameUser>> ranking = TriviaScoring.Rank(participants, x => x.Score, x => x.TotalTime, rounds);
         int total = TriviaScoring.TotalScore(participants, x => x.Score);
 
         foreach (TriviaRank<GameUser> entry in ranking)
         {
             header += $"{Medal(entry.Position)} - {entry.Participant.User.Mention}: " +
-                          $"{entry.Score} {loc[Keys.guesses]} ({entry.Percentage}%)\n";
+                          $"{entry.Score} {loc[Keys.guesses]} ({entry.Percentage}%)";
+
+            if (entry.AverageTime is { } average)
+            {
+                header += $" - {loc[Keys.average_time]}: {average.TotalSeconds:0.##}s";
+            }
+
+            header += "\n";
 
             await quizLeaderboard.AddResultAsync(
                 ctx.Guild!.Id,
@@ -369,17 +377,18 @@ public sealed class TriviaGameRunner(
         }
     }
 
-    private static void AddPoint(List<GameUser> participants, DiscordUser user)
+    private static void AddPoint(List<GameUser> participants, DiscordUser user, TimeSpan elapsed)
     {
         GameUser? existing = participants.Find(x => x.User.Id == user.Id);
 
         if (existing is null)
         {
-            participants.Add(new GameUser { User = user, Score = 1 });
+            participants.Add(new GameUser { User = user, Score = 1, TotalTime = elapsed });
         }
         else
         {
             existing.Score++;
+            existing.TotalTime += elapsed;
         }
     }
 
