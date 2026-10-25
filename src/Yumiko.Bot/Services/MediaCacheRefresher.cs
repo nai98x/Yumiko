@@ -19,14 +19,13 @@ public sealed class MediaCacheRefresher(
 {
     /// <summary>
     /// Startup load: the cache is published as soon as it holds the warm-up amount and keeps growing
-    /// page by page while the crawl continues in background. Completes with <c>true</c> when the whole
-    /// crawl already ended (or failed), <c>false</c> when it is still running.
+    /// page by page while the crawl continues in background.
     /// </summary>
-    public Task<bool> WarmUpAsync()
+    public MediaCacheWarmUp WarmUp()
     {
         TaskCompletionSource<bool> warmedUp = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        _ = Task.Run(() => CrawlAsync(warmedUp, CancellationToken.None));
-        return warmedUp.Task;
+        Task<bool> crawl = Task.Run(() => CrawlAsync(warmedUp, CancellationToken.None));
+        return new MediaCacheWarmUp(warmedUp.Task, crawl);
     }
 
     /// <summary>
@@ -35,7 +34,7 @@ public sealed class MediaCacheRefresher(
     /// </summary>
     public Task RefreshAsync(CancellationToken cancellationToken = default) => CrawlAsync(null, cancellationToken);
 
-    private async Task CrawlAsync(TaskCompletionSource<bool>? warmedUp, CancellationToken cancellationToken)
+    private async Task<bool> CrawlAsync(TaskCompletionSource<bool>? warmedUp, CancellationToken cancellationToken)
     {
         try
         {
@@ -78,15 +77,17 @@ public sealed class MediaCacheRefresher(
             if (count == 0)
             {
                 logger.LogWarning("AniList returned no media for the cache refresh; the previous one is kept");
-                return;
+                return false;
             }
 
             mediaCache.Replace(gamesSettings.MediaCachePageFrom, pages);
             logger.LogInformation("AniList media cache refreshed: {Count} entries in {Pages} pages", count, pages.Count);
+            return true;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Could not refresh the AniList media cache; the previous one is kept");
+            return false;
         }
         finally
         {
@@ -94,3 +95,10 @@ public sealed class MediaCacheRefresher(
         }
     }
 }
+
+/// <param name="WarmedUp">
+/// Completes once the cache holds the warm-up amount: <c>true</c> when the whole crawl already ended (or
+/// failed), <c>false</c> when it keeps running in background.
+/// </param>
+/// <param name="Crawl">Completes when the whole crawl ends: <c>false</c> if it failed or came back empty.</param>
+public sealed record MediaCacheWarmUp(Task<bool> WarmedUp, Task<bool> Crawl);

@@ -50,7 +50,8 @@ public sealed class GuildDownloadCompletedHandler(
             return;
         }
 
-        bool mediaFullyLoaded = await mediaCacheRefresher.WarmUpAsync();
+        MediaCacheWarmUp warmUp = mediaCacheRefresher.WarmUp();
+        bool mediaFullyLoaded = await warmUp.WarmedUp;
 
         discordBotService.SetInitialized();
         sw.Stop();
@@ -88,6 +89,32 @@ public sealed class GuildDownloadCompletedHandler(
         await SendToConfigBotsAsync(new DiscordMessageBuilder()
             .EnableV2Components()
             .AddContainerComponent(new DiscordContainerComponent(components, color: YumikoColors.Primary)));
+
+        if (!mediaFullyLoaded)
+        {
+            _ = ReportMediaLoadedAsync(warmUp.Crawl, sw);
+        }
+    }
+
+    private async Task ReportMediaLoadedAsync(Task<bool> crawl, Stopwatch sw)
+    {
+        sw.Start();
+        bool completed = await crawl;
+        sw.Stop();
+
+        string text = completed
+            ? "# 🎬 Media cache fully loaded\n" +
+              $"⏱️ **Load time:** {sw.Elapsed.TotalSeconds:0.00} s\n" +
+              $"🎬 **Cached media:** {mediaCache.Media.Count}"
+            : "# ⚠️ Media cache load stopped early\n" +
+              $"🎬 **Cached media:** {mediaCache.Media.Count}\n" +
+              "The rest will be loaded on the next daily refresh.";
+
+        await SendToConfigBotsAsync(new DiscordMessageBuilder()
+            .EnableV2Components()
+            .AddContainerComponent(new DiscordContainerComponent(
+                [new DiscordTextDisplayComponent(text)],
+                color: YumikoColors.Primary)));
     }
 
     private async Task SendToConfigBotsAsync(DiscordMessageBuilder builder)
@@ -98,7 +125,7 @@ public sealed class GuildDownloadCompletedHandler(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Could not send the initialization message to the ConfigBots channel");
+            logger.LogError(ex, "Could not send the message to the ConfigBots channel");
         }
     }
 }

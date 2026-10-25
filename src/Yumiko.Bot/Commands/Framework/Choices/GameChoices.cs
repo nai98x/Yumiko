@@ -15,9 +15,9 @@ public enum GamemodeChoice
     Mangas,
     [ChoiceDisplayName("Protagonists")]
     Protagonists,
-    [ChoiceDisplayName("Genres")]
+    [ChoiceDisplayName("Anime by genre")]
     Genres,
-    [ChoiceDisplayName("Studios")]
+    [ChoiceDisplayName("Anime studio")]
     Studios,
 }
 
